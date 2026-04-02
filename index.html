@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>ULTRAKILL Wiki | МАШИНА V1: Красная жидкость – ТОПЛИВО</title>
+    <title>ULTRAKILL Wiki | МАШИНА V1: ЭНЕРГИЯ – РЕСУРС</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800;900&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
@@ -210,23 +210,6 @@
             border-bottom: 2px solid var(--blod-red);
         }
 
-        .machine-btn {
-            background: none;
-            border: 1px solid var(--blod-red);
-            padding: 0.4rem 1rem;
-            border-radius: 40px;
-            width: 100%;
-            color: var(--text-bright);
-            margin-top: 12px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .machine-btn:hover {
-            background: var(--deep-rust);
-            border-color: var(--hydraulic-gold);
-        }
-
         .footer {
             margin-top: 2rem;
             padding-top: 1rem;
@@ -241,23 +224,6 @@
             .container { padding: 0 1rem; }
             .section-title { font-size: 1.4rem; }
         }
-
-        .blod-splatter {
-            position: fixed;
-            width: 18px;
-            height: 18px;
-            background: radial-gradient(circle, #e34d4d, #5c0f0f);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 9999;
-            filter: blur(1px);
-            animation: splatAnim 0.4s ease-out forwards;
-        }
-
-        @keyframes splatAnim {
-            0% { transform: scale(0.3); opacity: 0.9; }
-            100% { transform: scale(3.5); opacity: 0; }
-        }
     </style>
 </head>
 <body>
@@ -269,97 +235,71 @@
             <p style="font-family: 'Fira Code';">MANKIND IS DEAD. BLOD IS FUEL. HEL IS FULL.</p>
         </div>
         <div class="badge-machine">
-            <i class="fas fa-tint"></i> Красная жидкость КАК ТОПЛИВО <i class="fas fa-cog"></i>
+            <i class="fas fa-tint"></i> ЭНЕРГИЯ КАК РЕСУРС <i class="fas fa-cog"></i>
         </div>
     </div>
 
     <div class="nav-buttons">
-        <a href="weapons.html" class="wiki-nav-btn nav-weapon"><i class="fas fa-gun"></i> ОРУЖИЕ</a>
-        <button class="wiki-nav-btn nav-mob" data-section="mobs"><i class="fas fa-pastafarianism"></i> МОБЫ</button>
-        <button class="wiki-nav-btn nav-boss" data-section="bosses"><i class="fas fa-dragon"></i> БОССЫ</button>
-        <button class="wiki-nav-btn nav-layer" data-section="layers"><i class="fas fa-layer-group"></i> СЛОИ / ЛОКАЦИИ</button>
+        <a href="weapons.html" class="wiki-nav-btn nav-weapon"><i class="fas fa-gun"></i> СРЕДСТВА</a>
+        <button class="wiki-nav-btn nav-mob" data-section="mobs"><i class="fas fa-pastafarianism"></i> ЦЕЛИ</button>
+        <button class="wiki-nav-btn nav-boss" data-section="bosses"><i class="fas fa-dragon"></i> КЛЮЧЕВЫЕ СУЩНОСТИ</button>
+        <button class="wiki-nav-btn nav-layer" data-section="layers"><i class="fas fa-layer-group"></i> СЕКТОРЫ / ЛОКАЦИИ</button>
     </div>
 
     <div class="wiki-grid">
         <div class="main-col">
             <div id="mobs" class="machine-card">
-                <div class="section-title">👁️ ВРАЖЕСКИЙ СОСТАВ — ХАСКИ И СОЗДАНИЯ АДА</div>
+                <div class="section-title">👁️ ТИПЫ ЦЕЛЕЙ — ОБЪЕКТЫ В СРЕДЕ</div>
                 <ul class="machine-list">
-                    <li><i class="fas fa-skull"></i> <strong>Filth (Мерзость)</strong> — слабые орды, представляют души неизвестных/скучных грешников.</li>
-                    <li><i class="fas fa-eye"></i> <strong>Stray / Schism</strong> — базовые стреляющие враги, чем значимее душа — тем сильнее форма.</li>
-                    <li><i class="fas fa-fire"></i> <strong>Streetcleaner</strong> — огнемётчик, уклонение обязательно, паррирование пламени.</li>
-                    <li><i class="fas fa-bomb"></i> <strong>Malicious Face</strong> — летающая башня с лазером и ракетами. Урон 60 от миномёта Hideous Mass.</li>
-                    <li><i class="fas fa-shield-alt"></i> <strong>Soldier, Sentry</strong> — стрельба очередями, Chargeback от Сентинеля рикошетит пулю (43 урона).</li>
-                    <li><i class="fas fa-robot"></i> <strong>V2 (зеркало)</strong> — сражение на 1-4 и 4-4, копирует оружие V1.</li>
+                    <li><i class="fas fa-skull"></i> <strong>Filth (Мерзость)</strong> — массовые единицы, представляют малозначимые сущности.</li>
+                    <li><i class="fas fa-eye"></i> <strong>Stray / Schism</strong> — базовые дистанционные объекты, чем значимее сущность — тем сложнее форма.</li>
+                    <li><i class="fas fa-fire"></i> <strong>Streetcleaner</strong> — термический модуль, требует уклонения и перехвата импульса.</li>
+                    <li><i class="fas fa-bomb"></i> <strong>Malicious Face</strong> — летающая конструкция с лазерным и ракетным воздействием. Показатель воздействия 60 от миномёта Hideous Mass.</li>
+                    <li><i class="fas fa-shield-alt"></i> <strong>Soldier, Sentry</strong> — импульсные очереди, Chargeback от Sentry рикошетит снаряд (43 единицы воздействия).</li>
+                    <li><i class="fas fa-robot"></i> <strong>V2 (зеркало)</strong> — взаимодействие на уровнях 1-4 и 4-4, копирует арсенал V1.</li>
                 </ul>
-                <div class="stat-tag">Всего 20+ типов: от Cerberus до Hideous Mass. Каждый враг — искажённая душа или орудие ада.</div>
+                <div class="stat-tag">Всего 20+ типов: от Cerberus до Hideous Mass. Каждая цель — трансформированная сущность.</div>
             </div>
 
             <div id="bosses" class="machine-card">
-                <div class="section-title">👑 БОССЫ — ПОВЕЛИТЕЛИ АДА И ПРАЙМЫ</div>
+                <div class="section-title">👑 КЛЮЧЕВЫЕ СУЩНОСТИ — ЗНАЧИМЫЕ ОБЪЕКТЫ</div>
                 <ul class="machine-list">
-                    <li><i class="fas fa-crown"></i> <strong>Король Минос (Minos Prime)</strong> — бывший правитель, сверхскоростной бой, фазы. Локация: Жадность (3-2).</li>
-                    <li><i class="fas fa-feather-alt"></i> <strong>Габриэль (Архангел, Судья Ада)</strong> — два боя (4-4 и 6-2). Диалоги меняются после поражения.</li>
-                    <li><i class="fas fa-hand-fist"></i> <strong>Сиссиф Прайм (Sisyphus Prime)</strong> — финальный босс слоя Раскол. Огромная сила и взрывные комбо.</li>
-                    <li><i class="fas fa-torii-gate"></i> <strong>Корпус Короля Миноса (Corpse of King Minos)</strong> — гигантский труп, битва на платформах.</li>
-                    <li><i class="fas fa-water"></i> <strong>Левиафан (Leviathan)</strong> — морской змей в 5-4, атаки хвостом и снарядами.</li>
-                    <li><i class="fas fa-biohazard"></i> <strong>Flesh Prison / Panopticon</strong> — секретные сущности, охраняющие Праймов.</li>
+                    <li><i class="fas fa-crown"></i> <strong>Король Минос (Minos Prime)</strong> — бывший управитель, сверхскоростное взаимодействие, фазы. Сектор: Жадность (3-2).</li>
+                    <li><i class="fas fa-feather-alt"></i> <strong>Габриэль (Архангел, Судья)</strong> — два этапа (4-4 и 6-2). Сценарий меняется после завершения.</li>
+                    <li><i class="fas fa-hand-fist"></i> <strong>Сиссиф Прайм (Sisyphus Prime)</strong> — финальная цель сектора Раскол. Высокая интенсивность.</li>
+                    <li><i class="fas fa-torii-gate"></i> <strong>Корпус Короля Миноса (Corpse of King Minos)</strong> — массивная структура, взаимодействие на платформах.</li>
+                    <li><i class="fas fa-water"></i> <strong>Левиафан (Leviathan)</strong> — крупный объект в 5-4, воздействие хвостом и снарядами.</li>
+                    <li><i class="fas fa-biohazard"></i> <strong>Flesh Prison / Panopticon</strong> — дополнительные значимые объекты.</li>
                 </ul>
-                <div class="stat-tag">Особенность: у каждого босса уникальные механики и фазы, основанные на "Божественной комедии".</div>
+                <div class="stat-tag">Особенность: у каждой значимой сущности уникальные механики и фазы.</div>
             </div>
 
             <div id="layers" class="machine-card">
-                <div class="section-title">🌍 КРУГИ АДА — ПРОЛОГ И АКТЫ</div>
+                <div class="section-title">🌍 СЕКТОРЫ — ПРОЛОГ И АКТЫ</div>
                 <ul class="machine-list">
-                    <li><i class="fas fa-industry"></i> <strong>ПРОЛОГ (0-1 — 0-5)</strong> — Заводы и руины. Знакомство с механикой.</li>
-                    <li><i class="fas fa-tree"></i> <strong>ЛИМБ (1-1 — 1-4)</strong> — Готические соборы, битва с V2.</li>
-                    <li><i class="fas fa-cogs"></i> <strong>ГНЕВ (2-1 — 2-4)</strong> — Гигантские шестерни, бой с Корпусом Миноса.</li>
-                    <li><i class="fas fa-coins"></i> <strong>ЖАДНОСТЬ (3-1 — 3-4)</strong> — Золотая пустыня, Минос Прайм.</li>
-                    <li><i class="fas fa-fire"></i> <strong>ЕРЕСЬ (4-1 — 4-4)</strong> — Лава, битва с Габриэлем и V2.</li>
-                    <li><i class="fas fa-water"></i> <strong>ТРЕВОГА (5-1 — 5-4)</strong> — Затопленный город, Левиафан.</li>
-                    <li><i class="fas fa-mask"></i> <strong>РАСКОЛ (6-1 — 6-4)</strong> — Финал, Сиссиф Прайм.</li>
+                    <li><i class="fas fa-industry"></i> <strong>ПРОЛОГ (0-1 — 0-5)</strong> — Индустриальные комплексы и руины. Начальное знакомство.</li>
+                    <li><i class="fas fa-tree"></i> <strong>ЛИМБ (1-1 — 1-4)</strong> — Готические сооружения, взаимодействие с V2.</li>
+                    <li><i class="fas fa-cogs"></i> <strong>ГНЕВ (2-1 — 2-4)</strong> — Гигантские вращающиеся механизмы.</li>
+                    <li><i class="fas fa-coins"></i> <strong>ЖАДНОСТЬ (3-1 — 3-4)</strong> — Пустыня из золота, Минос Прайм.</li>
+                    <li><i class="fas fa-fire"></i> <strong>ЕРЕСЬ (4-1 — 4-4)</strong> — Лавовые зоны, взаимодействие с Габриэлем и V2.</li>
+                    <li><i class="fas fa-water"></i> <strong>ТРЕВОГА (5-1 — 5-4)</strong> — Затопленный комплекс, Левиафан.</li>
+                    <li><i class="fas fa-mask"></i> <strong>РАСКОЛ (6-1 — 6-4)</strong> — Финальный сектор, Сиссиф Прайм.</li>
                 </ul>
-                <div class="stat-tag">Секреты: уровни P-1, P-2, "0-S: The Witless", тайные орбы Dual Wield с удвоенной длительностью (до 120 сек).</div>
+                <div class="stat-tag">Скрытые области: P-1, P-2, "0-S: The Witless", специальные ресурсы Dual Wield с удвоенной длительностью (до 120 сек).</div>
             </div>
         </div>
 
         <div class="side-col">
+            <!-- ОСТАВЛЕН ТОЛЬКО БЛОК С РЕСУРСАМИ (БЕЗ ИЗМЕНЕНИЙ) -->
             <div class="side-module">
-                <div class="side-header"><i class="fas fa-microchip"></i> СПЕЦИФИКАЦИЯ V1</div>
-                <div class="side-content" style="padding: 1rem;">
-                    <p><i class="fas fa-tint" style="color: var(--blod-red);"></i> <strong>Топливо:</strong> красная жидкость врагов — единственный способ восстановления здоровья.</p>
-                    <p><i class="fas fa-bolt"></i> <strong>Движение:</strong> слайд, стена-прыжок, Slam Storage (баг с сохранением импульса).</p>
-                    <p><i class="fas fa-chart-line"></i> <strong>Система стиля:</strong> от D до ULTRAKILL (ранг P требует убить всех врагов и собрать секреты).</p>
-                    <p><i class="fas fa-dice-d6"></i> <strong>Секретные приёмы:</strong> отражение снарядов (Chargeback), Nuke-взрыв, отскок от монет.</p>
-                </div>
-            </div>
-
-            <div class="side-module">
-                <div class="side-header"><i class="fas fa-industry"></i> МАШИННАЯ ПРИРОДА</div>
-                <div class="side-content" style="padding: 1rem;">
-                    <p>V1 — боевая машина, созданная в мире без человечества. Единственная цель — добыча крови. Контраст металла, ржавчины и жестокости.</p>
-                    <div class="rust-stripe" style="margin: 12px 0;"></div>
-                    <button id="loreBtn" class="machine-btn"><i class="fas fa-microphone-alt"></i> Цитата: «MANKIND IS DEAD»</button>		
-                </div>
-            </div>
-
-            <div class="side-module">
-                <div class="side-header"><i class="fas fa-link"></i> ОФИЦИАЛЬНЫЕ РЕСУРСЫ</div>
+                <div class="side-header"><i class="fas fa-link"></i> ИСТОЧНИКИ</div>
                 <div class="side-content" style="padding: 0.8rem;">
                     <ul class="machine-list" style="margin: 0;">
                         <li><i class="fab fa-steam"></i> <a href="#" style="color: var(--blod-red);">ULTRAKILL в Steam (демо)</a></li>
-                        <li><i class="fas fa-wiki"></i> <a href="#" style="color: var(--bolt-silver);">Fandom вики (источник данных)</a></li>
-                        <li><i class="fab fa-discord"></i> <a href="#">New Blood Discord (#ultrakill)</a></li>
+                        <li><i class="fas fa-wiki"></i> <a href="#" style="color: var(--bolt-silver);">Справочная база (Fandom)</a></li>
+                        <li><i class="fab fa-discord"></i> <a href="#">Сообщество New Blood (#ultrakill)</a></li>
                     </ul>
-                    <button id="wikiStatsBtn" class="machine-btn"><i class="fas fa-chart-simple"></i> Статистика вики</button>
-                </div>
-            </div>
-
-            <div class="side-module">
-                <div class="side-header"><i class="fas fa-droplet"></i> ФАКТ О КРОВИ</div>
-                <div class="side-content" style="padding: 0.8rem;">
-                    <p id="factBox">💉 Самый сильный урон от врага — миномёт Hideous Mass: 60 урона за попадание.</p>
-                    <button id="randomFactBtn" class="machine-btn"><i class="fas fa-dice-d6"></i> Случайный факт</button>
+                    <button id="wikiStatsBtn" class="machine-btn" style="background: none; border: 1px solid var(--blod-red); padding: 0.4rem 1rem; border-radius: 40px; width: 100%; color: var(--text-bright); margin-top: 12px; cursor: pointer;"><i class="fas fa-chart-simple"></i> Статистика базы</button>
                 </div>
             </div>
         </div>
@@ -367,20 +307,12 @@
 
     <div class="footer">
         <div><i class="fas fa-cog"></i> V1 MACHINE // BLOD IS FUEL // HEL IS FULL</div>
-        <div><i class="fas fa-skull"></i> Информация основана на ULTRAKILL Fandom Wiki</div>
+        <div><i class="fas fa-skull"></i> Информация на основе справочной базы ULTRAKILL</div>
     </div>
 </div>
 
 <script>
-    function createSplatter(e) {
-        const splat = document.createElement('div');
-        splat.classList.add('blod-splatter');
-        splat.style.left = e.clientX - 8 + 'px';
-        splat.style.top = e.clientY - 8 + 'px';
-        document.body.appendChild(splat);
-        setTimeout(() => splat.remove(), 400);
-    }
-
+    // Плавная прокрутка к разделам
     document.querySelectorAll('.wiki-nav-btn:not(.nav-weapon)').forEach(btn => {
         btn.addEventListener('click', () => {
             const sectionId = btn.getAttribute('data-section');
@@ -396,35 +328,11 @@
         });
     });
 
-    const loreBtn = document.getElementById('loreBtn');
-    if (loreBtn) {
-        loreBtn.addEventListener('click', () => {
-            alert("«MANKIND IS DEAD. BLOD IS FUEL. HEL IS FULL.» — вступление к игре. V1 — машина, не знающая пощады.");
-            createSplatter({ clientX: window.innerWidth/2, clientY: window.innerHeight/2 });
-        });
-    }
-
+    // Статистика вики (кнопка в блоке ресурсов)
     const wikiStats = document.getElementById('wikiStatsBtn');
     if (wikiStats) {
         wikiStats.addEventListener('click', () => {
-            alert("📊 ULTRAKILL Fandom Wiki: создана 12 ноября 2020. 219 статей, 2830 файлов, 50 498 правок.");
-        });
-    }
-
-    const facts = [
-        "Sharpshooter Revolver может взрывать снаряды дробовика и выстрелы V2.",
-        "Dual Wield может длиться 120 секунд на уровнях 4-1 и 8-3.",
-        "Парирование дрели (Screwdriver) из врага наносит весь урон мгновенно.",
-        "В 1-4 можно убить V2, ударяя монеты кулаком во время её анимации.",
-        "Nuke-механика: заморозь ракету и выстрели Malicious Railcannon — ядерный взрыв."
-    ];
-    const randomFactBtn = document.getElementById('randomFactBtn');
-    const factBox = document.getElementById('factBox');
-    if (randomFactBtn && factBox) {
-        randomFactBtn.addEventListener('click', () => {
-            const rand = Math.floor(Math.random() * facts.length);
-            factBox.innerHTML = `<i class="fas fa-tint"></i> ${facts[rand]}`;
-            createSplatter({ clientX: randomFactBtn.getBoundingClientRect().left + 30, clientY: randomFactBtn.getBoundingClientRect().top + 10 });
+            alert("📊 Справочная база ULTRAKILL Fandom: создана 12 ноября 2020. 219 статей, 2830 файлов, 50 498 правок.");
         });
     }
 </script>
