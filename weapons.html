@@ -1,753 +1,839 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>V1 ARSENAL // SLIME OS 2 TERMINAL</title>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            user-select: none;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>V1 // TERMINAL SELECT // АРСЕНАЛ</title>
+<link href="https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --red:#ff2020;--white:#e8e8e8;--black:#000;
+  --gold:#ffd166;--blue:#4488ff;--green:#22dd77;
+  --dim:#111;--border:#1c1c1c;--text-dim:#333;
+  --glow:rgba(255,32,32,.4);
+}
 
-        :root {
-            --terminal-bg: #0a0c0f;
-            --terminal-green: #3fe0a0;
-            --terminal-red: #ff3c5a;
-            --terminal-amber: #f0a830;
-            --terminal-gray: #8a9ba8;
-            --terminal-dark: #101418;
-            --scanline: rgba(63, 224, 160, 0.08);
-        }
+/* ── BACKGROUND TERMINAL GRID ── */
+body{
+  background:var(--black);
+  color:var(--white);
+  font-family:'Share Tech Mono','Fira Code',monospace;
+  min-height:100vh;
+  overflow-x:hidden;
+  position:relative;
+}
 
-        body {
-            background: radial-gradient(ellipse at center, #0c0f14 0%, #040608 100%);
-            font-family: 'Fira Code', monospace;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 1.5rem;
-            position: relative;
-        }
+/* ULTRAKILL-style grid background */
+#bg-terminal{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;}
 
-        body::before {
-            content: "";
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: repeating-linear-gradient(0deg, var(--scanline) 0px, var(--scanline) 2px, transparent 2px, transparent 6px);
-            pointer-events: none;
-            z-index: 2;
-        }
+/* CRT scanlines */
+body::before{
+  content:'';position:fixed;top:0;left:0;width:100%;height:100%;
+  background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,.18) 3px,rgba(0,0,0,.18) 4px);
+  pointer-events:none;z-index:9997;
+}
+/* Vignette */
+body::after{
+  content:'';position:fixed;top:0;left:0;width:100%;height:100%;
+  background:radial-gradient(ellipse at center,transparent 50%,rgba(0,0,0,.85) 100%);
+  pointer-events:none;z-index:9996;
+}
 
-        body::after {
-            content: "";
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at 50% 50%, rgba(0,0,0,0) 60%, rgba(0,0,0,0.5) 100%);
-            pointer-events: none;
-            z-index: 2;
-        }
+/* ── LAYOUT ── */
+.root{
+  display:grid;
+  grid-template-rows:auto 1fr auto;
+  min-height:100vh;
+  position:relative;
+  z-index:10;
+}
 
-        .terminal {
-            max-width: 1400px;
-            width: 100%;
-            background: var(--terminal-bg);
-            border: 1px solid var(--terminal-green);
-            border-radius: 16px;
-            box-shadow: 0 0 0 2px #1a2a22, 0 0 0 4px #0a0f0c, 0 0 20px rgba(63, 224, 160, 0.3);
-            position: relative;
-            z-index: 10;
-            overflow: hidden;
-        }
+/* ── TOP BAR (ULTRAKILL style) ── */
+.topbar{
+  border-bottom:1px solid var(--red);
+  padding:.6rem 1.5rem;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  background:rgba(0,0,0,.9);
+  position:relative;
+}
+.topbar::after{content:'';position:absolute;bottom:-3px;left:0;width:100%;height:2px;background:linear-gradient(90deg,transparent,var(--red),transparent);opacity:.4;}
+.tb-left{display:flex;align-items:center;gap:1.5rem;}
+.tb-logo{font-family:'VT323',monospace;font-size:2.2rem;color:var(--red);text-shadow:0 0 20px var(--red),0 0 40px var(--glow);letter-spacing:4px;line-height:1;}
+.tb-path{font-size:.6rem;color:var(--text-dim);letter-spacing:.2em;}
+.tb-path .sep{color:var(--red);margin:0 4px;}
+.tb-path .cur-path{color:#555;}
+.tb-right{display:flex;align-items:center;gap:1.5rem;}
+.tb-rank{font-family:'VT323',monospace;font-size:2rem;color:var(--gold);text-shadow:0 0 15px var(--gold);}
+.tb-count{font-size:.58rem;color:var(--text-dim);text-align:right;letter-spacing:.1em;}
+.tb-count .hl{color:var(--red);}
 
-        .terminal-bar {
-            background: #0d1117;
-            padding: 0.8rem 1.2rem;
-            border-bottom: 1px solid var(--terminal-green);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-        }
+/* ── MAIN AREA ── */
+.main{display:grid;grid-template-columns:320px 1fr 260px;height:calc(100vh - 90px);overflow:hidden;}
 
-        .terminal-title {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
+/* ── LEFT PANEL (SLOT SELECTOR, ULTRAKILL style) ── */
+.slot-panel{
+  border-right:1px solid var(--border);
+  background:rgba(0,0,0,.8);
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+.sp-title{
+  padding:.7rem 1rem;
+  font-size:.55rem;letter-spacing:.3em;color:var(--text-dim);
+  border-bottom:1px solid var(--border);
+  text-transform:uppercase;
+}
+.slot-list{flex:1;overflow-y:auto;padding:.3rem 0;}
+.slot-list::-webkit-scrollbar{width:3px;}
+.slot-list::-webkit-scrollbar-thumb{background:var(--red);}
 
-        .terminal-dots {
-            display: flex;
-            gap: 6px;
-        }
+/* Individual slot row (mimics ULTRAKILL weapon slot select) */
+.slot-row{
+  display:flex;align-items:stretch;
+  border-bottom:1px solid var(--border);
+  cursor:pointer;
+  position:relative;
+  transition:.12s;
+  overflow:hidden;
+}
+.slot-row::before{content:'';position:absolute;left:0;top:0;width:2px;height:100%;background:var(--slot-c,#222);transition:.12s;}
+.slot-row:hover,.slot-row.active{background:color-mix(in srgb,var(--slot-c,#222) 8%,#000);}
+.slot-row:hover::before,.slot-row.active::before{box-shadow:0 0 10px var(--slot-c,#222);}
+.slot-row.active{border-left:2px solid var(--slot-c,var(--red));}
+.slot-num-box{
+  width:40px;min-height:50px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'VT323',monospace;font-size:1.8rem;
+  color:var(--slot-c,#222);
+  border-right:1px solid var(--border);
+  flex-shrink:0;
+}
+.slot-info{flex:1;padding:.5rem .7rem;display:flex;flex-direction:column;justify-content:center;}
+.slot-name-big{font-family:'VT323',monospace;font-size:1.1rem;color:var(--white);letter-spacing:.05em;}
+.slot-desc-small{font-size:.52rem;color:var(--text-dim);letter-spacing:.08em;margin-top:1px;}
+.slot-variants{display:flex;gap:4px;margin-top:.4rem;}
+.sv-dot{width:8px;height:8px;border-radius:50%;transition:.15s;}
+.sv-dot.b{background:var(--blue);box-shadow:0 0 4px var(--blue);}
+.sv-dot.r{background:var(--red);box-shadow:0 0 4px var(--red);}
+.sv-dot.g{background:var(--green);box-shadow:0 0 4px var(--green);}
+.sv-dot.dim{background:#1e1e1e;box-shadow:none;}
+.slot-count{font-family:'VT323',monospace;font-size:1.4rem;color:#1a1a1a;padding:.5rem .7rem;align-self:center;transition:.12s;}
+.slot-row:hover .slot-count,.slot-row.active .slot-count{color:var(--slot-c,var(--red));}
 
-        .dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-        }
+/* ── CENTER PANEL (WEAPON LIST, ULTRAKILL terminal style) ── */
+.center-panel{
+  display:flex;flex-direction:column;
+  background:rgba(0,0,0,.7);
+  overflow:hidden;
+}
+.cp-header{
+  padding:.6rem 1rem;
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(0,0,0,.5);
+  flex-shrink:0;
+}
+.cp-title{font-family:'VT323',monospace;font-size:1.4rem;color:var(--red);letter-spacing:.08em;}
+.cp-search{background:transparent;border:none;border-bottom:1px solid #222;padding:.2rem .4rem;font-family:'Share Tech Mono',monospace;font-size:.65rem;color:var(--white);outline:none;width:180px;letter-spacing:.05em;transition:.15s;}
+.cp-search:focus{border-color:var(--red);}
+.cp-search::placeholder{color:#1e1e1e;}
 
-        .dot-red { background: #ff5f56; box-shadow: 0 0 4px #ff5f56; }
-        .dot-yellow { background: #ffbd2e; box-shadow: 0 0 4px #ffbd2e; }
-        .dot-green { background: #27c93f; box-shadow: 0 0 4px #27c93f; }
+/* Variant filter */
+.vf-row{
+  display:flex;gap:2px;padding:.4rem .6rem;border-bottom:1px solid var(--border);
+  background:rgba(0,0,0,.3);flex-shrink:0;
+}
+.vf-btn{
+  background:transparent;border:1px solid var(--border);
+  padding:.2rem .7rem;cursor:pointer;
+  font-family:'Share Tech Mono',monospace;font-size:.58rem;
+  color:#333;letter-spacing:.1em;text-transform:uppercase;
+  transition:.12s;position:relative;overflow:hidden;
+}
+.vf-btn::after{content:'';position:absolute;bottom:0;left:0;width:0;height:1px;background:var(--vf-c,#555);transition:.15s;}
+.vf-btn:hover::after,.vf-btn.active::after{width:100%;}
+.vf-btn:hover,.vf-btn.active{color:var(--vf-c,#ccc);border-color:var(--vf-c,#555);}
+.vf-btn.f-all{--vf-c:var(--white);}
+.vf-btn.f-blue{--vf-c:var(--blue);}
+.vf-btn.f-red{--vf-c:var(--red);}
+.vf-btn.f-green{--vf-c:var(--green);}
 
-        .terminal-path {
-            font-size: 0.75rem;
-            color: var(--terminal-green);
-            letter-spacing: 0.5px;
-        }
+/* WEAPON LIST (ULTRAKILL terminal rows) */
+.weapon-list{flex:1;overflow-y:auto;padding:0;}
+.weapon-list::-webkit-scrollbar{width:3px;}
+.weapon-list::-webkit-scrollbar-thumb{background:var(--red);}
 
-        .terminal-path i {
-            margin-right: 6px;
-        }
+.wrow{
+  display:grid;
+  grid-template-columns:50px 90px 1fr auto;
+  align-items:center;
+  gap:0;
+  border-bottom:1px solid var(--border);
+  cursor:pointer;
+  position:relative;
+  overflow:hidden;
+  transition:.1s;
+  min-height:64px;
+}
+.wrow::before{content:'';position:absolute;left:0;top:0;width:2px;height:100%;background:var(--wc,#1e1e1e);transition:.12s;}
+.wrow:hover{background:color-mix(in srgb,var(--wc,#1e1e1e) 6%,#000);}
+.wrow:hover::before{box-shadow:0 0 8px var(--wc,transparent);}
+.wrow.selected{background:color-mix(in srgb,var(--wc,#1e1e1e) 12%,#000);border-color:var(--wc,#1e1e1e);}
+.wrow.selected::before{box-shadow:0 0 12px var(--wc,transparent);}
 
-        .back-link {
-            color: var(--terminal-amber);
-            text-decoration: none;
-            font-size: 0.8rem;
-            transition: 0.2s;
-        }
+/* Row: index */
+.wr-idx{
+  display:flex;align-items:center;justify-content:center;
+  font-family:'VT323',monospace;font-size:1.5rem;
+  color:#1a1a1a;height:100%;
+  border-right:1px solid var(--border);
+  transition:.12s;
+}
+.wrow:hover .wr-idx,.wrow.selected .wr-idx{color:var(--wc,#333);}
 
-        .back-link:hover {
-            color: var(--terminal-green);
-            text-shadow: 0 0 5px var(--terminal-green);
-        }
+/* Row: image */
+.wr-img{
+  height:64px;border-right:1px solid var(--border);
+  overflow:hidden;position:relative;
+  background:#050505;
+}
+.wr-img img{width:100%;height:100%;object-fit:cover;opacity:.35;filter:grayscale(50%);transition:.2s;}
+.wrow:hover .wr-img img{opacity:.6;filter:grayscale(10%);}
+.wr-img-scan{position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(transparent 40%,rgba(0,0,0,.6));pointer-events:none;}
 
-        .terminal-content {
-            padding: 1.8rem;
-        }
+/* Row: info */
+.wr-info{padding:.4rem .7rem;overflow:hidden;}
+.wr-name{font-family:'VT323',monospace;font-size:1.05rem;color:var(--white);letter-spacing:.04em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.wr-runame{font-size:.52rem;color:#333;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.wr-tags{display:flex;gap:2px;margin-top:.3rem;flex-wrap:wrap;}
+.wr-tag{font-size:.47rem;color:#282828;border:1px solid #181818;padding:0 4px;letter-spacing:.06em;text-transform:uppercase;}
 
-        .boot-header {
-            border-bottom: 1px dashed var(--terminal-green);
-            padding-bottom: 1rem;
-            margin-bottom: 2rem;
-        }
+/* Row: stats mini */
+.wr-stats{
+  padding:.4rem .6rem;
+  border-left:1px solid var(--border);
+  display:flex;flex-direction:column;gap:2px;
+  min-width:80px;
+}
+.wr-stat{display:flex;align-items:center;gap:3px;}
+.wr-stat-bar{width:40px;height:2px;background:#111;overflow:hidden;}
+.wr-stat-fill{height:100%;background:var(--wc,#333);width:0;transition:width .6s ease;}
+.wr-stat-val{font-family:'VT323',monospace;font-size:.75rem;color:#282828;width:22px;text-align:right;}
 
-        .boot-header h1 {
-            font-size: 1.6rem;
-            color: var(--terminal-green);
-            font-weight: 500;
-            letter-spacing: -0.5px;
-        }
+/* ── RIGHT PANEL (DETAIL, ULTRAKILL style) ── */
+.detail-panel{
+  border-left:1px solid var(--border);
+  background:rgba(0,0,0,.85);
+  display:flex;flex-direction:column;
+  overflow:hidden;
+  transition:.2s;
+}
+.dp-header{
+  border-bottom:1px solid var(--border);
+  padding:.7rem .8rem;
+  background:rgba(0,0,0,.5);
+  flex-shrink:0;
+  position:relative;
+}
+.dp-header::after{content:'';position:absolute;bottom:0;left:0;width:100%;height:1px;background:var(--dp-c,var(--red));opacity:.6;}
+.dp-variant-badge{font-size:.5rem;letter-spacing:.25em;color:var(--dp-c,var(--red));text-transform:uppercase;margin-bottom:.3rem;}
+.dp-name{font-family:'VT323',monospace;font-size:1.5rem;color:var(--white);letter-spacing:.04em;line-height:1.1;}
+.dp-runame{font-size:.55rem;color:#333;letter-spacing:.1em;margin-top:.2rem;}
 
-        .boot-header h1 i {
-            margin-right: 10px;
-            animation: pulse 1.5s infinite;
-        }
+/* Big image in detail */
+.dp-img-wrap{position:relative;height:130px;overflow:hidden;flex-shrink:0;}
+.dp-img-wrap img{width:100%;height:100%;object-fit:cover;opacity:.4;filter:grayscale(40%);}
+.dp-img-wrap::after{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(transparent 30%,rgba(0,0,0,.9) 100%);}
+.dp-img-scan{position:absolute;top:-30%;left:0;width:100%;height:20%;background:linear-gradient(transparent,rgba(255,32,32,.04),transparent);animation:scan 3s linear infinite;pointer-events:none;}
+@keyframes scan{to{top:120%;}}
+.dp-img-label{position:absolute;bottom:6px;left:10px;font-family:'VT323',monospace;font-size:1.1rem;color:var(--dp-c,var(--red));letter-spacing:.05em;z-index:2;}
 
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.6; }
-        }
+.dp-body{flex:1;overflow-y:auto;padding:.8rem;font-size:.62rem;color:#444;line-height:1.7;}
+.dp-body::-webkit-scrollbar{width:2px;}
+.dp-body::-webkit-scrollbar-thumb{background:var(--red);}
+.dp-section-title{font-size:.52rem;color:#2a2a2a;letter-spacing:.25em;text-transform:uppercase;margin:.6rem 0 .3rem;}
+.dp-desc-text{color:#555;line-height:1.65;font-size:.65rem;margin-bottom:.6rem;}
 
-        .boot-header p {
-            color: var(--terminal-gray);
-            font-size: 0.8rem;
-            margin-top: 0.5rem;
-        }
+/* Full stat bars */
+.dp-stat{margin-bottom:.4rem;}
+.dp-stat-head{display:flex;justify-content:space-between;font-size:.58rem;margin-bottom:2px;}
+.dp-stat-lbl{color:#2a2a2a;letter-spacing:.08em;text-transform:uppercase;}
+.dp-stat-val{font-family:'VT323',monospace;font-size:.9rem;color:var(--dp-c,var(--red));}
+.dp-stat-bar{height:3px;background:#0a0a0a;border:1px solid #111;overflow:hidden;}
+.dp-stat-fill{height:100%;background:var(--dp-c,var(--red));box-shadow:0 0 4px var(--dp-c,var(--red));width:0;transition:width .8s ease;}
 
-        .blink-cursor {
-            display: inline-block;
-            width: 8px;
-            height: 14px;
-            background: var(--terminal-green);
-            animation: blink 1s step-end infinite;
-            vertical-align: middle;
-            margin-left: 4px;
-        }
+/* Mode rows */
+.dp-mode{display:flex;gap:6px;font-size:.6rem;padding:.25rem 0;border-bottom:1px solid #0a0a0a;}
+.dp-mode:last-child{border-bottom:none;}
+.dp-mode-key{color:var(--dp-c,var(--red));font-family:'VT323',monospace;width:65px;flex-shrink:0;}
+.dp-mode-val{color:#444;line-height:1.4;}
 
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0; }
-        }
+/* Mechanics */
+.dp-mech{display:flex;gap:5px;font-size:.6rem;color:#333;padding:.2rem 0;}
+.dp-mech::before{content:'▸';color:var(--dp-c,var(--red));flex-shrink:0;}
 
-        .weapon-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 2rem;
-        }
+/* EMPTY STATE */
+.dp-empty{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  height:100%;color:#1a1a1a;font-size:.7rem;letter-spacing:.2em;
+  text-align:center;gap:.8rem;
+}
+.dp-empty-icon{font-family:'VT323',monospace;font-size:5rem;color:#111;line-height:1;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
+.cur{display:inline-block;width:7px;height:13px;background:var(--red);vertical-align:middle;animation:blink 1s step-end infinite;margin-left:2px;}
 
-        .weapon-category {
-            background: rgba(16, 20, 24, 0.8);
-            border-left: 3px solid var(--terminal-green);
-            padding: 1rem 1.2rem;
-            transition: 0.2s;
-        }
+/* ── BOTTOM BAR ── */
+.bottombar{
+  border-top:1px solid var(--border);
+  padding:.5rem 1.5rem;
+  background:rgba(0,0,0,.9);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:.4rem;
+  position:relative;
+  z-index:10;
+}
+.bb-left{display:flex;gap:1rem;align-items:center;flex-wrap:wrap;}
+.bb-key{
+  display:flex;align-items:center;gap:4px;
+  font-size:.52rem;color:#252525;letter-spacing:.08em;
+}
+.key-box{background:#0a0a0a;border:1px solid #1e1e1e;padding:1px 6px;font-size:.58rem;color:#333;}
+.bb-right{font-size:.52rem;color:#1a1a1a;letter-spacing:.1em;}
+.bb-right .hl{color:var(--red);}
 
-        .weapon-category:hover {
-            background: rgba(26, 34, 40, 0.9);
-            border-left-color: var(--terminal-red);
-        }
+/* ── TERMINAL OVERLAY ELEMENTS ── */
+.corner{position:fixed;width:30px;height:30px;pointer-events:none;z-index:50;}
+.corner.tl{top:0;left:0;border-top:1px solid var(--red);border-left:1px solid var(--red);}
+.corner.tr{top:0;right:0;border-top:1px solid var(--red);border-right:1px solid var(--red);}
+.corner.bl{bottom:0;left:0;border-bottom:1px solid var(--red);border-left:1px solid var(--red);}
+.corner.br{bottom:0;right:0;border-bottom:1px solid var(--red);border-right:1px solid var(--red);}
 
-        .weapon-image-container {
-            margin-bottom: 1rem;
-            display: flex;
-            justify-content: center;
-        }
+/* STATUS LABEL floating */
+.status-float{
+  position:fixed;top:12px;right:180px;
+  font-size:.52rem;color:#222;letter-spacing:.15em;
+  text-transform:uppercase;z-index:60;
+}
 
-        .weapon-frame {
-            background: linear-gradient(135deg, #1a2a22, #0a0f0c);
-            padding: 0.5rem;
-            border-radius: 12px;
-            border: 1px solid var(--terminal-green);
-            box-shadow: 0 0 15px rgba(63, 224, 160, 0.2);
-            transition: 0.3s;
-            display: inline-block;
-        }
+/* No results */
+.no-results-row{
+  display:flex;align-items:center;justify-content:center;
+  height:120px;color:#1a1a1a;font-size:.7rem;letter-spacing:.2em;
+}
 
-        .weapon-category[data-weapon="revolver"] .weapon-frame {
-            border-color: var(--terminal-green);
-        }
-        .weapon-category[data-weapon="shotgun"] .weapon-frame {
-            border-color: var(--terminal-red);
-        }
-        .weapon-category[data-weapon="nailgun"] .weapon-frame {
-            border-color: #3f9eff;
-        }
-        .weapon-category[data-weapon="railcannon"] .weapon-frame {
-            border-color: #9b59b6;
-        }
-        .weapon-category[data-weapon="rocket"] .weapon-frame {
-            border-color: var(--terminal-amber);
-        }
-        .weapon-category[data-weapon="arms"] .weapon-frame {
-            border-color: #ff6ac4;
-        }
-
-        .weapon-frame:hover {
-            transform: scale(1.02);
-            box-shadow: 0 0 25px currentColor;
-        }
-
-        .weapon-img {
-            max-width: 100%;
-            height: auto;
-            max-height: 120px;
-            border-radius: 8px;
-            display: block;
-            object-fit: cover;
-        }
-
-        .weapon-name {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: var(--terminal-green);
-            margin-bottom: 0.5rem;
-            letter-spacing: -0.5px;
-        }
-
-        .weapon-name i {
-            margin-right: 12px;
-            color: var(--terminal-amber);
-        }
-
-        /* Стили для переключателя версий */
-        .variant-toggle {
-            display: flex;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-            padding: 0.25rem;
-            background: #0b0f13;
-            border-radius: 40px;
-            width: fit-content;
-            border: 1px solid #2a3a30;
-        }
-
-        .toggle-btn {
-            background: transparent;
-            border: none;
-            padding: 0.3rem 1rem;
-            border-radius: 30px;
-            font-family: 'Fira Code', monospace;
-            font-size: 0.7rem;
-            font-weight: 600;
-            cursor: pointer;
-            color: var(--terminal-gray);
-            transition: 0.2s;
-        }
-
-        .toggle-btn.active {
-            background: var(--terminal-green);
-            color: #0a0c0f;
-            box-shadow: 0 0 8px var(--terminal-green);
-        }
-
-        .toggle-btn:first-child.active {
-            background: var(--terminal-green);
-        }
-
-        .toggle-btn:last-child.active {
-            background: var(--terminal-amber);
-            color: #0a0c0f;
-            box-shadow: 0 0 8px var(--terminal-amber);
-        }
-
-        .variants-container {
-            position: relative;
-        }
-
-        .variants {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1rem;
-            margin-top: 1rem;
-            transition: 0.2s;
-        }
-
-        .variant-card {
-            background: #0b0f13;
-            border: 1px solid #2a3a30;
-            border-radius: 12px;
-            padding: 0.8rem 1rem;
-            transition: 0.2s;
-        }
-
-        .variant-card:hover {
-            border-color: var(--terminal-green);
-            transform: translateX(4px);
-        }
-
-        .variant-image {
-            margin-bottom: 0.8rem;
-            text-align: center;
-        }
-
-        .variant-img {
-            max-width: 100%;
-            max-height: 80px;
-            border-radius: 8px;
-            background: #0a0c0f;
-            padding: 0.3rem;
-            border: 1px solid #2a3a30;
-        }
-
-        .variant-title {
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--terminal-amber);
-            margin-bottom: 0.3rem;
-        }
-
-        .variant-title code {
-            background: #00000055;
-            padding: 0.1rem 0.4rem;
-            border-radius: 4px;
-        }
-
-        .variant-desc {
-            font-size: 0.7rem;
-            color: var(--terminal-gray);
-            line-height: 1.4;
-            margin-top: 0.3rem;
-        }
-
-        .stat-line {
-            font-size: 0.65rem;
-            color: var(--terminal-green);
-            margin-top: 0.5rem;
-            border-top: 1px dashed #2a3a30;
-            padding-top: 0.4rem;
-        }
-
-        .footer-term {
-            margin-top: 2rem;
-            padding-top: 1rem;
-            border-top: 1px solid #2a3a30;
-            font-size: 0.65rem;
-            color: var(--terminal-gray);
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-        }
-
-        .image-guide {
-            background: #0d1117;
-            border: 1px solid var(--terminal-amber);
-            border-radius: 12px;
-            padding: 1rem;
-            margin-top: 2rem;
-            font-size: 0.7rem;
-        }
-
-        .image-guide h4 {
-            color: var(--terminal-amber);
-            margin-bottom: 0.5rem;
-        }
-
-        .image-guide code {
-            background: #00000066;
-            padding: 0.2rem 0.4rem;
-            border-radius: 4px;
-            color: var(--terminal-green);
-        }
-
-        @media (max-width: 780px) {
-            .terminal-content { padding: 1rem; }
-            .weapon-name { font-size: 1.2rem; }
-            .weapon-img { max-height: 80px; }
-        }
-
-        .ascii-art {
-            font-family: monospace;
-            font-size: 0.6rem;
-            color: var(--terminal-green);
-            opacity: 0.5;
-            text-align: center;
-            margin-top: 1rem;
-            white-space: pre;
-        }
-    </style>
+@media(max-width:1100px){.main{grid-template-columns:240px 1fr 200px;}}
+@media(max-width:768px){.main{grid-template-columns:1fr;height:auto;}.slot-panel,.detail-panel{display:none;}}
+</style>
 </head>
 <body>
-<div class="terminal">
-    <div class="terminal-bar">
-        <div class="terminal-title">
-            <div class="terminal-dots">
-                <div class="dot dot-red"></div>
-                <div class="dot dot-yellow"></div>
-                <div class="dot dot-green"></div>
-            </div>
-            <div class="terminal-path">
-                <i class="fas fa-terminal"></i> V1@HEL:/arsenal/weapons
-            </div>
+
+<!-- Corner decorations -->
+<div class="corner tl"></div><div class="corner tr"></div>
+<div class="corner bl"></div><div class="corner br"></div>
+
+<canvas id="bg-terminal"></canvas>
+
+<div class="root">
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="tb-left">
+      <div class="tb-logo">V1</div>
+      <div>
+        <div class="tb-path">
+          <span>SYS</span><span class="sep">/</span>
+          <span>ARSENAL</span><span class="sep">/</span>
+          <span class="cur-path">MODULE_SELECT<span class="cur"></span></span>
         </div>
-        <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> EXIT TO MAIN SHELL</a>
+        <div style="font-size:.52rem;color:#1e1e1e;margin-top:2px;letter-spacing:.15em;">// СРЕДСТВА НЕЙТРАЛИЗАЦИИ // ПОЛНЫЙ КАТАЛОГ</div>
+      </div>
+    </div>
+    <div class="tb-right">
+      <div>
+        <div class="tb-count">МОДУЛЕЙ: <span class="hl" id="totalCount">18</span></div>
+        <div class="tb-count">СЛОТОВ: <span class="hl">7</span></div>
+        <div class="tb-count" id="activeLabel">АКТИВЕН: <span class="hl">—</span></div>
+      </div>
+      <div class="tb-rank" id="rankDisplay">SSS</div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- LEFT: SLOT SELECTOR -->
+    <div class="slot-panel">
+      <div class="sp-title">// СЛОТЫ МОДУЛЕЙ</div>
+      <div class="slot-list" id="slotList"></div>
     </div>
 
-    <div class="terminal-content">
-        <div class="boot-header">
-            <h1><i class="fas fa-microchip"></i> V1 WEAPON ARSENAL v.2.1.0<span class="blink-cursor"></span></h1>
-            <p>> ACCESSING WEAPON DATABASE // BLOD-FUELED ORDNANCE // TOTAL: 6 PRIMARY SYSTEMS + VARIANTS + ALTERNATES</p>
+    <!-- CENTER: WEAPON LIST -->
+    <div class="center-panel">
+      <div class="cp-header">
+        <div class="cp-title" id="cpTitle">ВСЕ МОДУЛИ</div>
+        <input class="cp-search" id="cpSearch" type="text" placeholder="ПОИСК..." autocomplete="off" spellcheck="false">
+      </div>
+      <div class="vf-row">
+        <button class="vf-btn f-all active" data-v="all">ВСЕ</button>
+        <button class="vf-btn f-blue" data-v="blue">◼ СИН</button>
+        <button class="vf-btn f-red" data-v="red">◼ КРА</button>
+        <button class="vf-btn f-green" data-v="green">◼ ЗЕЛ</button>
+        <div style="margin-left:auto;font-size:.52rem;color:#1e1e1e;align-self:center;letter-spacing:.1em;">
+          СОРТИРОВКА:
         </div>
-
-        <div class="weapon-grid">
-            <!-- ========== REV0LVER (с переключателем стандарт/альтернатива) ========== -->
-            <div class="weapon-category" data-weapon="revolver">
-                <div class="weapon-image-container">
-                    <div class="weapon-frame">
-                        <img src="Class_revolver.jpg" alt="Rev0lver" class="weapon-img" onerror="this.src='https://placehold.co/400x200/1a2a22/3fe0a0?text=REV0LVER'">
-                    </div>
-                </div>
-                <div class="weapon-name"><i class="fas fa-crosshairs"></i> REV0LVER</div>
-                
-                <!-- Переключатель версий -->
-                <div class="variant-toggle">
-                    <button class="toggle-btn active" data-variant="standard">STANDARD</button>
-                    <button class="toggle-btn" data-variant="alternate">ALTERNATE</button>
-                </div>
-
-                <!-- Стандартные варианты -->
-                <div class="variants-container standard-variants">
-                    <div class="variants">
-                        <div class="variant-card">
-                            <div class="variant-image">
-                                <img src="SingleRevolver.jpg" alt="Piercer" class="variant-img" onerror="this.src='https://placehold.co/300x80/1a2a22/3fe0a0?text=Piercer'">
-                            </div>
-                            <div class="variant-title"><code>Piercer</code> — Precision Shot</div>
-                            <div class="variant-desc">Высокое воздействие на одну цель. Заряжаемый импульс с бронебойным эффектом. Неограниченный ресурс.</div>
-                            <div class="stat-line">⚡ Эффективность: 2.5x | 🔥 Особенность: проход сквозь цели</div>
-                        </div>
-                        <div class="variant-card">
-                            <div class="variant-image">
-                                <img src="RevolverSpecial.jpg" alt="Marksman" class="variant-img" onerror="this.src='https://placehold.co/300x80/1a2a22/3fe0a0?text=Marksman'">
-                            </div>
-                            <div class="variant-title"><code>Marksman</code> — Coin System</div>
-                            <div class="variant-desc">Подброшенная монета позволяет перенаправлять импульс в уязвимые зоны целей. До 4 отскоков.</div>
-                            <div class="stat-line">🪙 Механика: критическое воздействие + стиль</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Альтернативные варианты (скрыты по умолчанию) -->
-                <div class="variants-container alternate-variants" style="display: none;">
-                    <div class="variants">
-                        <div class="variant-card">
-                            <div class="variant-image">
-                                <img src="RevolverAltSingle.jpg" alt="Slab Piercer" class="variant-img" onerror="this.src='https://placehold.co/300x80/1a2a22/3fe0a0?text=Slab+Piercer'">
-                            </div>
-                            <div class="variant-title"><code>Slab Piercer</code> — Heavy Caliber</div>
-                            <div class="variant-desc">Утяжелённая версия. Медленная перезарядка, но крайне высокая эффективность. Пробивает несколько целей.</div>
-                            <div class="stat-line">💥 Эффективность: 4x | 🕒 Медленная перезарядка</div>
-                        </div>
-                        <div class="variant-card">
-                            <div class="variant-image">
-                                <img src="RevolverAltSpecial.jpg" alt="Slab Marksman" class="variant-img" onerror="this.src='https://placehold.co/300x80/1a2a22/3fe0a0?text=Slab+Marksman'">
-                            </div>
-                            <div class="variant-title"><code>Slab Marksman</code> — Heavy Coin</div>
-                            <div class="variant-desc">Утяжелённая монета. Медленнее, но рикошет наносит значительно больше воздействия.</div>
-                            <div class="stat-line">🪙 Критическое воздействие: 3x</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ========== SH0TGUN (с переключателем стандарт/альтернатива) ========== -->
-            <div class="weapon-category" data-weapon="shotgun">
-                <div class="weapon-image-container">
-                    <div class="weapon-frame">
-                        <img src="sg1.jpg" alt="Sh0tgun" class="weapon-img" onerror="this.src='https://placehold.co/400x200/1a2a22/ff3c5a?text=SH0TGUN'">
-                    </div>
-                </div>
-                <div class="weapon-name"><i class="fas fa-gun"></i> SH0TGUN</div>
-                
-                <div class="variant-toggle">
-                    <button class="toggle-btn active" data-variant="standard">STANDARD</button>
-                    <button class="toggle-btn" data-variant="alternate">ALTERNATE</button>
-                </div>
-
-                <div class="variants-container standard-variants">
-                    <div class="variants">
-                        <div class="variant-card">
-                            <div class="variant-image">
-                                <img src="sg2.jpg" alt="Core Eject" class="variant-img" onerror="this.src='https://placehold.co/300x80/1a2a22/ff3c5a?text=Core+Eject'">
-                            </div>
-                            <div class="variant-title"><code>Core Eject</code> — Grenade Launcher</div>
-                            <div class="variant-desc">Импульс термическим зарядом, который активируется при контакте. Возможно отражение для Nuke-механики.</div>
-                            <div class="stat-line">💣 Радиус: 8m | 🔥 Воспламенение целей</div>
-                        </div>
-                        <div class="variant-card">
-                            <div class="variant-image">
-                                <img src="sg3.jpg" alt="Pump Charge" class="variant-img" onerror="this.src='https://placehold.co/300x80/1a2a22/ff3c5a?text=Pump+Charge'">
-                            </div>
-                            <div class="variant-title"><code>Pump Charge</code> — Overload</div>
-                            <div class="variant-desc">Накопление заряда для мощного импульса. 3 уровня: от двойной эффективности до само-воздействия.</div>
-                            <div class="stat-line">⚠️ Риск: перезаряд воздействует на оператора | 💪 Max эффективность: 10x</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="variants-container alternate-variants" style="display: none;">
-                    <div class="variants">
-                        <div class="variant-card">
-                            <div class="variant-image">
-                                <img src="sg4.jpg" alt="Jackhammer" class="variant-img" onerror="this.src='https://placehold.co/300x80/1a2a22/ff3c5a?text=Jackhammer'">
-                            </div>
-                            <div class="variant-title"><code>Jackhammer</code> — Automatic Shotgun</div>
-                            <div class="variant-desc">Полностью автоматический модуль с высокой частотой активации. Можно использовать для ускорения.</div>
-                            <div class="stat-line">🏃 Движение: отдача даёт ускорение | 🔄 Быстрая перезарядка</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ========== NAILGUN (НОВОЕ ОРУЖИЕ с переключателем) ========== -->
-            <div class="weapon-category" data-weapon="nailgun">
-                <div class="weapon-image-container">
-                    <div class="weapon-frame">
-                        <img src="1000045244.jpg" alt="Nailgun" class="weapon-img" onerror="this.src='https://placehold.co/400x200/1a2a22/3f9eff?text=NAILGUN'">
-                    </div>
-                </div>
-                <div class="weapon-name"><i class="fas fa-gripfire"></i> NAILGUN</div>
-                
-                <div class="variant-toggle">
-                    <button class="toggle-btn active" data-variant="standard">STANDARD</button>
-                    <button class="toggle-btn" data-variant="alternate">ALTERNATE</button>
-                </div>
-
-                <div class="variants-container standard-variants">
-                    <div class="variants">
-                        <div class="variant-card">
-                            <div class="variant-image">
-                                <img src="1000045244.jpg" alt="Attractor" class="variant-img" onerror="this.src='https://placehold.co/300x80/1a2a22/3f9eff?text=Attractor'">
-                            </div>
-                            <div class="variant-title"><code>Attractor</code> — Magnet</div>
-                            <div class="variant-desc">Выпускает магнит, который притягивает гвозди к целям. Высокая частота воздействия.</div>
-                            <div class="stat-line">🧲 Магнит: радиус 6m | 📍 Перенаправление гвоздей</div>
-                        </div>
-                        <div class="variant-card">
-                            <div class="variant-image">
-                                <img src="1000045244.jpg" alt="Overheat" class="variant-img" onerror="this.src='https://placehold.co/300x80/1a2a22/3f9eff?text=Overheat'">
-                            </div>
-                            <div class="variant-title"><code>Overheat</code> — Heat Sink</div>
-                            <div class="variant-desc">Накопление тепла при активации. При перегреве наносит дополнительное воздействие.</div>
-                            <div class="stat-line">🔥 Перегрев: взрыв | ⚠️ Требует охлаждения</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="variants-container alternate-variants" style="display: none;">
-                    <div class="variants">
-                        <div class="variant-card">
-                            <div class="variant-image">
-                                <img src="1000045244.jpg" alt="Sawblade Launcher" class="variant-img" onerror="this.src='https://placehold.co/300x80/1a2a22/3f9eff?text=Sawblade+Launcher'">
-                            </div>
-                            <div class="variant-title"><code>Sawblade Launcher</code> — Circular Saw</div>
-                            <div class="variant-desc">Выпускает циркулярные диски, которые рикошетят от поверхностей и наносят многократное воздействие.</div>
-                            <div class="stat-line">🔄 Рикошет: до 5 раз | ⚙️ Может быть подмагничен</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ========== RAILCANNON (без альтернатив) ========== -->
-            <div class="weapon-category" data-weapon="railcannon">
-                <div class="weapon-image-container">
-                    <div class="weapon-frame">
-                        <img src="1000045244.jpg" alt="Railcannon" class="weapon-img" onerror="this.src='https://placehold.co/400x200/1a2a22/9b59b6?text=RAILCANNON'">
-                    </div>
-                </div>
-                <div class="weapon-name"><i class="fas fa-bolt"></i> RAILCANNON</div>
-                <div class="variants">
-                    <div class="variants">
-                        <div class="variant-card">
-                            <div class="variant-image">
-                                <img src="1000045244.jpg" alt="Electric" class="variant-img" onerror="this.src='https://placehold.co/300x80/1a2a22/9b59b6?text=Electric'">
-                            </div>
-                            <div class="variant-title"><code>Electric</code> — Chain Lightning</div>
-                            <div class="variant-desc">Электрический луч, перепрыгивающий между целями. Высокий контроль пространства.</div>
-                            <div class="stat-line">⚡ Перескок: до 5 целей | 🕒 Медленная перезарядка</div>
-                        </div>
-                        <div class="variant-card">
-                            <div class="variant-image">
-                                <img src="1000045244.jpg" alt="Malicious" class="variant-img" onerror="this.src='https://placehold.co/300x80/1a2a22/9b59b6?text=Malicious'">
-                            </div>
-                            <div class="variant-title"><code>Malicious</code> — Explosive Beam</div>
-                            <div class="variant-desc">Мощный импульс по линии воздействия. Комбо с замороженной ракетой даёт Nuke.</div>
-                            <div class="stat-line">💥 Nuke: радиус 25m</div>
-                        </div>
-                        <div class="variant-card">
-                            <div class="variant-image">
-                                <img src="1000045244.jpg" alt="Screwdriver" class="variant-img" onerror="this.src='https://placehold.co/300x80/1a2a22/9b59b6?text=Screwdriver'">
-                            </div>
-                            <div class="variant-title"><code>Screwdriver</code> — Drill</div>
-                            <div class="variant-desc">Внедряет модуль в цель, воздействующий с течением времени. Можно парировать для мгновенного эффекта.</div>
-                            <div class="stat-line">🩸 Восстановление: 10% HP за такт | 🔄 Parry refund</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ========== R0CKET LAUNCHER (без альтернатив) ========== -->
-            <div class="weapon-category" data-weapon="rocket">
-                <div class="weapon-image-container">
-                    <div class="weapon-frame">
-                        <img src="1000045244.jpg" alt="R0cket Launcher" class="weapon-img" onerror="this.src='https://placehold.co/400x200/1a2a22/f0a830?text=R0CKET+LAUNCHER'">
-                    </div>
-                </div>
-                <div class="weapon-name"><i class="fas fa-rocket"></i> R0CKET LAUNCHER</div>
-                <div class="variants">
-                    <div class="variants">
-                        <div class="variant-card">
-                            <div class="variant-image">
-                                <img src="1000045244.jpg" alt="Freezeframe" class="variant-img" onerror="this.src='https://placehold.co/300x80/1a2a22/f0a830?text=Freezeframe'">
-                            </div>
-                            <div class="variant-title"><code>Freezeframe</code> — Time Stop</div>
-                            <div class="variant-desc">Замораживает ракету в воздухе. Можно использовать как платформу или для Nuke.</div>
-                            <div class="stat-line">❄️ Заморозка: 3 сек | 🛸 Rocket Riding</div>
-                        </div>
-                        <div class="variant-card">
-                            <div class="variant-image">
-                                <img src="1000045244.jpg" alt="Standard" class="variant-img" onerror="this.src='https://placehold.co/300x80/1a2a22/f0a830?text=Standard'">
-                            </div>
-                            <div class="variant-title"><code>Standard</code> — Homing</div>
-                            <div class="variant-desc">Управляемые ракеты с лёгким самонаведением. Высокая частота активации.</div>
-                            <div class="stat-line">🎯 Наведение: 15° | 🔄 2 ракеты в магазине</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ========== ARMS (без альтернатив) ========== -->
-            <div class="weapon-category" data-weapon="arms">
-                <div class="weapon-image-container">
-                    <div class="weapon-frame">
-                        <img src="1000045244.jpg" alt="Arms" class="weapon-img" onerror="this.src='https://placehold.co/400x200/1a2a22/ff6ac4?text=ARMS'">
-                    </div>
-                </div>
-                <div class="weapon-name"><i class="fas fa-fist-raised"></i> ARMS — FEEDBACKER / KNUCKLEBLASTER</div>
-                <div class="variants">
-                    <div class="variants">
-                        <div class="variant-card">
-                            <div class="variant-image">
-                                <img src="1000045244.jpg" alt="Feedbacker" class="variant-img" onerror="this.src='https://placehold.co/300x80/1a2a22/ff6ac4?text=Feedbacker'">
-                            </div>
-                            <div class="variant-title"><code>Feedbacker</code> — Parry Master</div>
-                            <div class="variant-desc">Перехватывает любые снаряды и воздействия целей. Отражённые ракеты наносят тройную эффективность.</div>
-                            <div class="stat-line">🛡️ Окно перехвата: 6 кадров | ✨ Chargeback</div>
-                        </div>
-                        <div class="variant-card">
-                            <div class="variant-image">
-                                <img src="1000045244.jpg" alt="Knuckleblaster" class="variant-img" onerror="this.src='https://placehold.co/300x80/1a2a22/ff6ac4?text=Knuckleblaster'">
-                            </div>
-                            <div class="variant-title"><code>Knuckleblaster</code> — Shockwave</div>
-                            <div class="variant-desc">Мощный импульс с ударной волной. Разрушает защитные конструкции целей.</div>
-                            <div class="stat-line">💢 Разрушение: щиты | 🌪️ Радиус: 4m</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-
-        <div class="ascii-art">
-            ╔══════════════════════════════════════════════════════════╗
-            ║  [V1 WEAPON SYSTEM]  > BLOD = AMMO                       ║
-            ║  > ALTERNATE VARIANTS: SECRET UNLOCKABLES                ║
-            ╚══════════════════════════════════════════════════════════╝
-        </div>
-
-        <div class="footer-term">
-            <div><i class="fas fa-database"></i> // ARSENAL DATABASE v.ULTRAKILL // ALL VARIANTS CONFIRMED</div>
-            <div><i class="fas fa-code"></i> SLIME OS 2 // TERMINAL MODE</div>
-        </div>
+        <button class="vf-btn" id="sortP" style="--vf-c:var(--gold)">МОЩ↓</button>
+        <button class="vf-btn" id="sortS" style="--vf-c:var(--gold)">СКР↓</button>
+      </div>
+      <div class="weapon-list" id="weaponList"></div>
     </div>
+
+    <!-- RIGHT: DETAIL -->
+    <div class="detail-panel" id="detailPanel">
+      <div id="dpContent">
+        <div class="dp-empty">
+          <div class="dp-empty-icon">◎</div>
+          <div>// ВЫБЕРИТЕ МОДУЛЬ //</div>
+          <div style="font-size:.52rem;margin-top:.3rem;color:#111;">НАЖМИТЕ НА СТРОКУ В СПИСКЕ</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /main -->
+
+  <!-- BOTTOM BAR -->
+  <div class="bottombar">
+    <div class="bb-left">
+      <div class="bb-key"><span class="key-box">↑↓</span> навигация</div>
+      <div class="bb-key"><span class="key-box">ENTER</span> выбрать</div>
+      <div class="bb-key"><span class="key-box">1–7</span> слот</div>
+      <div class="bb-key"><span class="key-box">F</span> поиск</div>
+      <div class="bb-key"><span class="key-box">ESC</span> сброс</div>
+      <a href="index.html" style="text-decoration:none;"><div class="bb-key" style="color:#ff2020;border:1px solid #ff202033;padding:2px 8px;"><span style="color:#ff2020;">←</span> ГЛАВНАЯ</div></a>
+    </div>
+    <div class="bb-right">// V1 АРСЕНАЛ // <span class="hl">TOPЛИВО — РЕСУРС</span> // НИЖНИЙ УРОВЕНЬ ЗАПОЛНЕН //</div>
+  </div>
+
 </div>
 
 <script>
-    // Переключатель между стандартными и альтернативными вариантами
-    document.querySelectorAll('.weapon-category').forEach(category => {
-        const toggleBtns = category.querySelectorAll('.toggle-btn');
-        if (toggleBtns.length === 0) return;
+/* ══════════════════════════════════
+   FULL WEAPON DATABASE
+══════════════════════════════════ */
+const WEAPONS=[
+  {id:'feedbacker',slot:'arm',slotN:0,name:'FEEDBACKER',ru:'Отражающий Манипулятор',v:'blue',vLabel:'СИН',icon:'◎',color:'var(--blue)',hex:'#4488ff',img:'hakita.jpg',
+   p:65,s:95,r:20,u:100,
+   desc:'Базовый манипулятор V1. Перехватывает и отражает входящие проекции. Контакт с сущностями восстанавливает топливный ресурс.',
+   m1:'КОНТАКТ — Прямой ударный импульс в ближней зоне',
+   m2:'ПЕРЕХВАТ — Тайминг-реакция на входящую проекцию',
+   tags:['БАЗОВЫЙ','ПЕРЕХВАТ','РЕСУРС'],
+   mechs:['Перехват возвращает проекцию к источнику','Контакт восстанавливает топливо','Тайминг 6 кадров от момента столкновения']},
+  {id:'knuckleblaster',slot:'arm',slotN:0,name:'KNUCKLEBLASTER',ru:'Детонирующий Манипулятор',v:'red',vLabel:'КРА',icon:'◈',color:'var(--red)',hex:'#ff2020',img:'hakita.jpg',
+   p:100,s:80,r:35,u:65,
+   desc:'Альтернативный манипулятор. Ударная волна в конусе. Нейтрализует проекции без отражения. Не восстанавливает ресурс.',
+   m1:'ДЕТОНАЦИЯ — Ударная волна в ближнем конусе',
+   m2:'НЕЙТРАЛИЗАЦИЯ — Поглощение входящей проекции',
+   tags:['УДАРНАЯ ВОЛНА','АЛЬТЕРНАТИВНЫЙ','МОЩНОСТЬ'],
+   mechs:['Волна воздействует на всё в конусе','Нет восстановления ресурса','Максимальное контактное воздействие']},
+  {id:'whiplash',slot:'arm',slotN:0,name:'WHIPLASH',ru:'Захватывающий Манипулятор',v:'green',vLabel:'ЗЕЛ',icon:'⌀',color:'var(--green)',hex:'#22dd77',img:'hakita.jpg',
+   p:45,s:100,r:90,u:100,
+   desc:'Дистанционный манипулятор. Захватывает сущности/объекты. Перебрасывает V1 к точкам захвата. Ключ к воздушным комбо.',
+   m1:'ЗАХВАТ ЦЕЛИ — Притяжение сущности к V1',
+   m2:'ЗАХВАТ СРЕДЫ — Телепортация V1 к объекту',
+   tags:['ЗАХВАТ','МОБИЛЬНОСТЬ','ДАЛЬНОСТЬ'],
+   mechs:['Захваченные цели притягиваются к V1','Открывает воздушные комбинации','Совместим с подбрасыванием']},
+  {id:'piercer',slot:'revolver',slotN:1,name:'PIERCER',ru:'Пронизывающий Дальнобойный',v:'blue',vLabel:'СИН',icon:'◆',color:'var(--blue)',hex:'#4488ff',img:'hakita.jpg',
+   p:80,s:85,r:100,u:85,
+   desc:'Базовый дальнобойный. Проекция пронизывает несколько объектов по линии. Монеты — рикошетные ретрансляторы.',
+   m1:'ИМПУЛЬС — Прокалывающий по линии целей',
+   m2:'МОНЕТА — Ретранслятор рикошета к ближайшей цели',
+   tags:['ПРОНИКНОВЕНИЕ','МОНЕТА','ДАЛЬНОСТЬ'],
+   mechs:['Пронизывает несколько объектов','Монеты перенаправляют к ближайшей цели','Парирование монеты усиливает рикошет']},
+  {id:'marksman',slot:'revolver',slotN:1,name:'MARKSMAN',ru:'Целевой Дальнобойный',v:'red',vLabel:'КРА',icon:'◆',color:'var(--red)',hex:'#ff2020',img:'hakita.jpg',
+   p:85,s:82,r:100,u:90,
+   desc:'Альтернативный дальнобойный. Закрученная проекция рикошетит через все монеты в поле зрения, не только через ближайшую.',
+   m1:'ИМПУЛЬС — Стандартная прямая проекция',
+   m2:'ЗАКРУТКА — Рикошет по всем монетам подряд',
+   tags:['ТОЧНОСТЬ','ЗАКРУТКА','МОНЕТА'],
+   mechs:['Охватывает все монеты в поле зрения','Эффективность растёт с количеством монет','Лучший выбор при 3+ монетах']},
+  {id:'sharpshooter',slot:'revolver',slotN:1,name:'SHARPSHOOTER',ru:'Накопительный Дальнобойный',v:'green',vLabel:'ЗЕЛ',icon:'◆',color:'var(--green)',hex:'#22dd77',img:'hakita.jpg',
+   p:100,s:60,r:100,u:75,
+   desc:'Третий вариант дальнобойного. Накопление заряда при удержании. Полный заряд = критическое воздействие по одной цели.',
+   m1:'ИМПУЛЬС — Базовый без накопления',
+   m2:'ЗАРЯД — Удержание = накопление, отпуск = критический',
+   tags:['НАКОПИТЕЛЬ','КРИТИЧЕСКОЕ','ТОЧНОСТЬ'],
+   mechs:['Полный заряд нейтрализует большинство целей','Совместим с монетным рикошетом','Рекомендован для приоритетных сущностей']},
+  {id:'core_eject',slot:'shotgun',slotN:2,name:'CORE EJECT',ru:'Эжекторный Импульсный',v:'blue',vLabel:'СИН',icon:'⬡',color:'var(--blue)',hex:'#4488ff',img:'hakita.jpg',
+   p:85,s:78,r:55,u:90,
+   desc:'Базовый импульсный. Первичный — конус проекций. Вторичный — выброс теплового ядра для цепной детонации при внешнем воздействии.',
+   m1:'ЗАЛП — Широкий конус проекций',
+   m2:'ЯДРО — Выброс теплового ядра',
+   tags:['ТЕПЛОВОЕ ЯДРО','ЗОНА','КОМБО'],
+   mechs:['Ядро детонирует от любого импульса','Рельсовый импульс + ядро = усиленный взрыв','Ядро — временная опора в воздухе']},
+  {id:'pump_charge',slot:'shotgun',slotN:2,name:'PUMP CHARGE',ru:'Накачивающий Импульсный',v:'red',vLabel:'КРА',icon:'⬡',color:'var(--red)',hex:'#ff2020',img:'hakita.jpg',
+   p:95,s:65,r:60,u:78,
+   desc:'Альтернативный импульсный. Вторичные нажатия накапливают мощность до 3 стадий. Накопленный заряд расходуется следующим залпом.',
+   m1:'ЗАЛП — Стандартный / накопленный',
+   m2:'НАКАЧКА — +1 стадия мощности (макс 3)',
+   tags:['НАКАЧКА','МОЩНОСТЬ','КОНЦЕНТРАЦИЯ'],
+   mechs:['До 3 стадий накачки','Можно накапливать при переключении','Полная накачка = критический залп']},
+  {id:'jackhammer',slot:'shotgun',slotN:2,name:'JACKHAMMER',ru:'Автоматический Импульсный',v:'green',vLabel:'ЗЕЛ',icon:'⬡',color:'var(--green)',hex:'#22dd77',img:'hakita.jpg',
+   p:75,s:100,r:45,u:85,
+   desc:'Третий вариант импульсного. Полностью автоматический. Максимальная частота активации. Отдача даёт ускорение V1.',
+   m1:'ОЧЕРЕДЬ — Автоматические конусные залпы',
+   m2:'РИТМ — Переключение режима ускорения',
+   tags:['АВТОМАТ','ДВИЖЕНИЕ','СКОРОСТЬ'],
+   mechs:['Отдача ускоряет V1','Rocket-jump механика','Максимальный DPS среди импульсных']},
+  {id:'attractor',slot:'nailgun',slotN:3,name:'ATTRACTOR',ru:'Магнитный Гвоздевой',v:'blue',vLabel:'СИН',icon:'▣',color:'var(--blue)',hex:'#4488ff',img:'hakita.jpg',
+   p:65,s:100,r:70,u:95,
+   desc:'Базовый гвоздевой. Высокая скорострельность. Вторичный — магнитный гвоздь, концентрирующий весь поток на одной маркированной цели.',
+   m1:'ОЧЕРЕДЬ — Высокоскоростные гвозди',
+   m2:'МАГНИТ — Гвоздь-ретранслятор потока',
+   tags:['МАГНИТ','СКОРОСТРЕЛЬНОСТЬ','ОЧЕРЕДЬ'],
+   mechs:['Магнит концентрирует поток на цели','Высокое суммарное воздействие','Два магнита = двойной поток']},
+  {id:'overheat',slot:'nailgun',slotN:3,name:'OVERHEAT',ru:'Термический Гвоздевой',v:'red',vLabel:'КРА',icon:'▣',color:'var(--red)',hex:'#ff2020',img:'hakita.jpg',
+   p:88,s:90,r:65,u:82,
+   desc:'Альтернативный гвоздевой. При перегреве автоматически запускает вращающийся диск. Вторичный — принудительный выброс диска.',
+   m1:'ОЧЕРЕДЬ — Гвозди (перегрев → диск)',
+   m2:'ДИСК — Принудительный выброс',
+   tags:['ПЕРЕГРЕВ','ДИСК','ТЕРМИЧЕСКИЙ'],
+   mechs:['Диск пронизывает несколько целей','Отражение манипулятором обратно','Совместим с магнитным гвоздём']},
+  {id:'electric_rail',slot:'railcannon',slotN:4,name:'ELECTRIC RAILCANNON',ru:'Электрический Рельсовый',v:'blue',vLabel:'СИН',icon:'⚡',color:'var(--blue)',hex:'#4488ff',img:'hakita.jpg',
+   p:100,s:50,r:100,u:72,
+   desc:'Базовый рельсовый. Мгновенный электрический импульс. Нейтрализует большинство целей за одну активацию. Долгая перезарядка.',
+   m1:'ИМПУЛЬС — Мгновенный электрический луч',
+   m2:'— Нет альтернативного режима',
+   tags:['ЭЛЕКТРИКА','МГНОВЕННОЕ','МАКСИМУМ'],
+   mechs:['Проекция мгновенная — упреждение не нужно','Применять только по приоритету','Через тепловое ядро = усиленный взрыв']},
+  {id:'screwdriver_rail',slot:'railcannon',slotN:4,name:'SCREWDRIVER',ru:'Сверлящий Рельсовый',v:'red',vLabel:'КРА',icon:'⚡',color:'var(--red)',hex:'#ff2020',img:'hakita.jpg',
+   p:85,s:50,r:100,u:80,
+   desc:'Альтернативный рельсовый. Вращающаяся проекция пронизывает несколько целей по линии, задерживается внутри и продолжает воздействие.',
+   m1:'СВЕРЛО — Вращающийся луч по линии',
+   m2:'— Нет альтернативного режима',
+   tags:['ВРАЩЕНИЕ','ЛИНЕЙНОЕ','ПРОНИКНОВЕНИЕ'],
+   mechs:['Пронизывает всех по линии','Остаётся внутри — непрерывное воздействие','Группировка манипулятором = максимум']},
+  {id:'malicious_rail',slot:'railcannon',slotN:4,name:'MALICIOUS RAILCANNON',ru:'Деструктивный Рельсовый',v:'green',vLabel:'ЗЕЛ',icon:'⚡',color:'var(--green)',hex:'#22dd77',img:'hakita.jpg',
+   p:100,s:45,r:100,u:75,
+   desc:'Третий рельсовый. Деструктивный луч наивысшего воздействия. Нейтрализует практически любую цель мгновенно. Максимальная перезарядка.',
+   m1:'ДЕСТРУКЦИЯ — Луч максимального воздействия',
+   m2:'— Нет альтернативного режима',
+   tags:['МАКСИМУМ','ДЕСТРУКЦИЯ','ЛУЧ'],
+   mechs:['Максимальное воздействие в арсенале','Самая длинная перезарядка','Только для приоритетных целей']},
+  {id:'freezeframe',slot:'rocket',slotN:5,name:'FREEZEFRAME',ru:'Криогенный Ракетный',v:'blue',vLabel:'СИН',icon:'◎',color:'var(--blue)',hex:'#4488ff',img:'hakita.jpg',
+   p:88,s:60,r:85,u:90,
+   desc:'Базовый ракетный. Самонаводящаяся проекция. Вторичный — криофиксация проекции в пространстве. Детонирует при любом внешнем воздействии.',
+   m1:'РАКЕТА — Самонаводящаяся проекция',
+   m2:'ФИКСАЦИЯ — Криогенная остановка в пространстве',
+   tags:['САМОНАВЕДЕНИЕ','ЛОВУШКА','КРИОФИКСАЦИЯ'],
+   mechs:['Зафиксированная ракета стоит бесконечно','Детонирует от любого импульса','Ловушки в узких проходах']},
+  {id:'srs_canon',slot:'rocket',slotN:5,name:'S.R.S. CANON',ru:'Термический Ракетный',v:'red',vLabel:'КРА',icon:'◎',color:'var(--red)',hex:'#ff2020',img:'hakita.jpg',
+   p:95,s:55,r:85,u:85,
+   desc:'Альтернативный ракетный. Вторичный — термический залп с зональным воздействием по области. Идеален при скоплении сущностей.',
+   m1:'РАКЕТА — Стандартная самонаводящаяся',
+   m2:'ТЕРМО-ЗАЛП — Зональное воздействие',
+   tags:['ТЕРМИЧЕСКИЙ','ЗОНА','СКОПЛЕНИЕ'],
+   mechs:['Зональное воздействие при детонации','Максимум при скоплении','Синергия с тепловым ядром']},
+  {id:'mirage',slot:'fuel',slotN:6,name:'MIRAGE',ru:'Топливный Накопитель',v:'blue',vLabel:'СИН',icon:'◉',color:'var(--gold)',hex:'#ffd166',img:'hakita.jpg',
+   p:40,s:70,r:50,u:100,
+   desc:'Пассивный модуль накопления ресурса. Поглощает нейтрализованные сущности, конвертируя в топливо. Авто-активация при истощении.',
+   m1:'ПАССИВ — Поглощение ресурса от нейтрализованных целей',
+   m2:'ЭКСТРЕННЫЙ — Конвертация запаса в топливо',
+   tags:['ТОПЛИВО','ПАССИВНЫЙ','НАКОПЛЕНИЕ'],
+   mechs:['Конвертирует сущности в ресурс','Авто-активация при истощении','Увеличивает эффективность длинных серий']},
+  {id:'hdc',slot:'fuel',slotN:6,name:'HARD DAMAGE CORE',ru:'Ядро Стабилизации',v:'red',vLabel:'КРА',icon:'◉',color:'var(--pink)',hex:'#ff44aa',img:'hakita.jpg',
+   p:60,s:80,r:30,u:95,
+   desc:'Стабилизирующий модуль. Перехват тяжёлых проекций не только нейтрализует воздействие, но и создаёт контр-импульс максимальной эффективности.',
+   m1:'ПЕРЕХВАТ — Тяжёлая проекция + контр-импульс',
+   m2:'СТАБИЛИЗАЦИЯ — Восстановление при критическом ресурсе',
+   tags:['СТАБИЛИЗАЦИЯ','ПЕРЕХВАТ','КОНТР-ИМПУЛЬС'],
+   mechs:['Контр-импульс при перехвате тяжёлых проекций','Стабилизирует критическое состояние','Синергия с Feedbacker']},
+];
 
-        const standardContainer = category.querySelector('.standard-variants');
-        const alternateContainer = category.querySelector('.alternate-variants');
+const SLOT_CONFIG=[
+  {id:'all',label:'ВСЕ МОДУЛИ',sub:'ВЕСЬ КАТАЛОГ',color:'var(--red)',num:'*'},
+  {id:'arm',label:'МАНИПУЛЯТОР',sub:'КОНТАКТНЫЙ СЛОТ',color:'var(--green)',num:'0'},
+  {id:'revolver',label:'ДАЛЬНОБОЙНЫЙ',sub:'СЛОТ 1',color:'var(--blue)',num:'1'},
+  {id:'shotgun',label:'ИМПУЛЬСНЫЙ',sub:'СЛОТ 2',color:'var(--red)',num:'2'},
+  {id:'nailgun',label:'ГВОЗДЕВОЙ',sub:'СЛОТ 3',color:'var(--red)',num:'3'},
+  {id:'railcannon',label:'РЕЛЬСОВЫЙ',sub:'СЛОТ 4',color:'var(--gold)',num:'4'},
+  {id:'rocket',label:'РАКЕТНЫЙ',sub:'СЛОТ 5',color:'var(--pink)',num:'5'},
+  {id:'fuel',label:'ТОПЛИВНЫЙ',sub:'СЛОТ 6',color:'var(--gold)',num:'6'},
+];
 
-        toggleBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                // Убираем активный класс у всех кнопок в этой категории
-                toggleBtns.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
+/* STATE */
+let ST={slot:'all',variant:'all',search:'',sortKey:null,sortDir:-1,selectedId:null,navIdx:0};
 
-                const variant = btn.getAttribute('data-variant');
-                if (variant === 'standard') {
-                    if (standardContainer) standardContainer.style.display = 'block';
-                    if (alternateContainer) alternateContainer.style.display = 'none';
-                } else {
-                    if (standardContainer) standardContainer.style.display = 'none';
-                    if (alternateContainer) alternateContainer.style.display = 'block';
-                }
-            });
-        });
+/* BUILD SLOT LIST */
+function buildSlotList(){
+  const c=document.getElementById('slotList');c.innerHTML='';
+  SLOT_CONFIG.forEach((s,i)=>{
+    const count=s.id==='all'?WEAPONS.length:WEAPONS.filter(w=>w.slot===s.id).length;
+    const row=document.createElement('div');
+    row.className='slot-row'+(ST.slot===s.id?' active':'');
+    row.style.setProperty('--slot-c',s.color);
+    // dots
+    const variants=s.id==='all'?['b','r','g']:
+      WEAPONS.filter(w=>w.slot===s.id).reduce((acc,w)=>{if(w.v==='blue'&&!acc.includes('b'))acc.push('b');if(w.v==='red'&&!acc.includes('r'))acc.push('r');if(w.v==='green'&&!acc.includes('g'))acc.push('g');return acc;},[]);
+    row.innerHTML=`
+      <div class="slot-num-box">${s.num}</div>
+      <div class="slot-info">
+        <div class="slot-name-big">${s.label}</div>
+        <div class="slot-desc-small">${s.sub}</div>
+        <div class="slot-variants">
+          ${'brg'.split('').map(d=>`<div class="sv-dot ${d}${variants.includes(d)?'':' dim'}"></div>`).join('')}
+        </div>
+      </div>
+      <div class="slot-count">${count}</div>`;
+    row.onclick=()=>{ST.slot=s.id;ST.selectedId=null;ST.navIdx=0;buildSlotList();renderList();document.getElementById('cpTitle').textContent=s.label;clearDetail();};
+    c.appendChild(row);
+  });
+}
+
+/* GET FILTERED */
+function getFiltered(){
+  let list=WEAPONS.slice();
+  if(ST.slot!=='all')list=list.filter(w=>w.slot===ST.slot);
+  if(ST.variant!=='all')list=list.filter(w=>w.v===ST.variant);
+  if(ST.search){const q=ST.search.toLowerCase();list=list.filter(w=>w.name.toLowerCase().includes(q)||w.ru.toLowerCase().includes(q)||w.tags.some(t=>t.toLowerCase().includes(q)));}
+  if(ST.sortKey)list.sort((a,b)=>ST.sortDir*(b[ST.sortKey]-a[ST.sortKey]));
+  return list;
+}
+
+/* RENDER LIST */
+function renderList(){
+  const c=document.getElementById('weaponList');
+  const list=getFiltered();
+  document.getElementById('totalCount').textContent=list.length;
+  if(!list.length){c.innerHTML='<div class="no-results-row">// МОДУЛИ НЕ НАЙДЕНЫ //</div>';return;}
+  c.innerHTML='';
+  list.forEach((w,idx)=>{
+    const row=document.createElement('div');
+    row.className='wrow'+(ST.selectedId===w.id?' selected':'');
+    row.style.setProperty('--wc',w.color);
+    row.style.animationDelay=(idx*.03)+'s';
+    row.innerHTML=`
+      <div class="wr-idx">${String(idx+1).padStart(2,'0')}</div>
+      <div class="wr-img">
+        <img src="${w.img}" alt="${w.name}" onerror="this.style.opacity='0'">
+        <div class="wr-img-scan"></div>
+      </div>
+      <div class="wr-info">
+        <div class="wr-name">${w.name} <span style="font-size:.65rem;color:var(--wc);opacity:.7;">[${w.vLabel}]</span></div>
+        <div class="wr-runame">${w.ru}</div>
+        <div class="wr-tags">${w.tags.map(t=>`<span class="wr-tag">${t}</span>`).join('')}</div>
+      </div>
+      <div class="wr-stats">
+        ${[['p','М'],['s','С'],['r','Д']].map(([k,l])=>`
+          <div class="wr-stat">
+            <div class="wr-stat-bar"><div class="wr-stat-fill" data-val="${w[k]}"></div></div>
+            <div class="wr-stat-val">${w[k]}</div>
+          </div>`).join('')}
+      </div>`;
+    row.onclick=()=>openDetail(w);
+    c.appendChild(row);
+  });
+  requestAnimationFrame(()=>document.querySelectorAll('.wr-stat-fill').forEach(b=>{b.style.width='0';setTimeout(()=>{b.style.width=b.dataset.val+'%';},80);}));
+}
+
+/* OPEN DETAIL */
+function openDetail(w){
+  ST.selectedId=w.id;
+  document.getElementById('activeLabel').innerHTML=`АКТИВЕН: <span class="hl">${w.name}</span>`;
+  const dp=document.getElementById('dpContent');
+  dp.style.setProperty('--dp-c',w.color);
+  dp.innerHTML=`
+    <div class="dp-header">
+      <div class="dp-variant-badge">// СЛОТ ${w.slotN} // ${w.vLabel} ВАРИАНТ //</div>
+      <div class="dp-name">${w.name}</div>
+      <div class="dp-runame">${w.ru}</div>
+    </div>
+    <div class="dp-img-wrap">
+      <img src="${w.img}" alt="${w.name}" onerror="this.style.opacity='0'">
+      <div class="dp-img-scan"></div>
+      <div class="dp-img-label">${w.name}</div>
+    </div>
+    <div class="dp-body" style="--dp-c:${w.color}">
+      <div class="dp-section-title">// ОПИСАНИЕ</div>
+      <div class="dp-desc-text" id="dpDescText"></div>
+      <div class="dp-section-title">// РЕЖИМЫ АКТИВАЦИИ</div>
+      <div class="dp-mode"><span class="dp-mode-key">РЕЖИМ 1</span><span class="dp-mode-val">${w.m1}</span></div>
+      <div class="dp-mode"><span class="dp-mode-key">РЕЖИМ 2</span><span class="dp-mode-val">${w.m2}</span></div>
+      <div class="dp-section-title">// ХАРАКТЕРИСТИКИ</div>
+      ${[['p','МОЩНОСТЬ'],['s','СКОРОСТЬ'],['r','ДАЛЬНОСТЬ'],['u','УТИЛИТА']].map(([k,l])=>`
+        <div class="dp-stat">
+          <div class="dp-stat-head"><span class="dp-stat-lbl">${l}</span><span class="dp-stat-val">${w[k]}</span></div>
+          <div class="dp-stat-bar"><div class="dp-stat-fill" data-val="${w[k]}"></div></div>
+        </div>`).join('')}
+      <div class="dp-section-title">// МЕХАНИКИ</div>
+      ${w.mechs.map(m=>`<div class="dp-mech">${m}</div>`).join('')}
+    </div>`;
+  typeText(document.getElementById('dpDescText'),w.desc,12);
+  requestAnimationFrame(()=>setTimeout(()=>document.querySelectorAll('.dp-stat-fill').forEach(b=>b.style.width=b.dataset.val+'%'),200));
+  renderList();
+}
+function clearDetail(){
+  document.getElementById('activeLabel').innerHTML='АКТИВЕН: <span class="hl">—</span>';
+  document.getElementById('dpContent').innerHTML=`<div class="dp-empty"><div class="dp-empty-icon">◎</div><div>// ВЫБЕРИТЕ МОДУЛЬ //</div></div>`;
+}
+function typeText(el,text,speed=15){if(!el)return;el.textContent='';let i=0;const iv=setInterval(()=>{if(i>=text.length){clearInterval(iv);return;}el.textContent+=text[i++];},speed);}
+
+/* EVENTS */
+document.querySelectorAll('.vf-btn[data-v]').forEach(btn=>btn.addEventListener('click',()=>{
+  document.querySelectorAll('.vf-btn[data-v]').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');ST.variant=btn.dataset.v;ST.selectedId=null;clearDetail();renderList();
+}));
+const cpSearch=document.getElementById('cpSearch');let st2;
+cpSearch.addEventListener('input',()=>{clearTimeout(st2);st2=setTimeout(()=>{ST.search=cpSearch.value.trim();ST.selectedId=null;clearDetail();renderList();},200);});
+['sortP','sortS'].forEach((id,i)=>{
+  const key=i===0?'p':'s';
+  document.getElementById(id).addEventListener('click',function(){
+    if(ST.sortKey===key){ST.sortDir*=-1;this.textContent=(i===0?'МОЩ':'СКР')+(ST.sortDir===-1?'↓':'↑');}
+    else{ST.sortKey=key;ST.sortDir=-1;this.textContent=(i===0?'МОЩ':'СКР')+'↓';}
+    document.querySelectorAll('#sortP,#sortS').forEach(b=>b.classList.remove('active'));
+    this.classList.add('active');renderList();
+  });
+});
+const slotKeys={'1':'revolver','2':'shotgun','3':'nailgun','4':'railcannon','5':'rocket','6':'fuel','0':'all','m':'arm'};
+document.addEventListener('keydown',e=>{
+  if(document.activeElement===cpSearch){if(e.key==='Escape'){cpSearch.blur();cpSearch.value='';ST.search='';renderList();}return;}
+  if(e.key==='f'||e.key==='F'){e.preventDefault();cpSearch.focus();return;}
+  if(e.key==='Escape'){ST.selectedId=null;clearDetail();renderList();return;}
+  if(slotKeys[e.key]){ST.slot=slotKeys[e.key];ST.selectedId=null;buildSlotList();renderList();clearDetail();
+    const sc=SLOT_CONFIG.find(s=>s.id===ST.slot);if(sc)document.getElementById('cpTitle').textContent=sc.label;}
+});
+
+/* RANK GLITCH */
+const RANKS=['D','C','B','A','S','SS','SSS'];
+setInterval(()=>{
+  const el=document.getElementById('rankDisplay');
+  if(Math.random()<.12){el.textContent=RANKS[Math.floor(Math.random()*RANKS.length)];el.style.color='var(--white)';setTimeout(()=>{el.textContent='SSS';el.style.color='var(--gold)';},120);}
+},2500);
+
+/* ══════════════════════════════════
+   ULTRAKILL-STYLE TERMINAL BG CANVAS
+   Grid + scanbeam + crosshair effect
+══════════════════════════════════ */
+(()=>{
+  const c=document.getElementById('bg-terminal');
+  const ctx=c.getContext('2d');
+  let W,H;
+  function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight;}
+  window.addEventListener('resize',resize);resize();
+
+  // Grid config
+  const GRID=60;
+  let scanY=0;
+  let scanSpeed=0.4;
+  let time=0;
+  let pulseTargets=[];
+  
+  // Randomly pulse some grid intersections
+  for(let i=0;i<8;i++){
+    pulseTargets.push({
+      x:Math.floor(Math.random()*(W/GRID))*GRID,
+      y:Math.floor(Math.random()*(H/GRID))*GRID,
+      alpha:Math.random(),
+      speed:Math.random()*.02+.005
+    });
+  }
+
+  function drawGrid(){
+    ctx.clearRect(0,0,W,H);
+    
+    // Base grid lines
+    ctx.strokeStyle='rgba(255,20,20,0.04)';
+    ctx.lineWidth=.5;
+    for(let x=0;x<=W;x+=GRID){
+      ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();
+    }
+    for(let y=0;y<=H;y+=GRID){
+      ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();
+    }
+
+    // Bright grid lines (every 5th)
+    ctx.strokeStyle='rgba(255,20,20,0.08)';
+    ctx.lineWidth=.8;
+    for(let x=0;x<=W;x+=GRID*5){
+      ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();
+    }
+    for(let y=0;y<=H;y+=GRID*5){
+      ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();
+    }
+
+    // Intersection dots
+    ctx.fillStyle='rgba(255,20,20,0.06)';
+    for(let x=0;x<=W;x+=GRID){
+      for(let y=0;y<=H;y+=GRID){
+        ctx.beginPath();ctx.arc(x,y,1,0,Math.PI*2);ctx.fill();
+      }
+    }
+
+    // Pulse targets (highlighted intersections)
+    pulseTargets.forEach(p=>{
+      p.alpha+=p.speed;
+      if(p.alpha>1||p.alpha<0)p.speed*=-1;
+      // Re-randomize occasionally
+      if(Math.random()<.001){p.x=Math.floor(Math.random()*(W/GRID))*GRID;p.y=Math.floor(Math.random()*(H/GRID))*GRID;}
+      ctx.fillStyle=`rgba(255,32,32,${p.alpha*.15})`;
+      ctx.beginPath();ctx.arc(p.x,p.y,3,0,Math.PI*2);ctx.fill();
+      // Crosshair
+      ctx.strokeStyle=`rgba(255,32,32,${p.alpha*.08})`;
+      ctx.lineWidth=.5;
+      ctx.beginPath();ctx.moveTo(p.x-10,p.y);ctx.lineTo(p.x+10,p.y);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(p.x,p.y-10);ctx.lineTo(p.x,p.y+10);ctx.stroke();
     });
 
-    // Эффект клика в стиле терминала
-    document.body.addEventListener('click', (e) => {
-        if (e.target.closest('.back-link')) return;
-        const flash = document.createElement('div');
-        flash.style.position = 'fixed';
-        flash.style.top = '0';
-        flash.style.left = '0';
-        flash.style.width = '100%';
-        flash.style.height = '100%';
-        flash.style.backgroundColor = 'rgba(63, 224, 160, 0.05)';
-        flash.style.pointerEvents = 'none';
-        flash.style.zIndex = '999';
-        document.body.appendChild(flash);
-        setTimeout(() => flash.remove(), 80);
+    // Horizontal scan beam (ULTRAKILL weapon select style)
+    scanY+=scanSpeed;
+    if(scanY>H+50)scanY=-50;
+    const scanGrad=ctx.createLinearGradient(0,scanY-30,0,scanY+30);
+    scanGrad.addColorStop(0,'rgba(255,32,32,0)');
+    scanGrad.addColorStop(.5,'rgba(255,32,32,0.05)');
+    scanGrad.addColorStop(1,'rgba(255,32,32,0)');
+    ctx.fillStyle=scanGrad;
+    ctx.fillRect(0,scanY-30,W,60);
+
+    // Thin bright scan line
+    ctx.strokeStyle='rgba(255,32,32,0.12)';
+    ctx.lineWidth=1;
+    ctx.beginPath();ctx.moveTo(0,scanY);ctx.lineTo(W,scanY);ctx.stroke();
+
+    // Corner markers (ULTRAKILL UI style)
+    const cm=15;
+    ctx.strokeStyle='rgba(255,32,32,0.15)';ctx.lineWidth=1.5;
+    [[0,0,1,1],[W,0,-1,1],[0,H,1,-1],[W,H,-1,-1]].forEach(([cx,cy,dx,dy])=>{
+      ctx.beginPath();ctx.moveTo(cx+dx*cm,cy);ctx.lineTo(cx,cy);ctx.lineTo(cx,cy+dy*cm);ctx.stroke();
     });
+
+    // Vertical "target" lines
+    time+=.005;
+    const tx=W/2+Math.sin(time*.3)*W*.1;
+    ctx.strokeStyle='rgba(255,32,32,0.03)';ctx.lineWidth=.5;
+    ctx.beginPath();ctx.moveTo(tx,0);ctx.lineTo(tx,H);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(0,H/2+Math.cos(time*.2)*H*.05);ctx.lineTo(W,H/2+Math.cos(time*.2)*H*.05);ctx.stroke();
+
+    // Random horizontal data flashes
+    if(Math.random()<.008){
+      const fy=Math.floor(Math.random()*(H/GRID))*GRID;
+      ctx.strokeStyle=`rgba(255,32,32,${Math.random()*.12})`;
+      ctx.lineWidth=1;
+      ctx.beginPath();ctx.moveTo(0,fy);ctx.lineTo(W*(.3+Math.random()*.4),fy);ctx.stroke();
+    }
+
+    requestAnimationFrame(drawGrid);
+  }
+  drawGrid();
+})();
+
+/* INIT */
+buildSlotList();
+renderList();
 </script>
 </body>
 </html>
