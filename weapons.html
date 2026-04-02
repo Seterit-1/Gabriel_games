@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>V1 ARSENAL // SLIME OS 2 TERMINAL</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        /* SLIME OS 2 TERMINAL STYLE */
+        :root {
+            --terminal-bg: #0a0c0f;
+            --terminal-green: #3fe0a0;
+            --terminal-red: #ff3c5a;
+            --terminal-amber: #f0a830;
+            --terminal-gray: #8a9ba8;
+            --terminal-dark: #101418;
+            --scanline: rgba(63, 224, 160, 0.08);
+        }
+
+        body {
+            background: radial-gradient(ellipse at center, #0c0f14 0%, #040608 100%);
+            font-family: 'Fira Code', monospace;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            position: relative;
+        }
+
+        /* Эффект ЭЛТ-монитора */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(0deg, var(--scanline) 0px, var(--scanline) 2px, transparent 2px, transparent 6px);
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 50%, rgba(0,0,0,0) 60%, rgba(0,0,0,0.5) 100%);
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .terminal {
+            max-width: 1400px;
+            width: 100%;
+            background: var(--terminal-bg);
+            border: 1px solid var(--terminal-green);
+            border-radius: 16px;
+            box-shadow: 0 0 0 2px #1a2a22, 0 0 0 4px #0a0f0c, 0 0 20px rgba(63, 224, 160, 0.3);
+            position: relative;
+            z-index: 10;
+            overflow: hidden;
+        }
+
+        /* Верхняя панель терминала */
+        .terminal-bar {
+            background: #0d1117;
+            padding: 0.8rem 1.2rem;
+            border-bottom: 1px solid var(--terminal-green);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .terminal-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .terminal-dots {
+            display: flex;
+            gap: 6px;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .dot-red { background: #ff5f56; box-shadow: 0 0 4px #ff5f56; }
+        .dot-yellow { background: #ffbd2e; box-shadow: 0 0 4px #ffbd2e; }
+        .dot-green { background: #27c93f; box-shadow: 0 0 4px #27c93f; }
+
+        .terminal-path {
+            font-size: 0.75rem;
+            color: var(--terminal-green);
+            letter-spacing: 0.5px;
+        }
+
+        .terminal-path i {
+            margin-right: 6px;
+        }
+
+        .back-link {
+            color: var(--terminal-amber);
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: 0.2s;
+        }
+
+        .back-link:hover {
+            color: var(--terminal-green);
+            text-shadow: 0 0 5px var(--terminal-green);
+        }
+
+        /* Содержимое терминала */
+        .terminal-content {
+            padding: 1.8rem;
+        }
+
+        .boot-header {
+            border-bottom: 1px dashed var(--terminal-green);
+            padding-bottom: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .boot-header h1 {
+            font-size: 1.6rem;
+            color: var(--terminal-green);
+            font-weight: 500;
+            letter-spacing: -0.5px;
+        }
+
+        .boot-header h1 i {
+            margin-right: 10px;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        .boot-header p {
+            color: var(--terminal-gray);
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+        }
+
+        .blink-cursor {
+            display: inline-block;
+            width: 8px;
+            height: 14px;
+            background: var(--terminal-green);
+            animation: blink 1s step-end infinite;
+            vertical-align: middle;
+            margin-left: 4px;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* Сетка оружия */
+        .weapon-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .weapon-category {
+            background: rgba(16, 20, 24, 0.8);
+            border-left: 3px solid var(--terminal-green);
+            padding: 1rem 1.2rem;
+            transition: 0.2s;
+        }
+
+        .weapon-category:hover {
+            background: rgba(26, 34, 40, 0.9);
+            border-left-color: var(--terminal-red);
+        }
+
+        /* СТИЛИ ДЛЯ ИЗОБРАЖЕНИЙ ОРУЖИЯ */
+        .weapon-image-container {
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: center;
+        }
+
+        .weapon-frame {
+            background: linear-gradient(135deg, #1a2a22, #0a0f0c);
+            padding: 0.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--terminal-green);
+            box-shadow: 0 0 15px rgba(63, 224, 160, 0.2);
+            transition: 0.3s;
+            display: inline-block;
+        }
+
+        /* Разные рамки для разных типов оружия */
+        .weapon-category[data-weapon="revolver"] .weapon-frame {
+            border-color: var(--terminal-green);
+            box-shadow: 0 0 15px rgba(63, 224, 160, 0.3);
+        }
+        .weapon-category[data-weapon="shotgun"] .weapon-frame {
+            border-color: var(--terminal-red);
+            box-shadow: 0 0 15px rgba(255, 60, 90, 0.3);
+        }
+        .weapon-category[data-weapon="railcannon"] .weapon-frame {
+            border-color: #3f9eff;
+            box-shadow: 0 0 15px rgba(63, 158, 255, 0.3);
+        }
+        .weapon-category[data-weapon="rocket"] .weapon-frame {
+            border-color: var(--terminal-amber);
+            box-shadow: 0 0 15px rgba(240, 168, 48, 0.3);
+        }
+        .weapon-category[data-weapon="arms"] .weapon-frame {
+            border-color: #ff6ac4;
+            box-shadow: 0 0 15px rgba(255, 106, 196, 0.3);
+        }
+
+        .weapon-frame:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 25px currentColor;
+        }
+
+        .weapon-img {
+            max-width: 100%;
+            height: auto;
+            max-height: 120px;
+            border-radius: 8px;
+            display: block;
+            object-fit: cover;
+        }
+
+        .weapon-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--terminal-green);
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.5px;
+        }
+
+        .weapon-name i {
+            margin-right: 12px;
+            color: var(--terminal-amber);
+        }
+
+        .variants {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .variant-card {
+            background: #0b0f13;
+            border: 1px solid #2a3a30;
+            border-radius: 12px;
+            padding: 0.8rem 1rem;
+            transition: 0.2s;
+        }
+
+        .variant-card:hover {
+            border-color: var(--terminal-green);
+            transform: translateX(4px);
+        }
+
+        /* Изображения для каждого варианта оружия */
+        .variant-image {
+            margin-bottom: 0.8rem;
+            text-align: center;
+        }
+
+        .variant-img {
+            max-width: 100%;
+            max-height: 80px;
+            border-radius: 8px;
+            background: #0a0c0f;
+            padding: 0.3rem;
+            border: 1px solid #2a3a30;
+        }
+
+        .variant-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--terminal-amber);
+            margin-bottom: 0.3rem;
+        }
+
+        .variant-title code {
+            background: #00000055;
+            padding: 0.1rem 0.4rem;
+            border-radius: 4px;
+        }
+
+        .variant-desc {
+            font-size: 0.7rem;
+            color: var(--terminal-gray);
+            line-height: 1.4;
+            margin-top: 0.3rem;
+        }
+
+        .stat-line {
+            font-size: 0.65rem;
+            color: var(--terminal-green);
+            margin-top: 0.5rem;
+            border-top: 1px dashed #2a3a30;
+            padding-top: 0.4rem;
+        }
+
+        .footer-term {
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid #2a3a30;
+            font-size: 0.65rem;
+            color: var(--terminal-gray);
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        /* Инструкция по замене изображений */
+        .image-guide {
+            background: #0d1117;
+            border: 1px solid var(--terminal-amber);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-top: 2rem;
+            font-size: 0.7rem;
+        }
+
+        .image-guide h4 {
+            color: var(--terminal-amber);
+            margin-bottom: 0.5rem;
+        }
+
+        .image-guide code {
+            background: #00000066;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            color: var(--terminal-green);
+        }
+
+        @media (max-width: 780px) {
+            .terminal-content { padding: 1rem; }
+            .weapon-name { font-size: 1.2rem; }
+            .weapon-img { max-height: 80px; }
+        }
+
+        .ascii-art {
+            font-family: monospace;
+            font-size: 0.6rem;
+            color: var(--terminal-green);
+            opacity: 0.5;
+            text-align: center;
+            margin-top: 1rem;
+            white-space: pre;
+        }
+    </style>
+</head>
+<body>
+<div class="terminal">
+    <div class="terminal-bar">
+        <div class="terminal-title">
+            <div class="terminal-dots">
+                <div class="dot dot-red"></div>
+                <div class="dot dot-yellow"></div>
+                <div class="dot dot-green"></div>
+            </div>
+            <div class="terminal-path">
+                <i class="fas fa-terminal"></i> V1@HELL:/arsenal/weapons
+            </div>
+        </div>
+        <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> EXIT TO MAIN SHELL</a>
+    </div>
+
+    <div class="terminal-content">
+        <div class="boot-header">
+            <h1><i class="fas fa-microchip"></i> V1 WEAPON ARSENAL v.2.0.1<span class="blink-cursor"></span></h1>
+            <p>> ACCESSING WEAPON DATABASE // BLOOD-FUELED ORDNANCE // TOTAL: 5 PRIMARY SYSTEMS + VARIANTS</p>
+        </div>
+
+        <div class="weapon-grid">
+            <!-- REVOLVER -->
+            <div class="weapon-category" data-weapon="revolver">
+                <div class="weapon-image-container">
+                    <div class="weapon-frame">
+                        <img src="1000045244.jpg" alt="Revolver" class="weapon-img" onerror="this.src='https://placehold.co/400x200/1a2a22/3fe0a0?text=REVOLVER+IMAGE'">
+                    </div>
+                </div>
+                <div class="weapon-name"><i class="fas fa-crosshairs"></i> REVOLVER</div>
+                <div class="variants">
+                    <div class="variant-card">
+                        <div class="variant-image">
+                            <img src="1000045244.jpg" alt="Piercer" class="variant-img" onerror="this.src='https://placehold.co/300x80/1a2a22/3fe0a0?text=Piercer'">
+                        </div>
+                        <div class="variant-title"><code>Piercer</code> — Precision Shot</div>
+                        <div class="variant-desc">Высокий урон по одной цели. Заряжаемый выстрел с бронебойным эффектом. Бесконечные патроны.</div>
+                        <div class="stat-line">⚡ Урон: 2.5x | 🔥 Особенность: пробивает врагов насквозь</div>
+                    </div>
+                    <div class="variant-card">
+                        <div class="variant-image">
+                            <img src="1000045244.jpg" alt="Marksman" class="variant-img" onerror="this.src='https://placehold.co/300x80/1a2a22/3fe0a0?text=Marksman'">
+                        </div>
+                        <div class="variant-title"><code>Marksman</code> — Coin System</div>
+                        <div class="variant-desc">Подброшенная монета позволяет рикошетить выстрелы в слабые места врагов. Можно отбить до 4 раз.</div>
+                        <div class="stat-line">🪙 Механика: крит. урон + стиль | 💀 Рикошет по головам</div>
+                    </div>
+                    <div class="variant-card">
+                        <div class="variant-image">
+                            <img src="1000045244.jpg" alt="Sharpshooter" class="variant-img" onerror="this.src='https://placehold.co/300x80/1a2a22/3fe0a0?text=Sharpshooter'">
+                        </div>
+                        <div class="variant-title"><code>Alternate (Sharpshooter)</code></div>
+                        <div class="variant-desc">Альтернативная версия. Взрывает снаряды дробовика и выстрелы V2 при попадании.</div>
+                        <div class="stat-line">💥 Детонация: снаряды Core Eject, ракеты</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SHOTGUN -->
+            <div class="weapon-category" data-weapon="shotgun">
+                <div class="weapon-image-container">
+                    <div class="weapon-frame">
+                        <img src="1000045244.jpg" alt="Shotgun" class="weapon-img" onerror="this.src='https://placehold.co/400x200/1a2a22/ff3c5a?text=SHOTGUN+IMAGE'">
+                    </div>
+                </div>
+                <div class="weapon-name"><i class="fas fa-gun"></i> SHOTGUN</div>
+                <div class="variants">
+                    <div class="variant-card">
+                        <div class="variant-image">
+                            <img src="1000045244.jpg" alt="Core Eject" class="variant-img" onerror="this.src='https://placehold.co/300x80/1a2a22/ff3c5a?text=Core+Eject'">
+                        </div>
+                        <div class="variant-title"><code>Core Eject</code> — Grenade Launcher</div>
+                        <div class="variant-desc">Выстрел огненным шаром, который взрывается при контакте. Можно отразить для Nuke-механики.</div>
+                        <div class="stat-line">💣 Радиус: 8m | 🔥 Зажигает врагов</div>
+                    </div>
+                    <div class="variant-card">
+                        <div class="variant-image">
+                            <img src="1000045244.jpg" alt="Pump Charge" class="variant-img" onerror="this.src='https://placehold.co/300x80/1a2a22/ff3c5a?text=Pump+Charge'">
+                        </div>
+                        <div class="variant-title"><code>Pump Charge</code> — Overload</div>
+                        <div class="variant-desc">Накачка заряда для мощного взрыва. 3 уровня: от двойного урона до самоурона.</div>
+                        <div class="stat-line">⚠️ Риск: перезаряд убивает V1 | 💪 Max урон: 10x</div>
+                    </div>
+                    <div class="variant-card">
+                        <div class="variant-image">
+                            <img src="1000045244.jpg" alt="Jackhammer" class="variant-img" onerror="this.src='https://placehold.co/300x80/1a2a22/ff3c5a?text=Jackhammer'">
+                        </div>
+                        <div class="variant-title"><code>Alternate</code> — Jackhammer</div>
+                        <div class="variant-desc">Автоматический дробовик с отдачей. Можно использовать для дополнительного рывка.</div>
+                        <div class="stat-line">🏃 Движение: отдача даёт ускорение</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RAILCANNON -->
+            <div class="weapon-category" data-weapon="railcannon">
+                <div class="weapon-image-container">
+                    <div class="weapon-frame">
+                        <img src="1000045244.jpg" alt="Railcannon" class="weapon-img" onerror="this.src='https://placehold.co/400x200/1a2a22/3f9eff?text=RAILCANNON+IMAGE'">
+                    </div>
+                </div>
+                <div class="weapon-name"><i class="fas fa-bolt"></i> RAILCANNON</div>
+                <div class="variants">
+                    <div class="variant-card">
+                        <div class="variant-image">
+                            <img src="1000045244.jpg" alt="Electric Railcannon" class="variant-img" onerror="this.src='https://placehold.co/300x80/1a2a22/3f9eff?text=Electric'">
+                        </div>
+                        <div class="variant-title"><code>Electric</code> — Chain Lightning</div>
+                        <div class="variant-desc">Электрический луч, который перепрыгивает между врагами. Высокий контроль толпы.</div>
+                        <div class="stat-line">⚡ Перескок: до 5 целей | 🕒 Перезарядка: медленная</div>
+                    </div>
+                    <div class="variant-card">
+                        <div class="variant-image">
+                            <img src="1000045244.jpg" alt="Malicious Railcannon" class="variant-img" onerror="this.src='https://placehold.co/300x80/1a2a22/3f9eff?text=Malicious'">
+                        </div>
+                        <div class="variant-title"><code>Malicious</code> — Explosive Beam</div>
+                        <div class="variant-desc">Огромный взрыв на линии выстрела. Комбо с замороженной ракетой даёт Nuke.</div>
+                        <div class="stat-line">💥 Nuke: радиус 25m | ☢️ Уничтожает всё</div>
+                    </div>
+                    <div class="variant-card">
+                        <div class="variant-image">
+                            <img src="1000045244.jpg" alt="Screwdriver" class="variant-img" onerror="this.src='https://placehold.co/300x80/1a2a22/3f9eff?text=Screwdriver'">
+                        </div>
+                        <div class="variant-title"><code>Screwdriver</code> — Drill</div>
+                        <div class="variant-desc">Вонзает сверло во врага, которое наносит урон с течением времени. Можно парировать для мгновенного урона.</div>
+                        <div class="stat-line">🩸 Лечение: 10% HP за тик | 🔄 Parry refund</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ROCKET LAUNCHER -->
+            <div class="weapon-category" data-weapon="rocket">
+                <div class="weapon-image-container">
+                    <div class="weapon-frame">
+                        <img src="1000045244.jpg" alt="Rocket Launcher" class="weapon-img" onerror="this.src='https://placehold.co/400x200/1a2a22/f0a830?text=ROCKET+LAUNCHER+IMAGE'">
+                    </div>
+                </div>
+                <div class="weapon-name"><i class="fas fa-rocket"></i> ROCKET LAUNCHER</div>
+                <div class="variants">
+                    <div class="variant-card">
+                        <div class="variant-image">
+                            <img src="1000045244.jpg" alt="Freezeframe" class="variant-img" onerror="this.src='https://placehold.co/300x80/1a2a22/f0a830?text=Freezeframe'">
+                        </div>
+                        <div class="variant-title"><code>Freezeframe</code> — Time Stop</div>
+                        <div class="variant-desc">Замораживает ракету в воздухе. Можно подпрыгнуть на ней или устроить Nuke.</div>
+                        <div class="stat-line">❄️ Заморозка: 3 сек | 🛸 Rocket Riding</div>
+                    </div>
+                    <div class="variant-card">
+                        <div class="variant-image">
+                            <img src="1000045244.jpg" alt="Standard Rocket" class="variant-img" onerror="this.src='https://placehold.co/300x80/1a2a22/f0a830?text=Standard'">
+                        </div>
+                        <div class="variant-title"><code>Standard</code> — Homing</div>
+                        <div class="variant-desc">Управляемые ракеты с лёгким самонаведением. Высокая скорострельность.</div>
+                        <div class="stat-line">🎯 Наведение: 15° | 🔄 2 ракеты в магазине</div>
+                    </div>
+                    <div class="variant-card">
+                        <div class="variant-image">
+                            <img src="1000045244.jpg" alt="Cannonball" class="variant-img" onerror="this.src='https://placehold.co/300x80/1a2a22/f0a830?text=Cannonball'">
+                        </div>
+                        <div class="variant-title"><code>Alternate</code> — Cannonball</div>
+                        <div class="variant-desc">Замедленный тяжёлый снаряд с огромным уроном. Можно отбить Feedbacker'ом.</div>
+                        <div class="stat-line">🏀 Рикошет: +стиль | 💀 Урон: 50</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ARMS -->
+            <div class="weapon-category" data-weapon="arms">
+                <div class="weapon-image-container">
+                    <div class="weapon-frame">
+                        <img src="1000045244.jpg" alt="Arms" class="weapon-img" onerror="this.src='https://placehold.co/400x200/1a2a22/ff6ac4?text=ARMS+IMAGE'">
+                    </div>
+                </div>
+                <div class="weapon-name"><i class="fas fa-fist-raised"></i> ARMS — FEEDBACKER / KNUCKLEBLASTER</div>
+                <div class="variants">
+                    <div class="variant-card">
+                        <div class="variant-image">
+                            <img src="1000045244.jpg" alt="Feedbacker" class="variant-img" onerror="this.src='https://placehold.co/300x80/1a2a22/ff6ac4?text=Feedbacker'">
+                        </div>
+                        <div class="variant-title"><code>Feedbacker</code> — Parry Master</div>
+                        <div class="variant-desc">Парирует любые снаряды и атаки врагов. Отражённые ракеты и снаряды наносят тройной урон.</div>
+                        <div class="stat-line">🛡️ Окно парирования: 6 кадров | ✨ Chargeback: рикошет пуль</div>
+                    </div>
+                    <div class="variant-card">
+                        <div class="variant-image">
+                            <img src="1000045244.jpg" alt="Knuckleblaster" class="variant-img" onerror="this.src='https://placehold.co/300x80/1a2a22/ff6ac4?text=Knuckleblaster'">
+                        </div>
+                        <div class="variant-title"><code>Knuckleblaster</code> — Shockwave</div>
+                        <div class="variant-desc">Мощный удар с ударной волной. Разрушает броню врагов и отбрасывает толпу.</div>
+                        <div class="stat-line">💢 Разрушение: щиты Soldat | 🌪️ Радиус: 4m</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        
+
+        <div class="ascii-art">
+            ╔══════════════════════════════════════════════════════════╗
+            ║  [V1 WEAPON SYSTEM]  > BLOOD = AMMO                       ║
+            ║  > ALTERNATE VARIANTS UNLOCKABLE VIA SECRET LEVELS        ║
+            ╚══════════════════════════════════════════════════════════╝
+        </div>
+
+        <div class="footer-term">
+            <div><i class="fas fa-database"></i> // ARSENAL DATABASE v.ULTRAKILL // ALL VARIANTS CONFIRMED</div>
+            <div><i class="fas fa-code"></i> SLIME OS 2 // TERMINAL MODE</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Эффект клика в стиле терминала
+    document.body.addEventListener('click', (e) => {
+        if (e.target.closest('.back-link')) return;
+        const flash = document.createElement('div');
+        flash.style.position = 'fixed';
+        flash.style.top = '0';
+        flash.style.left = '0';
+        flash.style.width = '100%';
+        flash.style.height = '100%';
+        flash.style.backgroundColor = 'rgba(63, 224, 160, 0.05)';
+        flash.style.pointerEvents = 'none';
+        flash.style.zIndex = '999';
+        document.body.appendChild(flash);
+        setTimeout(() => flash.remove(), 80);
+    });
+    console.log("SLIME OS 2 TERMINAL // WEAPON ARSENAL LOADED");
+    console.log("💡 Чтобы заменить изображения: отредактируйте атрибуты src у тегов <img>");
+</script>
+</body>
+</html>
