@@ -1,757 +1,1267 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>V1 АРСЕНАЛ // БАЗА ДАННЫХ МОДУЛЕЙ</title>
-<link href="https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
-<style>
-*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
-:root{
-  --red:#ff2020;--red-dim:#8a0000;--white:#e8e8e8;--black:#080808;
-  --panel:#0d0d0d;--border:#222;--gold:#ffd166;--blue:#5599ff;
-  --green:#22ff88;--pink:#ff44aa;--orange:#ff8833;--glow-r:rgba(255,32,32,0.35);
-}
-body{background:#060606;color:var(--white);font-family:'Share Tech Mono','Fira Code',monospace;min-height:100vh;overflow-x:hidden;}
-body::after{content:'';position:fixed;top:0;left:0;width:100%;height:100%;
-  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.13) 2px,rgba(0,0,0,0.13) 4px);
-  pointer-events:none;z-index:9998;}
-#bg-canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;opacity:0.4;}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>V1 АРСЕНАЛ // БАЗА ДАННЫХ МОДУЛЕЙ</title>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&family=Fira+Code:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-.page{max-width:1480px;margin:0 auto;padding:0 1rem 2rem;position:relative;z-index:10;}
+        :root {
+            --red:    #ff2020;
+            --red-dim:#8a0000;
+            --white:  #f0f0f0;
+            --black:  #060606;
+            --gold:   #ffd166;
+            --blue:   #4af0ff;
+            --green:  #00ff88;
+            --pink:   #ff44cc;
+            --orange: #ff8833;
+            --purple: #bb55ff;
+            --glow-r: rgba(255,32,32,0.4);
+            --terminal-green: #00ff88;
+            --terminal-amber: #ffd166;
+            --terminal-gray:  #8a9ba8;
+        }
 
-/* HEADER */
-.site-header{border-bottom:2px solid var(--red);padding:1.4rem 0 1rem;}
-.header-top{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1rem;}
-.logo-eyebrow{font-size:.6rem;color:var(--red);letter-spacing:.35em;text-transform:uppercase;margin-bottom:.25rem;}
-.logo-main{font-family:'VT323',monospace;font-size:4rem;line-height:1;color:var(--white);letter-spacing:3px;
-  text-shadow:0 0 24px var(--glow-r),2px 2px 0 var(--red-dim);}
-.logo-main .v1{color:var(--red);text-shadow:0 0 40px var(--red),0 0 80px var(--glow-r);}
-@keyframes glitch{0%,100%{transform:translate(0);}15%{transform:translate(-2px,1px);clip-path:inset(30% 0 30% 0);}30%{transform:translate(2px,-1px);}50%{transform:translate(0);}65%{transform:translate(-1px,2px);clip-path:inset(60% 0 5% 0);}}
-.logo-main:hover{animation:glitch .25s steps(1) infinite;cursor:default;}
-.logo-tagline{font-size:.65rem;color:#3a3a3a;letter-spacing:.2em;text-transform:uppercase;margin-top:.4rem;}
-@keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
-.cur{display:inline-block;width:7px;height:13px;background:var(--red);vertical-align:middle;animation:blink 1s step-end infinite;margin-left:2px;}
+        body {
+            background: #040508;
+            color: var(--white);
+            font-family: 'Share Tech Mono', 'Fira Code', monospace;
+            min-height: 100vh;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 1.5rem;
+            position: relative;
+            overflow-x: hidden;
+        }
 
-/* STATUS PANEL */
-.status-panel{background:#0a0a0a;border:1px solid var(--border);border-top:2px solid var(--red);padding:.8rem 1.2rem;min-width:220px;}
-.style-rank{font-family:'VT323',monospace;font-size:3rem;color:var(--gold);text-shadow:0 0 20px var(--gold);line-height:1;text-align:right;}
-.divider{height:1px;background:#1a1a1a;margin:.5rem 0;}
-.status-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem;font-size:.65rem;}
-.status-label{color:#444;text-transform:uppercase;letter-spacing:.1em;}
-.status-bar{width:100px;height:5px;background:#111;border:1px solid #1e1e1e;overflow:hidden;}
-.bar-fill{height:100%;background:var(--red);box-shadow:0 0 6px var(--red);width:0;transition:width 1.2s ease;}
-.bar-fill.gold{background:var(--gold);box-shadow:0 0 6px var(--gold);}
-.bar-fill.green{background:var(--green);box-shadow:0 0 6px var(--green);}
-.sys-id{font-size:.5rem;color:#1e1e1e;text-align:right;margin-top:.35rem;letter-spacing:.1em;}
+        /* scanlines */
+        body::before {
+            content: '';
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: repeating-linear-gradient(0deg, transparent, transparent 2px,
+                rgba(0,0,0,0.13) 2px, rgba(0,0,0,0.13) 4px);
+            pointer-events: none; z-index: 9998;
+        }
+        /* vignette */
+        body::after {
+            content: '';
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(ellipse at 50% 50%, transparent 50%, rgba(0,0,0,0.72) 100%);
+            pointer-events: none; z-index: 9997;
+        }
 
-/* TICKER */
-.ticker-wrap{background:#000;border-top:1px solid #1a1a1a;border-bottom:1px solid #1a1a1a;overflow:hidden;padding:.28rem 0;margin-bottom:1.2rem;}
-.ticker-inner{display:flex;gap:4rem;animation:tick 30s linear infinite;white-space:nowrap;}
-@keyframes tick{from{transform:translateX(0);}to{transform:translateX(-50%);}}
-.ti{font-size:.58rem;color:#2a2a2a;letter-spacing:.2em;text-transform:uppercase;}
-.ti .r{color:var(--red);}
+        #bg-canvas {
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none; z-index: 1;
+        }
 
-/* NAV */
-.ws-label{font-size:.58rem;color:#333;letter-spacing:.3em;text-transform:uppercase;margin-bottom:.4rem;}
-.ws-grid{display:flex;flex-wrap:wrap;gap:3px;margin-bottom:1.4rem;}
-.ws-slot{background:#0a0a0a;border:1px solid #1e1e1e;border-bottom:2px solid #111;padding:.55rem 1.1rem;cursor:pointer;display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--white);font-family:'Share Tech Mono',monospace;font-size:.8rem;transition:.14s;position:relative;overflow:hidden;min-width:150px;user-select:none;}
-.ws-slot::before{content:'';position:absolute;left:0;top:0;width:3px;height:100%;background:#1e1e1e;transition:.14s;}
-.ws-slot::after{content:'';position:absolute;bottom:0;left:0;width:0;height:2px;transition:width .18s;}
-.ws-slot.c-red{--c:var(--red);}.ws-slot.c-blue{--c:var(--blue);}.ws-slot.c-orange{--c:var(--orange);}.ws-slot.c-green{--c:var(--green);}.ws-slot.c-gold{--c:var(--gold);}.ws-slot.c-pink{--c:var(--pink);}
-.ws-slot:hover,.ws-slot.active{border-color:var(--c);background:color-mix(in srgb,var(--c) 6%,#0a0a0a);color:#fff;}
-.ws-slot:hover::before,.ws-slot.active::before{background:var(--c);box-shadow:0 0 8px var(--c);}
-.ws-slot::after{background:var(--c);}
-.ws-slot:hover::after,.ws-slot.active::after{width:100%;}
-.slot-icon{font-size:1rem;width:22px;text-align:center;opacity:.7;}
-.slot-name{font-size:.78rem;text-transform:uppercase;letter-spacing:.05em;}
-.slot-sub{font-size:.57rem;color:#444;letter-spacing:.08em;}
-.slot-num{margin-left:auto;font-family:'VT323',monospace;font-size:1.5rem;color:#222;transition:.14s;}
-.ws-slot:hover .slot-num,.ws-slot.active .slot-num{color:var(--c);}
+        /* ── TERMINAL ── */
+        .terminal {
+            max-width: 1440px; width: 100%;
+            background: rgba(6, 8, 12, 0.93);
+            border: 1px solid var(--terminal-green);
+            border-radius: 4px;
+            box-shadow:
+                0 0 0 1px rgba(0,255,136,0.08),
+                0 0 40px rgba(0,255,136,0.12),
+                0 0 80px rgba(255,32,32,0.06),
+                inset 0 0 80px rgba(0,0,0,0.6);
+            position: relative; z-index: 10; overflow: hidden;
+        }
 
-.redline{height:2px;background:linear-gradient(90deg,var(--red) 0%,#fff 18%,var(--red) 35%,transparent 100%);box-shadow:0 0 10px var(--glow-r);margin-bottom:1.5rem;}
+        /* ── TERMINAL BAR ── */
+        .terminal-bar {
+            background: #050709;
+            padding: 0.75rem 1.2rem;
+            border-bottom: 1px solid var(--terminal-green);
+            display: flex; justify-content: space-between; align-items: center;
+            flex-wrap: wrap; gap: 0.5rem; position: relative;
+        }
+        .terminal-bar::after {
+            content: '';
+            position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
+            background: linear-gradient(90deg, transparent, var(--terminal-green) 30%, var(--red) 70%, transparent);
+            opacity: 0.5;
+        }
+        .terminal-title { display: flex; align-items: center; gap: 12px; }
+        .terminal-dots  { display: flex; gap: 6px; }
+        .dot { width: 12px; height: 12px; border-radius: 50%; }
+        .dot-red    { background: #ff5f56; box-shadow: 0 0 7px #ff5f56; }
+        .dot-yellow { background: #ffbd2e; box-shadow: 0 0 7px #ffbd2e; }
+        .dot-green  { background: #27c93f; box-shadow: 0 0 7px #27c93f; }
 
-/* LAYOUT */
-.arsenal-layout{display:flex;gap:1.4rem;flex-wrap:wrap;}
-.arsenal-main{flex:1;min-width:0;}
-.arsenal-side{flex:0 0 250px;}
+        .terminal-path {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.78rem; color: var(--terminal-green);
+            letter-spacing: 0.5px;
+            text-shadow: 0 0 8px var(--terminal-green);
+        }
 
-/* SLOT TABS */
-.slot-tabs{display:flex;gap:2px;flex-wrap:wrap;margin-bottom:1rem;}
-.slot-tab{background:#0a0a0a;border:1px solid #1a1a1a;padding:.45rem .9rem;cursor:pointer;font-family:'VT323',monospace;font-size:1.15rem;letter-spacing:.08em;text-transform:uppercase;color:#333;transition:.15s;position:relative;user-select:none;}
-.slot-tab::after{content:'';position:absolute;bottom:0;left:0;width:0;height:2px;transition:.2s;}
-.slot-tab:hover,.slot-tab.active{color:var(--white);background:color-mix(in srgb,var(--tab-c,var(--red)) 8%,#0a0a0a);border-color:var(--tab-c,var(--red));}
-.slot-tab::after{background:var(--tab-c,var(--red));}
-.slot-tab:hover::after,.slot-tab.active::after{width:100%;}
-.tab-count{font-size:.7rem;color:#333;margin-left:6px;vertical-align:middle;}
-.slot-tab.active .tab-count{color:var(--tab-c,var(--red));}
+        .back-link {
+            color: var(--terminal-amber); text-decoration: none;
+            font-size: 0.78rem; transition: 0.2s; letter-spacing: 0.06em;
+            padding: 0.3rem 0.8rem;
+            border: 1px solid rgba(255,209,102,0.25);
+            font-family: 'Share Tech Mono', monospace;
+        }
+        .back-link:hover {
+            color: var(--terminal-green);
+            border-color: var(--terminal-green);
+            text-shadow: 0 0 8px var(--terminal-green);
+            background: rgba(0,255,136,0.05);
+        }
 
-/* FILTER BAR */
-.filter-bar{display:flex;gap:6px;align-items:center;flex-wrap:wrap;background:#090909;border:1px solid #161616;padding:.55rem .8rem;margin-bottom:1rem;}
-.filter-label{font-size:.55rem;color:#333;letter-spacing:.25em;text-transform:uppercase;margin-right:4px;}
-.filter-btn{background:#0d0d0d;border:1px solid #1e1e1e;padding:.25rem .65rem;cursor:pointer;font-family:'Share Tech Mono',monospace;font-size:.6rem;color:#444;letter-spacing:.1em;text-transform:uppercase;transition:.13s;user-select:none;}
-.filter-btn:hover,.filter-btn.active{border-color:var(--f-c,#555);color:var(--f-c,#ccc);background:color-mix(in srgb,var(--f-c,#555) 8%,#0d0d0d);}
-.filter-btn.all{--f-c:var(--white);}.filter-btn.blue{--f-c:var(--blue);}.filter-btn.red{--f-c:var(--red);}.filter-btn.green{--f-c:var(--green);}
-.search-box{background:#0d0d0d;border:1px solid #1a1a1a;padding:.25rem .6rem;flex:1;min-width:120px;font-family:'Share Tech Mono',monospace;font-size:.65rem;color:var(--white);letter-spacing:.05em;outline:none;transition:.15s;}
-.search-box:focus{border-color:var(--red);}
-.search-box::placeholder{color:#2a2a2a;}
-.sort-btn{background:#0d0d0d;border:1px solid #1e1e1e;padding:.25rem .65rem;cursor:pointer;font-family:'Share Tech Mono',monospace;font-size:.6rem;color:#444;letter-spacing:.08em;text-transform:uppercase;transition:.13s;user-select:none;}
-.sort-btn.active{border-color:var(--gold);color:var(--gold);}
-.sort-btn:hover{border-color:#444;color:#888;}
+        /* ── TICKER ── */
+        .ticker-wrap {
+            background: #000; border-bottom: 1px solid #111;
+            overflow: hidden; padding: 0.25rem 0;
+        }
+        .ticker-inner {
+            display: flex; gap: 4rem;
+            animation: tick 30s linear infinite; white-space: nowrap;
+        }
+        @keyframes tick { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+        .ti { font-size: 0.56rem; color: #252525; letter-spacing: 0.2em; text-transform: uppercase; }
+        .ti .r { color: var(--red); }
+        .ti .g { color: var(--terminal-green); }
 
-.results-bar{font-size:.58rem;color:#282828;letter-spacing:.12em;margin-bottom:.8rem;}
-.results-bar .hl{color:var(--red);}
+        /* ── TERMINAL CONTENT ── */
+        .terminal-content { padding: 2rem; }
 
-/* WEAPON GRID */
-.weapon-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:6px;}
+        /* ── BOOT HEADER ── */
+        .boot-header {
+            border-bottom: 1px solid rgba(0,255,136,0.15);
+            padding-bottom: 1.2rem; margin-bottom: 1.6rem; position: relative;
+        }
+        .boot-header::before {
+            content: ''; position: absolute; bottom: -1px; left: 0;
+            width: 25%; height: 1px;
+            background: var(--red); box-shadow: 0 0 8px var(--red);
+        }
 
-/* WEAPON CARD */
-.wcard{background:#0a0a0a;border:1px solid #1a1a1a;cursor:pointer;transition:.18s;position:relative;overflow:hidden;user-select:none;animation:cardIn .3s ease both;}
-@keyframes cardIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
-.wcard::before{content:'';position:absolute;left:0;top:0;width:3px;height:100%;background:var(--wc,#1e1e1e);box-shadow:0 0 8px var(--wc,transparent);transition:.18s;}
-.wcard:hover{border-color:var(--wc,#333);background:color-mix(in srgb,var(--wc,#333) 5%,#0a0a0a);transform:translateY(-2px);}
-.wcard.selected{border-color:var(--wc,#333);background:color-mix(in srgb,var(--wc,#333) 9%,#0a0a0a);box-shadow:0 0 20px color-mix(in srgb,var(--wc,#333) 25%,transparent);}
+        .logo-eyebrow {
+            font-size: 0.58rem; color: var(--red);
+            letter-spacing: 0.35em; text-transform: uppercase; margin-bottom: 0.3rem;
+        }
 
-/* CARD IMAGE */
-.wcard-img-wrap{position:relative;overflow:hidden;height:110px;background:#050505;border-bottom:1px solid #111;}
-.wcard-img-wrap img{width:100%;height:100%;object-fit:cover;opacity:.5;transition:.3s;filter:grayscale(40%) brightness(.7);}
-.wcard:hover .wcard-img-wrap img{opacity:.75;filter:grayscale(0%) brightness(.85);}
-.wcard-img-overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(to bottom,transparent 40%,#0a0a0a 100%);}
-.wcard-img-badge{position:absolute;top:6px;right:6px;font-family:'VT323',monospace;font-size:.9rem;padding:2px 8px;border:1px solid var(--wc,#222);color:var(--wc,#444);background:rgba(0,0,0,.7);letter-spacing:.1em;}
-.wcard-img-slot{position:absolute;bottom:6px;left:8px;font-size:.55rem;color:var(--wc,#333);letter-spacing:.15em;text-transform:uppercase;}
+        .boot-header h1 {
+            font-family: 'VT323', monospace;
+            font-size: 3rem; color: var(--white); font-weight: 400;
+            letter-spacing: 3px; line-height: 1;
+            text-shadow: 0 0 20px var(--glow-r), 2px 2px 0 var(--red-dim);
+        }
+        .boot-header h1 .v1-accent {
+            color: var(--red);
+            text-shadow: 0 0 30px var(--red), 0 0 60px rgba(255,32,32,0.4);
+        }
+        .boot-header h1 i {
+            color: var(--terminal-green); font-size: 0.65em; margin-right: 10px;
+            animation: pulse 1.5s infinite;
+            filter: drop-shadow(0 0 6px var(--terminal-green));
+        }
+        @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.45; } }
 
-.wcard-head{display:flex;align-items:center;gap:8px;padding:.6rem .7rem .4rem;border-bottom:1px solid #111;}
-.wcard-icon{font-size:1.4rem;width:30px;text-align:center;color:var(--wc,#333);filter:drop-shadow(0 0 6px var(--wc,transparent));}
-.wcard-title{flex:1;}
-.wcard-name{font-family:'VT323',monospace;font-size:1.15rem;letter-spacing:.06em;color:var(--white);}
-.wcard-runame{font-size:.55rem;color:#333;letter-spacing:.06em;margin-top:1px;}
-.wcard-variant{font-family:'VT323',monospace;font-size:.85rem;padding:1px 7px;border:1px solid var(--wc,#222);color:var(--wc,#444);background:color-mix(in srgb,var(--wc,#000) 10%,transparent);letter-spacing:.1em;white-space:nowrap;}
+        .boot-sub {
+            font-size: 0.68rem; color: #444; margin-top: 0.55rem;
+            letter-spacing: 0.14em; line-height: 1.6;
+        }
+        .boot-sub .hl  { color: var(--red); }
+        .boot-sub .hlg { color: var(--terminal-green); }
 
-.wcard-body{padding:.5rem .7rem;}
-.wcard-desc{font-size:.65rem;color:#444;line-height:1.5;margin-bottom:.5rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
-.mini-stats{display:flex;flex-direction:column;gap:3px;margin-bottom:.5rem;}
-.mini-stat-row{display:flex;align-items:center;gap:6px;}
-.mini-stat-lbl{font-size:.52rem;color:#2e2e2e;letter-spacing:.12em;width:52px;text-transform:uppercase;flex-shrink:0;}
-.mini-stat-bar{flex:1;height:3px;background:#111;overflow:hidden;}
-.mini-stat-fill{height:100%;background:var(--wc,var(--red));box-shadow:0 0 4px var(--wc,var(--red));width:0;transition:width .9s ease;}
-.mini-stat-val{font-family:'VT323',monospace;font-size:.85rem;color:#2a2a2a;width:28px;text-align:right;}
-.wcard-tags{display:flex;flex-wrap:wrap;gap:3px;}
-.wtag{background:#090909;border:1px solid #181818;padding:1px 6px;font-size:.52rem;letter-spacing:.08em;text-transform:uppercase;color:#333;}
+        .blink-cursor {
+            display: inline-block; width: 10px; height: 18px;
+            background: var(--red); animation: blink 1s step-end infinite;
+            vertical-align: middle; margin-left: 4px;
+            box-shadow: 0 0 6px var(--red);
+        }
+        @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
 
-.wcard-footer{border-top:1px solid #111;padding:.35rem .7rem;display:flex;justify-content:space-between;align-items:center;}
-.wcard-slot-badge{font-size:.5rem;color:#222;letter-spacing:.12em;text-transform:uppercase;}
-.wcard-arrow{font-size:.7rem;color:#222;transition:.15s;}
-.wcard:hover .wcard-arrow,.wcard.selected .wcard-arrow{color:var(--wc,var(--red));}
-.compare-check{display:flex;align-items:center;gap:5px;font-size:.52rem;color:#282828;cursor:pointer;padding:2px 0;transition:.13s;}
-.compare-check input{display:none;}
-.compare-box{width:10px;height:10px;border:1px solid #222;display:flex;align-items:center;justify-content:center;transition:.13s;}
-.compare-check:hover{color:var(--gold);}
-.compare-check:hover .compare-box{border-color:var(--gold);}
-.compare-check.checked .compare-box{border-color:var(--gold);background:var(--gold);}
-.compare-check.checked{color:var(--gold);}
+        /* ── STATS ROW ── */
+        .stats-row {
+            display: flex; gap: 1rem; flex-wrap: wrap;
+            padding: 0.7rem 1rem; margin-bottom: 1.5rem;
+            background: #040507; border: 1px solid #111;
+            border-left: 2px solid var(--red);
+        }
+        .stat-chip { font-size: 0.6rem; color: #3a3a3a; letter-spacing: 0.1em; }
+        .stat-chip .sv  { font-family: 'VT323', monospace; font-size: 1rem; color: var(--terminal-green); }
+        .stat-chip .sr  { color: var(--red); }
+        .stat-chip .sg  { color: var(--gold); }
+        .stat-chip .sb  { color: var(--blue); }
 
-/* NO RESULTS */
-.no-results{text-align:center;padding:3rem 1rem;color:#222;font-size:.8rem;letter-spacing:.2em;}
-.no-results .nr-icon{font-size:3rem;color:#151515;margin-bottom:.8rem;}
+        /* ── REDLINE ── */
+        .redline {
+            height: 1px;
+            background: linear-gradient(90deg, var(--red) 0%, #fff 12%, var(--red) 30%, transparent 100%);
+            box-shadow: 0 0 8px rgba(255,32,32,0.3);
+            margin: 0.5rem 0 1rem;
+        }
 
-/* DETAIL PANEL */
-.detail-panel{background:#080808;border:1px solid #222;border-top:2px solid var(--dp-c,var(--red));margin-top:8px;display:none;animation:detailIn .2s ease both;position:relative;overflow:hidden;}
-@keyframes detailIn{from{opacity:0;transform:scaleY(.95);transform-origin:top;}to{opacity:1;transform:scaleY(1);}}
-.detail-panel.open{display:block;}
-.detail-scan{position:absolute;top:-30%;left:0;width:100%;height:25%;background:linear-gradient(transparent,rgba(255,32,32,.04),transparent);animation:scan 4s linear infinite;pointer-events:none;}
-@keyframes scan{to{top:120%;}}
-.detail-inner{display:flex;gap:0;flex-wrap:wrap;}
-.detail-img{width:100%;height:180px;object-fit:cover;opacity:.4;filter:grayscale(30%);border-bottom:1px solid #111;}
-.detail-left{flex:2;min-width:260px;padding:1.2rem 1.4rem;border-right:1px solid #111;}
-.detail-right{flex:1;min-width:200px;padding:1.2rem 1rem;}
-.dp-eyebrow{font-size:.55rem;color:var(--dp-c,var(--red));letter-spacing:.3em;text-transform:uppercase;margin-bottom:.4rem;}
-.dp-name{font-family:'VT323',monospace;font-size:2.2rem;color:var(--white);line-height:1;margin-bottom:.1rem;letter-spacing:.05em;}
-.dp-runame{font-size:.65rem;color:#333;letter-spacing:.1em;margin-bottom:.8rem;}
-.dp-desc{font-size:.72rem;color:#555;line-height:1.65;margin-bottom:1rem;}
-.dp-activation{background:#050505;border:1px solid #111;padding:.7rem .9rem;margin-bottom:.8rem;}
-.dp-act-row{display:flex;gap:8px;align-items:flex-start;margin-bottom:.4rem;font-size:.68rem;}
-.dp-act-row:last-child{margin-bottom:0;}
-.dp-act-key{color:var(--dp-c,var(--red));font-family:'VT323',monospace;font-size:.9rem;width:70px;flex-shrink:0;}
-.dp-act-desc{color:#555;line-height:1.4;}
-.dp-mechanics{margin-bottom:.8rem;}
-.dp-mech-title{font-size:.56rem;color:#2a2a2a;letter-spacing:.25em;text-transform:uppercase;margin-bottom:.4rem;}
-.dp-mech-item{display:flex;gap:8px;font-size:.66rem;color:#444;padding:.28rem 0;border-bottom:1px solid #0d0d0d;line-height:1.45;}
-.dp-mech-item:last-child{border-bottom:none;}
-.dp-mech-arrow{color:var(--dp-c,var(--red));flex-shrink:0;}
-.dp-stats{}
-.dp-stat-title{font-size:.56rem;color:#2a2a2a;letter-spacing:.25em;text-transform:uppercase;margin-bottom:.6rem;}
-.dp-stat-row{margin-bottom:.55rem;}
-.dp-stat-head{display:flex;justify-content:space-between;margin-bottom:3px;font-size:.62rem;}
-.dp-stat-lbl{color:#333;letter-spacing:.1em;text-transform:uppercase;}
-.dp-stat-val{font-family:'VT323',monospace;font-size:1rem;color:var(--dp-c,var(--red));}
-.dp-stat-bar{height:4px;background:#111;border:1px solid #161616;overflow:hidden;}
-.dp-stat-fill{height:100%;background:var(--dp-c,var(--red));box-shadow:0 0 5px var(--dp-c,var(--red));width:0;transition:width .8s ease;}
-.readout{background:#050505;border:1px solid #111;padding:.6rem .8rem;font-family:'Fira Code',monospace;font-size:.62rem;color:#282828;line-height:1.9;margin-top:.8rem;}
-.readout .hl{color:var(--red);}
-.readout .vl{color:#666;}
+        /* ── WEAPON GRID ── */
+        .weapon-grid { display: flex; flex-direction: column; gap: 1.5rem; }
 
-/* SIDE */
-.side-panel{background:#0b0b0b;border:1px solid var(--border);margin-bottom:.9rem;}
-.sp-head{background:#0d0d0d;border-bottom:1px solid var(--border);padding:.45rem .8rem;font-size:.6rem;color:#444;letter-spacing:.25em;text-transform:uppercase;display:flex;align-items:center;gap:.5rem;}
-.sp-head::before{content:'';width:5px;height:5px;flex-shrink:0;background:var(--red);box-shadow:0 0 5px var(--red);}
-.sp-body{padding:.8rem;}
-.v1-portrait{width:100%;aspect-ratio:1;background:#080808;border-bottom:1px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;overflow:hidden;}
-.v1-portrait img{width:100%;height:100%;object-fit:cover;opacity:.35;filter:grayscale(50%);}
-.v1-portrait::after{content:'';position:absolute;top:-40%;left:0;width:100%;height:35%;background:linear-gradient(transparent,rgba(255,32,32,.05),transparent);animation:scan 3s linear infinite;}
-.v1-lbl{font-family:'VT323',monospace;font-size:1rem;color:#1a1a1a;letter-spacing:.4em;position:absolute;bottom:8px;}
-.mstat{display:flex;justify-content:space-between;align-items:center;padding:.38rem 0;border-bottom:1px solid #0f0f0f;font-size:.7rem;}
-.mstat:last-child{border-bottom:none;}
-.mstat-k{color:#444;}
-.mstat-v{font-family:'VT323',monospace;font-size:1rem;color:var(--white);}
-.mstat-v.r{color:var(--red);}.mstat-v.g{color:var(--gold);}.mstat-v.n{color:var(--green);}
-.compare-panel{display:none;}
-.compare-panel.open{display:block;}
-.cmp-row{display:flex;gap:8px;align-items:center;padding:.35rem 0;border-bottom:1px solid #0d0d0d;font-size:.65rem;}
-.cmp-row:last-child{border-bottom:none;}
-.cmp-lbl{color:#333;flex:1;text-transform:uppercase;font-size:.58rem;letter-spacing:.08em;}
-.cmp-a,.cmp-b{width:38px;text-align:right;font-family:'VT323',monospace;font-size:1rem;}
-.cmp-a{color:var(--blue);}.cmp-b{color:var(--red);}
-.cmp-win{text-shadow:0 0 6px currentColor;}
-.kb-hint{font-size:.52rem;color:#1a1a1a;letter-spacing:.1em;text-align:center;margin-top:.5rem;}
-.kb-key{background:#111;border:1px solid #222;padding:0 4px;color:#2a2a2a;}
-.term-log{background:#050505;border:1px solid #0f0f0f;padding:.5rem .7rem;font-family:'Fira Code',monospace;font-size:.6rem;line-height:1.8;max-height:120px;overflow-y:auto;}
-.term-log::-webkit-scrollbar{width:3px;}
-.term-log::-webkit-scrollbar-thumb{background:#1e1e1e;}
-.tl-line{color:#1e1e1e;}
-.tl-line .tl-tag{color:var(--red);}
-.tl-line .tl-val{color:#3a3a3a;}
-.tl-line.new .tl-val{color:#555;}
+        /* ── WEAPON CATEGORY ── */
+        .weapon-category {
+            background: rgba(8, 10, 14, 0.92);
+            border: 1px solid #1a1a1a;
+            border-left: 3px solid var(--wcat-c, var(--terminal-green));
+            padding: 1.2rem 1.4rem;
+            transition: 0.25s; position: relative; overflow: hidden;
+        }
+        .weapon-category::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+            background: linear-gradient(90deg, var(--wcat-c, var(--terminal-green)), transparent);
+            opacity: 0.35;
+        }
+        /* sheen */
+        .weapon-category::after {
+            content: ''; position: absolute; top: 0; left: -40%;
+            width: 20%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.018), transparent);
+            transform: skewX(-15deg); animation: sheen 9s linear infinite;
+            pointer-events: none;
+        }
+        @keyframes sheen { 0% { left: -40%; } 100% { left: 130%; } }
 
-/* FOOTER */
-.site-footer{border-top:1px solid #151515;padding:.9rem 0;margin-top:1rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.4rem;font-size:.58rem;color:#282828;letter-spacing:.1em;text-transform:uppercase;}
-.footer-logo{font-family:'VT323',monospace;font-size:1.2rem;color:var(--red);text-shadow:0 0 6px var(--red);}
+        .weapon-category:hover {
+            border-color: var(--wcat-c, var(--red));
+            background: rgba(12, 8, 8, 0.97);
+        }
 
-@media(max-width:860px){.arsenal-side{flex:0 0 100%;}.detail-left{border-right:none;border-bottom:1px solid #111;}}
-@media(max-width:640px){.logo-main{font-size:2.8rem;}.weapon-grid{grid-template-columns:1fr;}}
-</style>
+        /* per-weapon color vars */
+        .weapon-category[data-weapon="arms"]       { --wcat-c: var(--pink); }
+        .weapon-category[data-weapon="revolver"]   { --wcat-c: var(--terminal-green); }
+        .weapon-category[data-weapon="shotgun"]    { --wcat-c: var(--red); }
+        .weapon-category[data-weapon="nailgun"]    { --wcat-c: var(--blue); }
+        .weapon-category[data-weapon="railcannon"] { --wcat-c: var(--purple); }
+        .weapon-category[data-weapon="rocket"]     { --wcat-c: var(--terminal-amber); }
+
+        /* ── WEAPON IMAGE CONTAINER ── */
+        .weapon-image-container {
+            margin-bottom: 1rem;
+            display: flex; justify-content: center;
+        }
+
+        .weapon-frame {
+            background: linear-gradient(135deg, #0d1117, #060809);
+            padding: 0.6rem 1.2rem;
+            border: 1px solid var(--wcat-c, var(--terminal-green));
+            box-shadow: 0 0 18px rgba(0,0,0,0.8),
+                        0 0 20px rgba(var(--wcat-rgb, 0,255,136), 0.15);
+            transition: 0.3s;
+            display: inline-flex; align-items: center; justify-content: center;
+            min-width: 220px; min-height: 100px; position: relative;
+        }
+
+        /* GIF/PNG placeholder when no image loads */
+        .weapon-frame.empty::before,
+        .variant-img-frame.empty::before {
+            content: '[ GIF / PNG ]';
+            font-size: 0.55rem; color: #1e1e1e;
+            letter-spacing: 0.2em; position: absolute;
+        }
+
+        .weapon-frame:hover {
+            transform: scale(1.03);
+            box-shadow: 0 0 35px rgba(var(--wcat-rgb, 0,255,136), 0.3);
+        }
+
+        .weapon-img {
+            max-width: 300px; height: auto; max-height: 130px;
+            display: block; object-fit: contain;
+        }
+
+        /* ── WEAPON NAME ── */
+        .weapon-name {
+            font-family: 'VT323', monospace;
+            font-size: 2.4rem; font-weight: 400;
+            color: var(--white); line-height: 1;
+            letter-spacing: 4px; margin-bottom: 0.3rem;
+            text-shadow: 0 0 18px rgba(255,255,255,0.15);
+        }
+        .weapon-name i {
+            color: var(--wcat-c, var(--terminal-green));
+            font-size: 0.62em; margin-right: 10px;
+            filter: drop-shadow(0 0 8px currentColor);
+        }
+        .weapon-slot-badge {
+            display: inline-block; vertical-align: middle; margin-left: 10px;
+            font-family: 'Share Tech Mono', monospace; font-size: 0.52rem;
+            color: var(--wcat-c, var(--terminal-green));
+            border: 1px solid var(--wcat-c, var(--terminal-green));
+            padding: 2px 8px; letter-spacing: 0.2em; opacity: 0.65;
+        }
+
+        /* ── VARIANT TOGGLE ── */
+        .variant-toggle {
+            display: flex; gap: 3px; margin-bottom: 1rem;
+            padding: 3px; background: #040507; border: 1px solid #151515;
+            width: fit-content;
+        }
+        .toggle-btn {
+            background: transparent; border: 1px solid transparent;
+            padding: 0.28rem 0.9rem;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.6rem; cursor: pointer; color: #333;
+            letter-spacing: 0.12em; text-transform: uppercase; transition: 0.18s;
+        }
+        .toggle-btn:hover { color: #666; border-color: #2a2a2a; }
+        .toggle-btn.active {
+            background: rgba(0,255,136,0.08);
+            color: var(--terminal-green);
+            border-color: var(--terminal-green);
+            text-shadow: 0 0 6px var(--terminal-green);
+        }
+        .toggle-btn:last-child.active {
+            background: rgba(255,209,102,0.08);
+            color: var(--terminal-amber);
+            border-color: var(--terminal-amber);
+            text-shadow: 0 0 6px var(--terminal-amber);
+        }
+
+        /* ── VARIANTS GRID ── */
+        .variants {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(265px, 1fr));
+            gap: 0.8rem; margin-top: 0.8rem;
+        }
+
+        /* ── VARIANT CARD ── */
+        .variant-card {
+            background: #050709; border: 1px solid #141414;
+            padding: 0.9rem 1rem; transition: 0.2s;
+            position: relative; overflow: hidden;
+        }
+        .variant-card::before {
+            content: ''; position: absolute; left: 0; top: 0;
+            width: 2px; height: 100%;
+            background: var(--wcat-c, var(--terminal-green));
+            opacity: 0.4; transition: 0.2s;
+        }
+        .variant-card:hover { border-color: var(--wcat-c, var(--terminal-green)); transform: translateX(4px); }
+        .variant-card:hover::before { opacity: 1; box-shadow: 0 0 8px var(--wcat-c, var(--terminal-green)); }
+
+        /* ── VARIANT IMAGE FRAME (GIF / PNG placeholder) ── */
+        .variant-image { margin-bottom: 0.8rem; text-align: center; }
+
+        .variant-img-frame {
+            display: inline-flex; align-items: center; justify-content: center;
+            min-width: 180px; min-height: 68px;
+            border: 1px dashed rgba(255,255,255,0.07);
+            background: #030405; position: relative; padding: 4px; transition: 0.2s;
+        }
+        .variant-img-frame::before {
+            content: '[ GIF / PNG ]'; font-family: 'Share Tech Mono', monospace;
+            font-size: 0.48rem; color: #191919; letter-spacing: 0.18em; position: absolute;
+        }
+        .variant-img-frame:hover { border-color: rgba(255,255,255,0.14); }
+
+        .variant-img {
+            max-width: 100%; max-height: 72px; object-fit: contain;
+            position: relative; z-index: 1;
+        }
+
+        /* ── VARIANT TITLE ── */
+        .variant-title {
+            font-family: 'VT323', monospace; font-size: 1.35rem;
+            color: var(--terminal-amber); margin-bottom: 0.2rem;
+            letter-spacing: 1px; line-height: 1.2;
+        }
+        .variant-title code {
+            background: rgba(0,0,0,0.55); padding: 1px 6px;
+            font-family: 'Share Tech Mono', monospace; font-size: 0.75rem;
+            color: var(--terminal-green); border: 1px solid #1a3a2a;
+            letter-spacing: 0.04em;
+        }
+
+        .color-badge {
+            display: inline-block; vertical-align: middle; margin-left: 7px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.48rem; padding: 1px 6px;
+            border: 1px solid currentColor; letter-spacing: 0.14em; text-transform: uppercase;
+        }
+        .badge-blue   { color: var(--blue); }
+        .badge-red    { color: var(--red); }
+        .badge-green  { color: var(--terminal-green); }
+        .badge-gold   { color: var(--gold); }
+        .badge-purple { color: var(--purple); }
+
+        /* ── VARIANT DESC ── */
+        .variant-desc {
+            font-size: 0.67rem; color: #5a5a5a; line-height: 1.55;
+            margin-top: 0.3rem; font-family: 'Share Tech Mono', monospace;
+        }
+
+        /* ── MINI STAT BARS ── */
+        .mini-bars { margin-top: 0.55rem; display: flex; flex-direction: column; gap: 4px; }
+        .mbar-row  { display: flex; align-items: center; gap: 6px; }
+        .mbar-lbl  { font-size: 0.49rem; color: #2e2e2e; width: 68px; flex-shrink: 0;
+                     letter-spacing: 0.08em; text-transform: uppercase; }
+        .mbar-track { flex: 1; height: 3px; background: #111; overflow: hidden; }
+        .mbar-fill {
+            height: 100%; width: 0; transition: width 1s ease;
+            background: var(--wcat-c, var(--terminal-green));
+            box-shadow: 0 0 5px var(--wcat-c, var(--terminal-green));
+        }
+        .mbar-val { font-family: 'VT323', monospace; font-size: 0.88rem; color: #2a2a2a; width: 26px; text-align: right; }
+
+        /* ── STAT LINE ── */
+        .stat-line {
+            font-size: 0.62rem; color: var(--terminal-green);
+            margin-top: 0.6rem; border-top: 1px solid #0f0f0f;
+            padding-top: 0.45rem; line-height: 1.55; opacity: 0.82;
+        }
+        .stat-line .sl-r  { color: var(--red); }
+        .stat-line .sl-a  { color: var(--terminal-amber); }
+        .stat-line .sl-b  { color: var(--blue); }
+
+        /* ── FOOTER ── */
+        .footer-term {
+            margin-top: 2rem; padding-top: 1rem;
+            border-top: 1px solid #111;
+            font-size: 0.6rem; color: #2a2a2a;
+            display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;
+            letter-spacing: 0.1em;
+        }
+        .footer-logo { font-family: 'VT323', monospace; font-size: 1.15rem; color: var(--red); text-shadow: 0 0 8px var(--red); }
+
+        /* ── ASCII ── */
+        .ascii-art {
+            font-family: 'Fira Code', monospace; font-size: 0.55rem;
+            color: #181818; text-align: center; margin-top: 1.5rem;
+            white-space: pre; line-height: 1.5;
+        }
+
+        /* ── IMAGE GUIDE ── */
+        .image-guide {
+            background: #040507; border: 1px solid rgba(255,209,102,0.15);
+            border-left: 2px solid var(--terminal-amber);
+            padding: 0.9rem 1rem; margin-top: 1.5rem; font-size: 0.66rem;
+        }
+        .image-guide h4 {
+            font-family: 'VT323', monospace; font-size: 1.1rem;
+            color: var(--terminal-amber); margin-bottom: 0.45rem; letter-spacing: 0.1em;
+        }
+        .image-guide p  { color: #444; line-height: 1.6; }
+        .image-guide code { background: rgba(0,0,0,0.55); padding: 1px 5px; color: var(--terminal-green); font-size: 0.63rem; }
+
+        @media (max-width: 780px) {
+            .terminal-content { padding: 1rem; }
+            .boot-header h1   { font-size: 2.2rem; }
+            .weapon-name      { font-size: 1.8rem; }
+            .variants         { grid-template-columns: 1fr; }
+        }
+    </style>
 </head>
 <body>
+
 <canvas id="bg-canvas"></canvas>
-<div class="page">
 
-<!-- HEADER -->
-<div class="site-header">
-  <div class="header-top">
-    <div>
-      <div class="logo-eyebrow">// БАЗА ДАННЫХ // АРСЕНАЛ V1 // ПОЛНЫЙ КАТАЛОГ МОДУЛЕЙ</div>
-      <div class="logo-main"><span class="v1">V1</span> — АРСЕНАЛ</div>
-      <div class="logo-tagline">СРЕДСТВА НЕЙТРАЛИЗАЦИИ // ПОЛНЫЙ КАТАЛОГ // ВСЕ МОДУЛИ<span class="cur"></span></div>
-    </div>
-    <div class="status-panel">
-      <div class="style-rank" id="dynamicRank">SSS</div>
-      <div class="divider"></div>
-      <div class="status-row"><span class="status-label">ЭНЕРГИЯ</span><div class="status-bar"><div class="bar-fill" data-w="78"></div></div></div>
-      <div class="status-row"><span class="status-label">РЕЗЕРВ</span><div class="status-bar"><div class="bar-fill gold" data-w="55"></div></div></div>
-      <div class="status-row"><span class="status-label">СТИЛЬ</span><div class="status-bar"><div class="bar-fill green" data-w="95"></div></div></div>
-      <div class="sys-id">UNIT // V1 MACHINE // ARSENAL MODULE // FULL CATALOG</div>
-    </div>
-  </div>
-</div>
+<div class="terminal">
 
-<!-- TICKER -->
-<div class="ticker-wrap">
-  <div class="ticker-inner">
-    <span class="ti">// <span class="r">АРСЕНАЛ</span> // МОДУЛЕЙ: 18 // МАНИПУЛЯТОРОВ: 3 // ДАЛЬНОБОЙНЫХ: 3 // ИМПУЛЬСНЫХ: 3 // ГВОЗДЕВЫХ: 2 // РЕЛЬСОВЫХ: 3 // РАКЕТНЫХ: 2 // PIERCER // FEEDBACKER // RAILCANNON // NAILGUN // ROCKET //</span>
-    <span class="ti">// <span class="r">АРСЕНАЛ</span> // МОДУЛЕЙ: 18 // МАНИПУЛЯТОРОВ: 3 // ДАЛЬНОБОЙНЫХ: 3 // ИМПУЛЬСНЫХ: 3 // ГВОЗДЕВЫХ: 2 // РЕЛЬСОВЫХ: 3 // РАКЕТНЫХ: 2 // PIERCER // FEEDBACKER // RAILCANNON // NAILGUN // ROCKET //</span>
-  </div>
-</div>
-
-<!-- NAV -->
-<div class="ws-label">// НАВИГАЦИЯ — ВЫБОР РАЗДЕЛА</div>
-<div class="ws-grid">
-  <a href="index.html" class="ws-slot c-red"><div class="slot-icon">◎</div><div><div class="slot-name">Главная</div><div class="slot-sub">ОБЗОР // ИНДЕКС</div></div><div class="slot-num">←</div></a>
-  <a href="weapons.html" class="ws-slot c-blue active"><div class="slot-icon">⬡</div><div><div class="slot-name">Арсенал</div><div class="slot-sub">МОДУЛИ // СЛОТ 1</div></div><div class="slot-num">1</div></a>
-  <a href="#" class="ws-slot c-orange"><div class="slot-icon">◈</div><div><div class="slot-name">Объекты</div><div class="slot-sub">ЦЕЛИ // СЛОТ 2</div></div><div class="slot-num">2</div></a>
-  <a href="#" class="ws-slot c-green"><div class="slot-icon">★</div><div><div class="slot-name">Сущности</div><div class="slot-sub">КЛЮЧЕВЫЕ // СЛОТ 3</div></div><div class="slot-num">3</div></a>
-  <a href="#" class="ws-slot c-gold"><div class="slot-icon">▦</div><div><div class="slot-name">Секторы</div><div class="slot-sub">ЛОКАЦИИ // СЛОТ 4</div></div><div class="slot-num">4</div></a>
-</div>
-<div class="redline"></div>
-
-<!-- ARSENAL LAYOUT -->
-<div class="arsenal-layout">
-  <div class="arsenal-main">
-    <div class="slot-tabs" id="slotTabs"></div>
-    <div class="filter-bar">
-      <span class="filter-label">ВАРИАНТ:</span>
-      <button class="filter-btn all active" data-variant="all">ВСЕ</button>
-      <button class="filter-btn blue" data-variant="blue">◼ СИНИЙ</button>
-      <button class="filter-btn red" data-variant="red">◼ КРАСНЫЙ</button>
-      <button class="filter-btn green" data-variant="green">◼ ЗЕЛЁНЫЙ</button>
-      <input class="search-box" id="searchBox" type="text" placeholder="ПОИСК МОДУЛЯ..." autocomplete="off" spellcheck="false">
-      <button class="sort-btn" id="sortPower">МОЩНОСТЬ ↓</button>
-      <button class="sort-btn" id="sortSpeed">СКОРОСТЬ ↓</button>
-      <button class="sort-btn" id="sortRange">ДАЛЬНОСТЬ ↓</button>
-    </div>
-    <div class="results-bar" id="resultsBar">// РЕЗУЛЬТАТОВ: <span class="hl" id="resultsCount">18</span> // НАЖМИТЕ НА КАРТОЧКУ ДЛЯ ДЕТАЛЕЙ</div>
-    <div class="weapon-grid" id="weaponGrid"></div>
-    <div class="detail-panel" id="detailPanel">
-      <div class="detail-scan"></div>
-      <div class="detail-inner">
-        <div class="detail-left" id="detailLeft"></div>
-        <div class="detail-right" id="detailRight"></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="arsenal-side">
-    <div class="side-panel">
-      <div class="sp-head">// UNIT PROFILE // V1</div>
-      <div class="v1-portrait">
-        <img src="hakita.jpg" alt="V1 Unit" onerror="this.style.display='none'">
-        <div class="v1-lbl">V1 // MACHINE</div>
-      </div>
-    </div>
-    <div class="side-panel">
-      <div class="sp-head">// ПАРАМЕТРЫ АРСЕНАЛА</div>
-      <div class="sp-body">
-        <div class="mstat"><span class="mstat-k">ВСЕГО МОДУЛЕЙ</span><span class="mstat-v g" id="sideTotal">18</span></div>
-        <div class="mstat"><span class="mstat-k">МАНИПУЛЯТОРОВ</span><span class="mstat-v">3</span></div>
-        <div class="mstat"><span class="mstat-k">ДАЛЬНОБОЙНЫХ</span><span class="mstat-v">3</span></div>
-        <div class="mstat"><span class="mstat-k">ИМПУЛЬСНЫХ</span><span class="mstat-v">3</span></div>
-        <div class="mstat"><span class="mstat-k">ГВОЗДЕВЫХ</span><span class="mstat-v">2</span></div>
-        <div class="mstat"><span class="mstat-k">РЕЛЬСОВЫХ</span><span class="mstat-v">3</span></div>
-        <div class="mstat"><span class="mstat-k">РАКЕТНЫХ</span><span class="mstat-v">2</span></div>
-        <div class="mstat"><span class="mstat-k">СЛОТ ТОПЛИВА</span><span class="mstat-v">2</span></div>
-        <div class="mstat"><span class="mstat-k">АКТИВЕН</span><span class="mstat-v r" id="sideActive">—</span></div>
-      </div>
-    </div>
-    <div class="side-panel">
-      <div class="sp-head">// СРАВНЕНИЕ МОДУЛЕЙ</div>
-      <div class="sp-body">
-        <div style="font-size:.6rem;color:#282828;margin-bottom:.5rem;letter-spacing:.1em;">ВЫБЕРИТЕ ДВА МОДУЛЯ (ФЛАГ "CMP")</div>
-        <div class="compare-panel" id="comparePanel">
-          <div class="cmp-row"><span class="cmp-lbl">МОЩНОСТЬ</span><span class="cmp-a" id="cmpAPower">—</span><span class="cmp-b" id="cmpBPower">—</span></div>
-          <div class="cmp-row"><span class="cmp-lbl">СКОРОСТЬ</span><span class="cmp-a" id="cmpASpeed">—</span><span class="cmp-b" id="cmpBSpeed">—</span></div>
-          <div class="cmp-row"><span class="cmp-lbl">ДАЛЬНОСТЬ</span><span class="cmp-a" id="cmpARange">—</span><span class="cmp-b" id="cmpBRange">—</span></div>
-          <div class="cmp-row"><span class="cmp-lbl">УТИЛИТА</span><span class="cmp-a" id="cmpAUtil">—</span><span class="cmp-b" id="cmpBUtil">—</span></div>
+    <!-- ═══ TERMINAL BAR ═══ -->
+    <div class="terminal-bar">
+        <div class="terminal-title">
+            <div class="terminal-dots">
+                <div class="dot dot-red"></div>
+                <div class="dot dot-yellow"></div>
+                <div class="dot dot-green"></div>
+            </div>
+            <div class="terminal-path">
+                <i class="fas fa-terminal"></i> V1@LOWER-SECTOR:/arsenal/modules — DATABASE v2.1
+            </div>
         </div>
-        <div style="font-size:.55rem;color:#1a1a1a;margin-top:.5rem;">
-          A: <span id="cmpNameA" style="color:#5599ff;">не выбран</span><br>
-          B: <span id="cmpNameB" style="color:#ff2020;">не выбран</span>
-        </div>
-      </div>
+        <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> ВЕРНУТЬСЯ К ИНДЕКСУ</a>
     </div>
-    <div class="side-panel">
-      <div class="sp-head">// SYSTEM LOG</div>
-      <div class="sp-body">
-        <div class="term-log" id="termLog"></div>
-        <div class="kb-hint" style="margin-top:.6rem;">
-          <span class="kb-key">1-6</span> слот &nbsp;<span class="kb-key">ESC</span> закрыть &nbsp;<span class="kb-key">F</span> поиск
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
 
-<div class="site-footer">
-  <div class="footer-logo">V1 // ARSENAL DATABASE</div>
-  <div>// ТОПЛИВО — РЕСУРС // НИЖНИЙ УРОВЕНЬ ЗАПОЛНЕН //</div>
-  <div>// ИСТОЧНИК: ULTRAKILL FANDOM WIKI //</div>
-</div>
-</div>
+    <!-- ═══ TICKER ═══ -->
+    <div class="ticker-wrap">
+        <div class="ticker-inner">
+            <span class="ti">// <span class="r">АРСЕНАЛ</span> // СЛОТОВ: 6 // <span class="g">МАНИПУЛЯТОР × 3</span> // ДАЛЬНОБОЙНЫЙ × 6 // ИМПУЛЬСНЫЙ × 3 // ГВОЗДЕВОЙ × 4 // РЕЛЬСОВЫЙ × 3 // РАКЕТНЫЙ × 2 //</span>
+            <span class="ti">// <span class="r">АРСЕНАЛ</span> // СЛОТОВ: 6 // <span class="g">МАНИПУЛЯТОР × 3</span> // ДАЛЬНОБОЙНЫЙ × 6 // ИМПУЛЬСНЫЙ × 3 // ГВОЗДЕВОЙ × 4 // РЕЛЬСОВЫЙ × 3 // РАКЕТНЫЙ × 2 //</span>
+        </div>
+    </div>
+
+    <div class="terminal-content">
+
+        <!-- ═══ BOOT HEADER ═══ -->
+        <div class="boot-header">
+            <div class="logo-eyebrow">// СИСТЕМА БАЗЫ ДАННЫХ // АРСЕНАЛ V1 // ПОЛНЫЙ КАТАЛОГ</div>
+            <h1><i class="fas fa-microchip"></i> <span class="v1-accent">V1</span> — КАТАЛОГ АРСЕНАЛА<span class="blink-cursor"></span></h1>
+            <div class="boot-sub">
+                &gt; ДОСТУП К БАЗЕ ДАННЫХ // ТОПЛИВО КАК РЕСУРС // <span class="hl">6 ПЕРВИЧНЫХ СИСТЕМ + ВАРИАНТЫ</span><br>
+                &gt; СТАТУС: <span class="hlg">АКТИВЕН</span> // НИЖНИЙ УРОВЕНЬ // REV 2.1.0
+            </div>
+        </div>
+
+        <!-- ═══ STATS ROW ═══ -->
+        <div class="stats-row">
+            <div class="stat-chip">СИСТЕМ ВСЕГО: <span class="sv" id="sc-total">0</span></div>
+            <div class="stat-chip">МАНИПУЛЯТОРОВ: <span class="sv sb">3</span></div>
+            <div class="stat-chip">ДАЛЬНОБОЙНЫХ: <span class="sv">6</span></div>
+            <div class="stat-chip">РЕЛЬСОВЫХ: <span class="sv sg">3</span></div>
+            <div class="stat-chip">РАКЕТНЫХ: <span class="sv">2</span></div>
+            <div class="stat-chip">РАНГ СТИЛЯ: <span class="sv sr" id="sc-rank">SSS</span></div>
+        </div>
+
+        <!-- ═══ WEAPON GRID ═══ -->
+        <div class="weapon-grid">
+
+            <!-- ══════════════ ARM / МАНИПУЛЯТОР ══════════════ -->
+            <div class="weapon-category" data-weapon="arms">
+                <div class="weapon-image-container">
+                    <div class="weapon-frame" id="arms-frame">
+                        <!-- ▸ Место для GIF/PNG: arms_main.gif -->
+                        <img src="arms_main.gif" alt="Манипулятор" class="weapon-img"
+                             onerror="this.style.display='none'; this.parentElement.classList.add('empty')">
+                    </div>
+                </div>
+
+                <div class="weapon-name">
+                    <i class="fas fa-fist-raised"></i> МАНИПУЛЯТОР
+                    <span class="weapon-slot-badge">СЛОТ 0</span>
+                </div>
+                <div class="redline"></div>
+
+                <div class="variant-toggle">
+                    <button class="toggle-btn active" data-variant="standard">СТАНДАРТ</button>
+                    <button class="toggle-btn" data-variant="alternate">АЛЬТЕРНАТИВА</button>
+                </div>
+
+                <!-- STANDARD -->
+                <div class="variants-container standard-variants">
+                    <div class="variants">
+
+                        <div class="variant-card">
+                            <div class="variant-image">
+                                <div class="variant-img-frame">
+                                    <!-- ▸ feedbacker.png -->
+                                    <img src="feedbacker.png" alt="Feedbacker" class="variant-img" onerror="this.style.display='none'">
+                                </div>
+                            </div>
+                            <div class="variant-title"><code>Feedbacker</code><span class="color-badge badge-blue">СИНИЙ</span></div>
+                            <div class="variant-desc">Базовый манипулятор. Парирует входящие импульсы, отражая их обратно к источнику. При контакте с объектами восстанавливает топливный ресурс V1.</div>
+                            <div class="mini-bars">
+                                <div class="mbar-row"><span class="mbar-lbl">ВОЗДЕЙСТВИЕ</span><div class="mbar-track"><div class="mbar-fill" data-val="65"></div></div><span class="mbar-val">65</span></div>
+                                <div class="mbar-row"><span class="mbar-lbl">СКОРОСТЬ</span><div class="mbar-track"><div class="mbar-fill" data-val="95"></div></div><span class="mbar-val">95</span></div>
+                                <div class="mbar-row"><span class="mbar-lbl">УТИЛИТА</span><div class="mbar-track"><div class="mbar-fill" data-val="100"></div></div><span class="mbar-val">100</span></div>
+                            </div>
+                            <div class="stat-line">🛡️ Парирование: <span class="sl-a">6 кадров</span> | ✨ Восстановление ресурса | <span class="sl-b">Ключевой инструмент</span></div>
+                        </div>
+
+                        <div class="variant-card">
+                            <div class="variant-image">
+                                <div class="variant-img-frame">
+                                    <!-- ▸ knuckleblaster.png -->
+                                    <img src="knuckleblaster.png" alt="Knuckleblaster" class="variant-img" onerror="this.style.display='none'">
+                                </div>
+                            </div>
+                            <div class="variant-title"><code>Knuckleblaster</code><span class="color-badge badge-red">КРАСНЫЙ</span></div>
+                            <div class="variant-desc">Детонирующий манипулятор. Генерирует ударную волну в конусе. Нейтрализует импульсы без отражения, не восстанавливает ресурс. Максимальное воздействие в ближней зоне.</div>
+                            <div class="mini-bars">
+                                <div class="mbar-row"><span class="mbar-lbl">ВОЗДЕЙСТВИЕ</span><div class="mbar-track"><div class="mbar-fill" data-val="100"></div></div><span class="mbar-val">100</span></div>
+                                <div class="mbar-row"><span class="mbar-lbl">СКОРОСТЬ</span><div class="mbar-track"><div class="mbar-fill" data-val="80"></div></div><span class="mbar-val">80</span></div>
+                                <div class="mbar-row"><span class="mbar-lbl">ДАЛЬНОСТЬ</span><div class="mbar-track"><div class="mbar-fill" data-val="35"></div></div><span class="mbar-val">35</span></div>
+                            </div>
+                            <div class="stat-line">💥 Ударная волна: <span class="sl-r">радиус 4м</span> | ⚠️ Ресурс не восстанавливает | <span class="sl-a">Разрушает щиты</span></div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- ALTERNATE -->
+                <div class="variants-container alternate-variants" style="display:none;">
+                    <div class="variants">
+
+                        <div class="variant-card">
+                            <div class="variant-image">
+                                <div class="variant-img-frame">
+                                    <!-- ▸ whiplash.png -->
+                                    <img src="whiplash.png" alt="Whiplash" class="variant-img" onerror="this.style.display='none'">
+                                </div>
+                            </div>
+                            <div class="variant-title"><code>Whiplash</code><span class="color-badge badge-green">ЗЕЛЁНЫЙ</span></div>
+                            <div class="variant-desc">Захватывающий манипулятор. Притягивает объекты к V1 или перебрасывает V1 к точке захвата. Ключевой инструмент воздушного маневрирования и комбинаций.</div>
+                            <div class="mini-bars">
+                                <div class="mbar-row"><span class="mbar-lbl">ВОЗДЕЙСТВИЕ</span><div class="mbar-track"><div class="mbar-fill" data-val="45"></div></div><span class="mbar-val">45</span></div>
+                                <div class="mbar-row"><span class="mbar-lbl">СКОРОСТЬ</span><div class="mbar-track"><div class="mbar-fill" data-val="100"></div></div><span class="mbar-val">100</span></div>
+                                <div class="mbar-row"><span class="mbar-lbl">ДАЛЬНОСТЬ</span><div class="mbar-track"><div class="mbar-fill" data-val="90"></div></div><span class="mbar-val">90</span></div>
+                            </div>
+                            <div class="stat-line">🪝 Захват: <span class="sl-b">притяжение / перемещение</span> | ✈️ Воздушные серии | <span class="sl-a">Подбрасывание целей</span></div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- ══════════════ REVOLVER / ДАЛЬНОБОЙНЫЙ ══════════════ -->
+            <div class="weapon-category" data-weapon="revolver">
+                <div class="weapon-image-container">
+                    <div class="weapon-frame">
+                        <!-- ▸ Class_revolver.jpg / revolver_main.gif -->
+                        <img src="Class_revolver.jpg" alt="Дальнобойный" class="weapon-img"
+                             onerror="this.style.display='none'; this.parentElement.classList.add('empty')">
+                    </div>
+                </div>
+
+                <div class="weapon-name">
+                    <i class="fas fa-crosshairs"></i> ДАЛЬНОБОЙНЫЙ
+                    <span class="weapon-slot-badge">СЛОТ 1</span>
+                </div>
+                <div class="redline"></div>
+
+                <div class="variant-toggle">
+                    <button class="toggle-btn active" data-variant="standard">СТАНДАРТ</button>
+                    <button class="toggle-btn" data-variant="alternate">АЛЬТЕРНАТИВА (SLAB)</button>
+                </div>
+
+                <div class="variants-container standard-variants">
+                    <div class="variants">
+
+                        <div class="variant-card">
+                            <div class="variant-image">
+                                <div class="variant-img-frame">
+                                    <!-- ▸ piercer.png / SingleRevolver.jpg -->
+                                    <img src="SingleRevolver.jpg" alt="Piercer" class="variant-img" onerror="this.style.display='none'">
+                                </div>
+                            </div>
+                            <div class="variant-title"><code>Piercer</code><span class="color-badge badge-blue">СИНИЙ</span></div>
+                            <div class="variant-desc">Прокалывающий импульс сквозь несколько объектов по одной линии. Монеты используются как ретрансляторы — рикошет к ближайшей цели.</div>
+                            <div class="mini-bars">
+                                <div class="mbar-row"><span class="mbar-lbl">ВОЗДЕЙСТВИЕ</span><div class="mbar-track"><div class="mbar-fill" data-val="80"></div></div><span class="mbar-val">80</span></div>
+                                <div class="mbar-row"><span class="mbar-lbl">ДАЛЬНОСТЬ</span><div class="mbar-track"><div class="mbar-fill" data-val="100"></div></div><span class="mbar-val">100</span></div>
+                            </div>
+                            <div class="stat-line">🪙 Монета → <span class="sl-a">ближайшая цель</span> | 🔵 Прокалывание по линии</div>
+                        </div>
+
+                        <div class="variant-card">
+                            <div class="variant-image">
+                                <div class="variant-img-frame">
+                                    <!-- ▸ marksman.png / RevolverSpecial.jpg -->
+                                    <img src="RevolverSpecial.jpg" alt="Marksman" class="variant-img" onerror="this.style.display='none'">
+                                </div>
+                            </div>
+                            <div class="variant-title"><code>Marksman</code><span class="color-badge badge-red">КРАСНЫЙ</span></div>
+                            <div class="variant-desc">Закрученный импульс рикошетит через все монеты в поле зрения подряд. Максимально эффективен при множественном размещении монет.</div>
+                            <div class="mini-bars">
+                                <div class="mbar-row"><span class="mbar-lbl">ВОЗДЕЙСТВИЕ</span><div class="mbar-track"><div class="mbar-fill" data-val="85"></div></div><span class="mbar-val">85</span></div>
+                                <div class="mbar-row"><span class="mbar-lbl">УТИЛИТА</span><div class="mbar-track"><div class="mbar-fill" data-val="90"></div></div><span class="mbar-val">90</span></div>
+                            </div>
+                            <div class="stat-line">🪙 Монета: <span class="sl-r">все монеты разом</span> | 🌀 Многоцелевое воздействие</div>
+                        </div>
+
+                        <div class="variant-card">
+                            <div class="variant-image">
+                                <div class="variant-img-frame">
+                                    <!-- ▸ sharpshooter.png -->
+                                    <img src="sharpshooter.png" alt="Sharpshooter" class="variant-img" onerror="this.style.display='none'">
+                                </div>
+                            </div>
+                            <div class="variant-title"><code>Sharpshooter</code><span class="color-badge badge-green">ЗЕЛЁНЫЙ</span></div>
+                            <div class="variant-desc">Система накопления заряда. Удержание концентрирует энергию — полный заряд выдаёт критическое воздействие. Для приоритетных целей.</div>
+                            <div class="mini-bars">
+                                <div class="mbar-row"><span class="mbar-lbl">ВОЗДЕЙСТВИЕ</span><div class="mbar-track"><div class="mbar-fill" data-val="100"></div></div><span class="mbar-val">100</span></div>
+                                <div class="mbar-row"><span class="mbar-lbl">СКОРОСТЬ</span><div class="mbar-track"><div class="mbar-fill" data-val="60"></div></div><span class="mbar-val">60</span></div>
+                            </div>
+                            <div class="stat-line">⚡ Накопитель: <span class="sl-a">3 уровня</span> | 💀 Полный заряд = <span class="sl-r">критическое воздействие</span></div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- ALTERNATE — SLAB -->
+                <div class="variants-container alternate-variants" style="display:none;">
+                    <div class="variants">
+
+                        <div class="variant-card">
+                            <div class="variant-image">
+                                <div class="variant-img-frame">
+                                    <!-- ▸ slab_piercer.png / RevolverAltSingle.jpg -->
+                                    <img src="RevolverAltSingle.jpg" alt="Slab Piercer" class="variant-img" onerror="this.style.display='none'">
+                                </div>
+                            </div>
+                            <div class="variant-title"><code>Slab Piercer</code><span class="color-badge badge-blue">АЛТ-СИНИЙ</span></div>
+                            <div class="variant-desc">Утяжелённая версия Piercer. Медленная перезарядка, но кратно повышенное воздействие. Пробивает несколько объектов по линии без ограничений.</div>
+                            <div class="stat-line">💥 Воздействие: <span class="sl-r">×4</span> | 🕒 Замедленная перезарядка | 🔵 Линейное пробивание</div>
+                        </div>
+
+                        <div class="variant-card">
+                            <div class="variant-image">
+                                <div class="variant-img-frame">
+                                    <!-- ▸ slab_marksman.png / RevolverAltSpecial.jpg -->
+                                    <img src="RevolverAltSpecial.jpg" alt="Slab Marksman" class="variant-img" onerror="this.style.display='none'">
+                                </div>
+                            </div>
+                            <div class="variant-title"><code>Slab Marksman</code><span class="color-badge badge-red">АЛТ-КРАСНЫЙ</span></div>
+                            <div class="variant-desc">Утяжелённая монета. Медленнее, но рикошет наносит значительно большее воздействие. Каждый рикошет от монеты дополнительно усиливается.</div>
+                            <div class="stat-line">🪙 Критическое воздействие: <span class="sl-r">×3</span> | 💀 Монета-усилитель</div>
+                        </div>
+
+                        <div class="variant-card">
+                            <div class="variant-image">
+                                <div class="variant-img-frame">
+                                    <!-- ▸ slab_sharpshooter.png -->
+                                    <img src="slab_sharpshooter.png" alt="Slab Sharpshooter" class="variant-img" onerror="this.style.display='none'">
+                                </div>
+                            </div>
+                            <div class="variant-title"><code>Slab Sharpshooter</code><span class="color-badge badge-green">АЛТ-ЗЕЛЁНЫЙ</span></div>
+                            <div class="variant-desc">Утяжелённый накопительный вариант. Максимальный заряд наносит разрушительное воздействие. Совместим с монетным рикошетом.</div>
+                            <div class="stat-line">⚡ Максимум: <span class="sl-r">наивысшее воздействие</span> | 🪙 Совместим с монетой</div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- ══════════════ SHOTGUN / ИМПУЛЬСНЫЙ ══════════════ -->
+            <div class="weapon-category" data-weapon="shotgun">
+                <div class="weapon-image-container">
+                    <div class="weapon-frame">
+                        <!-- ▸ sg1.jpg / shotgun_main.gif -->
+                        <img src="sg1.jpg" alt="Импульсный" class="weapon-img"
+                             onerror="this.style.display='none'; this.parentElement.classList.add('empty')">
+                    </div>
+                </div>
+
+                <div class="weapon-name">
+                    <i class="fas fa-fire"></i> ИМПУЛЬСНЫЙ
+                    <span class="weapon-slot-badge">СЛОТ 2</span>
+                </div>
+                <div class="redline"></div>
+
+                <div class="variant-toggle">
+                    <button class="toggle-btn active" data-variant="standard">СТАНДАРТ</button>
+                    <button class="toggle-btn" data-variant="alternate">АЛЬТЕРНАТИВА</button>
+                </div>
+
+                <div class="variants-container standard-variants">
+                    <div class="variants">
+
+                        <div class="variant-card">
+                            <div class="variant-image">
+                                <div class="variant-img-frame">
+                                    <!-- ▸ sg2.jpg -->
+                                    <img src="sg2.jpg" alt="Core Eject" class="variant-img" onerror="this.style.display='none'">
+                                </div>
+                            </div>
+                            <div class="variant-title"><code>Core Eject</code><span class="color-badge badge-blue">СИНИЙ</span></div>
+                            <div class="variant-desc">Первичная активация — широкий конус. Вторичная — выброс теплового ядра, детонирующего при воздействии любого импульса. Основа большинства комбинаций.</div>
+                            <div class="mini-bars">
+                                <div class="mbar-row"><span class="mbar-lbl">ВОЗДЕЙСТВИЕ</span><div class="mbar-track"><div class="mbar-fill" data-val="85"></div></div><span class="mbar-val">85</span></div>
+                                <div class="mbar-row"><span class="mbar-lbl">УТИЛИТА</span><div class="mbar-track"><div class="mbar-fill" data-val="90"></div></div><span class="mbar-val">90</span></div>
+                            </div>
+                            <div class="stat-line">🔥 Тепловое ядро: <span class="sl-r">детонация от импульса</span> | 💣 Радиус: 8м | <span class="sl-b">Платформа для манёвра</span></div>
+                        </div>
+
+                        <div class="variant-card">
+                            <div class="variant-image">
+                                <div class="variant-img-frame">
+                                    <!-- ▸ sg3.jpg -->
+                                    <img src="sg3.jpg" alt="Pump Charge" class="variant-img" onerror="this.style.display='none'">
+                                </div>
+                            </div>
+                            <div class="variant-title"><code>Pump Charge</code><span class="color-badge badge-red">КРАСНЫЙ</span></div>
+                            <div class="variant-desc">Система накачки мощности до 3 стадий. Накопление сохраняется при переключении модулей. Полная накачка — концентрированный критический залп.</div>
+                            <div class="mini-bars">
+                                <div class="mbar-row"><span class="mbar-lbl">ВОЗДЕЙСТВИЕ</span><div class="mbar-track"><div class="mbar-fill" data-val="95"></div></div><span class="mbar-val">95</span></div>
+                                <div class="mbar-row"><span class="mbar-lbl">КОНЦЕНТРАЦИЯ</span><div class="mbar-track"><div class="mbar-fill" data-val="88"></div></div><span class="mbar-val">88</span></div>
+                            </div>
+                            <div class="stat-line">⚡ Накачка: <span class="sl-a">3 стадии</span> | 💪 Макс. воздействие: <span class="sl-r">×10</span> | ⚠️ Перезаряд = воздействие на оператора</div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="variants-container alternate-variants" style="display:none;">
+                    <div class="variants">
+
+                        <div class="variant-card">
+                            <div class="variant-image">
+                                <div class="variant-img-frame">
+                                    <!-- ▸ jackhammer.png / sg4.jpg -->
+                                    <img src="sg4.jpg" alt="Jackhammer" class="variant-img" onerror="this.style.display='none'">
+                                </div>
+                            </div>
+                            <div class="variant-title"><code>Jackhammer</code><span class="color-badge badge-blue">АЛТ-СИНИЙ</span></div>
+                            <div class="variant-desc">Полностью автоматический импульсный модуль с высокой частотой активации. Отдача используется как ускоритель перемещения — уникальная мобильная механика.</div>
+                            <div class="mini-bars">
+                                <div class="mbar-row"><span class="mbar-lbl">СКОРОСТЬ</span><div class="mbar-track"><div class="mbar-fill" data-val="92"></div></div><span class="mbar-val">92</span></div>
+                                <div class="mbar-row"><span class="mbar-lbl">МОБИЛЬНОСТЬ</span><div class="mbar-track"><div class="mbar-fill" data-val="95"></div></div><span class="mbar-val">95</span></div>
+                            </div>
+                            <div class="stat-line">🏃 Мобильность: <span class="sl-b">отдача = ускорение</span> | 🔄 Высокая частота активации</div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- ══════════════ NAILGUN / ГВОЗДЕВОЙ ══════════════ -->
+            <div class="weapon-category" data-weapon="nailgun">
+                <div class="weapon-image-container">
+                    <div class="weapon-frame">
+                        <!-- ▸ nailgun_main.png / 1000045244.jpg -->
+                        <img src="1000045244.jpg" alt="Гвоздевой" class="weapon-img"
+                             onerror="this.style.display='none'; this.parentElement.classList.add('empty')">
+                    </div>
+                </div>
+
+                <div class="weapon-name">
+                    <i class="fas fa-grip-lines-vertical"></i> ГВОЗДЕВОЙ
+                    <span class="weapon-slot-badge">СЛОТ 3</span>
+                </div>
+                <div class="redline"></div>
+
+                <div class="variant-toggle">
+                    <button class="toggle-btn active" data-variant="standard">СТАНДАРТ</button>
+                    <button class="toggle-btn" data-variant="alternate">АЛЬТЕРНАТИВА</button>
+                </div>
+
+                <div class="variants-container standard-variants">
+                    <div class="variants">
+
+                        <div class="variant-card">
+                            <div class="variant-image">
+                                <div class="variant-img-frame">
+                                    <!-- ▸ attractor.png -->
+                                    <img src="attractor.png" alt="Attractor" class="variant-img" onerror="this.style.display='none'">
+                                </div>
+                            </div>
+                            <div class="variant-title"><code>Attractor</code><span class="color-badge badge-blue">СИНИЙ</span></div>
+                            <div class="variant-desc">Базовый гвоздевой с магнитной системой. Магнитный гвоздь-ретранслятор концентрирует весь поток на маркированной цели. Высокая скорострельность.</div>
+                            <div class="mini-bars">
+                                <div class="mbar-row"><span class="mbar-lbl">СКОРОСТЬ</span><div class="mbar-track"><div class="mbar-fill" data-val="100"></div></div><span class="mbar-val">100</span></div>
+                                <div class="mbar-row"><span class="mbar-lbl">УТИЛИТА</span><div class="mbar-track"><div class="mbar-fill" data-val="95"></div></div><span class="mbar-val">95</span></div>
+                            </div>
+                            <div class="stat-line">🧲 Магнит: <span class="sl-b">радиус 6м</span> | 📍 Концентрация потока | <span class="sl-a">Два магнита = двойной поток</span></div>
+                        </div>
+
+                        <div class="variant-card">
+                            <div class="variant-image">
+                                <div class="variant-img-frame">
+                                    <!-- ▸ overheat.png -->
+                                    <img src="overheat.png" alt="Overheat" class="variant-img" onerror="this.style.display='none'">
+                                </div>
+                            </div>
+                            <div class="variant-title"><code>Overheat</code><span class="color-badge badge-red">КРАСНЫЙ</span></div>
+                            <div class="variant-desc">Термический гвоздевой. Перегрев системы автоматически запускает вращающийся диск высокого воздействия. Принудительный выброс диска — вторичная активация.</div>
+                            <div class="mini-bars">
+                                <div class="mbar-row"><span class="mbar-lbl">ВОЗДЕЙСТВИЕ</span><div class="mbar-track"><div class="mbar-fill" data-val="88"></div></div><span class="mbar-val">88</span></div>
+                                <div class="mbar-row"><span class="mbar-lbl">СКОРОСТЬ</span><div class="mbar-track"><div class="mbar-fill" data-val="90"></div></div><span class="mbar-val">90</span></div>
+                            </div>
+                            <div class="stat-line">🔥 Перегрев → <span class="sl-r">взрывной диск</span> | 🔄 Диски отражаемы манипулятором</div>
+                        </div>
+
+                        <div class="variant-card">
+                            <div class="variant-image">
+                                <div class="variant-img-frame">
+                                    <!-- ▸ jumpstart.png -->
+                                    <img src="jumpstart.png" alt="Jumpstart" class="variant-img" onerror="this.style.display='none'">
+                                </div>
+                            </div>
+                            <div class="variant-title"><code>Jumpstart</code><span class="color-badge badge-green">ЗЕЛЁНЫЙ</span></div>
+                            <div class="variant-desc">Версия с ускоренным стартом. Первые секунды после начала активации дают пиковую скорострельность. Синергия с магнитным гвоздём Attractor.</div>
+                            <div class="mini-bars">
+                                <div class="mbar-row"><span class="mbar-lbl">ПИКОВАЯ СКОРОСТЬ</span><div class="mbar-track"><div class="mbar-fill" data-val="100"></div></div><span class="mbar-val">100</span></div>
+                                <div class="mbar-row"><span class="mbar-lbl">УТИЛИТА</span><div class="mbar-track"><div class="mbar-fill" data-val="85"></div></div><span class="mbar-val">85</span></div>
+                            </div>
+                            <div class="stat-line">⚡ Начальный пик: <span class="sl-a">максимальная скорострельность</span> | 🧲 Синергия с Attractor</div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="variants-container alternate-variants" style="display:none;">
+                    <div class="variants">
+
+                        <div class="variant-card">
+                            <div class="variant-image">
+                                <div class="variant-img-frame">
+                                    <!-- ▸ sawblade.png -->
+                                    <img src="sawblade.png" alt="Sawblade Launcher" class="variant-img" onerror="this.style.display='none'">
+                                </div>
+                            </div>
+                            <div class="variant-title"><code>Sawblade Launcher</code><span class="color-badge badge-blue">АЛТ-СИНИЙ</span></div>
+                            <div class="variant-desc">Запускает циркулярные диски. Рикошетят от поверхностей до 5 раз, нанося многократное воздействие. Совместим с магнитным гвоздём для концентрации дисков.</div>
+                            <div class="stat-line">🔄 Рикошет: <span class="sl-b">до 5 раз</span> | ⚙️ Магнитное притяжение | <span class="sl-a">Многократное воздействие</span></div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- ══════════════ RAILCANNON / РЕЛЬСОВЫЙ ══════════════ -->
+            <div class="weapon-category" data-weapon="railcannon">
+                <div class="weapon-image-container">
+                    <div class="weapon-frame">
+                        <!-- ▸ railcannon_main.gif -->
+                        <img src="railcannon_main.gif" alt="Рельсовый" class="weapon-img"
+                             onerror="this.style.display='none'; this.parentElement.classList.add('empty')">
+                    </div>
+                </div>
+
+                <div class="weapon-name">
+                    <i class="fas fa-bolt"></i> РЕЛЬСОВЫЙ
+                    <span class="weapon-slot-badge">СЛОТ 4</span>
+                </div>
+                <div class="redline"></div>
+
+                <!-- Railcannon has 3 variants — no std/alt toggle, just show all -->
+                <div class="variants">
+
+                    <div class="variant-card">
+                        <div class="variant-image">
+                            <div class="variant-img-frame">
+                                <!-- ▸ electric_rail.png -->
+                                <img src="electric_rail.png" alt="Electric" class="variant-img" onerror="this.style.display='none'">
+                            </div>
+                        </div>
+                        <div class="variant-title"><code>Electric</code><span class="color-badge badge-blue">СИНИЙ</span></div>
+                        <div class="variant-desc">Мгновенный электрический импульс нейтрализует большинство объектов с одной активации. Цепная реакция перескакивает между целями.</div>
+                        <div class="mini-bars">
+                            <div class="mbar-row"><span class="mbar-lbl">ВОЗДЕЙСТВИЕ</span><div class="mbar-track"><div class="mbar-fill" data-val="100"></div></div><span class="mbar-val">100</span></div>
+                            <div class="mbar-row"><span class="mbar-lbl">ПЕРЕЗАРЯДКА</span><div class="mbar-track"><div class="mbar-fill" data-val="45"></div></div><span class="mbar-val">45</span></div>
+                        </div>
+                        <div class="stat-line">⚡ Перескок: <span class="sl-b">до 5 целей</span> | 🕒 Медленная перезарядка | 💀 Нейтрализует большинство объектов</div>
+                    </div>
+
+                    <div class="variant-card">
+                        <div class="variant-image">
+                            <div class="variant-img-frame">
+                                <!-- ▸ screwdriver_rail.png -->
+                                <img src="screwdriver_rail.png" alt="Screwdriver" class="variant-img" onerror="this.style.display='none'">
+                            </div>
+                        </div>
+                        <div class="variant-title"><code>Screwdriver</code><span class="color-badge badge-red">КРАСНЫЙ</span></div>
+                        <div class="variant-desc">Вращающаяся проекция пронизывает несколько объектов по линии. Задерживается внутри цели, продолжая непрерывное воздействие. Парирование = мгновенный эффект.</div>
+                        <div class="mini-bars">
+                            <div class="mbar-row"><span class="mbar-lbl">ВОЗДЕЙСТВИЕ</span><div class="mbar-track"><div class="mbar-fill" data-val="85"></div></div><span class="mbar-val">85</span></div>
+                            <div class="mbar-row"><span class="mbar-lbl">УТИЛИТА</span><div class="mbar-track"><div class="mbar-fill" data-val="80"></div></div><span class="mbar-val">80</span></div>
+                        </div>
+                        <div class="stat-line">🔩 Внедрение: <span class="sl-r">непрерывное воздействие</span> | 🔄 Парирование = мгновенный эффект | 🩸 Восстановление ресурса: 10%</div>
+                    </div>
+
+                    <div class="variant-card">
+                        <div class="variant-image">
+                            <div class="variant-img-frame">
+                                <!-- ▸ malicious_rail.png -->
+                                <img src="malicious_rail.png" alt="Malicious" class="variant-img" onerror="this.style.display='none'">
+                            </div>
+                        </div>
+                        <div class="variant-title"><code>Malicious</code><span class="color-badge badge-green">ЗЕЛЁНЫЙ</span></div>
+                        <div class="variant-desc">Деструктивный луч максимального воздействия. Нейтрализует практически любой объект мгновенно. Самая длительная перезарядка в арсенале. Комбо с тепловым ядром = ядерный взрыв.</div>
+                        <div class="mini-bars">
+                            <div class="mbar-row"><span class="mbar-lbl">ВОЗДЕЙСТВИЕ</span><div class="mbar-track"><div class="mbar-fill" data-val="100"></div></div><span class="mbar-val">100</span></div>
+                            <div class="mbar-row"><span class="mbar-lbl">ПЕРЕЗАРЯДКА</span><div class="mbar-track"><div class="mbar-fill" data-val="12"></div></div><span class="mbar-val">12</span></div>
+                        </div>
+                        <div class="stat-line">💥 Ядерная цепочка: <span class="sl-r">радиус 25м</span> | 🕒 Максимальная перезарядка | 🏆 Пик системы</div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- ══════════════ ROCKET LAUNCHER / РАКЕТНЫЙ ══════════════ -->
+            <div class="weapon-category" data-weapon="rocket">
+                <div class="weapon-image-container">
+                    <div class="weapon-frame">
+                        <!-- ▸ rocket_main.gif -->
+                        <img src="rocket_main.gif" alt="Ракетный" class="weapon-img"
+                             onerror="this.style.display='none'; this.parentElement.classList.add('empty')">
+                    </div>
+                </div>
+
+                <div class="weapon-name">
+                    <i class="fas fa-rocket"></i> РАКЕТНЫЙ
+                    <span class="weapon-slot-badge">СЛОТ 5</span>
+                </div>
+                <div class="redline"></div>
+
+                <div class="variants">
+
+                    <div class="variant-card">
+                        <div class="variant-image">
+                            <div class="variant-img-frame">
+                                <!-- ▸ freezeframe.png -->
+                                <img src="freezeframe.png" alt="Freezeframe" class="variant-img" onerror="this.style.display='none'">
+                            </div>
+                        </div>
+                        <div class="variant-title"><code>Freezeframe</code><span class="color-badge badge-blue">СИНИЙ</span></div>
+                        <div class="variant-desc">Базовый ракетный модуль. Вторичная активация фиксирует проекцию в пространстве (криогенная заморозка). Детонирует при любом воздействии. Ловушки, платформы, ядерная комбинация.</div>
+                        <div class="mini-bars">
+                            <div class="mbar-row"><span class="mbar-lbl">ВОЗДЕЙСТВИЕ</span><div class="mbar-track"><div class="mbar-fill" data-val="88"></div></div><span class="mbar-val">88</span></div>
+                            <div class="mbar-row"><span class="mbar-lbl">УТИЛИТА</span><div class="mbar-track"><div class="mbar-fill" data-val="90"></div></div><span class="mbar-val">90</span></div>
+                        </div>
+                        <div class="stat-line">❄️ Криофиксация: <span class="sl-b">∞ времени</span> | 🛸 Rocket Riding | 💥 + Рельсовый Malicious = Ядерный взрыв</div>
+                    </div>
+
+                    <div class="variant-card">
+                        <div class="variant-image">
+                            <div class="variant-img-frame">
+                                <!-- ▸ srs_canon.png -->
+                                <img src="srs_canon.png" alt="S.R.S. Canon" class="variant-img" onerror="this.style.display='none'">
+                            </div>
+                        </div>
+                        <div class="variant-title"><code>S.R.S. Canon</code><span class="color-badge badge-red">КРАСНЫЙ</span></div>
+                        <div class="variant-desc">Термическая проекция с широким зональным воздействием. Идеален при скоплении объектов в ограниченном пространстве. Синергия с тепловым ядром импульсного модуля.</div>
+                        <div class="mini-bars">
+                            <div class="mbar-row"><span class="mbar-lbl">ВОЗДЕЙСТВИЕ</span><div class="mbar-track"><div class="mbar-fill" data-val="95"></div></div><span class="mbar-val">95</span></div>
+                            <div class="mbar-row"><span class="mbar-lbl">ДАЛЬНОСТЬ</span><div class="mbar-track"><div class="mbar-fill" data-val="85"></div></div><span class="mbar-val">85</span></div>
+                        </div>
+                        <div class="stat-line">🔥 Термический залп: <span class="sl-r">зональное воздействие</span> | 💣 Синергия с тепловым ядром</div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div><!-- /weapon-grid -->
+
+        <!-- ═══ IMAGE GUIDE ═══ -->
+        <div class="image-guide">
+            <h4><i class="fas fa-image"></i> // РАЗМЕЩЕНИЕ GIF / PNG</h4>
+            <p>
+                Поместите файлы рядом с HTML. Поддерживаются: <code>.gif</code> <code>.png</code> <code>.jpg</code> <code>.webp</code><br>
+                Категория (верх): <code>arms_main.gif</code>, <code>railcannon_main.gif</code>, <code>rocket_main.gif</code> …<br>
+                Вариант (карточка): <code>feedbacker.png</code>, <code>piercer.png</code>, <code>marksman.png</code>, <code>electric_rail.png</code> …<br>
+                Если файл не найден — отображается рамка-заглушка <code>[ GIF / PNG ]</code>
+            </p>
+        </div>
+
+        <div class="ascii-art">
+╔══════════════════════════════════════════════════════════════════╗
+║  [V1 АРСЕНАЛ]  > ТОПЛИВО = РЕСУРС // LOWER SECTOR ACTIVE        ║
+║  > ALTERNATE VARIANTS: UNLOCKABLE // СТИЛЬ: SSS РАНГ             ║
+╚══════════════════════════════════════════════════════════════════╝</div>
+
+        <!-- ═══ FOOTER ═══ -->
+        <div class="footer-term">
+            <div class="footer-logo">V1 // ARSENAL DATABASE</div>
+            <div>// ЭНЕРГИЯ — ТОПЛИВО // НИЖНИЙ УРОВЕНЬ ЗАПОЛНЕН //</div>
+            <div>// ИСТОЧНИК: ULTRAKILL // SLIME OS 2 TERMINAL //</div>
+        </div>
+
+    </div><!-- /terminal-content -->
+</div><!-- /terminal -->
 
 <script>
-/* ══════════════════════════════════
-   WEAPON DATABASE — ALL ULTRAKILL
-══════════════════════════════════ */
-const WEAPONS = [
-  // ── ARMS ──
-  {id:'feedbacker',slot:'arm',slotLabel:'Манипулятор',name:'FEEDBACKER',ruName:'Отражающий Манипулятор',
-   variant:'blue',variantLabel:'СИНИЙ',icon:'◎',color:'var(--blue)',colorHex:'#5599ff',
-   power:65,speed:95,range:20,utility:100,img:'hakita.jpg',
-   desc:'Базовый манипулятор V1. Перехватывает входящие проекции объектов, отражая их обратно. Контакт с сущностями восстанавливает топливный ресурс V1.',
-   primary:'РЕЖИМ 1 — Прямой контактный импульс в ближней зоне',
-   secondary:'РЕЖИМ 2 — Перехват проекции в момент столкновения (тайминг-реакция)',
-   tags:['БАЗОВЫЙ','ПЕРЕХВАТ','РЕСУРС'],
-   mechanics:['Перехват отражает проекции обратно к источнику','Контакт восстанавливает топливный ресурс V1','Отражённые проекции наносят повышенное воздействие','Тайминг перехвата — решающий фактор эффективности']},
-  {id:'knuckleblaster',slot:'arm',slotLabel:'Манипулятор',name:'KNUCKLEBLASTER',ruName:'Детонирующий Манипулятор',
-   variant:'red',variantLabel:'КРАСНЫЙ',icon:'◈',color:'var(--red)',colorHex:'#ff2020',
-   power:100,speed:80,range:35,utility:65,img:'hakita.jpg',
-   desc:'Альтернативный манипулятор. Генерирует ударную волну. Нейтрализует проекции без отражения. Не восстанавливает топливный ресурс.',
-   primary:'РЕЖИМ 1 — Детонирующий удар с конусной ударной волной',
-   secondary:'РЕЖИМ 2 — Нейтрализация входящей проекции без отражения',
-   tags:['УДАРНАЯ ВОЛНА','МОЩНОСТЬ','АЛЬТЕРНАТИВНЫЙ'],
-   mechanics:['Ударная волна воздействует на всё в зоне конуса','Уничтожает проекции без возврата ресурса','Максимальное контактное воздействие среди манипуляторов','Рекомендован для плотного скопления сущностей']},
-  {id:'whiplash',slot:'arm',slotLabel:'Манипулятор',name:'WHIPLASH',ruName:'Захватывающий Манипулятор',
-   variant:'green',variantLabel:'ЗЕЛЁНЫЙ',icon:'⌀',color:'var(--green)',colorHex:'#22ff88',
-   power:45,speed:100,range:90,utility:100,img:'hakita.jpg',
-   desc:'Дистанционный манипулятор. Захватывает и притягивает сущности или объекты среды к V1. Ключевой инструмент воздушного маневрирования.',
-   primary:'РЕЖИМ 1 — Захват активной сущности и притяжение к V1',
-   secondary:'РЕЖИМ 2 — Захват объекта среды / телепортация V1 к точке',
-   tags:['ЗАХВАТ','МОБИЛЬНОСТЬ','ДИСТАНЦИЯ'],
-   mechanics:['Захваченные сущности притягиваются вплотную','Открывает уникальные воздушные серии','Совместим с подбрасыванием для продлённых комбо','Перебрасывает V1 к точкам захвата в среде']},
-  // ── REVOLVER ──
-  {id:'piercer',slot:'revolver',slotLabel:'Дальнобойный',name:'PIERCER REVOLVER',ruName:'Пронизывающий Дальнобойный',
-   variant:'blue',variantLabel:'СИНИЙ',icon:'◆',color:'var(--blue)',colorHex:'#5599ff',
-   power:80,speed:85,range:100,utility:85,img:'hakita.jpg',
-   desc:'Базовый дальнобойный модуль. Проекция пронизывает несколько объектов по одной линии. Монеты — рикошетные ретрансляторы.',
-   primary:'РЕЖИМ 1 — Прокалывающий импульс сквозь несколько целей по линии',
-   secondary:'РЕЖИМ 2 — Монета-ретранслятор для перенаправления импульса',
-   tags:['ПРОНИКНОВЕНИЕ','МОНЕТА','ДАЛЬНОСТЬ'],
-   mechanics:['Проекция пронизывает несколько объектов по линии','Монеты перенаправляют к ближайшей активной цели','Парирование монеты усиливает рикошет','Комбо монета + импульс = несколько целей за один такт']},
-  {id:'marksman',slot:'revolver',slotLabel:'Дальнобойный',name:'MARKSMAN REVOLVER',ruName:'Целевой Дальнобойный',
-   variant:'red',variantLabel:'КРАСНЫЙ',icon:'◆',color:'var(--red)',colorHex:'#ff2020',
-   power:85,speed:82,range:100,utility:90,img:'hakita.jpg',
-   desc:'Альтернативный дальнобойный. Вторичный режим — закрученный импульс, рикошетящий через все монеты в поле зрения, не только через ближайшую.',
-   primary:'РЕЖИМ 1 — Стандартный дальнобойный импульс',
-   secondary:'РЕЖИМ 2 — Закрученный импульс через все монеты подряд',
-   tags:['ТОЧНОСТЬ','МОНЕТА','ЗАКРУТКА'],
-   mechanics:['Закрученная проекция охватывает все монеты в поле зрения','Эффективность растёт с количеством монет','Лучший выбор при множественном расположении монет','Суммарное воздействие выше при 3+ монетах']},
-  {id:'sharpshooter',slot:'revolver',slotLabel:'Дальнобойный',name:'SHARPSHOOTER REVOLVER',ruName:'Накопительный Дальнобойный',
-   variant:'green',variantLabel:'ЗЕЛЁНЫЙ',icon:'◆',color:'var(--green)',colorHex:'#22ff88',
-   power:100,speed:60,range:100,utility:75,img:'hakita.jpg',
-   desc:'Третий вариант дальнобойного. Удержание кнопки активирует накопление заряда. Полный заряд = критическое воздействие.',
-   primary:'РЕЖИМ 1 — Базовый дальнобойный импульс без накопления',
-   secondary:'РЕЖИМ 2 — Удержание = накопление; отпуск = заряженный импульс',
-   tags:['НАКОПИТЕЛЬ','КРИТИЧЕСКОЕ','ТОЧНОСТЬ'],
-   mechanics:['Накопление увеличивает воздействие до критического','Полный заряд нейтрализует большинство целей мгновенно','Совместим с монетным рикошетом при полном заряде','Рекомендован для приоритетных целей']},
-  // ── SHOTGUN ──
-  {id:'core_eject',slot:'shotgun',slotLabel:'Импульсный',name:'CORE EJECT SHOTGUN',ruName:'Эжекторный Импульсный',
-   variant:'blue',variantLabel:'СИНИЙ',icon:'⬡',color:'var(--blue)',colorHex:'#5599ff',
-   power:85,speed:78,range:55,utility:90,img:'hakita.jpg',
-   desc:'Базовый импульсный модуль с системой выброса теплового ядра. Ядро детонирует при любом внешнем воздействии, создавая вторичную зону эффекта.',
-   primary:'РЕЖИМ 1 — Широкий конус проекций в ближней и средней зоне',
-   secondary:'РЕЖИМ 2 — Выброс теплового ядра для цепной детонации',
-   tags:['ТЕПЛОВОЕ ЯДРО','ЗОНА','КОМБО'],
-   mechanics:['Тепловое ядро детонирует от любого импульса','Рельсовый импульс + ядро = усиленный взрыв','Ядро можно использовать как временную опору','Два импульсных модуля = непрерывный поток ядер']},
-  {id:'pump_charge',slot:'shotgun',slotLabel:'Импульсный',name:'PUMP CHARGE SHOTGUN',ruName:'Накачивающий Импульсный',
-   variant:'red',variantLabel:'КРАСНЫЙ',icon:'⬡',color:'var(--red)',colorHex:'#ff2020',
-   power:95,speed:65,range:60,utility:78,img:'hakita.jpg',
-   desc:'Альтернативный импульсный с системой накачки. Повторные нажатия вторичной активации накапливают мощность для следующего первичного залпа.',
-   primary:'РЕЖИМ 1 — Стандартный конус / накопленный залп (если заряжен)',
-   secondary:'РЕЖИМ 2 — Накачка мощности (до 3 стадий)',
-   tags:['НАКАЧКА','МОЩНОСТЬ','КОНЦЕНТРАЦИЯ'],
-   mechanics:['Каждая накачка усиливает следующий залп','До трёх стадий с прогрессивным усилением','Можно накапливать при переключении на другой модуль','Полная накачка = критический залп по одной точке']},
-  {id:'jackhammer',slot:'shotgun',slotLabel:'Импульсный',name:'JACKHAMMER',ruName:'Автоматический Импульсный',
-   variant:'green',variantLabel:'ЗЕЛЁНЫЙ',icon:'⬡',color:'var(--green)',colorHex:'#22ff88',
-   power:75,speed:100,range:45,utility:85,img:'hakita.jpg',
-   desc:'Третий вариант импульсного модуля. Полностью автоматический режим с максимальной частотой активации. Отдача используется для ускорения V1.',
-   primary:'РЕЖИМ 1 — Автоматическая очередь конусных проекций',
-   secondary:'РЕЖИМ 2 — Переключение ритма: двойная активация / ускорение',
-   tags:['АВТОМАТ','СКОРОСТЬ','ДВИЖЕНИЕ'],
-   mechanics:['Отдача каждой активации даёт ускорение V1','Используется для rocket-jump механики','Максимальная частота активации среди импульсных','Уступает по одиночному воздействию, но лучший DPS']},
-  // ── NAILGUN ──
-  {id:'attractor',slot:'nailgun',slotLabel:'Гвоздевой',name:'ATTRACTOR NAILGUN',ruName:'Магнитный Гвоздевой',
-   variant:'blue',variantLabel:'СИНИЙ',icon:'▣',color:'var(--blue)',colorHex:'#5599ff',
-   power:65,speed:100,range:70,utility:95,img:'hakita.jpg',
-   desc:'Базовый гвоздевой с магнитной системой. Высокая скорострельность. Вторичная активация — магнитный гвоздь-ретранслятор, концентрирующий поток на одной цели.',
-   primary:'РЕЖИМ 1 — Высокоскоростная очередь гвоздей',
-   secondary:'РЕЖИМ 2 — Магнитный гвоздь: весь поток идёт к маркированной цели',
-   tags:['МАГНИТ','СКОРОСТРЕЛЬНОСТЬ','ОЧЕРЕДЬ'],
-   mechanics:['Магнитный гвоздь концентрирует весь поток на цели','Суммарное воздействие высокое при длительном потоке','Два магнитных гвоздя = двойной поток на двух целях','Эффективен против крупных малоподвижных сущностей']},
-  {id:'overheat',slot:'nailgun',slotLabel:'Гвоздевой',name:'OVERHEAT NAILGUN',ruName:'Термический Гвоздевой',
-   variant:'red',variantLabel:'КРАСНЫЙ',icon:'▣',color:'var(--red)',colorHex:'#ff2020',
-   power:88,speed:90,range:65,utility:82,img:'hakita.jpg',
-   desc:'Альтернативный гвоздевой. Перегрев системы автоматически запускает пилообразный диск высокого воздействия. Вторичная — принудительный запуск диска.',
-   primary:'РЕЖИМ 1 — Очередь гвоздей (перегрев → автоматический диск)',
-   secondary:'РЕЖИМ 2 — Принудительный выброс диска без ожидания перегрева',
-   tags:['ПЕРЕГРЕВ','ДИСК','ТЕРМИЧЕСКИЙ'],
-   mechanics:['Диск вращается и пронизывает несколько объектов','Принудительный выброс без ожидания перегрева','Диски можно отражать манипулятором обратно','Совместим с магнитным гвоздём']},
-  // ── RAILCANNON ──
-  {id:'electric_rail',slot:'railcannon',slotLabel:'Рельсовый',name:'ELECTRIC RAILCANNON',ruName:'Электрический Рельсовый',
-   variant:'blue',variantLabel:'СИНИЙ',icon:'⚡',color:'var(--blue)',colorHex:'#5599ff',
-   power:100,speed:50,range:100,utility:72,img:'hakita.jpg',
-   desc:'Базовый рельсовый модуль. Мгновенный электрический импульс нейтрализует большинство сущностей с одной активации. Требует значительного времени перезарядки.',
-   primary:'РЕЖИМ 1 — Мгновенный электрический рельсовый импульс',
-   secondary:'РЕЖИМ 2 — Нет альтернативного режима',
-   tags:['ЭЛЕКТРИКА','МГНОВЕННОЕ','ВЫСОКОЕ ВОЗДЕЙСТВИЕ'],
-   mechanics:['Нейтрализует большинство целей за одну активацию','Проекция мгновенная — упреждение не требуется','Длительная перезарядка — применять по приоритету','Активация через тепловое ядро усиливает взрыв']},
-  {id:'screwdriver_rail',slot:'railcannon',slotLabel:'Рельсовый',name:'SCREWDRIVER RAILCANNON',ruName:'Сверлящий Рельсовый',
-   variant:'red',variantLabel:'КРАСНЫЙ',icon:'⚡',color:'var(--red)',colorHex:'#ff2020',
-   power:85,speed:50,range:100,utility:80,img:'hakita.jpg',
-   desc:'Альтернативный рельсовый. Вращающаяся проекция пронизывает несколько целей по линии и задерживается внутри, продолжая непрерывное воздействие.',
-   primary:'РЕЖИМ 1 — Вращающийся рельсовый импульс по линии целей',
-   secondary:'РЕЖИМ 2 — Нет альтернативного режима',
-   tags:['ВРАЩЕНИЕ','ПРОНИКНОВЕНИЕ','ЛИНЕЙНОЕ'],
-   mechanics:['Пронизывает все объекты по одной линии','Остаётся внутри цели — непрерывное воздействие','Оптимален при плотном линейном расположении','Сочетается с группировкой манипулятором-захватом']},
-  {id:'malicious_rail',slot:'railcannon',slotLabel:'Рельсовый',name:'MALICIOUS RAILCANNON',ruName:'Деструктивный Рельсовый',
-   variant:'green',variantLabel:'ЗЕЛЁНЫЙ',icon:'⚡',color:'var(--green)',colorHex:'#22ff88',
-   power:100,speed:45,range:100,utility:75,img:'hakita.jpg',
-   desc:'Третий вариант рельсового. Деструктивный лучевой импульс наивысшего воздействия. Нейтрализует практически любую цель мгновенно. Максимальная перезарядка.',
-   primary:'РЕЖИМ 1 — Деструктивный луч максимального воздействия',
-   secondary:'РЕЖИМ 2 — Нет альтернативного режима',
-   tags:['МАКСИМУМ','ЛУЧ','КРИТИЧЕСКОЕ'],
-   mechanics:['Максимальное воздействие среди всех рельсовых','Нейтрализует почти любую цель одной активацией','Самая длительная перезарядка в арсенале','Применять только по приоритетным объектам']},
-  // ── ROCKET ──
-  {id:'freezeframe',slot:'rocket',slotLabel:'Ракетный',name:'FREEZEFRAME ROCKET LAUNCHER',ruName:'Криогенный Ракетный',
-   variant:'blue',variantLabel:'СИНИЙ',icon:'◎',color:'var(--blue)',colorHex:'#5599ff',
-   power:88,speed:60,range:85,utility:90,img:'hakita.jpg',
-   desc:'Базовый ракетный модуль. Самонаводящаяся проекция. Вторичная активация фиксирует проекцию в пространстве — детонирует при последующем воздействии.',
-   primary:'РЕЖИМ 1 — Самонаводящаяся ракетная проекция',
-   secondary:'РЕЖИМ 2 — Криогенная фиксация проекции в пространстве',
-   tags:['САМОНАВЕДЕНИЕ','КРИОФИКСАЦИЯ','ЛОВУШКА'],
-   mechanics:['Зафиксированная проекция стоит в пространстве','Детонирует при любом воздействии включая собственный импульс','Создание ловушек в узких проходах среды','Перехват проекции манипулятором — возврат к источнику']},
-  {id:'srs_canon',slot:'rocket',slotLabel:'Ракетный',name:'S.R.S. CANON',ruName:'Термический Ракетный',
-   variant:'red',variantLabel:'КРАСНЫЙ',icon:'◎',color:'var(--red)',colorHex:'#ff2020',
-   power:95,speed:55,range:85,utility:85,img:'hakita.jpg',
-   desc:'Альтернативный ракетный. Вторичная активация — термическая проекция с широким зональным воздействием. Идеален при скоплении сущностей.',
-   primary:'РЕЖИМ 1 — Стандартная ракетная проекция',
-   secondary:'РЕЖИМ 2 — Термический запуск: зональное воздействие по области',
-   tags:['ТЕРМИЧЕСКИЙ','ЗОНА','СКОПЛЕНИЕ'],
-   mechanics:['Термическая проекция создаёт зону воздействия','Максимально эффективен при скоплении сущностей','Синергия с тепловым ядром импульсного модуля','Перехват обратно для самонаведения на источник']},
-  // ── FUEL ──
-  {id:'whiplash_fuel',slot:'fuel',slotLabel:'Топливный слот',name:'MIRAGE',ruName:'Мираж — Топливный Накопитель',
-   variant:'blue',variantLabel:'СИНИЙ',icon:'◉',color:'var(--gold)',colorHex:'#ffd166',
-   power:40,speed:70,range:50,utility:100,img:'hakita.jpg',
-   desc:'Модуль накопления топливного ресурса. Поглощает нейтрализованные сущности, конвертируя их в топливо. Автоматическая активация при истощении основного ресурса.',
-   primary:'РЕЖИМ 1 — Пассивное поглощение ресурса от нейтрализованных целей',
-   secondary:'РЕЖИМ 2 — Экстренная конвертация запаса в топливо',
-   tags:['ТОПЛИВО','НАКОПЛЕНИЕ','ПАССИВНЫЙ'],
-   mechanics:['Конвертирует нейтрализованные сущности в ресурс','Автоматически активируется при истощении','Синергия с высокочастотными модулями','Увеличивает общую эффективность длинных серий']},
-  {id:'hc_parry',slot:'fuel',slotLabel:'Топливный слот',name:'HARD DAMAGE CORE',ruName:'Ядро Стабилизации',
-   variant:'red',variantLabel:'КРАСНЫЙ',icon:'◉',color:'var(--pink)',colorHex:'#ff44aa',
-   power:60,speed:80,range:30,utility:95,img:'hakita.jpg',
-   desc:'Специальный стабилизирующий модуль. Перехват тяжёлых проекций не только нейтрализует входящее воздействие, но и создаёт контр-импульс максимальной эффективности.',
-   primary:'РЕЖИМ 1 — Перехват тяжёлой проекции с контр-импульсом',
-   secondary:'РЕЖИМ 2 — Принудительная стабилизация при критическом ресурсе',
-   tags:['СТАБИЛИЗАЦИЯ','ПЕРЕХВАТ','КОНТР-ИМПУЛЬС'],
-   mechanics:['Перехват тяжёлых проекций даёт контр-импульс','Стабилизирует критическое состояние ресурса','Синергия с Feedbacker для усиленного отражения','Активирует бонус стиля при своевременном применении']},
-];
+/* ════════════════════════════════════════════
+   BACKGROUND CANVAS — MULTI-COLOR PARTICLES
+════════════════════════════════════════════ */
+(function() {
+    const canvas = document.getElementById('bg-canvas');
+    const ctx    = canvas.getContext('2d');
+    let W, H;
 
-/* ══════════════════════════════════
-   SLOTS CONFIG
-══════════════════════════════════ */
-const SLOTS=[
-  {id:'all',label:'ВСЕ',tabC:'var(--red)'},
-  {id:'arm',label:'Манипулятор',tabC:'var(--green)'},
-  {id:'revolver',label:'Дальнобойный',tabC:'var(--blue)'},
-  {id:'shotgun',label:'Импульсный',tabC:'var(--orange)'},
-  {id:'nailgun',label:'Гвоздевой',tabC:'var(--red)'},
-  {id:'railcannon',label:'Рельсовый',tabC:'var(--gold)'},
-  {id:'rocket',label:'Ракетный',tabC:'var(--pink)'},
-  {id:'fuel',label:'Топливный',tabC:'var(--gold)'},
-];
+    const resize = () => { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; };
+    window.addEventListener('resize', resize);
+    resize();
 
-/* ══════════════════════════════════
-   STATE
-══════════════════════════════════ */
-let state={slot:'all',variant:'all',search:'',sortKey:null,sortDir:-1,selectedId:null,compareA:null,compareB:null};
+    // Palette: red, green, blue, gold, purple
+    const PALETTES = [
+        [255, 32, 32],
+        [0, 255, 136],
+        [74, 240, 255],
+        [255, 209, 102],
+        [187, 85, 255],
+    ];
 
-/* ══════════════════════════════════
-   LOG
-══════════════════════════════════ */
-const termLog=document.getElementById('termLog');
-const logLines=[];
-function addLog(tag,msg){logLines.push({tag,msg});if(logLines.length>20)logLines.shift();renderLog();}
-function renderLog(){
-  termLog.innerHTML=logLines.map((l,i)=>`<div class="tl-line ${i===logLines.length-1?'new':''}"><span class="tl-tag">[${l.tag}]</span> <span class="tl-val">${l.msg}</span></div>`).join('');
-  termLog.scrollTop=termLog.scrollHeight;
-}
+    class Spark {
+        constructor(init) {
+            this.init = init;
+            this.reset();
+            if (init) this.y = Math.random() * H;
+        }
+        reset() {
+            const c = PALETTES[Math.floor(Math.random() * PALETTES.length)];
+            this.r = c[0]; this.g = c[1]; this.b = c[2];
+            this.x = Math.random() * W;
+            this.y = H + 10;
+            this.size  = Math.random() * 1.6 + 0.2;
+            this.vy    = -(Math.random() * 0.55 + 0.15);
+            this.vx    = (Math.random() - 0.5) * 0.35;
+            this.alpha = Math.random() * 0.3 + 0.04;
+            this.life  = 1;
+            this.decay = Math.random() * 0.0018 + 0.0008;
+        }
+        update() {
+            this.y += this.vy; this.x += this.vx; this.life -= this.decay;
+            if (this.life <= 0 || this.y < -6) this.reset();
+        }
+        draw() {
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(${this.r},${this.g},${this.b},${this.alpha * this.life})`;
+            ctx.fill();
+        }
+    }
 
-/* ══════════════════════════════════
-   TABS
-══════════════════════════════════ */
-function buildTabs(){
-  const c=document.getElementById('slotTabs');c.innerHTML='';
-  SLOTS.forEach(s=>{
-    const count=s.id==='all'?WEAPONS.length:WEAPONS.filter(w=>w.slot===s.id).length;
-    const t=document.createElement('button');
-    t.className='slot-tab'+(state.slot===s.id?' active':'');
-    t.style.setProperty('--tab-c',s.tabC);
-    t.innerHTML=`${s.label}<span class="tab-count">${count}</span>`;
-    t.onclick=()=>{state.slot=s.id;state.selectedId=null;closeDetail();buildTabs();renderGrid();addLog('SLOT',s.label.toUpperCase());};
-    c.appendChild(t);
-  });
-}
+    // Horizontal grid-lines drifting upward
+    class GridLine {
+        constructor() { this.reset(); this.y = Math.random() * H; }
+        reset() { this.y = H; this.alpha = Math.random() * 0.035 + 0.005; this.speed = Math.random() * 0.12 + 0.04; }
+        update() { this.y -= this.speed; if (this.y < 0) this.reset(); }
+        draw() {
+            ctx.beginPath(); ctx.moveTo(0, this.y); ctx.lineTo(W, this.y);
+            ctx.strokeStyle = `rgba(0,255,136,${this.alpha})`; ctx.lineWidth = 1; ctx.stroke();
+        }
+    }
 
-/* ══════════════════════════════════
-   FILTER
-══════════════════════════════════ */
-function getFiltered(){
-  let list=WEAPONS.slice();
-  if(state.slot!=='all')list=list.filter(w=>w.slot===state.slot);
-  if(state.variant!=='all')list=list.filter(w=>w.variant===state.variant);
-  if(state.search){const q=state.search.toLowerCase();list=list.filter(w=>w.name.toLowerCase().includes(q)||w.ruName.toLowerCase().includes(q)||w.tags.some(t=>t.toLowerCase().includes(q)));}
-  if(state.sortKey)list.sort((a,b)=>state.sortDir*(b[state.sortKey]-a[state.sortKey]));
-  return list;
-}
+    // Vertical faint column lines (static)
+    const COL_LINES = Array.from({ length: 6 }, (_, i) => ({ x: (W / 6) * i + (W / 12) }));
 
-/* ══════════════════════════════════
-   RENDER GRID
-══════════════════════════════════ */
-function renderGrid(){
-  const grid=document.getElementById('weaponGrid');
-  const list=getFiltered();
-  document.getElementById('resultsCount').textContent=list.length;
-  if(!list.length){grid.innerHTML='<div class="no-results" style="grid-column:1/-1"><div class="nr-icon">◎</div><div>// МОДУЛИ НЕ НАЙДЕНЫ //</div></div>';return;}
-  grid.innerHTML='';
-  list.forEach((w,idx)=>{
-    const card=document.createElement('div');
-    card.className='wcard'+(state.selectedId===w.id?' selected':'');
-    card.style.setProperty('--wc',w.color);
-    card.style.animationDelay=(idx*.04)+'s';
-    card.dataset.id=w.id;
-    const compChecked=state.compareA===w.id||state.compareB===w.id;
-    card.innerHTML=`
-      <div class="wcard-img-wrap">
-        <img src="${w.img}" alt="${w.name}" onerror="this.style.opacity='0'">
-        <div class="wcard-img-overlay"></div>
-        <div class="wcard-img-badge">${w.variantLabel}</div>
-        <div class="wcard-img-slot">${w.slotLabel.toUpperCase()}</div>
-      </div>
-      <div class="wcard-head">
-        <div class="wcard-icon">${w.icon}</div>
-        <div class="wcard-title"><div class="wcard-name">${w.name}</div><div class="wcard-runame">${w.ruName}</div></div>
-      </div>
-      <div class="wcard-body">
-        <div class="wcard-desc">${w.desc}</div>
-        <div class="mini-stats">
-          ${['power','speed','range','utility'].map(k=>`<div class="mini-stat-row"><div class="mini-stat-lbl">${{power:'МОЩНОСТЬ',speed:'СКОРОСТЬ',range:'ДАЛЬНОСТЬ',utility:'УТИЛИТА'}[k]}</div><div class="mini-stat-bar"><div class="mini-stat-fill" data-val="${w[k]}"></div></div><div class="mini-stat-val">${w[k]}</div></div>`).join('')}
-        </div>
-        <div class="wcard-tags">${w.tags.map(t=>`<span class="wtag">${t}</span>`).join('')}</div>
-      </div>
-      <div class="wcard-footer">
-        <label class="compare-check ${compChecked?'checked':''}" data-cmp="${w.id}">
-          <input type="checkbox" ${compChecked?'checked':''}><div class="compare-box">${compChecked?'✓':''}</div>CMP
-        </label>
-        <span class="wcard-slot-badge">${w.slotLabel.toUpperCase()}</span>
-        <span class="wcard-arrow">▸</span>
-      </div>`;
-    card.addEventListener('click',e=>{if(e.target.closest('.compare-check'))return;openDetail(w);});
-    card.querySelector('.compare-check').addEventListener('click',e=>{e.stopPropagation();toggleCompare(w.id);});
-    grid.appendChild(card);
-  });
-  requestAnimationFrame(()=>{document.querySelectorAll('.mini-stat-fill').forEach(b=>{b.style.width='0';setTimeout(()=>{b.style.width=b.dataset.val+'%';},100);});});
-}
+    const sparks = Array.from({ length: 90 }, () => new Spark(true));
+    const glines = Array.from({ length: 14 }, () => new GridLine());
 
-/* ══════════════════════════════════
-   DETAIL
-══════════════════════════════════ */
-function openDetail(w){
-  state.selectedId=w.id;
-  document.getElementById('sideActive').textContent=w.name;
-  const panel=document.getElementById('detailPanel');
-  panel.style.setProperty('--dp-c',w.color);
-  document.getElementById('detailLeft').innerHTML=`
-    <div class="dp-eyebrow">// ${w.slotLabel.toUpperCase()} // ${w.variantLabel} //</div>
-    <div class="dp-name">${w.name}</div><div class="dp-runame">${w.ruName}</div>
-    <div class="dp-desc" id="dpDesc"></div>
-    <div class="dp-activation">
-      <div class="dp-act-row"><span class="dp-act-key">РЕЖИМ 1</span><span class="dp-act-desc">${w.primary}</span></div>
-      <div class="dp-act-row"><span class="dp-act-key">РЕЖИМ 2</span><span class="dp-act-desc">${w.secondary}</span></div>
-    </div>
-    <div class="dp-mechanics"><div class="dp-mech-title">// МЕХАНИКИ</div>
-      ${w.mechanics.map(m=>`<div class="dp-mech-item"><span class="dp-mech-arrow">▸</span>${m}</div>`).join('')}
-    </div>`;
-  document.getElementById('detailRight').innerHTML=`
-    <div class="dp-stat-title">// ХАРАКТЕРИСТИКИ</div>
-    ${['power','speed','range','utility'].map(k=>`
-      <div class="dp-stat-row">
-        <div class="dp-stat-head"><span class="dp-stat-lbl">${{power:'МОЩНОСТЬ',speed:'СКОРОСТЬ',range:'ДАЛЬНОСТЬ',utility:'УТИЛИТА'}[k]}</span><span class="dp-stat-val">${w[k]}</span></div>
-        <div class="dp-stat-bar"><div class="dp-stat-fill" data-val="${w[k]}"></div></div>
-      </div>`).join('')}
-    <div class="readout" style="margin-top:1rem;">
-      <span class="hl">[СЛОТ]</span> <span class="vl">${w.slotLabel}</span><br>
-      <span class="hl">[ВАРИАНТ]</span> <span class="vl">${w.variantLabel}</span><br>
-      <span class="hl">[ТЕГИ]</span> <span class="vl">${w.tags.join(' / ')}</span><br>
-      <span class="hl">[СТАТУС]</span> <span class="vl">АКТИВЕН<span class="cur"></span></span>
-    </div>`;
-  panel.classList.add('open');
-  panel.scrollIntoView({behavior:'smooth',block:'nearest'});
-  typeText(document.getElementById('dpDesc'),w.desc,15);
-  requestAnimationFrame(()=>setTimeout(()=>document.querySelectorAll('.dp-stat-fill').forEach(b=>b.style.width=b.dataset.val+'%'),200));
-  renderGrid();
-  addLog('INFO','Выбран: '+w.name);
-}
-function closeDetail(){document.getElementById('detailPanel').classList.remove('open');state.selectedId=null;document.getElementById('sideActive').textContent='—';}
-function typeText(el,text,speed=20){el.textContent='';let i=0;const iv=setInterval(()=>{if(i>=text.length){clearInterval(iv);return;}el.textContent+=text[i++];},speed);}
+    let frame = 0;
+    function loop() {
+        ctx.clearRect(0, 0, W, H);
 
-/* ══════════════════════════════════
-   COMPARE
-══════════════════════════════════ */
-function toggleCompare(id){
-  if(state.compareA===id)state.compareA=null;
-  else if(state.compareB===id)state.compareB=null;
-  else if(!state.compareA)state.compareA=id;
-  else if(!state.compareB)state.compareB=id;
-  else{state.compareA=state.compareB;state.compareB=id;}
-  updateCompare();renderGrid();
-}
-function updateCompare(){
-  const wA=WEAPONS.find(w=>w.id===state.compareA),wB=WEAPONS.find(w=>w.id===state.compareB);
-  document.getElementById('cmpNameA').textContent=wA?wA.name:'не выбран';
-  document.getElementById('cmpNameB').textContent=wB?wB.name:'не выбран';
-  if(wA&&wB){
-    document.getElementById('comparePanel').classList.add('open');
-    [['Power','power'],['Speed','speed'],['Range','range'],['Util','utility']].forEach(([k,key])=>{
-      const vA=wA[key],vB=wB[key];
-      const aEl=document.getElementById('cmpA'+k),bEl=document.getElementById('cmpB'+k);
-      aEl.textContent=vA;bEl.textContent=vB;
-      aEl.className='cmp-a'+(vA>=vB?' cmp-win':'');bEl.className='cmp-b'+(vB>=vA?' cmp-win':'');
-    });
-    addLog('CMP',`${wA.name} vs ${wB.name}`);
-  } else document.getElementById('comparePanel').classList.remove('open');
-}
+        // Faint vertical guide lines
+        if (frame % 300 === 0) COL_LINES.forEach((cl, i) => { cl.x = (W / 6) * i + (W / 12); });
+        COL_LINES.forEach(cl => {
+            ctx.beginPath(); ctx.moveTo(cl.x, 0); ctx.lineTo(cl.x, H);
+            ctx.strokeStyle = 'rgba(255,32,32,0.012)'; ctx.lineWidth = 1; ctx.stroke();
+        });
 
-/* ══════════════════════════════════
-   EVENTS
-══════════════════════════════════ */
-document.querySelectorAll('.filter-btn').forEach(btn=>btn.addEventListener('click',()=>{
-  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');state.variant=btn.dataset.variant;state.selectedId=null;closeDetail();renderGrid();
-}));
-const searchBox=document.getElementById('searchBox');let st;
-searchBox.addEventListener('input',()=>{clearTimeout(st);st=setTimeout(()=>{state.search=searchBox.value.trim();state.selectedId=null;closeDetail();renderGrid();},200);});
-['sortPower','sortSpeed','sortRange'].forEach((id,i)=>{
-  const key=['power','speed','range'][i];
-  document.getElementById(id).addEventListener('click',function(){
-    if(state.sortKey===key){state.sortDir*=-1;this.textContent=key.substring(0,7).toUpperCase()+' '+(state.sortDir===-1?'↓':'↑');}
-    else{document.querySelectorAll('.sort-btn').forEach(b=>b.classList.remove('active'));state.sortKey=key;state.sortDir=-1;this.textContent=key.substring(0,7).toUpperCase()+' ↓';}
-    this.classList.add('active');renderGrid();
-  });
-});
-const keySlotMap={'1':'arm','2':'revolver','3':'shotgun','4':'nailgun','5':'railcannon','6':'rocket','7':'fuel','0':'all'};
-document.addEventListener('keydown',e=>{
-  if(document.activeElement===searchBox){if(e.key==='Escape'){searchBox.blur();searchBox.value='';state.search='';renderGrid();}return;}
-  if(e.key==='f'||e.key==='F'){e.preventDefault();searchBox.focus();return;}
-  if(e.key==='Escape'){closeDetail();renderGrid();return;}
-  if(keySlotMap[e.key]){state.slot=keySlotMap[e.key];state.selectedId=null;closeDetail();buildTabs();renderGrid();}
-});
-window.addEventListener('load',()=>document.querySelectorAll('.bar-fill').forEach(b=>{b.style.width='0';setTimeout(()=>{b.style.width=(b.dataset.w||0)+'%';},400);}));
-
-/* ══════════════════════════════════
-   RANK GLITCH
-══════════════════════════════════ */
-const RANKS=['D','C','B','A','S','SS','SSS'];
-setInterval(()=>{
-  const el=document.getElementById('dynamicRank');
-  if(Math.random()<.15){el.textContent=RANKS[Math.floor(Math.random()*RANKS.length)];setTimeout(()=>{el.textContent='SSS';},150);}
-},2000);
-
-/* ══════════════════════════════════
-   PARTICLE CANVAS (same as index)
-══════════════════════════════════ */
-(()=>{
-  const canvas=document.getElementById('bg-canvas');
-  const ctx=canvas.getContext('2d');
-  let W,H,particles=[];
-  function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}
-  window.addEventListener('resize',resize);resize();
-  class Particle{
-    constructor(){this.reset();}
-    reset(){this.x=Math.random()*W;this.y=H+10;this.size=Math.random()*1.5+.3;this.speed=Math.random()*.4+.1;this.alpha=Math.random()*.3+.05;this.drift=(Math.random()-.5)*.3;this.color=Math.random()<.7?`rgba(255,32,32,`:`rgba(255,200,200,`;}
-    update(){this.y-=this.speed;this.x+=this.drift;if(this.y<-5)this.reset();}
-    draw(){ctx.beginPath();ctx.arc(this.x,this.y,this.size,0,Math.PI*2);ctx.fillStyle=this.color+this.alpha+')';ctx.fill();}
-  }
-  for(let i=0;i<65;i++){const p=new Particle();p.y=Math.random()*H;particles.push(p);}
-  function loop(){ctx.clearRect(0,0,W,H);particles.forEach(p=>{p.update();p.draw();});requestAnimationFrame(loop);}
-  loop();
+        glines.forEach(l => { l.update(); l.draw(); });
+        sparks.forEach(s => { s.update(); s.draw(); });
+        frame++;
+        requestAnimationFrame(loop);
+    }
+    loop();
 })();
 
-/* ══════════════════════════════════
-   INIT
-══════════════════════════════════ */
-addLog('SYS','База данных загружена');
-addLog('ARS','Модулей в каталоге: '+WEAPONS.length);
-addLog('V1','Арсенал инициализирован');
-addLog('FUEL','Уровень ресурса: КРИТИЧЕСКИЙ');
-addLog('STL','Ранг стиля: SSS');
-buildTabs();renderGrid();
+/* ════════════════════════════════════════════
+   VARIANT TOGGLE
+════════════════════════════════════════════ */
+document.querySelectorAll('.weapon-category').forEach(cat => {
+    const btns = cat.querySelectorAll('.toggle-btn');
+    if (!btns.length) return;
+    const std = cat.querySelector('.standard-variants');
+    const alt = cat.querySelector('.alternate-variants');
+
+    btns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            btns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const v = btn.dataset.variant;
+            if (std) std.style.display = v === 'standard' ? 'block' : 'none';
+            if (alt) alt.style.display = v === 'alternate' ? 'block' : 'none';
+            animateBars(v === 'standard' ? std : alt);
+        });
+    });
+});
+
+/* ════════════════════════════════════════════
+   STAT BAR ANIMATION
+════════════════════════════════════════════ */
+function animateBars(container) {
+    if (!container) return;
+    container.querySelectorAll('.mbar-fill[data-val]').forEach(bar => {
+        bar.style.width = '0';
+        requestAnimationFrame(() => setTimeout(() => { bar.style.width = bar.dataset.val + '%'; }, 80));
+    });
+}
+
+// Intersection Observer — animate bars when category scrolls into view
+const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+        if (!e.isIntersecting) return;
+        e.target.querySelectorAll('.mbar-fill[data-val]').forEach(bar => {
+            if (!bar.style.width || bar.style.width === '0px') {
+                setTimeout(() => { bar.style.width = bar.dataset.val + '%'; }, 180);
+            }
+        });
+        io.unobserve(e.target);
+    });
+}, { threshold: 0.15 });
+document.querySelectorAll('.weapon-category').forEach(c => io.observe(c));
+
+/* ════════════════════════════════════════════
+   RANK GLITCH
+════════════════════════════════════════════ */
+const RANKS = ['D','C','B','A','S','SS','SSS'];
+const rankEl = document.getElementById('sc-rank');
+setInterval(() => {
+    if (rankEl && Math.random() < 0.18) {
+        rankEl.textContent = RANKS[Math.floor(Math.random() * RANKS.length)];
+        setTimeout(() => { rankEl.textContent = 'SSS'; }, 130);
+    }
+}, 1800);
+
+/* ════════════════════════════════════════════
+   HEADER GLITCH
+════════════════════════════════════════════ */
+const h1 = document.querySelector('.boot-header h1');
+if (h1) {
+    setInterval(() => {
+        if (Math.random() < 0.07) {
+            const dx = (Math.random() - 0.5) * 5;
+            const dy = (Math.random() - 0.5) * 2;
+            h1.style.cssText += `transform:translate(${dx}px,${dy}px);filter:hue-rotate(12deg)`;
+            setTimeout(() => { h1.style.transform = ''; h1.style.filter = ''; }, 70);
+        }
+    }, 2800);
+}
+
+/* ════════════════════════════════════════════
+   WEAPON CATEGORY HOVER GLOW
+════════════════════════════════════════════ */
+const WCAT_GLOWS = {
+    arms:       'rgba(255,68,204,0.12)',
+    revolver:   'rgba(0,255,136,0.10)',
+    shotgun:    'rgba(255,32,32,0.12)',
+    nailgun:    'rgba(74,240,255,0.10)',
+    railcannon: 'rgba(187,85,255,0.12)',
+    rocket:     'rgba(255,209,102,0.10)',
+};
+document.querySelectorAll('.weapon-category').forEach(cat => {
+    const wt = cat.dataset.weapon;
+    cat.addEventListener('mouseenter', () => {
+        cat.style.boxShadow = `0 0 30px ${WCAT_GLOWS[wt] || 'rgba(255,32,32,0.1)'}, inset 0 0 50px rgba(0,0,0,0.3)`;
+    });
+    cat.addEventListener('mouseleave', () => { cat.style.boxShadow = ''; });
+});
+
+/* ════════════════════════════════════════════
+   CLICK FLASH
+════════════════════════════════════════════ */
+document.body.addEventListener('click', e => {
+    if (e.target.closest('.back-link') || e.target.closest('.toggle-btn')) return;
+    const f = document.createElement('div');
+    Object.assign(f.style, {
+        position: 'fixed', inset: '0', zIndex: '9999',
+        background: 'rgba(0,255,136,0.032)', pointerEvents: 'none'
+    });
+    document.body.appendChild(f);
+    setTimeout(() => f.remove(), 90);
+});
+
+/* ════════════════════════════════════════════
+   ANIMATED COUNTER — total cards
+════════════════════════════════════════════ */
+const totalEl  = document.getElementById('sc-total');
+const totalTgt = document.querySelectorAll('.variant-card').length;
+let cnt = 0;
+const cAnim = setInterval(() => {
+    cnt++;
+    if (totalEl) totalEl.textContent = cnt;
+    if (cnt >= totalTgt) clearInterval(cAnim);
+}, 55);
+
+/* ════════════════════════════════════════════
+   NAVIGATION SLOT ACTIVE STATE
+════════════════════════════════════════════ */
+document.querySelectorAll('.ws-slot').forEach(s => {
+    s.addEventListener('click', function () {
+        document.querySelectorAll('.ws-slot').forEach(x => x.classList.remove('active'));
+        this.classList.add('active');
+    });
+});
 </script>
 </body>
 </html>
