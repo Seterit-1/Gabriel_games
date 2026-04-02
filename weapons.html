@@ -3,837 +3,755 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>V1 // TERMINAL SELECT // АРСЕНАЛ</title>
+<title>V1 АРСЕНАЛ // БАЗА ДАННЫХ МОДУЛЕЙ</title>
 <link href="https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
 :root{
-  --red:#ff2020;--white:#e8e8e8;--black:#000;
-  --gold:#ffd166;--blue:#4488ff;--green:#22dd77;
-  --dim:#111;--border:#1c1c1c;--text-dim:#333;
-  --glow:rgba(255,32,32,.4);
+  --red:#ff2020;--red-dim:#8a0000;--white:#e8e8e8;--black:#080808;
+  --panel:#0d0d0d;--border:#222;--gold:#ffd166;--blue:#5599ff;
+  --green:#22ff88;--pink:#ff44aa;--orange:#ff8833;--glow-r:rgba(255,32,32,0.35);
 }
+body{background:#060606;color:var(--white);font-family:'Share Tech Mono','Fira Code',monospace;min-height:100vh;overflow-x:hidden;}
+body::after{content:'';position:fixed;top:0;left:0;width:100%;height:100%;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.13) 2px,rgba(0,0,0,0.13) 4px);
+  pointer-events:none;z-index:9998;}
+#bg-canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;opacity:0.4;}
 
-/* ── BACKGROUND TERMINAL GRID ── */
-body{
-  background:var(--black);
-  color:var(--white);
-  font-family:'Share Tech Mono','Fira Code',monospace;
-  min-height:100vh;
-  overflow-x:hidden;
-  position:relative;
-}
+.page{max-width:1480px;margin:0 auto;padding:0 1rem 2rem;position:relative;z-index:10;}
 
-/* ULTRAKILL-style grid background */
-#bg-terminal{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;}
-
-/* CRT scanlines */
-body::before{
-  content:'';position:fixed;top:0;left:0;width:100%;height:100%;
-  background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,.18) 3px,rgba(0,0,0,.18) 4px);
-  pointer-events:none;z-index:9997;
-}
-/* Vignette */
-body::after{
-  content:'';position:fixed;top:0;left:0;width:100%;height:100%;
-  background:radial-gradient(ellipse at center,transparent 50%,rgba(0,0,0,.85) 100%);
-  pointer-events:none;z-index:9996;
-}
-
-/* ── LAYOUT ── */
-.root{
-  display:grid;
-  grid-template-rows:auto 1fr auto;
-  min-height:100vh;
-  position:relative;
-  z-index:10;
-}
-
-/* ── TOP BAR (ULTRAKILL style) ── */
-.topbar{
-  border-bottom:1px solid var(--red);
-  padding:.6rem 1.5rem;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  background:rgba(0,0,0,.9);
-  position:relative;
-}
-.topbar::after{content:'';position:absolute;bottom:-3px;left:0;width:100%;height:2px;background:linear-gradient(90deg,transparent,var(--red),transparent);opacity:.4;}
-.tb-left{display:flex;align-items:center;gap:1.5rem;}
-.tb-logo{font-family:'VT323',monospace;font-size:2.2rem;color:var(--red);text-shadow:0 0 20px var(--red),0 0 40px var(--glow);letter-spacing:4px;line-height:1;}
-.tb-path{font-size:.6rem;color:var(--text-dim);letter-spacing:.2em;}
-.tb-path .sep{color:var(--red);margin:0 4px;}
-.tb-path .cur-path{color:#555;}
-.tb-right{display:flex;align-items:center;gap:1.5rem;}
-.tb-rank{font-family:'VT323',monospace;font-size:2rem;color:var(--gold);text-shadow:0 0 15px var(--gold);}
-.tb-count{font-size:.58rem;color:var(--text-dim);text-align:right;letter-spacing:.1em;}
-.tb-count .hl{color:var(--red);}
-
-/* ── MAIN AREA ── */
-.main{display:grid;grid-template-columns:320px 1fr 260px;height:calc(100vh - 90px);overflow:hidden;}
-
-/* ── LEFT PANEL (SLOT SELECTOR, ULTRAKILL style) ── */
-.slot-panel{
-  border-right:1px solid var(--border);
-  background:rgba(0,0,0,.8);
-  display:flex;
-  flex-direction:column;
-  overflow:hidden;
-}
-.sp-title{
-  padding:.7rem 1rem;
-  font-size:.55rem;letter-spacing:.3em;color:var(--text-dim);
-  border-bottom:1px solid var(--border);
-  text-transform:uppercase;
-}
-.slot-list{flex:1;overflow-y:auto;padding:.3rem 0;}
-.slot-list::-webkit-scrollbar{width:3px;}
-.slot-list::-webkit-scrollbar-thumb{background:var(--red);}
-
-/* Individual slot row (mimics ULTRAKILL weapon slot select) */
-.slot-row{
-  display:flex;align-items:stretch;
-  border-bottom:1px solid var(--border);
-  cursor:pointer;
-  position:relative;
-  transition:.12s;
-  overflow:hidden;
-}
-.slot-row::before{content:'';position:absolute;left:0;top:0;width:2px;height:100%;background:var(--slot-c,#222);transition:.12s;}
-.slot-row:hover,.slot-row.active{background:color-mix(in srgb,var(--slot-c,#222) 8%,#000);}
-.slot-row:hover::before,.slot-row.active::before{box-shadow:0 0 10px var(--slot-c,#222);}
-.slot-row.active{border-left:2px solid var(--slot-c,var(--red));}
-.slot-num-box{
-  width:40px;min-height:50px;
-  display:flex;align-items:center;justify-content:center;
-  font-family:'VT323',monospace;font-size:1.8rem;
-  color:var(--slot-c,#222);
-  border-right:1px solid var(--border);
-  flex-shrink:0;
-}
-.slot-info{flex:1;padding:.5rem .7rem;display:flex;flex-direction:column;justify-content:center;}
-.slot-name-big{font-family:'VT323',monospace;font-size:1.1rem;color:var(--white);letter-spacing:.05em;}
-.slot-desc-small{font-size:.52rem;color:var(--text-dim);letter-spacing:.08em;margin-top:1px;}
-.slot-variants{display:flex;gap:4px;margin-top:.4rem;}
-.sv-dot{width:8px;height:8px;border-radius:50%;transition:.15s;}
-.sv-dot.b{background:var(--blue);box-shadow:0 0 4px var(--blue);}
-.sv-dot.r{background:var(--red);box-shadow:0 0 4px var(--red);}
-.sv-dot.g{background:var(--green);box-shadow:0 0 4px var(--green);}
-.sv-dot.dim{background:#1e1e1e;box-shadow:none;}
-.slot-count{font-family:'VT323',monospace;font-size:1.4rem;color:#1a1a1a;padding:.5rem .7rem;align-self:center;transition:.12s;}
-.slot-row:hover .slot-count,.slot-row.active .slot-count{color:var(--slot-c,var(--red));}
-
-/* ── CENTER PANEL (WEAPON LIST, ULTRAKILL terminal style) ── */
-.center-panel{
-  display:flex;flex-direction:column;
-  background:rgba(0,0,0,.7);
-  overflow:hidden;
-}
-.cp-header{
-  padding:.6rem 1rem;
-  border-bottom:1px solid var(--border);
-  display:flex;align-items:center;justify-content:space-between;
-  background:rgba(0,0,0,.5);
-  flex-shrink:0;
-}
-.cp-title{font-family:'VT323',monospace;font-size:1.4rem;color:var(--red);letter-spacing:.08em;}
-.cp-search{background:transparent;border:none;border-bottom:1px solid #222;padding:.2rem .4rem;font-family:'Share Tech Mono',monospace;font-size:.65rem;color:var(--white);outline:none;width:180px;letter-spacing:.05em;transition:.15s;}
-.cp-search:focus{border-color:var(--red);}
-.cp-search::placeholder{color:#1e1e1e;}
-
-/* Variant filter */
-.vf-row{
-  display:flex;gap:2px;padding:.4rem .6rem;border-bottom:1px solid var(--border);
-  background:rgba(0,0,0,.3);flex-shrink:0;
-}
-.vf-btn{
-  background:transparent;border:1px solid var(--border);
-  padding:.2rem .7rem;cursor:pointer;
-  font-family:'Share Tech Mono',monospace;font-size:.58rem;
-  color:#333;letter-spacing:.1em;text-transform:uppercase;
-  transition:.12s;position:relative;overflow:hidden;
-}
-.vf-btn::after{content:'';position:absolute;bottom:0;left:0;width:0;height:1px;background:var(--vf-c,#555);transition:.15s;}
-.vf-btn:hover::after,.vf-btn.active::after{width:100%;}
-.vf-btn:hover,.vf-btn.active{color:var(--vf-c,#ccc);border-color:var(--vf-c,#555);}
-.vf-btn.f-all{--vf-c:var(--white);}
-.vf-btn.f-blue{--vf-c:var(--blue);}
-.vf-btn.f-red{--vf-c:var(--red);}
-.vf-btn.f-green{--vf-c:var(--green);}
-
-/* WEAPON LIST (ULTRAKILL terminal rows) */
-.weapon-list{flex:1;overflow-y:auto;padding:0;}
-.weapon-list::-webkit-scrollbar{width:3px;}
-.weapon-list::-webkit-scrollbar-thumb{background:var(--red);}
-
-.wrow{
-  display:grid;
-  grid-template-columns:50px 90px 1fr auto;
-  align-items:center;
-  gap:0;
-  border-bottom:1px solid var(--border);
-  cursor:pointer;
-  position:relative;
-  overflow:hidden;
-  transition:.1s;
-  min-height:64px;
-}
-.wrow::before{content:'';position:absolute;left:0;top:0;width:2px;height:100%;background:var(--wc,#1e1e1e);transition:.12s;}
-.wrow:hover{background:color-mix(in srgb,var(--wc,#1e1e1e) 6%,#000);}
-.wrow:hover::before{box-shadow:0 0 8px var(--wc,transparent);}
-.wrow.selected{background:color-mix(in srgb,var(--wc,#1e1e1e) 12%,#000);border-color:var(--wc,#1e1e1e);}
-.wrow.selected::before{box-shadow:0 0 12px var(--wc,transparent);}
-
-/* Row: index */
-.wr-idx{
-  display:flex;align-items:center;justify-content:center;
-  font-family:'VT323',monospace;font-size:1.5rem;
-  color:#1a1a1a;height:100%;
-  border-right:1px solid var(--border);
-  transition:.12s;
-}
-.wrow:hover .wr-idx,.wrow.selected .wr-idx{color:var(--wc,#333);}
-
-/* Row: image */
-.wr-img{
-  height:64px;border-right:1px solid var(--border);
-  overflow:hidden;position:relative;
-  background:#050505;
-}
-.wr-img img{width:100%;height:100%;object-fit:cover;opacity:.35;filter:grayscale(50%);transition:.2s;}
-.wrow:hover .wr-img img{opacity:.6;filter:grayscale(10%);}
-.wr-img-scan{position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(transparent 40%,rgba(0,0,0,.6));pointer-events:none;}
-
-/* Row: info */
-.wr-info{padding:.4rem .7rem;overflow:hidden;}
-.wr-name{font-family:'VT323',monospace;font-size:1.05rem;color:var(--white);letter-spacing:.04em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.wr-runame{font-size:.52rem;color:#333;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.wr-tags{display:flex;gap:2px;margin-top:.3rem;flex-wrap:wrap;}
-.wr-tag{font-size:.47rem;color:#282828;border:1px solid #181818;padding:0 4px;letter-spacing:.06em;text-transform:uppercase;}
-
-/* Row: stats mini */
-.wr-stats{
-  padding:.4rem .6rem;
-  border-left:1px solid var(--border);
-  display:flex;flex-direction:column;gap:2px;
-  min-width:80px;
-}
-.wr-stat{display:flex;align-items:center;gap:3px;}
-.wr-stat-bar{width:40px;height:2px;background:#111;overflow:hidden;}
-.wr-stat-fill{height:100%;background:var(--wc,#333);width:0;transition:width .6s ease;}
-.wr-stat-val{font-family:'VT323',monospace;font-size:.75rem;color:#282828;width:22px;text-align:right;}
-
-/* ── RIGHT PANEL (DETAIL, ULTRAKILL style) ── */
-.detail-panel{
-  border-left:1px solid var(--border);
-  background:rgba(0,0,0,.85);
-  display:flex;flex-direction:column;
-  overflow:hidden;
-  transition:.2s;
-}
-.dp-header{
-  border-bottom:1px solid var(--border);
-  padding:.7rem .8rem;
-  background:rgba(0,0,0,.5);
-  flex-shrink:0;
-  position:relative;
-}
-.dp-header::after{content:'';position:absolute;bottom:0;left:0;width:100%;height:1px;background:var(--dp-c,var(--red));opacity:.6;}
-.dp-variant-badge{font-size:.5rem;letter-spacing:.25em;color:var(--dp-c,var(--red));text-transform:uppercase;margin-bottom:.3rem;}
-.dp-name{font-family:'VT323',monospace;font-size:1.5rem;color:var(--white);letter-spacing:.04em;line-height:1.1;}
-.dp-runame{font-size:.55rem;color:#333;letter-spacing:.1em;margin-top:.2rem;}
-
-/* Big image in detail */
-.dp-img-wrap{position:relative;height:130px;overflow:hidden;flex-shrink:0;}
-.dp-img-wrap img{width:100%;height:100%;object-fit:cover;opacity:.4;filter:grayscale(40%);}
-.dp-img-wrap::after{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(transparent 30%,rgba(0,0,0,.9) 100%);}
-.dp-img-scan{position:absolute;top:-30%;left:0;width:100%;height:20%;background:linear-gradient(transparent,rgba(255,32,32,.04),transparent);animation:scan 3s linear infinite;pointer-events:none;}
-@keyframes scan{to{top:120%;}}
-.dp-img-label{position:absolute;bottom:6px;left:10px;font-family:'VT323',monospace;font-size:1.1rem;color:var(--dp-c,var(--red));letter-spacing:.05em;z-index:2;}
-
-.dp-body{flex:1;overflow-y:auto;padding:.8rem;font-size:.62rem;color:#444;line-height:1.7;}
-.dp-body::-webkit-scrollbar{width:2px;}
-.dp-body::-webkit-scrollbar-thumb{background:var(--red);}
-.dp-section-title{font-size:.52rem;color:#2a2a2a;letter-spacing:.25em;text-transform:uppercase;margin:.6rem 0 .3rem;}
-.dp-desc-text{color:#555;line-height:1.65;font-size:.65rem;margin-bottom:.6rem;}
-
-/* Full stat bars */
-.dp-stat{margin-bottom:.4rem;}
-.dp-stat-head{display:flex;justify-content:space-between;font-size:.58rem;margin-bottom:2px;}
-.dp-stat-lbl{color:#2a2a2a;letter-spacing:.08em;text-transform:uppercase;}
-.dp-stat-val{font-family:'VT323',monospace;font-size:.9rem;color:var(--dp-c,var(--red));}
-.dp-stat-bar{height:3px;background:#0a0a0a;border:1px solid #111;overflow:hidden;}
-.dp-stat-fill{height:100%;background:var(--dp-c,var(--red));box-shadow:0 0 4px var(--dp-c,var(--red));width:0;transition:width .8s ease;}
-
-/* Mode rows */
-.dp-mode{display:flex;gap:6px;font-size:.6rem;padding:.25rem 0;border-bottom:1px solid #0a0a0a;}
-.dp-mode:last-child{border-bottom:none;}
-.dp-mode-key{color:var(--dp-c,var(--red));font-family:'VT323',monospace;width:65px;flex-shrink:0;}
-.dp-mode-val{color:#444;line-height:1.4;}
-
-/* Mechanics */
-.dp-mech{display:flex;gap:5px;font-size:.6rem;color:#333;padding:.2rem 0;}
-.dp-mech::before{content:'▸';color:var(--dp-c,var(--red));flex-shrink:0;}
-
-/* EMPTY STATE */
-.dp-empty{
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  height:100%;color:#1a1a1a;font-size:.7rem;letter-spacing:.2em;
-  text-align:center;gap:.8rem;
-}
-.dp-empty-icon{font-family:'VT323',monospace;font-size:5rem;color:#111;line-height:1;}
+/* HEADER */
+.site-header{border-bottom:2px solid var(--red);padding:1.4rem 0 1rem;}
+.header-top{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1rem;}
+.logo-eyebrow{font-size:.6rem;color:var(--red);letter-spacing:.35em;text-transform:uppercase;margin-bottom:.25rem;}
+.logo-main{font-family:'VT323',monospace;font-size:4rem;line-height:1;color:var(--white);letter-spacing:3px;
+  text-shadow:0 0 24px var(--glow-r),2px 2px 0 var(--red-dim);}
+.logo-main .v1{color:var(--red);text-shadow:0 0 40px var(--red),0 0 80px var(--glow-r);}
+@keyframes glitch{0%,100%{transform:translate(0);}15%{transform:translate(-2px,1px);clip-path:inset(30% 0 30% 0);}30%{transform:translate(2px,-1px);}50%{transform:translate(0);}65%{transform:translate(-1px,2px);clip-path:inset(60% 0 5% 0);}}
+.logo-main:hover{animation:glitch .25s steps(1) infinite;cursor:default;}
+.logo-tagline{font-size:.65rem;color:#3a3a3a;letter-spacing:.2em;text-transform:uppercase;margin-top:.4rem;}
 @keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
 .cur{display:inline-block;width:7px;height:13px;background:var(--red);vertical-align:middle;animation:blink 1s step-end infinite;margin-left:2px;}
 
-/* ── BOTTOM BAR ── */
-.bottombar{
-  border-top:1px solid var(--border);
-  padding:.5rem 1.5rem;
-  background:rgba(0,0,0,.9);
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  flex-wrap:wrap;
-  gap:.4rem;
-  position:relative;
-  z-index:10;
-}
-.bb-left{display:flex;gap:1rem;align-items:center;flex-wrap:wrap;}
-.bb-key{
-  display:flex;align-items:center;gap:4px;
-  font-size:.52rem;color:#252525;letter-spacing:.08em;
-}
-.key-box{background:#0a0a0a;border:1px solid #1e1e1e;padding:1px 6px;font-size:.58rem;color:#333;}
-.bb-right{font-size:.52rem;color:#1a1a1a;letter-spacing:.1em;}
-.bb-right .hl{color:var(--red);}
+/* STATUS PANEL */
+.status-panel{background:#0a0a0a;border:1px solid var(--border);border-top:2px solid var(--red);padding:.8rem 1.2rem;min-width:220px;}
+.style-rank{font-family:'VT323',monospace;font-size:3rem;color:var(--gold);text-shadow:0 0 20px var(--gold);line-height:1;text-align:right;}
+.divider{height:1px;background:#1a1a1a;margin:.5rem 0;}
+.status-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem;font-size:.65rem;}
+.status-label{color:#444;text-transform:uppercase;letter-spacing:.1em;}
+.status-bar{width:100px;height:5px;background:#111;border:1px solid #1e1e1e;overflow:hidden;}
+.bar-fill{height:100%;background:var(--red);box-shadow:0 0 6px var(--red);width:0;transition:width 1.2s ease;}
+.bar-fill.gold{background:var(--gold);box-shadow:0 0 6px var(--gold);}
+.bar-fill.green{background:var(--green);box-shadow:0 0 6px var(--green);}
+.sys-id{font-size:.5rem;color:#1e1e1e;text-align:right;margin-top:.35rem;letter-spacing:.1em;}
 
-/* ── TERMINAL OVERLAY ELEMENTS ── */
-.corner{position:fixed;width:30px;height:30px;pointer-events:none;z-index:50;}
-.corner.tl{top:0;left:0;border-top:1px solid var(--red);border-left:1px solid var(--red);}
-.corner.tr{top:0;right:0;border-top:1px solid var(--red);border-right:1px solid var(--red);}
-.corner.bl{bottom:0;left:0;border-bottom:1px solid var(--red);border-left:1px solid var(--red);}
-.corner.br{bottom:0;right:0;border-bottom:1px solid var(--red);border-right:1px solid var(--red);}
+/* TICKER */
+.ticker-wrap{background:#000;border-top:1px solid #1a1a1a;border-bottom:1px solid #1a1a1a;overflow:hidden;padding:.28rem 0;margin-bottom:1.2rem;}
+.ticker-inner{display:flex;gap:4rem;animation:tick 30s linear infinite;white-space:nowrap;}
+@keyframes tick{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+.ti{font-size:.58rem;color:#2a2a2a;letter-spacing:.2em;text-transform:uppercase;}
+.ti .r{color:var(--red);}
 
-/* STATUS LABEL floating */
-.status-float{
-  position:fixed;top:12px;right:180px;
-  font-size:.52rem;color:#222;letter-spacing:.15em;
-  text-transform:uppercase;z-index:60;
-}
+/* NAV */
+.ws-label{font-size:.58rem;color:#333;letter-spacing:.3em;text-transform:uppercase;margin-bottom:.4rem;}
+.ws-grid{display:flex;flex-wrap:wrap;gap:3px;margin-bottom:1.4rem;}
+.ws-slot{background:#0a0a0a;border:1px solid #1e1e1e;border-bottom:2px solid #111;padding:.55rem 1.1rem;cursor:pointer;display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--white);font-family:'Share Tech Mono',monospace;font-size:.8rem;transition:.14s;position:relative;overflow:hidden;min-width:150px;user-select:none;}
+.ws-slot::before{content:'';position:absolute;left:0;top:0;width:3px;height:100%;background:#1e1e1e;transition:.14s;}
+.ws-slot::after{content:'';position:absolute;bottom:0;left:0;width:0;height:2px;transition:width .18s;}
+.ws-slot.c-red{--c:var(--red);}.ws-slot.c-blue{--c:var(--blue);}.ws-slot.c-orange{--c:var(--orange);}.ws-slot.c-green{--c:var(--green);}.ws-slot.c-gold{--c:var(--gold);}.ws-slot.c-pink{--c:var(--pink);}
+.ws-slot:hover,.ws-slot.active{border-color:var(--c);background:color-mix(in srgb,var(--c) 6%,#0a0a0a);color:#fff;}
+.ws-slot:hover::before,.ws-slot.active::before{background:var(--c);box-shadow:0 0 8px var(--c);}
+.ws-slot::after{background:var(--c);}
+.ws-slot:hover::after,.ws-slot.active::after{width:100%;}
+.slot-icon{font-size:1rem;width:22px;text-align:center;opacity:.7;}
+.slot-name{font-size:.78rem;text-transform:uppercase;letter-spacing:.05em;}
+.slot-sub{font-size:.57rem;color:#444;letter-spacing:.08em;}
+.slot-num{margin-left:auto;font-family:'VT323',monospace;font-size:1.5rem;color:#222;transition:.14s;}
+.ws-slot:hover .slot-num,.ws-slot.active .slot-num{color:var(--c);}
 
-/* No results */
-.no-results-row{
-  display:flex;align-items:center;justify-content:center;
-  height:120px;color:#1a1a1a;font-size:.7rem;letter-spacing:.2em;
-}
+.redline{height:2px;background:linear-gradient(90deg,var(--red) 0%,#fff 18%,var(--red) 35%,transparent 100%);box-shadow:0 0 10px var(--glow-r);margin-bottom:1.5rem;}
 
-@media(max-width:1100px){.main{grid-template-columns:240px 1fr 200px;}}
-@media(max-width:768px){.main{grid-template-columns:1fr;height:auto;}.slot-panel,.detail-panel{display:none;}}
+/* LAYOUT */
+.arsenal-layout{display:flex;gap:1.4rem;flex-wrap:wrap;}
+.arsenal-main{flex:1;min-width:0;}
+.arsenal-side{flex:0 0 250px;}
+
+/* SLOT TABS */
+.slot-tabs{display:flex;gap:2px;flex-wrap:wrap;margin-bottom:1rem;}
+.slot-tab{background:#0a0a0a;border:1px solid #1a1a1a;padding:.45rem .9rem;cursor:pointer;font-family:'VT323',monospace;font-size:1.15rem;letter-spacing:.08em;text-transform:uppercase;color:#333;transition:.15s;position:relative;user-select:none;}
+.slot-tab::after{content:'';position:absolute;bottom:0;left:0;width:0;height:2px;transition:.2s;}
+.slot-tab:hover,.slot-tab.active{color:var(--white);background:color-mix(in srgb,var(--tab-c,var(--red)) 8%,#0a0a0a);border-color:var(--tab-c,var(--red));}
+.slot-tab::after{background:var(--tab-c,var(--red));}
+.slot-tab:hover::after,.slot-tab.active::after{width:100%;}
+.tab-count{font-size:.7rem;color:#333;margin-left:6px;vertical-align:middle;}
+.slot-tab.active .tab-count{color:var(--tab-c,var(--red));}
+
+/* FILTER BAR */
+.filter-bar{display:flex;gap:6px;align-items:center;flex-wrap:wrap;background:#090909;border:1px solid #161616;padding:.55rem .8rem;margin-bottom:1rem;}
+.filter-label{font-size:.55rem;color:#333;letter-spacing:.25em;text-transform:uppercase;margin-right:4px;}
+.filter-btn{background:#0d0d0d;border:1px solid #1e1e1e;padding:.25rem .65rem;cursor:pointer;font-family:'Share Tech Mono',monospace;font-size:.6rem;color:#444;letter-spacing:.1em;text-transform:uppercase;transition:.13s;user-select:none;}
+.filter-btn:hover,.filter-btn.active{border-color:var(--f-c,#555);color:var(--f-c,#ccc);background:color-mix(in srgb,var(--f-c,#555) 8%,#0d0d0d);}
+.filter-btn.all{--f-c:var(--white);}.filter-btn.blue{--f-c:var(--blue);}.filter-btn.red{--f-c:var(--red);}.filter-btn.green{--f-c:var(--green);}
+.search-box{background:#0d0d0d;border:1px solid #1a1a1a;padding:.25rem .6rem;flex:1;min-width:120px;font-family:'Share Tech Mono',monospace;font-size:.65rem;color:var(--white);letter-spacing:.05em;outline:none;transition:.15s;}
+.search-box:focus{border-color:var(--red);}
+.search-box::placeholder{color:#2a2a2a;}
+.sort-btn{background:#0d0d0d;border:1px solid #1e1e1e;padding:.25rem .65rem;cursor:pointer;font-family:'Share Tech Mono',monospace;font-size:.6rem;color:#444;letter-spacing:.08em;text-transform:uppercase;transition:.13s;user-select:none;}
+.sort-btn.active{border-color:var(--gold);color:var(--gold);}
+.sort-btn:hover{border-color:#444;color:#888;}
+
+.results-bar{font-size:.58rem;color:#282828;letter-spacing:.12em;margin-bottom:.8rem;}
+.results-bar .hl{color:var(--red);}
+
+/* WEAPON GRID */
+.weapon-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:6px;}
+
+/* WEAPON CARD */
+.wcard{background:#0a0a0a;border:1px solid #1a1a1a;cursor:pointer;transition:.18s;position:relative;overflow:hidden;user-select:none;animation:cardIn .3s ease both;}
+@keyframes cardIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.wcard::before{content:'';position:absolute;left:0;top:0;width:3px;height:100%;background:var(--wc,#1e1e1e);box-shadow:0 0 8px var(--wc,transparent);transition:.18s;}
+.wcard:hover{border-color:var(--wc,#333);background:color-mix(in srgb,var(--wc,#333) 5%,#0a0a0a);transform:translateY(-2px);}
+.wcard.selected{border-color:var(--wc,#333);background:color-mix(in srgb,var(--wc,#333) 9%,#0a0a0a);box-shadow:0 0 20px color-mix(in srgb,var(--wc,#333) 25%,transparent);}
+
+/* CARD IMAGE */
+.wcard-img-wrap{position:relative;overflow:hidden;height:110px;background:#050505;border-bottom:1px solid #111;}
+.wcard-img-wrap img{width:100%;height:100%;object-fit:cover;opacity:.5;transition:.3s;filter:grayscale(40%) brightness(.7);}
+.wcard:hover .wcard-img-wrap img{opacity:.75;filter:grayscale(0%) brightness(.85);}
+.wcard-img-overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(to bottom,transparent 40%,#0a0a0a 100%);}
+.wcard-img-badge{position:absolute;top:6px;right:6px;font-family:'VT323',monospace;font-size:.9rem;padding:2px 8px;border:1px solid var(--wc,#222);color:var(--wc,#444);background:rgba(0,0,0,.7);letter-spacing:.1em;}
+.wcard-img-slot{position:absolute;bottom:6px;left:8px;font-size:.55rem;color:var(--wc,#333);letter-spacing:.15em;text-transform:uppercase;}
+
+.wcard-head{display:flex;align-items:center;gap:8px;padding:.6rem .7rem .4rem;border-bottom:1px solid #111;}
+.wcard-icon{font-size:1.4rem;width:30px;text-align:center;color:var(--wc,#333);filter:drop-shadow(0 0 6px var(--wc,transparent));}
+.wcard-title{flex:1;}
+.wcard-name{font-family:'VT323',monospace;font-size:1.15rem;letter-spacing:.06em;color:var(--white);}
+.wcard-runame{font-size:.55rem;color:#333;letter-spacing:.06em;margin-top:1px;}
+.wcard-variant{font-family:'VT323',monospace;font-size:.85rem;padding:1px 7px;border:1px solid var(--wc,#222);color:var(--wc,#444);background:color-mix(in srgb,var(--wc,#000) 10%,transparent);letter-spacing:.1em;white-space:nowrap;}
+
+.wcard-body{padding:.5rem .7rem;}
+.wcard-desc{font-size:.65rem;color:#444;line-height:1.5;margin-bottom:.5rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.mini-stats{display:flex;flex-direction:column;gap:3px;margin-bottom:.5rem;}
+.mini-stat-row{display:flex;align-items:center;gap:6px;}
+.mini-stat-lbl{font-size:.52rem;color:#2e2e2e;letter-spacing:.12em;width:52px;text-transform:uppercase;flex-shrink:0;}
+.mini-stat-bar{flex:1;height:3px;background:#111;overflow:hidden;}
+.mini-stat-fill{height:100%;background:var(--wc,var(--red));box-shadow:0 0 4px var(--wc,var(--red));width:0;transition:width .9s ease;}
+.mini-stat-val{font-family:'VT323',monospace;font-size:.85rem;color:#2a2a2a;width:28px;text-align:right;}
+.wcard-tags{display:flex;flex-wrap:wrap;gap:3px;}
+.wtag{background:#090909;border:1px solid #181818;padding:1px 6px;font-size:.52rem;letter-spacing:.08em;text-transform:uppercase;color:#333;}
+
+.wcard-footer{border-top:1px solid #111;padding:.35rem .7rem;display:flex;justify-content:space-between;align-items:center;}
+.wcard-slot-badge{font-size:.5rem;color:#222;letter-spacing:.12em;text-transform:uppercase;}
+.wcard-arrow{font-size:.7rem;color:#222;transition:.15s;}
+.wcard:hover .wcard-arrow,.wcard.selected .wcard-arrow{color:var(--wc,var(--red));}
+.compare-check{display:flex;align-items:center;gap:5px;font-size:.52rem;color:#282828;cursor:pointer;padding:2px 0;transition:.13s;}
+.compare-check input{display:none;}
+.compare-box{width:10px;height:10px;border:1px solid #222;display:flex;align-items:center;justify-content:center;transition:.13s;}
+.compare-check:hover{color:var(--gold);}
+.compare-check:hover .compare-box{border-color:var(--gold);}
+.compare-check.checked .compare-box{border-color:var(--gold);background:var(--gold);}
+.compare-check.checked{color:var(--gold);}
+
+/* NO RESULTS */
+.no-results{text-align:center;padding:3rem 1rem;color:#222;font-size:.8rem;letter-spacing:.2em;}
+.no-results .nr-icon{font-size:3rem;color:#151515;margin-bottom:.8rem;}
+
+/* DETAIL PANEL */
+.detail-panel{background:#080808;border:1px solid #222;border-top:2px solid var(--dp-c,var(--red));margin-top:8px;display:none;animation:detailIn .2s ease both;position:relative;overflow:hidden;}
+@keyframes detailIn{from{opacity:0;transform:scaleY(.95);transform-origin:top;}to{opacity:1;transform:scaleY(1);}}
+.detail-panel.open{display:block;}
+.detail-scan{position:absolute;top:-30%;left:0;width:100%;height:25%;background:linear-gradient(transparent,rgba(255,32,32,.04),transparent);animation:scan 4s linear infinite;pointer-events:none;}
+@keyframes scan{to{top:120%;}}
+.detail-inner{display:flex;gap:0;flex-wrap:wrap;}
+.detail-img{width:100%;height:180px;object-fit:cover;opacity:.4;filter:grayscale(30%);border-bottom:1px solid #111;}
+.detail-left{flex:2;min-width:260px;padding:1.2rem 1.4rem;border-right:1px solid #111;}
+.detail-right{flex:1;min-width:200px;padding:1.2rem 1rem;}
+.dp-eyebrow{font-size:.55rem;color:var(--dp-c,var(--red));letter-spacing:.3em;text-transform:uppercase;margin-bottom:.4rem;}
+.dp-name{font-family:'VT323',monospace;font-size:2.2rem;color:var(--white);line-height:1;margin-bottom:.1rem;letter-spacing:.05em;}
+.dp-runame{font-size:.65rem;color:#333;letter-spacing:.1em;margin-bottom:.8rem;}
+.dp-desc{font-size:.72rem;color:#555;line-height:1.65;margin-bottom:1rem;}
+.dp-activation{background:#050505;border:1px solid #111;padding:.7rem .9rem;margin-bottom:.8rem;}
+.dp-act-row{display:flex;gap:8px;align-items:flex-start;margin-bottom:.4rem;font-size:.68rem;}
+.dp-act-row:last-child{margin-bottom:0;}
+.dp-act-key{color:var(--dp-c,var(--red));font-family:'VT323',monospace;font-size:.9rem;width:70px;flex-shrink:0;}
+.dp-act-desc{color:#555;line-height:1.4;}
+.dp-mechanics{margin-bottom:.8rem;}
+.dp-mech-title{font-size:.56rem;color:#2a2a2a;letter-spacing:.25em;text-transform:uppercase;margin-bottom:.4rem;}
+.dp-mech-item{display:flex;gap:8px;font-size:.66rem;color:#444;padding:.28rem 0;border-bottom:1px solid #0d0d0d;line-height:1.45;}
+.dp-mech-item:last-child{border-bottom:none;}
+.dp-mech-arrow{color:var(--dp-c,var(--red));flex-shrink:0;}
+.dp-stats{}
+.dp-stat-title{font-size:.56rem;color:#2a2a2a;letter-spacing:.25em;text-transform:uppercase;margin-bottom:.6rem;}
+.dp-stat-row{margin-bottom:.55rem;}
+.dp-stat-head{display:flex;justify-content:space-between;margin-bottom:3px;font-size:.62rem;}
+.dp-stat-lbl{color:#333;letter-spacing:.1em;text-transform:uppercase;}
+.dp-stat-val{font-family:'VT323',monospace;font-size:1rem;color:var(--dp-c,var(--red));}
+.dp-stat-bar{height:4px;background:#111;border:1px solid #161616;overflow:hidden;}
+.dp-stat-fill{height:100%;background:var(--dp-c,var(--red));box-shadow:0 0 5px var(--dp-c,var(--red));width:0;transition:width .8s ease;}
+.readout{background:#050505;border:1px solid #111;padding:.6rem .8rem;font-family:'Fira Code',monospace;font-size:.62rem;color:#282828;line-height:1.9;margin-top:.8rem;}
+.readout .hl{color:var(--red);}
+.readout .vl{color:#666;}
+
+/* SIDE */
+.side-panel{background:#0b0b0b;border:1px solid var(--border);margin-bottom:.9rem;}
+.sp-head{background:#0d0d0d;border-bottom:1px solid var(--border);padding:.45rem .8rem;font-size:.6rem;color:#444;letter-spacing:.25em;text-transform:uppercase;display:flex;align-items:center;gap:.5rem;}
+.sp-head::before{content:'';width:5px;height:5px;flex-shrink:0;background:var(--red);box-shadow:0 0 5px var(--red);}
+.sp-body{padding:.8rem;}
+.v1-portrait{width:100%;aspect-ratio:1;background:#080808;border-bottom:1px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+.v1-portrait img{width:100%;height:100%;object-fit:cover;opacity:.35;filter:grayscale(50%);}
+.v1-portrait::after{content:'';position:absolute;top:-40%;left:0;width:100%;height:35%;background:linear-gradient(transparent,rgba(255,32,32,.05),transparent);animation:scan 3s linear infinite;}
+.v1-lbl{font-family:'VT323',monospace;font-size:1rem;color:#1a1a1a;letter-spacing:.4em;position:absolute;bottom:8px;}
+.mstat{display:flex;justify-content:space-between;align-items:center;padding:.38rem 0;border-bottom:1px solid #0f0f0f;font-size:.7rem;}
+.mstat:last-child{border-bottom:none;}
+.mstat-k{color:#444;}
+.mstat-v{font-family:'VT323',monospace;font-size:1rem;color:var(--white);}
+.mstat-v.r{color:var(--red);}.mstat-v.g{color:var(--gold);}.mstat-v.n{color:var(--green);}
+.compare-panel{display:none;}
+.compare-panel.open{display:block;}
+.cmp-row{display:flex;gap:8px;align-items:center;padding:.35rem 0;border-bottom:1px solid #0d0d0d;font-size:.65rem;}
+.cmp-row:last-child{border-bottom:none;}
+.cmp-lbl{color:#333;flex:1;text-transform:uppercase;font-size:.58rem;letter-spacing:.08em;}
+.cmp-a,.cmp-b{width:38px;text-align:right;font-family:'VT323',monospace;font-size:1rem;}
+.cmp-a{color:var(--blue);}.cmp-b{color:var(--red);}
+.cmp-win{text-shadow:0 0 6px currentColor;}
+.kb-hint{font-size:.52rem;color:#1a1a1a;letter-spacing:.1em;text-align:center;margin-top:.5rem;}
+.kb-key{background:#111;border:1px solid #222;padding:0 4px;color:#2a2a2a;}
+.term-log{background:#050505;border:1px solid #0f0f0f;padding:.5rem .7rem;font-family:'Fira Code',monospace;font-size:.6rem;line-height:1.8;max-height:120px;overflow-y:auto;}
+.term-log::-webkit-scrollbar{width:3px;}
+.term-log::-webkit-scrollbar-thumb{background:#1e1e1e;}
+.tl-line{color:#1e1e1e;}
+.tl-line .tl-tag{color:var(--red);}
+.tl-line .tl-val{color:#3a3a3a;}
+.tl-line.new .tl-val{color:#555;}
+
+/* FOOTER */
+.site-footer{border-top:1px solid #151515;padding:.9rem 0;margin-top:1rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.4rem;font-size:.58rem;color:#282828;letter-spacing:.1em;text-transform:uppercase;}
+.footer-logo{font-family:'VT323',monospace;font-size:1.2rem;color:var(--red);text-shadow:0 0 6px var(--red);}
+
+@media(max-width:860px){.arsenal-side{flex:0 0 100%;}.detail-left{border-right:none;border-bottom:1px solid #111;}}
+@media(max-width:640px){.logo-main{font-size:2.8rem;}.weapon-grid{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
+<canvas id="bg-canvas"></canvas>
+<div class="page">
 
-<!-- Corner decorations -->
-<div class="corner tl"></div><div class="corner tr"></div>
-<div class="corner bl"></div><div class="corner br"></div>
-
-<canvas id="bg-terminal"></canvas>
-
-<div class="root">
-
-  <!-- TOP BAR -->
-  <div class="topbar">
-    <div class="tb-left">
-      <div class="tb-logo">V1</div>
-      <div>
-        <div class="tb-path">
-          <span>SYS</span><span class="sep">/</span>
-          <span>ARSENAL</span><span class="sep">/</span>
-          <span class="cur-path">MODULE_SELECT<span class="cur"></span></span>
-        </div>
-        <div style="font-size:.52rem;color:#1e1e1e;margin-top:2px;letter-spacing:.15em;">// СРЕДСТВА НЕЙТРАЛИЗАЦИИ // ПОЛНЫЙ КАТАЛОГ</div>
-      </div>
+<!-- HEADER -->
+<div class="site-header">
+  <div class="header-top">
+    <div>
+      <div class="logo-eyebrow">// БАЗА ДАННЫХ // АРСЕНАЛ V1 // ПОЛНЫЙ КАТАЛОГ МОДУЛЕЙ</div>
+      <div class="logo-main"><span class="v1">V1</span> — АРСЕНАЛ</div>
+      <div class="logo-tagline">СРЕДСТВА НЕЙТРАЛИЗАЦИИ // ПОЛНЫЙ КАТАЛОГ // ВСЕ МОДУЛИ<span class="cur"></span></div>
     </div>
-    <div class="tb-right">
-      <div>
-        <div class="tb-count">МОДУЛЕЙ: <span class="hl" id="totalCount">18</span></div>
-        <div class="tb-count">СЛОТОВ: <span class="hl">7</span></div>
-        <div class="tb-count" id="activeLabel">АКТИВЕН: <span class="hl">—</span></div>
-      </div>
-      <div class="tb-rank" id="rankDisplay">SSS</div>
+    <div class="status-panel">
+      <div class="style-rank" id="dynamicRank">SSS</div>
+      <div class="divider"></div>
+      <div class="status-row"><span class="status-label">ЭНЕРГИЯ</span><div class="status-bar"><div class="bar-fill" data-w="78"></div></div></div>
+      <div class="status-row"><span class="status-label">РЕЗЕРВ</span><div class="status-bar"><div class="bar-fill gold" data-w="55"></div></div></div>
+      <div class="status-row"><span class="status-label">СТИЛЬ</span><div class="status-bar"><div class="bar-fill green" data-w="95"></div></div></div>
+      <div class="sys-id">UNIT // V1 MACHINE // ARSENAL MODULE // FULL CATALOG</div>
     </div>
   </div>
+</div>
 
-  <!-- MAIN -->
-  <div class="main">
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker-inner">
+    <span class="ti">// <span class="r">АРСЕНАЛ</span> // МОДУЛЕЙ: 18 // МАНИПУЛЯТОРОВ: 3 // ДАЛЬНОБОЙНЫХ: 3 // ИМПУЛЬСНЫХ: 3 // ГВОЗДЕВЫХ: 2 // РЕЛЬСОВЫХ: 3 // РАКЕТНЫХ: 2 // PIERCER // FEEDBACKER // RAILCANNON // NAILGUN // ROCKET //</span>
+    <span class="ti">// <span class="r">АРСЕНАЛ</span> // МОДУЛЕЙ: 18 // МАНИПУЛЯТОРОВ: 3 // ДАЛЬНОБОЙНЫХ: 3 // ИМПУЛЬСНЫХ: 3 // ГВОЗДЕВЫХ: 2 // РЕЛЬСОВЫХ: 3 // РАКЕТНЫХ: 2 // PIERCER // FEEDBACKER // RAILCANNON // NAILGUN // ROCKET //</span>
+  </div>
+</div>
 
-    <!-- LEFT: SLOT SELECTOR -->
-    <div class="slot-panel">
-      <div class="sp-title">// СЛОТЫ МОДУЛЕЙ</div>
-      <div class="slot-list" id="slotList"></div>
+<!-- NAV -->
+<div class="ws-label">// НАВИГАЦИЯ — ВЫБОР РАЗДЕЛА</div>
+<div class="ws-grid">
+  <a href="index.html" class="ws-slot c-red"><div class="slot-icon">◎</div><div><div class="slot-name">Главная</div><div class="slot-sub">ОБЗОР // ИНДЕКС</div></div><div class="slot-num">←</div></a>
+  <a href="weapons.html" class="ws-slot c-blue active"><div class="slot-icon">⬡</div><div><div class="slot-name">Арсенал</div><div class="slot-sub">МОДУЛИ // СЛОТ 1</div></div><div class="slot-num">1</div></a>
+  <a href="#" class="ws-slot c-orange"><div class="slot-icon">◈</div><div><div class="slot-name">Объекты</div><div class="slot-sub">ЦЕЛИ // СЛОТ 2</div></div><div class="slot-num">2</div></a>
+  <a href="#" class="ws-slot c-green"><div class="slot-icon">★</div><div><div class="slot-name">Сущности</div><div class="slot-sub">КЛЮЧЕВЫЕ // СЛОТ 3</div></div><div class="slot-num">3</div></a>
+  <a href="#" class="ws-slot c-gold"><div class="slot-icon">▦</div><div><div class="slot-name">Секторы</div><div class="slot-sub">ЛОКАЦИИ // СЛОТ 4</div></div><div class="slot-num">4</div></a>
+</div>
+<div class="redline"></div>
+
+<!-- ARSENAL LAYOUT -->
+<div class="arsenal-layout">
+  <div class="arsenal-main">
+    <div class="slot-tabs" id="slotTabs"></div>
+    <div class="filter-bar">
+      <span class="filter-label">ВАРИАНТ:</span>
+      <button class="filter-btn all active" data-variant="all">ВСЕ</button>
+      <button class="filter-btn blue" data-variant="blue">◼ СИНИЙ</button>
+      <button class="filter-btn red" data-variant="red">◼ КРАСНЫЙ</button>
+      <button class="filter-btn green" data-variant="green">◼ ЗЕЛЁНЫЙ</button>
+      <input class="search-box" id="searchBox" type="text" placeholder="ПОИСК МОДУЛЯ..." autocomplete="off" spellcheck="false">
+      <button class="sort-btn" id="sortPower">МОЩНОСТЬ ↓</button>
+      <button class="sort-btn" id="sortSpeed">СКОРОСТЬ ↓</button>
+      <button class="sort-btn" id="sortRange">ДАЛЬНОСТЬ ↓</button>
     </div>
-
-    <!-- CENTER: WEAPON LIST -->
-    <div class="center-panel">
-      <div class="cp-header">
-        <div class="cp-title" id="cpTitle">ВСЕ МОДУЛИ</div>
-        <input class="cp-search" id="cpSearch" type="text" placeholder="ПОИСК..." autocomplete="off" spellcheck="false">
-      </div>
-      <div class="vf-row">
-        <button class="vf-btn f-all active" data-v="all">ВСЕ</button>
-        <button class="vf-btn f-blue" data-v="blue">◼ СИН</button>
-        <button class="vf-btn f-red" data-v="red">◼ КРА</button>
-        <button class="vf-btn f-green" data-v="green">◼ ЗЕЛ</button>
-        <div style="margin-left:auto;font-size:.52rem;color:#1e1e1e;align-self:center;letter-spacing:.1em;">
-          СОРТИРОВКА:
-        </div>
-        <button class="vf-btn" id="sortP" style="--vf-c:var(--gold)">МОЩ↓</button>
-        <button class="vf-btn" id="sortS" style="--vf-c:var(--gold)">СКР↓</button>
-      </div>
-      <div class="weapon-list" id="weaponList"></div>
-    </div>
-
-    <!-- RIGHT: DETAIL -->
+    <div class="results-bar" id="resultsBar">// РЕЗУЛЬТАТОВ: <span class="hl" id="resultsCount">18</span> // НАЖМИТЕ НА КАРТОЧКУ ДЛЯ ДЕТАЛЕЙ</div>
+    <div class="weapon-grid" id="weaponGrid"></div>
     <div class="detail-panel" id="detailPanel">
-      <div id="dpContent">
-        <div class="dp-empty">
-          <div class="dp-empty-icon">◎</div>
-          <div>// ВЫБЕРИТЕ МОДУЛЬ //</div>
-          <div style="font-size:.52rem;margin-top:.3rem;color:#111;">НАЖМИТЕ НА СТРОКУ В СПИСКЕ</div>
+      <div class="detail-scan"></div>
+      <div class="detail-inner">
+        <div class="detail-left" id="detailLeft"></div>
+        <div class="detail-right" id="detailRight"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arsenal-side">
+    <div class="side-panel">
+      <div class="sp-head">// UNIT PROFILE // V1</div>
+      <div class="v1-portrait">
+        <img src="hakita.jpg" alt="V1 Unit" onerror="this.style.display='none'">
+        <div class="v1-lbl">V1 // MACHINE</div>
+      </div>
+    </div>
+    <div class="side-panel">
+      <div class="sp-head">// ПАРАМЕТРЫ АРСЕНАЛА</div>
+      <div class="sp-body">
+        <div class="mstat"><span class="mstat-k">ВСЕГО МОДУЛЕЙ</span><span class="mstat-v g" id="sideTotal">18</span></div>
+        <div class="mstat"><span class="mstat-k">МАНИПУЛЯТОРОВ</span><span class="mstat-v">3</span></div>
+        <div class="mstat"><span class="mstat-k">ДАЛЬНОБОЙНЫХ</span><span class="mstat-v">3</span></div>
+        <div class="mstat"><span class="mstat-k">ИМПУЛЬСНЫХ</span><span class="mstat-v">3</span></div>
+        <div class="mstat"><span class="mstat-k">ГВОЗДЕВЫХ</span><span class="mstat-v">2</span></div>
+        <div class="mstat"><span class="mstat-k">РЕЛЬСОВЫХ</span><span class="mstat-v">3</span></div>
+        <div class="mstat"><span class="mstat-k">РАКЕТНЫХ</span><span class="mstat-v">2</span></div>
+        <div class="mstat"><span class="mstat-k">СЛОТ ТОПЛИВА</span><span class="mstat-v">2</span></div>
+        <div class="mstat"><span class="mstat-k">АКТИВЕН</span><span class="mstat-v r" id="sideActive">—</span></div>
+      </div>
+    </div>
+    <div class="side-panel">
+      <div class="sp-head">// СРАВНЕНИЕ МОДУЛЕЙ</div>
+      <div class="sp-body">
+        <div style="font-size:.6rem;color:#282828;margin-bottom:.5rem;letter-spacing:.1em;">ВЫБЕРИТЕ ДВА МОДУЛЯ (ФЛАГ "CMP")</div>
+        <div class="compare-panel" id="comparePanel">
+          <div class="cmp-row"><span class="cmp-lbl">МОЩНОСТЬ</span><span class="cmp-a" id="cmpAPower">—</span><span class="cmp-b" id="cmpBPower">—</span></div>
+          <div class="cmp-row"><span class="cmp-lbl">СКОРОСТЬ</span><span class="cmp-a" id="cmpASpeed">—</span><span class="cmp-b" id="cmpBSpeed">—</span></div>
+          <div class="cmp-row"><span class="cmp-lbl">ДАЛЬНОСТЬ</span><span class="cmp-a" id="cmpARange">—</span><span class="cmp-b" id="cmpBRange">—</span></div>
+          <div class="cmp-row"><span class="cmp-lbl">УТИЛИТА</span><span class="cmp-a" id="cmpAUtil">—</span><span class="cmp-b" id="cmpBUtil">—</span></div>
+        </div>
+        <div style="font-size:.55rem;color:#1a1a1a;margin-top:.5rem;">
+          A: <span id="cmpNameA" style="color:#5599ff;">не выбран</span><br>
+          B: <span id="cmpNameB" style="color:#ff2020;">не выбран</span>
         </div>
       </div>
     </div>
-
-  </div><!-- /main -->
-
-  <!-- BOTTOM BAR -->
-  <div class="bottombar">
-    <div class="bb-left">
-      <div class="bb-key"><span class="key-box">↑↓</span> навигация</div>
-      <div class="bb-key"><span class="key-box">ENTER</span> выбрать</div>
-      <div class="bb-key"><span class="key-box">1–7</span> слот</div>
-      <div class="bb-key"><span class="key-box">F</span> поиск</div>
-      <div class="bb-key"><span class="key-box">ESC</span> сброс</div>
-      <a href="index.html" style="text-decoration:none;"><div class="bb-key" style="color:#ff2020;border:1px solid #ff202033;padding:2px 8px;"><span style="color:#ff2020;">←</span> ГЛАВНАЯ</div></a>
+    <div class="side-panel">
+      <div class="sp-head">// SYSTEM LOG</div>
+      <div class="sp-body">
+        <div class="term-log" id="termLog"></div>
+        <div class="kb-hint" style="margin-top:.6rem;">
+          <span class="kb-key">1-6</span> слот &nbsp;<span class="kb-key">ESC</span> закрыть &nbsp;<span class="kb-key">F</span> поиск
+        </div>
+      </div>
     </div>
-    <div class="bb-right">// V1 АРСЕНАЛ // <span class="hl">TOPЛИВО — РЕСУРС</span> // НИЖНИЙ УРОВЕНЬ ЗАПОЛНЕН //</div>
   </div>
+</div>
 
+<div class="site-footer">
+  <div class="footer-logo">V1 // ARSENAL DATABASE</div>
+  <div>// ТОПЛИВО — РЕСУРС // НИЖНИЙ УРОВЕНЬ ЗАПОЛНЕН //</div>
+  <div>// ИСТОЧНИК: ULTRAKILL FANDOM WIKI //</div>
+</div>
 </div>
 
 <script>
 /* ══════════════════════════════════
-   FULL WEAPON DATABASE
+   WEAPON DATABASE — ALL ULTRAKILL
 ══════════════════════════════════ */
-const WEAPONS=[
-  {id:'feedbacker',slot:'arm',slotN:0,name:'FEEDBACKER',ru:'Отражающий Манипулятор',v:'blue',vLabel:'СИН',icon:'◎',color:'var(--blue)',hex:'#4488ff',img:'hakita.jpg',
-   p:65,s:95,r:20,u:100,
-   desc:'Базовый манипулятор V1. Перехватывает и отражает входящие проекции. Контакт с сущностями восстанавливает топливный ресурс.',
-   m1:'КОНТАКТ — Прямой ударный импульс в ближней зоне',
-   m2:'ПЕРЕХВАТ — Тайминг-реакция на входящую проекцию',
+const WEAPONS = [
+  // ── ARMS ──
+  {id:'feedbacker',slot:'arm',slotLabel:'Манипулятор',name:'FEEDBACKER',ruName:'Отражающий Манипулятор',
+   variant:'blue',variantLabel:'СИНИЙ',icon:'◎',color:'var(--blue)',colorHex:'#5599ff',
+   power:65,speed:95,range:20,utility:100,img:'hakita.jpg',
+   desc:'Базовый манипулятор V1. Перехватывает входящие проекции объектов, отражая их обратно. Контакт с сущностями восстанавливает топливный ресурс V1.',
+   primary:'РЕЖИМ 1 — Прямой контактный импульс в ближней зоне',
+   secondary:'РЕЖИМ 2 — Перехват проекции в момент столкновения (тайминг-реакция)',
    tags:['БАЗОВЫЙ','ПЕРЕХВАТ','РЕСУРС'],
-   mechs:['Перехват возвращает проекцию к источнику','Контакт восстанавливает топливо','Тайминг 6 кадров от момента столкновения']},
-  {id:'knuckleblaster',slot:'arm',slotN:0,name:'KNUCKLEBLASTER',ru:'Детонирующий Манипулятор',v:'red',vLabel:'КРА',icon:'◈',color:'var(--red)',hex:'#ff2020',img:'hakita.jpg',
-   p:100,s:80,r:35,u:65,
-   desc:'Альтернативный манипулятор. Ударная волна в конусе. Нейтрализует проекции без отражения. Не восстанавливает ресурс.',
-   m1:'ДЕТОНАЦИЯ — Ударная волна в ближнем конусе',
-   m2:'НЕЙТРАЛИЗАЦИЯ — Поглощение входящей проекции',
-   tags:['УДАРНАЯ ВОЛНА','АЛЬТЕРНАТИВНЫЙ','МОЩНОСТЬ'],
-   mechs:['Волна воздействует на всё в конусе','Нет восстановления ресурса','Максимальное контактное воздействие']},
-  {id:'whiplash',slot:'arm',slotN:0,name:'WHIPLASH',ru:'Захватывающий Манипулятор',v:'green',vLabel:'ЗЕЛ',icon:'⌀',color:'var(--green)',hex:'#22dd77',img:'hakita.jpg',
-   p:45,s:100,r:90,u:100,
-   desc:'Дистанционный манипулятор. Захватывает сущности/объекты. Перебрасывает V1 к точкам захвата. Ключ к воздушным комбо.',
-   m1:'ЗАХВАТ ЦЕЛИ — Притяжение сущности к V1',
-   m2:'ЗАХВАТ СРЕДЫ — Телепортация V1 к объекту',
-   tags:['ЗАХВАТ','МОБИЛЬНОСТЬ','ДАЛЬНОСТЬ'],
-   mechs:['Захваченные цели притягиваются к V1','Открывает воздушные комбинации','Совместим с подбрасыванием']},
-  {id:'piercer',slot:'revolver',slotN:1,name:'PIERCER',ru:'Пронизывающий Дальнобойный',v:'blue',vLabel:'СИН',icon:'◆',color:'var(--blue)',hex:'#4488ff',img:'hakita.jpg',
-   p:80,s:85,r:100,u:85,
-   desc:'Базовый дальнобойный. Проекция пронизывает несколько объектов по линии. Монеты — рикошетные ретрансляторы.',
-   m1:'ИМПУЛЬС — Прокалывающий по линии целей',
-   m2:'МОНЕТА — Ретранслятор рикошета к ближайшей цели',
+   mechanics:['Перехват отражает проекции обратно к источнику','Контакт восстанавливает топливный ресурс V1','Отражённые проекции наносят повышенное воздействие','Тайминг перехвата — решающий фактор эффективности']},
+  {id:'knuckleblaster',slot:'arm',slotLabel:'Манипулятор',name:'KNUCKLEBLASTER',ruName:'Детонирующий Манипулятор',
+   variant:'red',variantLabel:'КРАСНЫЙ',icon:'◈',color:'var(--red)',colorHex:'#ff2020',
+   power:100,speed:80,range:35,utility:65,img:'hakita.jpg',
+   desc:'Альтернативный манипулятор. Генерирует ударную волну. Нейтрализует проекции без отражения. Не восстанавливает топливный ресурс.',
+   primary:'РЕЖИМ 1 — Детонирующий удар с конусной ударной волной',
+   secondary:'РЕЖИМ 2 — Нейтрализация входящей проекции без отражения',
+   tags:['УДАРНАЯ ВОЛНА','МОЩНОСТЬ','АЛЬТЕРНАТИВНЫЙ'],
+   mechanics:['Ударная волна воздействует на всё в зоне конуса','Уничтожает проекции без возврата ресурса','Максимальное контактное воздействие среди манипуляторов','Рекомендован для плотного скопления сущностей']},
+  {id:'whiplash',slot:'arm',slotLabel:'Манипулятор',name:'WHIPLASH',ruName:'Захватывающий Манипулятор',
+   variant:'green',variantLabel:'ЗЕЛЁНЫЙ',icon:'⌀',color:'var(--green)',colorHex:'#22ff88',
+   power:45,speed:100,range:90,utility:100,img:'hakita.jpg',
+   desc:'Дистанционный манипулятор. Захватывает и притягивает сущности или объекты среды к V1. Ключевой инструмент воздушного маневрирования.',
+   primary:'РЕЖИМ 1 — Захват активной сущности и притяжение к V1',
+   secondary:'РЕЖИМ 2 — Захват объекта среды / телепортация V1 к точке',
+   tags:['ЗАХВАТ','МОБИЛЬНОСТЬ','ДИСТАНЦИЯ'],
+   mechanics:['Захваченные сущности притягиваются вплотную','Открывает уникальные воздушные серии','Совместим с подбрасыванием для продлённых комбо','Перебрасывает V1 к точкам захвата в среде']},
+  // ── REVOLVER ──
+  {id:'piercer',slot:'revolver',slotLabel:'Дальнобойный',name:'PIERCER REVOLVER',ruName:'Пронизывающий Дальнобойный',
+   variant:'blue',variantLabel:'СИНИЙ',icon:'◆',color:'var(--blue)',colorHex:'#5599ff',
+   power:80,speed:85,range:100,utility:85,img:'hakita.jpg',
+   desc:'Базовый дальнобойный модуль. Проекция пронизывает несколько объектов по одной линии. Монеты — рикошетные ретрансляторы.',
+   primary:'РЕЖИМ 1 — Прокалывающий импульс сквозь несколько целей по линии',
+   secondary:'РЕЖИМ 2 — Монета-ретранслятор для перенаправления импульса',
    tags:['ПРОНИКНОВЕНИЕ','МОНЕТА','ДАЛЬНОСТЬ'],
-   mechs:['Пронизывает несколько объектов','Монеты перенаправляют к ближайшей цели','Парирование монеты усиливает рикошет']},
-  {id:'marksman',slot:'revolver',slotN:1,name:'MARKSMAN',ru:'Целевой Дальнобойный',v:'red',vLabel:'КРА',icon:'◆',color:'var(--red)',hex:'#ff2020',img:'hakita.jpg',
-   p:85,s:82,r:100,u:90,
-   desc:'Альтернативный дальнобойный. Закрученная проекция рикошетит через все монеты в поле зрения, не только через ближайшую.',
-   m1:'ИМПУЛЬС — Стандартная прямая проекция',
-   m2:'ЗАКРУТКА — Рикошет по всем монетам подряд',
-   tags:['ТОЧНОСТЬ','ЗАКРУТКА','МОНЕТА'],
-   mechs:['Охватывает все монеты в поле зрения','Эффективность растёт с количеством монет','Лучший выбор при 3+ монетах']},
-  {id:'sharpshooter',slot:'revolver',slotN:1,name:'SHARPSHOOTER',ru:'Накопительный Дальнобойный',v:'green',vLabel:'ЗЕЛ',icon:'◆',color:'var(--green)',hex:'#22dd77',img:'hakita.jpg',
-   p:100,s:60,r:100,u:75,
-   desc:'Третий вариант дальнобойного. Накопление заряда при удержании. Полный заряд = критическое воздействие по одной цели.',
-   m1:'ИМПУЛЬС — Базовый без накопления',
-   m2:'ЗАРЯД — Удержание = накопление, отпуск = критический',
+   mechanics:['Проекция пронизывает несколько объектов по линии','Монеты перенаправляют к ближайшей активной цели','Парирование монеты усиливает рикошет','Комбо монета + импульс = несколько целей за один такт']},
+  {id:'marksman',slot:'revolver',slotLabel:'Дальнобойный',name:'MARKSMAN REVOLVER',ruName:'Целевой Дальнобойный',
+   variant:'red',variantLabel:'КРАСНЫЙ',icon:'◆',color:'var(--red)',colorHex:'#ff2020',
+   power:85,speed:82,range:100,utility:90,img:'hakita.jpg',
+   desc:'Альтернативный дальнобойный. Вторичный режим — закрученный импульс, рикошетящий через все монеты в поле зрения, не только через ближайшую.',
+   primary:'РЕЖИМ 1 — Стандартный дальнобойный импульс',
+   secondary:'РЕЖИМ 2 — Закрученный импульс через все монеты подряд',
+   tags:['ТОЧНОСТЬ','МОНЕТА','ЗАКРУТКА'],
+   mechanics:['Закрученная проекция охватывает все монеты в поле зрения','Эффективность растёт с количеством монет','Лучший выбор при множественном расположении монет','Суммарное воздействие выше при 3+ монетах']},
+  {id:'sharpshooter',slot:'revolver',slotLabel:'Дальнобойный',name:'SHARPSHOOTER REVOLVER',ruName:'Накопительный Дальнобойный',
+   variant:'green',variantLabel:'ЗЕЛЁНЫЙ',icon:'◆',color:'var(--green)',colorHex:'#22ff88',
+   power:100,speed:60,range:100,utility:75,img:'hakita.jpg',
+   desc:'Третий вариант дальнобойного. Удержание кнопки активирует накопление заряда. Полный заряд = критическое воздействие.',
+   primary:'РЕЖИМ 1 — Базовый дальнобойный импульс без накопления',
+   secondary:'РЕЖИМ 2 — Удержание = накопление; отпуск = заряженный импульс',
    tags:['НАКОПИТЕЛЬ','КРИТИЧЕСКОЕ','ТОЧНОСТЬ'],
-   mechs:['Полный заряд нейтрализует большинство целей','Совместим с монетным рикошетом','Рекомендован для приоритетных сущностей']},
-  {id:'core_eject',slot:'shotgun',slotN:2,name:'CORE EJECT',ru:'Эжекторный Импульсный',v:'blue',vLabel:'СИН',icon:'⬡',color:'var(--blue)',hex:'#4488ff',img:'hakita.jpg',
-   p:85,s:78,r:55,u:90,
-   desc:'Базовый импульсный. Первичный — конус проекций. Вторичный — выброс теплового ядра для цепной детонации при внешнем воздействии.',
-   m1:'ЗАЛП — Широкий конус проекций',
-   m2:'ЯДРО — Выброс теплового ядра',
+   mechanics:['Накопление увеличивает воздействие до критического','Полный заряд нейтрализует большинство целей мгновенно','Совместим с монетным рикошетом при полном заряде','Рекомендован для приоритетных целей']},
+  // ── SHOTGUN ──
+  {id:'core_eject',slot:'shotgun',slotLabel:'Импульсный',name:'CORE EJECT SHOTGUN',ruName:'Эжекторный Импульсный',
+   variant:'blue',variantLabel:'СИНИЙ',icon:'⬡',color:'var(--blue)',colorHex:'#5599ff',
+   power:85,speed:78,range:55,utility:90,img:'hakita.jpg',
+   desc:'Базовый импульсный модуль с системой выброса теплового ядра. Ядро детонирует при любом внешнем воздействии, создавая вторичную зону эффекта.',
+   primary:'РЕЖИМ 1 — Широкий конус проекций в ближней и средней зоне',
+   secondary:'РЕЖИМ 2 — Выброс теплового ядра для цепной детонации',
    tags:['ТЕПЛОВОЕ ЯДРО','ЗОНА','КОМБО'],
-   mechs:['Ядро детонирует от любого импульса','Рельсовый импульс + ядро = усиленный взрыв','Ядро — временная опора в воздухе']},
-  {id:'pump_charge',slot:'shotgun',slotN:2,name:'PUMP CHARGE',ru:'Накачивающий Импульсный',v:'red',vLabel:'КРА',icon:'⬡',color:'var(--red)',hex:'#ff2020',img:'hakita.jpg',
-   p:95,s:65,r:60,u:78,
-   desc:'Альтернативный импульсный. Вторичные нажатия накапливают мощность до 3 стадий. Накопленный заряд расходуется следующим залпом.',
-   m1:'ЗАЛП — Стандартный / накопленный',
-   m2:'НАКАЧКА — +1 стадия мощности (макс 3)',
+   mechanics:['Тепловое ядро детонирует от любого импульса','Рельсовый импульс + ядро = усиленный взрыв','Ядро можно использовать как временную опору','Два импульсных модуля = непрерывный поток ядер']},
+  {id:'pump_charge',slot:'shotgun',slotLabel:'Импульсный',name:'PUMP CHARGE SHOTGUN',ruName:'Накачивающий Импульсный',
+   variant:'red',variantLabel:'КРАСНЫЙ',icon:'⬡',color:'var(--red)',colorHex:'#ff2020',
+   power:95,speed:65,range:60,utility:78,img:'hakita.jpg',
+   desc:'Альтернативный импульсный с системой накачки. Повторные нажатия вторичной активации накапливают мощность для следующего первичного залпа.',
+   primary:'РЕЖИМ 1 — Стандартный конус / накопленный залп (если заряжен)',
+   secondary:'РЕЖИМ 2 — Накачка мощности (до 3 стадий)',
    tags:['НАКАЧКА','МОЩНОСТЬ','КОНЦЕНТРАЦИЯ'],
-   mechs:['До 3 стадий накачки','Можно накапливать при переключении','Полная накачка = критический залп']},
-  {id:'jackhammer',slot:'shotgun',slotN:2,name:'JACKHAMMER',ru:'Автоматический Импульсный',v:'green',vLabel:'ЗЕЛ',icon:'⬡',color:'var(--green)',hex:'#22dd77',img:'hakita.jpg',
-   p:75,s:100,r:45,u:85,
-   desc:'Третий вариант импульсного. Полностью автоматический. Максимальная частота активации. Отдача даёт ускорение V1.',
-   m1:'ОЧЕРЕДЬ — Автоматические конусные залпы',
-   m2:'РИТМ — Переключение режима ускорения',
-   tags:['АВТОМАТ','ДВИЖЕНИЕ','СКОРОСТЬ'],
-   mechs:['Отдача ускоряет V1','Rocket-jump механика','Максимальный DPS среди импульсных']},
-  {id:'attractor',slot:'nailgun',slotN:3,name:'ATTRACTOR',ru:'Магнитный Гвоздевой',v:'blue',vLabel:'СИН',icon:'▣',color:'var(--blue)',hex:'#4488ff',img:'hakita.jpg',
-   p:65,s:100,r:70,u:95,
-   desc:'Базовый гвоздевой. Высокая скорострельность. Вторичный — магнитный гвоздь, концентрирующий весь поток на одной маркированной цели.',
-   m1:'ОЧЕРЕДЬ — Высокоскоростные гвозди',
-   m2:'МАГНИТ — Гвоздь-ретранслятор потока',
+   mechanics:['Каждая накачка усиливает следующий залп','До трёх стадий с прогрессивным усилением','Можно накапливать при переключении на другой модуль','Полная накачка = критический залп по одной точке']},
+  {id:'jackhammer',slot:'shotgun',slotLabel:'Импульсный',name:'JACKHAMMER',ruName:'Автоматический Импульсный',
+   variant:'green',variantLabel:'ЗЕЛЁНЫЙ',icon:'⬡',color:'var(--green)',colorHex:'#22ff88',
+   power:75,speed:100,range:45,utility:85,img:'hakita.jpg',
+   desc:'Третий вариант импульсного модуля. Полностью автоматический режим с максимальной частотой активации. Отдача используется для ускорения V1.',
+   primary:'РЕЖИМ 1 — Автоматическая очередь конусных проекций',
+   secondary:'РЕЖИМ 2 — Переключение ритма: двойная активация / ускорение',
+   tags:['АВТОМАТ','СКОРОСТЬ','ДВИЖЕНИЕ'],
+   mechanics:['Отдача каждой активации даёт ускорение V1','Используется для rocket-jump механики','Максимальная частота активации среди импульсных','Уступает по одиночному воздействию, но лучший DPS']},
+  // ── NAILGUN ──
+  {id:'attractor',slot:'nailgun',slotLabel:'Гвоздевой',name:'ATTRACTOR NAILGUN',ruName:'Магнитный Гвоздевой',
+   variant:'blue',variantLabel:'СИНИЙ',icon:'▣',color:'var(--blue)',colorHex:'#5599ff',
+   power:65,speed:100,range:70,utility:95,img:'hakita.jpg',
+   desc:'Базовый гвоздевой с магнитной системой. Высокая скорострельность. Вторичная активация — магнитный гвоздь-ретранслятор, концентрирующий поток на одной цели.',
+   primary:'РЕЖИМ 1 — Высокоскоростная очередь гвоздей',
+   secondary:'РЕЖИМ 2 — Магнитный гвоздь: весь поток идёт к маркированной цели',
    tags:['МАГНИТ','СКОРОСТРЕЛЬНОСТЬ','ОЧЕРЕДЬ'],
-   mechs:['Магнит концентрирует поток на цели','Высокое суммарное воздействие','Два магнита = двойной поток']},
-  {id:'overheat',slot:'nailgun',slotN:3,name:'OVERHEAT',ru:'Термический Гвоздевой',v:'red',vLabel:'КРА',icon:'▣',color:'var(--red)',hex:'#ff2020',img:'hakita.jpg',
-   p:88,s:90,r:65,u:82,
-   desc:'Альтернативный гвоздевой. При перегреве автоматически запускает вращающийся диск. Вторичный — принудительный выброс диска.',
-   m1:'ОЧЕРЕДЬ — Гвозди (перегрев → диск)',
-   m2:'ДИСК — Принудительный выброс',
+   mechanics:['Магнитный гвоздь концентрирует весь поток на цели','Суммарное воздействие высокое при длительном потоке','Два магнитных гвоздя = двойной поток на двух целях','Эффективен против крупных малоподвижных сущностей']},
+  {id:'overheat',slot:'nailgun',slotLabel:'Гвоздевой',name:'OVERHEAT NAILGUN',ruName:'Термический Гвоздевой',
+   variant:'red',variantLabel:'КРАСНЫЙ',icon:'▣',color:'var(--red)',colorHex:'#ff2020',
+   power:88,speed:90,range:65,utility:82,img:'hakita.jpg',
+   desc:'Альтернативный гвоздевой. Перегрев системы автоматически запускает пилообразный диск высокого воздействия. Вторичная — принудительный запуск диска.',
+   primary:'РЕЖИМ 1 — Очередь гвоздей (перегрев → автоматический диск)',
+   secondary:'РЕЖИМ 2 — Принудительный выброс диска без ожидания перегрева',
    tags:['ПЕРЕГРЕВ','ДИСК','ТЕРМИЧЕСКИЙ'],
-   mechs:['Диск пронизывает несколько целей','Отражение манипулятором обратно','Совместим с магнитным гвоздём']},
-  {id:'electric_rail',slot:'railcannon',slotN:4,name:'ELECTRIC RAILCANNON',ru:'Электрический Рельсовый',v:'blue',vLabel:'СИН',icon:'⚡',color:'var(--blue)',hex:'#4488ff',img:'hakita.jpg',
-   p:100,s:50,r:100,u:72,
-   desc:'Базовый рельсовый. Мгновенный электрический импульс. Нейтрализует большинство целей за одну активацию. Долгая перезарядка.',
-   m1:'ИМПУЛЬС — Мгновенный электрический луч',
-   m2:'— Нет альтернативного режима',
-   tags:['ЭЛЕКТРИКА','МГНОВЕННОЕ','МАКСИМУМ'],
-   mechs:['Проекция мгновенная — упреждение не нужно','Применять только по приоритету','Через тепловое ядро = усиленный взрыв']},
-  {id:'screwdriver_rail',slot:'railcannon',slotN:4,name:'SCREWDRIVER',ru:'Сверлящий Рельсовый',v:'red',vLabel:'КРА',icon:'⚡',color:'var(--red)',hex:'#ff2020',img:'hakita.jpg',
-   p:85,s:50,r:100,u:80,
-   desc:'Альтернативный рельсовый. Вращающаяся проекция пронизывает несколько целей по линии, задерживается внутри и продолжает воздействие.',
-   m1:'СВЕРЛО — Вращающийся луч по линии',
-   m2:'— Нет альтернативного режима',
-   tags:['ВРАЩЕНИЕ','ЛИНЕЙНОЕ','ПРОНИКНОВЕНИЕ'],
-   mechs:['Пронизывает всех по линии','Остаётся внутри — непрерывное воздействие','Группировка манипулятором = максимум']},
-  {id:'malicious_rail',slot:'railcannon',slotN:4,name:'MALICIOUS RAILCANNON',ru:'Деструктивный Рельсовый',v:'green',vLabel:'ЗЕЛ',icon:'⚡',color:'var(--green)',hex:'#22dd77',img:'hakita.jpg',
-   p:100,s:45,r:100,u:75,
-   desc:'Третий рельсовый. Деструктивный луч наивысшего воздействия. Нейтрализует практически любую цель мгновенно. Максимальная перезарядка.',
-   m1:'ДЕСТРУКЦИЯ — Луч максимального воздействия',
-   m2:'— Нет альтернативного режима',
-   tags:['МАКСИМУМ','ДЕСТРУКЦИЯ','ЛУЧ'],
-   mechs:['Максимальное воздействие в арсенале','Самая длинная перезарядка','Только для приоритетных целей']},
-  {id:'freezeframe',slot:'rocket',slotN:5,name:'FREEZEFRAME',ru:'Криогенный Ракетный',v:'blue',vLabel:'СИН',icon:'◎',color:'var(--blue)',hex:'#4488ff',img:'hakita.jpg',
-   p:88,s:60,r:85,u:90,
-   desc:'Базовый ракетный. Самонаводящаяся проекция. Вторичный — криофиксация проекции в пространстве. Детонирует при любом внешнем воздействии.',
-   m1:'РАКЕТА — Самонаводящаяся проекция',
-   m2:'ФИКСАЦИЯ — Криогенная остановка в пространстве',
-   tags:['САМОНАВЕДЕНИЕ','ЛОВУШКА','КРИОФИКСАЦИЯ'],
-   mechs:['Зафиксированная ракета стоит бесконечно','Детонирует от любого импульса','Ловушки в узких проходах']},
-  {id:'srs_canon',slot:'rocket',slotN:5,name:'S.R.S. CANON',ru:'Термический Ракетный',v:'red',vLabel:'КРА',icon:'◎',color:'var(--red)',hex:'#ff2020',img:'hakita.jpg',
-   p:95,s:55,r:85,u:85,
-   desc:'Альтернативный ракетный. Вторичный — термический залп с зональным воздействием по области. Идеален при скоплении сущностей.',
-   m1:'РАКЕТА — Стандартная самонаводящаяся',
-   m2:'ТЕРМО-ЗАЛП — Зональное воздействие',
+   mechanics:['Диск вращается и пронизывает несколько объектов','Принудительный выброс без ожидания перегрева','Диски можно отражать манипулятором обратно','Совместим с магнитным гвоздём']},
+  // ── RAILCANNON ──
+  {id:'electric_rail',slot:'railcannon',slotLabel:'Рельсовый',name:'ELECTRIC RAILCANNON',ruName:'Электрический Рельсовый',
+   variant:'blue',variantLabel:'СИНИЙ',icon:'⚡',color:'var(--blue)',colorHex:'#5599ff',
+   power:100,speed:50,range:100,utility:72,img:'hakita.jpg',
+   desc:'Базовый рельсовый модуль. Мгновенный электрический импульс нейтрализует большинство сущностей с одной активации. Требует значительного времени перезарядки.',
+   primary:'РЕЖИМ 1 — Мгновенный электрический рельсовый импульс',
+   secondary:'РЕЖИМ 2 — Нет альтернативного режима',
+   tags:['ЭЛЕКТРИКА','МГНОВЕННОЕ','ВЫСОКОЕ ВОЗДЕЙСТВИЕ'],
+   mechanics:['Нейтрализует большинство целей за одну активацию','Проекция мгновенная — упреждение не требуется','Длительная перезарядка — применять по приоритету','Активация через тепловое ядро усиливает взрыв']},
+  {id:'screwdriver_rail',slot:'railcannon',slotLabel:'Рельсовый',name:'SCREWDRIVER RAILCANNON',ruName:'Сверлящий Рельсовый',
+   variant:'red',variantLabel:'КРАСНЫЙ',icon:'⚡',color:'var(--red)',colorHex:'#ff2020',
+   power:85,speed:50,range:100,utility:80,img:'hakita.jpg',
+   desc:'Альтернативный рельсовый. Вращающаяся проекция пронизывает несколько целей по линии и задерживается внутри, продолжая непрерывное воздействие.',
+   primary:'РЕЖИМ 1 — Вращающийся рельсовый импульс по линии целей',
+   secondary:'РЕЖИМ 2 — Нет альтернативного режима',
+   tags:['ВРАЩЕНИЕ','ПРОНИКНОВЕНИЕ','ЛИНЕЙНОЕ'],
+   mechanics:['Пронизывает все объекты по одной линии','Остаётся внутри цели — непрерывное воздействие','Оптимален при плотном линейном расположении','Сочетается с группировкой манипулятором-захватом']},
+  {id:'malicious_rail',slot:'railcannon',slotLabel:'Рельсовый',name:'MALICIOUS RAILCANNON',ruName:'Деструктивный Рельсовый',
+   variant:'green',variantLabel:'ЗЕЛЁНЫЙ',icon:'⚡',color:'var(--green)',colorHex:'#22ff88',
+   power:100,speed:45,range:100,utility:75,img:'hakita.jpg',
+   desc:'Третий вариант рельсового. Деструктивный лучевой импульс наивысшего воздействия. Нейтрализует практически любую цель мгновенно. Максимальная перезарядка.',
+   primary:'РЕЖИМ 1 — Деструктивный луч максимального воздействия',
+   secondary:'РЕЖИМ 2 — Нет альтернативного режима',
+   tags:['МАКСИМУМ','ЛУЧ','КРИТИЧЕСКОЕ'],
+   mechanics:['Максимальное воздействие среди всех рельсовых','Нейтрализует почти любую цель одной активацией','Самая длительная перезарядка в арсенале','Применять только по приоритетным объектам']},
+  // ── ROCKET ──
+  {id:'freezeframe',slot:'rocket',slotLabel:'Ракетный',name:'FREEZEFRAME ROCKET LAUNCHER',ruName:'Криогенный Ракетный',
+   variant:'blue',variantLabel:'СИНИЙ',icon:'◎',color:'var(--blue)',colorHex:'#5599ff',
+   power:88,speed:60,range:85,utility:90,img:'hakita.jpg',
+   desc:'Базовый ракетный модуль. Самонаводящаяся проекция. Вторичная активация фиксирует проекцию в пространстве — детонирует при последующем воздействии.',
+   primary:'РЕЖИМ 1 — Самонаводящаяся ракетная проекция',
+   secondary:'РЕЖИМ 2 — Криогенная фиксация проекции в пространстве',
+   tags:['САМОНАВЕДЕНИЕ','КРИОФИКСАЦИЯ','ЛОВУШКА'],
+   mechanics:['Зафиксированная проекция стоит в пространстве','Детонирует при любом воздействии включая собственный импульс','Создание ловушек в узких проходах среды','Перехват проекции манипулятором — возврат к источнику']},
+  {id:'srs_canon',slot:'rocket',slotLabel:'Ракетный',name:'S.R.S. CANON',ruName:'Термический Ракетный',
+   variant:'red',variantLabel:'КРАСНЫЙ',icon:'◎',color:'var(--red)',colorHex:'#ff2020',
+   power:95,speed:55,range:85,utility:85,img:'hakita.jpg',
+   desc:'Альтернативный ракетный. Вторичная активация — термическая проекция с широким зональным воздействием. Идеален при скоплении сущностей.',
+   primary:'РЕЖИМ 1 — Стандартная ракетная проекция',
+   secondary:'РЕЖИМ 2 — Термический запуск: зональное воздействие по области',
    tags:['ТЕРМИЧЕСКИЙ','ЗОНА','СКОПЛЕНИЕ'],
-   mechs:['Зональное воздействие при детонации','Максимум при скоплении','Синергия с тепловым ядром']},
-  {id:'mirage',slot:'fuel',slotN:6,name:'MIRAGE',ru:'Топливный Накопитель',v:'blue',vLabel:'СИН',icon:'◉',color:'var(--gold)',hex:'#ffd166',img:'hakita.jpg',
-   p:40,s:70,r:50,u:100,
-   desc:'Пассивный модуль накопления ресурса. Поглощает нейтрализованные сущности, конвертируя в топливо. Авто-активация при истощении.',
-   m1:'ПАССИВ — Поглощение ресурса от нейтрализованных целей',
-   m2:'ЭКСТРЕННЫЙ — Конвертация запаса в топливо',
-   tags:['ТОПЛИВО','ПАССИВНЫЙ','НАКОПЛЕНИЕ'],
-   mechs:['Конвертирует сущности в ресурс','Авто-активация при истощении','Увеличивает эффективность длинных серий']},
-  {id:'hdc',slot:'fuel',slotN:6,name:'HARD DAMAGE CORE',ru:'Ядро Стабилизации',v:'red',vLabel:'КРА',icon:'◉',color:'var(--pink)',hex:'#ff44aa',img:'hakita.jpg',
-   p:60,s:80,r:30,u:95,
-   desc:'Стабилизирующий модуль. Перехват тяжёлых проекций не только нейтрализует воздействие, но и создаёт контр-импульс максимальной эффективности.',
-   m1:'ПЕРЕХВАТ — Тяжёлая проекция + контр-импульс',
-   m2:'СТАБИЛИЗАЦИЯ — Восстановление при критическом ресурсе',
+   mechanics:['Термическая проекция создаёт зону воздействия','Максимально эффективен при скоплении сущностей','Синергия с тепловым ядром импульсного модуля','Перехват обратно для самонаведения на источник']},
+  // ── FUEL ──
+  {id:'whiplash_fuel',slot:'fuel',slotLabel:'Топливный слот',name:'MIRAGE',ruName:'Мираж — Топливный Накопитель',
+   variant:'blue',variantLabel:'СИНИЙ',icon:'◉',color:'var(--gold)',colorHex:'#ffd166',
+   power:40,speed:70,range:50,utility:100,img:'hakita.jpg',
+   desc:'Модуль накопления топливного ресурса. Поглощает нейтрализованные сущности, конвертируя их в топливо. Автоматическая активация при истощении основного ресурса.',
+   primary:'РЕЖИМ 1 — Пассивное поглощение ресурса от нейтрализованных целей',
+   secondary:'РЕЖИМ 2 — Экстренная конвертация запаса в топливо',
+   tags:['ТОПЛИВО','НАКОПЛЕНИЕ','ПАССИВНЫЙ'],
+   mechanics:['Конвертирует нейтрализованные сущности в ресурс','Автоматически активируется при истощении','Синергия с высокочастотными модулями','Увеличивает общую эффективность длинных серий']},
+  {id:'hc_parry',slot:'fuel',slotLabel:'Топливный слот',name:'HARD DAMAGE CORE',ruName:'Ядро Стабилизации',
+   variant:'red',variantLabel:'КРАСНЫЙ',icon:'◉',color:'var(--pink)',colorHex:'#ff44aa',
+   power:60,speed:80,range:30,utility:95,img:'hakita.jpg',
+   desc:'Специальный стабилизирующий модуль. Перехват тяжёлых проекций не только нейтрализует входящее воздействие, но и создаёт контр-импульс максимальной эффективности.',
+   primary:'РЕЖИМ 1 — Перехват тяжёлой проекции с контр-импульсом',
+   secondary:'РЕЖИМ 2 — Принудительная стабилизация при критическом ресурсе',
    tags:['СТАБИЛИЗАЦИЯ','ПЕРЕХВАТ','КОНТР-ИМПУЛЬС'],
-   mechs:['Контр-импульс при перехвате тяжёлых проекций','Стабилизирует критическое состояние','Синергия с Feedbacker']},
+   mechanics:['Перехват тяжёлых проекций даёт контр-импульс','Стабилизирует критическое состояние ресурса','Синергия с Feedbacker для усиленного отражения','Активирует бонус стиля при своевременном применении']},
 ];
 
-const SLOT_CONFIG=[
-  {id:'all',label:'ВСЕ МОДУЛИ',sub:'ВЕСЬ КАТАЛОГ',color:'var(--red)',num:'*'},
-  {id:'arm',label:'МАНИПУЛЯТОР',sub:'КОНТАКТНЫЙ СЛОТ',color:'var(--green)',num:'0'},
-  {id:'revolver',label:'ДАЛЬНОБОЙНЫЙ',sub:'СЛОТ 1',color:'var(--blue)',num:'1'},
-  {id:'shotgun',label:'ИМПУЛЬСНЫЙ',sub:'СЛОТ 2',color:'var(--red)',num:'2'},
-  {id:'nailgun',label:'ГВОЗДЕВОЙ',sub:'СЛОТ 3',color:'var(--red)',num:'3'},
-  {id:'railcannon',label:'РЕЛЬСОВЫЙ',sub:'СЛОТ 4',color:'var(--gold)',num:'4'},
-  {id:'rocket',label:'РАКЕТНЫЙ',sub:'СЛОТ 5',color:'var(--pink)',num:'5'},
-  {id:'fuel',label:'ТОПЛИВНЫЙ',sub:'СЛОТ 6',color:'var(--gold)',num:'6'},
+/* ══════════════════════════════════
+   SLOTS CONFIG
+══════════════════════════════════ */
+const SLOTS=[
+  {id:'all',label:'ВСЕ',tabC:'var(--red)'},
+  {id:'arm',label:'Манипулятор',tabC:'var(--green)'},
+  {id:'revolver',label:'Дальнобойный',tabC:'var(--blue)'},
+  {id:'shotgun',label:'Импульсный',tabC:'var(--orange)'},
+  {id:'nailgun',label:'Гвоздевой',tabC:'var(--red)'},
+  {id:'railcannon',label:'Рельсовый',tabC:'var(--gold)'},
+  {id:'rocket',label:'Ракетный',tabC:'var(--pink)'},
+  {id:'fuel',label:'Топливный',tabC:'var(--gold)'},
 ];
 
-/* STATE */
-let ST={slot:'all',variant:'all',search:'',sortKey:null,sortDir:-1,selectedId:null,navIdx:0};
+/* ══════════════════════════════════
+   STATE
+══════════════════════════════════ */
+let state={slot:'all',variant:'all',search:'',sortKey:null,sortDir:-1,selectedId:null,compareA:null,compareB:null};
 
-/* BUILD SLOT LIST */
-function buildSlotList(){
-  const c=document.getElementById('slotList');c.innerHTML='';
-  SLOT_CONFIG.forEach((s,i)=>{
+/* ══════════════════════════════════
+   LOG
+══════════════════════════════════ */
+const termLog=document.getElementById('termLog');
+const logLines=[];
+function addLog(tag,msg){logLines.push({tag,msg});if(logLines.length>20)logLines.shift();renderLog();}
+function renderLog(){
+  termLog.innerHTML=logLines.map((l,i)=>`<div class="tl-line ${i===logLines.length-1?'new':''}"><span class="tl-tag">[${l.tag}]</span> <span class="tl-val">${l.msg}</span></div>`).join('');
+  termLog.scrollTop=termLog.scrollHeight;
+}
+
+/* ══════════════════════════════════
+   TABS
+══════════════════════════════════ */
+function buildTabs(){
+  const c=document.getElementById('slotTabs');c.innerHTML='';
+  SLOTS.forEach(s=>{
     const count=s.id==='all'?WEAPONS.length:WEAPONS.filter(w=>w.slot===s.id).length;
-    const row=document.createElement('div');
-    row.className='slot-row'+(ST.slot===s.id?' active':'');
-    row.style.setProperty('--slot-c',s.color);
-    // dots
-    const variants=s.id==='all'?['b','r','g']:
-      WEAPONS.filter(w=>w.slot===s.id).reduce((acc,w)=>{if(w.v==='blue'&&!acc.includes('b'))acc.push('b');if(w.v==='red'&&!acc.includes('r'))acc.push('r');if(w.v==='green'&&!acc.includes('g'))acc.push('g');return acc;},[]);
-    row.innerHTML=`
-      <div class="slot-num-box">${s.num}</div>
-      <div class="slot-info">
-        <div class="slot-name-big">${s.label}</div>
-        <div class="slot-desc-small">${s.sub}</div>
-        <div class="slot-variants">
-          ${'brg'.split('').map(d=>`<div class="sv-dot ${d}${variants.includes(d)?'':' dim'}"></div>`).join('')}
-        </div>
-      </div>
-      <div class="slot-count">${count}</div>`;
-    row.onclick=()=>{ST.slot=s.id;ST.selectedId=null;ST.navIdx=0;buildSlotList();renderList();document.getElementById('cpTitle').textContent=s.label;clearDetail();};
-    c.appendChild(row);
+    const t=document.createElement('button');
+    t.className='slot-tab'+(state.slot===s.id?' active':'');
+    t.style.setProperty('--tab-c',s.tabC);
+    t.innerHTML=`${s.label}<span class="tab-count">${count}</span>`;
+    t.onclick=()=>{state.slot=s.id;state.selectedId=null;closeDetail();buildTabs();renderGrid();addLog('SLOT',s.label.toUpperCase());};
+    c.appendChild(t);
   });
 }
 
-/* GET FILTERED */
+/* ══════════════════════════════════
+   FILTER
+══════════════════════════════════ */
 function getFiltered(){
   let list=WEAPONS.slice();
-  if(ST.slot!=='all')list=list.filter(w=>w.slot===ST.slot);
-  if(ST.variant!=='all')list=list.filter(w=>w.v===ST.variant);
-  if(ST.search){const q=ST.search.toLowerCase();list=list.filter(w=>w.name.toLowerCase().includes(q)||w.ru.toLowerCase().includes(q)||w.tags.some(t=>t.toLowerCase().includes(q)));}
-  if(ST.sortKey)list.sort((a,b)=>ST.sortDir*(b[ST.sortKey]-a[ST.sortKey]));
+  if(state.slot!=='all')list=list.filter(w=>w.slot===state.slot);
+  if(state.variant!=='all')list=list.filter(w=>w.variant===state.variant);
+  if(state.search){const q=state.search.toLowerCase();list=list.filter(w=>w.name.toLowerCase().includes(q)||w.ruName.toLowerCase().includes(q)||w.tags.some(t=>t.toLowerCase().includes(q)));}
+  if(state.sortKey)list.sort((a,b)=>state.sortDir*(b[state.sortKey]-a[state.sortKey]));
   return list;
 }
 
-/* RENDER LIST */
-function renderList(){
-  const c=document.getElementById('weaponList');
+/* ══════════════════════════════════
+   RENDER GRID
+══════════════════════════════════ */
+function renderGrid(){
+  const grid=document.getElementById('weaponGrid');
   const list=getFiltered();
-  document.getElementById('totalCount').textContent=list.length;
-  if(!list.length){c.innerHTML='<div class="no-results-row">// МОДУЛИ НЕ НАЙДЕНЫ //</div>';return;}
-  c.innerHTML='';
+  document.getElementById('resultsCount').textContent=list.length;
+  if(!list.length){grid.innerHTML='<div class="no-results" style="grid-column:1/-1"><div class="nr-icon">◎</div><div>// МОДУЛИ НЕ НАЙДЕНЫ //</div></div>';return;}
+  grid.innerHTML='';
   list.forEach((w,idx)=>{
-    const row=document.createElement('div');
-    row.className='wrow'+(ST.selectedId===w.id?' selected':'');
-    row.style.setProperty('--wc',w.color);
-    row.style.animationDelay=(idx*.03)+'s';
-    row.innerHTML=`
-      <div class="wr-idx">${String(idx+1).padStart(2,'0')}</div>
-      <div class="wr-img">
+    const card=document.createElement('div');
+    card.className='wcard'+(state.selectedId===w.id?' selected':'');
+    card.style.setProperty('--wc',w.color);
+    card.style.animationDelay=(idx*.04)+'s';
+    card.dataset.id=w.id;
+    const compChecked=state.compareA===w.id||state.compareB===w.id;
+    card.innerHTML=`
+      <div class="wcard-img-wrap">
         <img src="${w.img}" alt="${w.name}" onerror="this.style.opacity='0'">
-        <div class="wr-img-scan"></div>
+        <div class="wcard-img-overlay"></div>
+        <div class="wcard-img-badge">${w.variantLabel}</div>
+        <div class="wcard-img-slot">${w.slotLabel.toUpperCase()}</div>
       </div>
-      <div class="wr-info">
-        <div class="wr-name">${w.name} <span style="font-size:.65rem;color:var(--wc);opacity:.7;">[${w.vLabel}]</span></div>
-        <div class="wr-runame">${w.ru}</div>
-        <div class="wr-tags">${w.tags.map(t=>`<span class="wr-tag">${t}</span>`).join('')}</div>
+      <div class="wcard-head">
+        <div class="wcard-icon">${w.icon}</div>
+        <div class="wcard-title"><div class="wcard-name">${w.name}</div><div class="wcard-runame">${w.ruName}</div></div>
       </div>
-      <div class="wr-stats">
-        ${[['p','М'],['s','С'],['r','Д']].map(([k,l])=>`
-          <div class="wr-stat">
-            <div class="wr-stat-bar"><div class="wr-stat-fill" data-val="${w[k]}"></div></div>
-            <div class="wr-stat-val">${w[k]}</div>
-          </div>`).join('')}
+      <div class="wcard-body">
+        <div class="wcard-desc">${w.desc}</div>
+        <div class="mini-stats">
+          ${['power','speed','range','utility'].map(k=>`<div class="mini-stat-row"><div class="mini-stat-lbl">${{power:'МОЩНОСТЬ',speed:'СКОРОСТЬ',range:'ДАЛЬНОСТЬ',utility:'УТИЛИТА'}[k]}</div><div class="mini-stat-bar"><div class="mini-stat-fill" data-val="${w[k]}"></div></div><div class="mini-stat-val">${w[k]}</div></div>`).join('')}
+        </div>
+        <div class="wcard-tags">${w.tags.map(t=>`<span class="wtag">${t}</span>`).join('')}</div>
+      </div>
+      <div class="wcard-footer">
+        <label class="compare-check ${compChecked?'checked':''}" data-cmp="${w.id}">
+          <input type="checkbox" ${compChecked?'checked':''}><div class="compare-box">${compChecked?'✓':''}</div>CMP
+        </label>
+        <span class="wcard-slot-badge">${w.slotLabel.toUpperCase()}</span>
+        <span class="wcard-arrow">▸</span>
       </div>`;
-    row.onclick=()=>openDetail(w);
-    c.appendChild(row);
+    card.addEventListener('click',e=>{if(e.target.closest('.compare-check'))return;openDetail(w);});
+    card.querySelector('.compare-check').addEventListener('click',e=>{e.stopPropagation();toggleCompare(w.id);});
+    grid.appendChild(card);
   });
-  requestAnimationFrame(()=>document.querySelectorAll('.wr-stat-fill').forEach(b=>{b.style.width='0';setTimeout(()=>{b.style.width=b.dataset.val+'%';},80);}));
+  requestAnimationFrame(()=>{document.querySelectorAll('.mini-stat-fill').forEach(b=>{b.style.width='0';setTimeout(()=>{b.style.width=b.dataset.val+'%';},100);});});
 }
-
-/* OPEN DETAIL */
-function openDetail(w){
-  ST.selectedId=w.id;
-  document.getElementById('activeLabel').innerHTML=`АКТИВЕН: <span class="hl">${w.name}</span>`;
-  const dp=document.getElementById('dpContent');
-  dp.style.setProperty('--dp-c',w.color);
-  dp.innerHTML=`
-    <div class="dp-header">
-      <div class="dp-variant-badge">// СЛОТ ${w.slotN} // ${w.vLabel} ВАРИАНТ //</div>
-      <div class="dp-name">${w.name}</div>
-      <div class="dp-runame">${w.ru}</div>
-    </div>
-    <div class="dp-img-wrap">
-      <img src="${w.img}" alt="${w.name}" onerror="this.style.opacity='0'">
-      <div class="dp-img-scan"></div>
-      <div class="dp-img-label">${w.name}</div>
-    </div>
-    <div class="dp-body" style="--dp-c:${w.color}">
-      <div class="dp-section-title">// ОПИСАНИЕ</div>
-      <div class="dp-desc-text" id="dpDescText"></div>
-      <div class="dp-section-title">// РЕЖИМЫ АКТИВАЦИИ</div>
-      <div class="dp-mode"><span class="dp-mode-key">РЕЖИМ 1</span><span class="dp-mode-val">${w.m1}</span></div>
-      <div class="dp-mode"><span class="dp-mode-key">РЕЖИМ 2</span><span class="dp-mode-val">${w.m2}</span></div>
-      <div class="dp-section-title">// ХАРАКТЕРИСТИКИ</div>
-      ${[['p','МОЩНОСТЬ'],['s','СКОРОСТЬ'],['r','ДАЛЬНОСТЬ'],['u','УТИЛИТА']].map(([k,l])=>`
-        <div class="dp-stat">
-          <div class="dp-stat-head"><span class="dp-stat-lbl">${l}</span><span class="dp-stat-val">${w[k]}</span></div>
-          <div class="dp-stat-bar"><div class="dp-stat-fill" data-val="${w[k]}"></div></div>
-        </div>`).join('')}
-      <div class="dp-section-title">// МЕХАНИКИ</div>
-      ${w.mechs.map(m=>`<div class="dp-mech">${m}</div>`).join('')}
-    </div>`;
-  typeText(document.getElementById('dpDescText'),w.desc,12);
-  requestAnimationFrame(()=>setTimeout(()=>document.querySelectorAll('.dp-stat-fill').forEach(b=>b.style.width=b.dataset.val+'%'),200));
-  renderList();
-}
-function clearDetail(){
-  document.getElementById('activeLabel').innerHTML='АКТИВЕН: <span class="hl">—</span>';
-  document.getElementById('dpContent').innerHTML=`<div class="dp-empty"><div class="dp-empty-icon">◎</div><div>// ВЫБЕРИТЕ МОДУЛЬ //</div></div>`;
-}
-function typeText(el,text,speed=15){if(!el)return;el.textContent='';let i=0;const iv=setInterval(()=>{if(i>=text.length){clearInterval(iv);return;}el.textContent+=text[i++];},speed);}
-
-/* EVENTS */
-document.querySelectorAll('.vf-btn[data-v]').forEach(btn=>btn.addEventListener('click',()=>{
-  document.querySelectorAll('.vf-btn[data-v]').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');ST.variant=btn.dataset.v;ST.selectedId=null;clearDetail();renderList();
-}));
-const cpSearch=document.getElementById('cpSearch');let st2;
-cpSearch.addEventListener('input',()=>{clearTimeout(st2);st2=setTimeout(()=>{ST.search=cpSearch.value.trim();ST.selectedId=null;clearDetail();renderList();},200);});
-['sortP','sortS'].forEach((id,i)=>{
-  const key=i===0?'p':'s';
-  document.getElementById(id).addEventListener('click',function(){
-    if(ST.sortKey===key){ST.sortDir*=-1;this.textContent=(i===0?'МОЩ':'СКР')+(ST.sortDir===-1?'↓':'↑');}
-    else{ST.sortKey=key;ST.sortDir=-1;this.textContent=(i===0?'МОЩ':'СКР')+'↓';}
-    document.querySelectorAll('#sortP,#sortS').forEach(b=>b.classList.remove('active'));
-    this.classList.add('active');renderList();
-  });
-});
-const slotKeys={'1':'revolver','2':'shotgun','3':'nailgun','4':'railcannon','5':'rocket','6':'fuel','0':'all','m':'arm'};
-document.addEventListener('keydown',e=>{
-  if(document.activeElement===cpSearch){if(e.key==='Escape'){cpSearch.blur();cpSearch.value='';ST.search='';renderList();}return;}
-  if(e.key==='f'||e.key==='F'){e.preventDefault();cpSearch.focus();return;}
-  if(e.key==='Escape'){ST.selectedId=null;clearDetail();renderList();return;}
-  if(slotKeys[e.key]){ST.slot=slotKeys[e.key];ST.selectedId=null;buildSlotList();renderList();clearDetail();
-    const sc=SLOT_CONFIG.find(s=>s.id===ST.slot);if(sc)document.getElementById('cpTitle').textContent=sc.label;}
-});
-
-/* RANK GLITCH */
-const RANKS=['D','C','B','A','S','SS','SSS'];
-setInterval(()=>{
-  const el=document.getElementById('rankDisplay');
-  if(Math.random()<.12){el.textContent=RANKS[Math.floor(Math.random()*RANKS.length)];el.style.color='var(--white)';setTimeout(()=>{el.textContent='SSS';el.style.color='var(--gold)';},120);}
-},2500);
 
 /* ══════════════════════════════════
-   ULTRAKILL-STYLE TERMINAL BG CANVAS
-   Grid + scanbeam + crosshair effect
+   DETAIL
+══════════════════════════════════ */
+function openDetail(w){
+  state.selectedId=w.id;
+  document.getElementById('sideActive').textContent=w.name;
+  const panel=document.getElementById('detailPanel');
+  panel.style.setProperty('--dp-c',w.color);
+  document.getElementById('detailLeft').innerHTML=`
+    <div class="dp-eyebrow">// ${w.slotLabel.toUpperCase()} // ${w.variantLabel} //</div>
+    <div class="dp-name">${w.name}</div><div class="dp-runame">${w.ruName}</div>
+    <div class="dp-desc" id="dpDesc"></div>
+    <div class="dp-activation">
+      <div class="dp-act-row"><span class="dp-act-key">РЕЖИМ 1</span><span class="dp-act-desc">${w.primary}</span></div>
+      <div class="dp-act-row"><span class="dp-act-key">РЕЖИМ 2</span><span class="dp-act-desc">${w.secondary}</span></div>
+    </div>
+    <div class="dp-mechanics"><div class="dp-mech-title">// МЕХАНИКИ</div>
+      ${w.mechanics.map(m=>`<div class="dp-mech-item"><span class="dp-mech-arrow">▸</span>${m}</div>`).join('')}
+    </div>`;
+  document.getElementById('detailRight').innerHTML=`
+    <div class="dp-stat-title">// ХАРАКТЕРИСТИКИ</div>
+    ${['power','speed','range','utility'].map(k=>`
+      <div class="dp-stat-row">
+        <div class="dp-stat-head"><span class="dp-stat-lbl">${{power:'МОЩНОСТЬ',speed:'СКОРОСТЬ',range:'ДАЛЬНОСТЬ',utility:'УТИЛИТА'}[k]}</span><span class="dp-stat-val">${w[k]}</span></div>
+        <div class="dp-stat-bar"><div class="dp-stat-fill" data-val="${w[k]}"></div></div>
+      </div>`).join('')}
+    <div class="readout" style="margin-top:1rem;">
+      <span class="hl">[СЛОТ]</span> <span class="vl">${w.slotLabel}</span><br>
+      <span class="hl">[ВАРИАНТ]</span> <span class="vl">${w.variantLabel}</span><br>
+      <span class="hl">[ТЕГИ]</span> <span class="vl">${w.tags.join(' / ')}</span><br>
+      <span class="hl">[СТАТУС]</span> <span class="vl">АКТИВЕН<span class="cur"></span></span>
+    </div>`;
+  panel.classList.add('open');
+  panel.scrollIntoView({behavior:'smooth',block:'nearest'});
+  typeText(document.getElementById('dpDesc'),w.desc,15);
+  requestAnimationFrame(()=>setTimeout(()=>document.querySelectorAll('.dp-stat-fill').forEach(b=>b.style.width=b.dataset.val+'%'),200));
+  renderGrid();
+  addLog('INFO','Выбран: '+w.name);
+}
+function closeDetail(){document.getElementById('detailPanel').classList.remove('open');state.selectedId=null;document.getElementById('sideActive').textContent='—';}
+function typeText(el,text,speed=20){el.textContent='';let i=0;const iv=setInterval(()=>{if(i>=text.length){clearInterval(iv);return;}el.textContent+=text[i++];},speed);}
+
+/* ══════════════════════════════════
+   COMPARE
+══════════════════════════════════ */
+function toggleCompare(id){
+  if(state.compareA===id)state.compareA=null;
+  else if(state.compareB===id)state.compareB=null;
+  else if(!state.compareA)state.compareA=id;
+  else if(!state.compareB)state.compareB=id;
+  else{state.compareA=state.compareB;state.compareB=id;}
+  updateCompare();renderGrid();
+}
+function updateCompare(){
+  const wA=WEAPONS.find(w=>w.id===state.compareA),wB=WEAPONS.find(w=>w.id===state.compareB);
+  document.getElementById('cmpNameA').textContent=wA?wA.name:'не выбран';
+  document.getElementById('cmpNameB').textContent=wB?wB.name:'не выбран';
+  if(wA&&wB){
+    document.getElementById('comparePanel').classList.add('open');
+    [['Power','power'],['Speed','speed'],['Range','range'],['Util','utility']].forEach(([k,key])=>{
+      const vA=wA[key],vB=wB[key];
+      const aEl=document.getElementById('cmpA'+k),bEl=document.getElementById('cmpB'+k);
+      aEl.textContent=vA;bEl.textContent=vB;
+      aEl.className='cmp-a'+(vA>=vB?' cmp-win':'');bEl.className='cmp-b'+(vB>=vA?' cmp-win':'');
+    });
+    addLog('CMP',`${wA.name} vs ${wB.name}`);
+  } else document.getElementById('comparePanel').classList.remove('open');
+}
+
+/* ══════════════════════════════════
+   EVENTS
+══════════════════════════════════ */
+document.querySelectorAll('.filter-btn').forEach(btn=>btn.addEventListener('click',()=>{
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');state.variant=btn.dataset.variant;state.selectedId=null;closeDetail();renderGrid();
+}));
+const searchBox=document.getElementById('searchBox');let st;
+searchBox.addEventListener('input',()=>{clearTimeout(st);st=setTimeout(()=>{state.search=searchBox.value.trim();state.selectedId=null;closeDetail();renderGrid();},200);});
+['sortPower','sortSpeed','sortRange'].forEach((id,i)=>{
+  const key=['power','speed','range'][i];
+  document.getElementById(id).addEventListener('click',function(){
+    if(state.sortKey===key){state.sortDir*=-1;this.textContent=key.substring(0,7).toUpperCase()+' '+(state.sortDir===-1?'↓':'↑');}
+    else{document.querySelectorAll('.sort-btn').forEach(b=>b.classList.remove('active'));state.sortKey=key;state.sortDir=-1;this.textContent=key.substring(0,7).toUpperCase()+' ↓';}
+    this.classList.add('active');renderGrid();
+  });
+});
+const keySlotMap={'1':'arm','2':'revolver','3':'shotgun','4':'nailgun','5':'railcannon','6':'rocket','7':'fuel','0':'all'};
+document.addEventListener('keydown',e=>{
+  if(document.activeElement===searchBox){if(e.key==='Escape'){searchBox.blur();searchBox.value='';state.search='';renderGrid();}return;}
+  if(e.key==='f'||e.key==='F'){e.preventDefault();searchBox.focus();return;}
+  if(e.key==='Escape'){closeDetail();renderGrid();return;}
+  if(keySlotMap[e.key]){state.slot=keySlotMap[e.key];state.selectedId=null;closeDetail();buildTabs();renderGrid();}
+});
+window.addEventListener('load',()=>document.querySelectorAll('.bar-fill').forEach(b=>{b.style.width='0';setTimeout(()=>{b.style.width=(b.dataset.w||0)+'%';},400);}));
+
+/* ══════════════════════════════════
+   RANK GLITCH
+══════════════════════════════════ */
+const RANKS=['D','C','B','A','S','SS','SSS'];
+setInterval(()=>{
+  const el=document.getElementById('dynamicRank');
+  if(Math.random()<.15){el.textContent=RANKS[Math.floor(Math.random()*RANKS.length)];setTimeout(()=>{el.textContent='SSS';},150);}
+},2000);
+
+/* ══════════════════════════════════
+   PARTICLE CANVAS (same as index)
 ══════════════════════════════════ */
 (()=>{
-  const c=document.getElementById('bg-terminal');
-  const ctx=c.getContext('2d');
-  let W,H;
-  function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight;}
+  const canvas=document.getElementById('bg-canvas');
+  const ctx=canvas.getContext('2d');
+  let W,H,particles=[];
+  function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}
   window.addEventListener('resize',resize);resize();
-
-  // Grid config
-  const GRID=60;
-  let scanY=0;
-  let scanSpeed=0.4;
-  let time=0;
-  let pulseTargets=[];
-  
-  // Randomly pulse some grid intersections
-  for(let i=0;i<8;i++){
-    pulseTargets.push({
-      x:Math.floor(Math.random()*(W/GRID))*GRID,
-      y:Math.floor(Math.random()*(H/GRID))*GRID,
-      alpha:Math.random(),
-      speed:Math.random()*.02+.005
-    });
+  class Particle{
+    constructor(){this.reset();}
+    reset(){this.x=Math.random()*W;this.y=H+10;this.size=Math.random()*1.5+.3;this.speed=Math.random()*.4+.1;this.alpha=Math.random()*.3+.05;this.drift=(Math.random()-.5)*.3;this.color=Math.random()<.7?`rgba(255,32,32,`:`rgba(255,200,200,`;}
+    update(){this.y-=this.speed;this.x+=this.drift;if(this.y<-5)this.reset();}
+    draw(){ctx.beginPath();ctx.arc(this.x,this.y,this.size,0,Math.PI*2);ctx.fillStyle=this.color+this.alpha+')';ctx.fill();}
   }
-
-  function drawGrid(){
-    ctx.clearRect(0,0,W,H);
-    
-    // Base grid lines
-    ctx.strokeStyle='rgba(255,20,20,0.04)';
-    ctx.lineWidth=.5;
-    for(let x=0;x<=W;x+=GRID){
-      ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();
-    }
-    for(let y=0;y<=H;y+=GRID){
-      ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();
-    }
-
-    // Bright grid lines (every 5th)
-    ctx.strokeStyle='rgba(255,20,20,0.08)';
-    ctx.lineWidth=.8;
-    for(let x=0;x<=W;x+=GRID*5){
-      ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();
-    }
-    for(let y=0;y<=H;y+=GRID*5){
-      ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();
-    }
-
-    // Intersection dots
-    ctx.fillStyle='rgba(255,20,20,0.06)';
-    for(let x=0;x<=W;x+=GRID){
-      for(let y=0;y<=H;y+=GRID){
-        ctx.beginPath();ctx.arc(x,y,1,0,Math.PI*2);ctx.fill();
-      }
-    }
-
-    // Pulse targets (highlighted intersections)
-    pulseTargets.forEach(p=>{
-      p.alpha+=p.speed;
-      if(p.alpha>1||p.alpha<0)p.speed*=-1;
-      // Re-randomize occasionally
-      if(Math.random()<.001){p.x=Math.floor(Math.random()*(W/GRID))*GRID;p.y=Math.floor(Math.random()*(H/GRID))*GRID;}
-      ctx.fillStyle=`rgba(255,32,32,${p.alpha*.15})`;
-      ctx.beginPath();ctx.arc(p.x,p.y,3,0,Math.PI*2);ctx.fill();
-      // Crosshair
-      ctx.strokeStyle=`rgba(255,32,32,${p.alpha*.08})`;
-      ctx.lineWidth=.5;
-      ctx.beginPath();ctx.moveTo(p.x-10,p.y);ctx.lineTo(p.x+10,p.y);ctx.stroke();
-      ctx.beginPath();ctx.moveTo(p.x,p.y-10);ctx.lineTo(p.x,p.y+10);ctx.stroke();
-    });
-
-    // Horizontal scan beam (ULTRAKILL weapon select style)
-    scanY+=scanSpeed;
-    if(scanY>H+50)scanY=-50;
-    const scanGrad=ctx.createLinearGradient(0,scanY-30,0,scanY+30);
-    scanGrad.addColorStop(0,'rgba(255,32,32,0)');
-    scanGrad.addColorStop(.5,'rgba(255,32,32,0.05)');
-    scanGrad.addColorStop(1,'rgba(255,32,32,0)');
-    ctx.fillStyle=scanGrad;
-    ctx.fillRect(0,scanY-30,W,60);
-
-    // Thin bright scan line
-    ctx.strokeStyle='rgba(255,32,32,0.12)';
-    ctx.lineWidth=1;
-    ctx.beginPath();ctx.moveTo(0,scanY);ctx.lineTo(W,scanY);ctx.stroke();
-
-    // Corner markers (ULTRAKILL UI style)
-    const cm=15;
-    ctx.strokeStyle='rgba(255,32,32,0.15)';ctx.lineWidth=1.5;
-    [[0,0,1,1],[W,0,-1,1],[0,H,1,-1],[W,H,-1,-1]].forEach(([cx,cy,dx,dy])=>{
-      ctx.beginPath();ctx.moveTo(cx+dx*cm,cy);ctx.lineTo(cx,cy);ctx.lineTo(cx,cy+dy*cm);ctx.stroke();
-    });
-
-    // Vertical "target" lines
-    time+=.005;
-    const tx=W/2+Math.sin(time*.3)*W*.1;
-    ctx.strokeStyle='rgba(255,32,32,0.03)';ctx.lineWidth=.5;
-    ctx.beginPath();ctx.moveTo(tx,0);ctx.lineTo(tx,H);ctx.stroke();
-    ctx.beginPath();ctx.moveTo(0,H/2+Math.cos(time*.2)*H*.05);ctx.lineTo(W,H/2+Math.cos(time*.2)*H*.05);ctx.stroke();
-
-    // Random horizontal data flashes
-    if(Math.random()<.008){
-      const fy=Math.floor(Math.random()*(H/GRID))*GRID;
-      ctx.strokeStyle=`rgba(255,32,32,${Math.random()*.12})`;
-      ctx.lineWidth=1;
-      ctx.beginPath();ctx.moveTo(0,fy);ctx.lineTo(W*(.3+Math.random()*.4),fy);ctx.stroke();
-    }
-
-    requestAnimationFrame(drawGrid);
-  }
-  drawGrid();
+  for(let i=0;i<65;i++){const p=new Particle();p.y=Math.random()*H;particles.push(p);}
+  function loop(){ctx.clearRect(0,0,W,H);particles.forEach(p=>{p.update();p.draw();});requestAnimationFrame(loop);}
+  loop();
 })();
 
-/* INIT */
-buildSlotList();
-renderList();
+/* ══════════════════════════════════
+   INIT
+══════════════════════════════════ */
+addLog('SYS','База данных загружена');
+addLog('ARS','Модулей в каталоге: '+WEAPONS.length);
+addLog('V1','Арсенал инициализирован');
+addLog('FUEL','Уровень ресурса: КРИТИЧЕСКИЙ');
+addLog('STL','Ранг стиля: SSS');
+buildTabs();renderGrid();
 </script>
 </body>
 </html>
