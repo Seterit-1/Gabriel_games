@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>ULTRAKILL // АРСЕНАЛ V1 — БАЗА ДАННЫХ</title>
+    <title>ULTRAKILL // V1 UNIT — SYSTEM DATABASE</title>
     <link href="https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -31,25 +31,19 @@
             overflow-x: hidden;
         }
 
+        /* CRT scanlines */
         body::after {
             content: '';
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: repeating-linear-gradient(0deg, transparent, transparent 2px,
                 rgba(0,0,0,0.13) 2px, rgba(0,0,0,0.13) 4px);
             pointer-events: none;
-            z-index: 9998;
+            z-index: 9999;
         }
 
-        #bg-canvas {
-            position: fixed; top: 0; left: 0;
-            width: 100%; height: 100%;
-            pointer-events: none;
-            z-index: 1;
-            opacity: 0.4;
-        }
-
+        /* ── LAYOUT ── */
         .page {
-            max-width: 1420px;
+            max-width: 1380px;
             margin: 0 auto;
             padding: 0 1rem 2rem;
             position: relative;
@@ -57,393 +51,507 @@
         }
 
         /* ── HEADER ── */
-        .site-header { border-bottom: 2px solid var(--red); padding: 1.4rem 0 1rem; margin-bottom: 0; }
-        .header-top  { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; }
-        .logo-eyebrow { font-size: 0.6rem; color: var(--red); letter-spacing: 0.35em; text-transform: uppercase; margin-bottom: 0.25rem; }
-        .logo-main { font-family: 'VT323', monospace; font-size: 4rem; line-height: 1; color: var(--white); letter-spacing: 3px; text-shadow: 0 0 24px var(--glow-r), 2px 2px 0 var(--red-dim); }
-        .logo-main .v1 { color: var(--red); text-shadow: 0 0 40px var(--red), 0 0 80px var(--glow-r); }
+        .site-header {
+            border-bottom: 2px solid var(--red);
+            padding: 1.4rem 0 1rem;
+            margin-bottom: 0;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo-eyebrow {
+            font-size: 0.6rem;
+            color: var(--red);
+            letter-spacing: 0.35em;
+            text-transform: uppercase;
+            margin-bottom: 0.25rem;
+        }
+
+        .logo-main {
+            font-family: 'VT323', monospace;
+            font-size: 4rem;
+            line-height: 1;
+            color: var(--white);
+            letter-spacing: 3px;
+            text-shadow: 0 0 24px var(--glow-r), 2px 2px 0 var(--red-dim);
+        }
+
+        .logo-main .v1 {
+            color: var(--red);
+            text-shadow: 0 0 40px var(--red), 0 0 80px var(--glow-r);
+        }
 
         @keyframes glitch {
             0%,100% { transform: translate(0); }
-            15% { transform: translate(-2px,1px); clip-path: inset(30% 0 30% 0); }
-            30% { transform: translate(2px,-1px); }
-            50% { transform: translate(0); }
-            65% { transform: translate(-1px,2px); clip-path: inset(60% 0 5% 0); }
+            15%      { transform: translate(-2px, 1px); clip-path: inset(30% 0 30% 0); }
+            30%      { transform: translate(2px,-1px); }
+            50%      { transform: translate(0); }
+            65%      { transform: translate(-1px, 2px); clip-path: inset(60% 0 5% 0); }
         }
+
         .logo-main:hover { animation: glitch 0.25s steps(1) infinite; cursor: default; }
 
-        .logo-tagline { font-size: 0.65rem; color: #3a3a3a; letter-spacing: 0.2em; text-transform: uppercase; margin-top: 0.4rem; }
+        .logo-tagline {
+            font-size: 0.65rem;
+            color: #3a3a3a;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            margin-top: 0.4rem;
+        }
 
-        /* Status panel */
-        .status-panel { background: #0a0a0a; border: 1px solid var(--border); border-top: 2px solid var(--red); padding: 0.8rem 1.2rem; min-width: 210px; }
-        .style-rank { font-family: 'VT323', monospace; font-size: 3rem; color: var(--gold); text-shadow: 0 0 20px var(--gold); line-height: 1; text-align: right; }
+        /* ── STATUS PANEL (header right) ── */
+        .status-panel {
+            background: #0a0a0a;
+            border: 1px solid var(--border);
+            border-top: 2px solid var(--red);
+            padding: 0.8rem 1.2rem;
+            min-width: 210px;
+        }
+
+        .style-rank {
+            font-family: 'VT323', monospace;
+            font-size: 3rem;
+            color: var(--gold);
+            text-shadow: 0 0 20px var(--gold);
+            line-height: 1;
+            text-align: right;
+        }
+
         .divider { height: 1px; background: #1a1a1a; margin: 0.5rem 0; }
-        .status-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem; font-size: 0.65rem; }
+
+        .status-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.4rem;
+            font-size: 0.65rem;
+        }
+
         .status-label { color: #444; text-transform: uppercase; letter-spacing: 0.1em; }
-        .status-bar { width: 100px; height: 5px; background: #111; border: 1px solid #1e1e1e; overflow: hidden; }
-        .bar-fill { height: 100%; background: var(--red); box-shadow: 0 0 6px var(--red); width: 0; transition: width 1.2s ease; }
-        .bar-fill.gold  { background: var(--gold);  box-shadow: 0 0 6px var(--gold); }
+
+        .status-bar {
+            width: 100px; height: 5px;
+            background: #111; border: 1px solid #1e1e1e;
+            overflow: hidden;
+        }
+
+        .bar-fill {
+            height: 100%;
+            background: var(--red);
+            box-shadow: 0 0 6px var(--red);
+            width: 0;
+            transition: width 1.2s ease;
+        }
+
+        .bar-fill.gold  { background: var(--gold); box-shadow: 0 0 6px var(--gold); }
         .bar-fill.green { background: var(--green); box-shadow: 0 0 6px var(--green); }
+
         .sys-id { font-size: 0.5rem; color: #1e1e1e; text-align: right; margin-top: 0.35rem; letter-spacing: 0.1em; }
 
-        /* Ticker */
-        .ticker-wrap { background: #000; border-top: 1px solid #1a1a1a; border-bottom: 1px solid #1a1a1a; overflow: hidden; padding: 0.28rem 0; margin-bottom: 1.2rem; }
-        .ticker-inner { display: flex; gap: 4rem; animation: tick 26s linear infinite; white-space: nowrap; }
-        @keyframes tick { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+        /* ── TICKER ── */
+        .ticker-wrap {
+            background: #000;
+            border-top: 1px solid #1a1a1a;
+            border-bottom: 1px solid #1a1a1a;
+            overflow: hidden;
+            padding: 0.28rem 0;
+            margin-bottom: 1.2rem;
+        }
+
+        .ticker-inner {
+            display: flex; gap: 4rem;
+            animation: tick 22s linear infinite;
+            white-space: nowrap;
+        }
+
+        @keyframes tick {
+            from { transform: translateX(0); }
+            to   { transform: translateX(-50%); }
+        }
+
         .ti { font-size: 0.58rem; color: #2a2a2a; letter-spacing: 0.2em; text-transform: uppercase; }
         .ti .r { color: var(--red); }
 
-        /* Navigation slots */
-        .ws-label { font-size: 0.58rem; color: #333; letter-spacing: 0.3em; text-transform: uppercase; margin-bottom: 0.4rem; }
-        .ws-grid  { display: flex; flex-wrap: wrap; gap: 3px; margin-bottom: 1.4rem; }
-
-        .ws-slot {
-            background: #0a0a0a; border: 1px solid #1e1e1e; border-bottom: 2px solid #111;
-            padding: 0.55rem 1.1rem; cursor: pointer; display: flex; align-items: center; gap: 10px;
-            text-decoration: none; color: var(--white); font-family: 'Share Tech Mono', monospace;
-            font-size: 0.8rem; transition: 0.14s; position: relative; overflow: hidden;
-            min-width: 150px; user-select: none;
+        /* ── WEAPON-SELECT NAVIGATION ── */
+        .ws-label {
+            font-size: 0.58rem; color: #333;
+            letter-spacing: 0.3em; text-transform: uppercase;
+            margin-bottom: 0.4rem;
         }
-        .ws-slot::before { content: ''; position: absolute; left: 0; top: 0; width: 3px; height: 100%; background: #1e1e1e; transition: 0.14s; }
-        .ws-slot::after  { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 2px; transition: width 0.18s; }
+
+        .ws-grid {
+            display: flex; flex-wrap: wrap; gap: 3px;
+            margin-bottom: 1.4rem;
+        }
+
+        /* Each slot = one nav button */
+        .ws-slot {
+            background: #0a0a0a;
+            border: 1px solid #1e1e1e;
+            border-bottom: 2px solid #111;
+            padding: 0.55rem 1.1rem;
+            cursor: pointer;
+            display: flex; align-items: center; gap: 10px;
+            text-decoration: none;
+            color: var(--white);
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.8rem;
+            transition: 0.14s;
+            position: relative;
+            overflow: hidden;
+            min-width: 150px;
+            user-select: none;
+        }
+
+        /* Left color bar */
+        .ws-slot::before {
+            content: '';
+            position: absolute; left: 0; top: 0;
+            width: 3px; height: 100%;
+            background: #1e1e1e; transition: 0.14s;
+        }
+
+        /* Bottom sweep */
+        .ws-slot::after {
+            content: '';
+            position: absolute; bottom: 0; left: 0;
+            width: 0; height: 2px;
+            transition: width 0.18s;
+        }
+
+        /* Slot colour variants */
         .ws-slot.c-red    { --c: var(--red); }
         .ws-slot.c-blue   { --c: var(--blue); }
         .ws-slot.c-orange { --c: var(--orange); }
         .ws-slot.c-green  { --c: var(--green); }
         .ws-slot.c-gold   { --c: var(--gold); }
         .ws-slot.c-pink   { --c: var(--pink); }
-        .ws-slot:hover, .ws-slot.active { border-color: var(--c); background: color-mix(in srgb, var(--c) 6%, #0a0a0a); color: #fff; }
-        .ws-slot:hover::before, .ws-slot.active::before { background: var(--c); box-shadow: 0 0 8px var(--c); }
+
+        .ws-slot:hover, .ws-slot.active {
+            border-color: var(--c);
+            background: color-mix(in srgb, var(--c) 6%, #0a0a0a);
+            color: #fff;
+        }
+
+        .ws-slot:hover::before, .ws-slot.active::before {
+            background: var(--c);
+            box-shadow: 0 0 8px var(--c);
+        }
+
         .ws-slot::after { background: var(--c); }
         .ws-slot:hover::after, .ws-slot.active::after { width: 100%; }
+
         .slot-icon { font-size: 1rem; width: 22px; text-align: center; opacity: 0.7; }
         .slot-name { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; }
         .slot-sub  { font-size: 0.57rem; color: #444; letter-spacing: 0.08em; }
-        .slot-num  { margin-left: auto; font-family: 'VT323', monospace; font-size: 1.5rem; color: #222; transition: 0.14s; }
+        .slot-num  {
+            margin-left: auto;
+            font-family: 'VT323', monospace; font-size: 1.5rem;
+            color: #222; transition: 0.14s;
+        }
+
         .ws-slot:hover .slot-num, .ws-slot.active .slot-num { color: var(--c); }
 
-        /* Red line */
-        .redline { height: 2px; background: linear-gradient(90deg, var(--red) 0%, #fff 18%, var(--red) 35%, transparent 100%); box-shadow: 0 0 10px var(--glow-r); margin-bottom: 1.5rem; }
-
-        /* ── ARSENAL PAGE LAYOUT ── */
-        .arsenal-layout { display: flex; gap: 1.4rem; flex-wrap: wrap; }
-        .arsenal-main   { flex: 1; min-width: 0; }
-        .arsenal-side   { flex: 0 0 240px; }
-
-        /* Slot tabs */
-        .slot-tabs { display: flex; gap: 2px; flex-wrap: wrap; margin-bottom: 1rem; }
-        .slot-tab {
-            background: #0a0a0a; border: 1px solid #1a1a1a;
-            padding: 0.45rem 0.9rem; cursor: pointer;
-            font-family: 'VT323', monospace; font-size: 1.15rem;
-            letter-spacing: 0.08em; text-transform: uppercase;
-            color: #333; transition: 0.15s; position: relative;
-            user-select: none;
-        }
-        .slot-tab::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 2px; transition: 0.2s; }
-        .slot-tab:hover, .slot-tab.active {
-            color: var(--white);
-            background: color-mix(in srgb, var(--tab-c, var(--red)) 8%, #0a0a0a);
-            border-color: var(--tab-c, var(--red));
-        }
-        .slot-tab::after { background: var(--tab-c, var(--red)); }
-        .slot-tab:hover::after, .slot-tab.active::after { width: 100%; }
-        .slot-tab .tab-count { font-size: 0.7rem; color: #333; margin-left: 6px; vertical-align: middle; }
-        .slot-tab.active .tab-count { color: var(--tab-c, var(--red)); }
-
-        /* Filter bar */
-        .filter-bar {
-            display: flex; gap: 6px; align-items: center; flex-wrap: wrap;
-            background: #090909; border: 1px solid #161616;
-            padding: 0.55rem 0.8rem; margin-bottom: 1rem;
-        }
-        .filter-label { font-size: 0.55rem; color: #333; letter-spacing: 0.25em; text-transform: uppercase; margin-right: 4px; }
-        .filter-btn {
-            background: #0d0d0d; border: 1px solid #1e1e1e;
-            padding: 0.25rem 0.65rem; cursor: pointer;
-            font-family: 'Share Tech Mono', monospace; font-size: 0.6rem;
-            color: #444; letter-spacing: 0.1em; text-transform: uppercase;
-            transition: 0.13s; user-select: none;
-        }
-        .filter-btn:hover, .filter-btn.active { border-color: var(--f-c, #555); color: var(--f-c, #ccc); background: color-mix(in srgb, var(--f-c, #555) 8%, #0d0d0d); }
-        .filter-btn.all  { --f-c: var(--white); }
-        .filter-btn.blue { --f-c: var(--blue); }
-        .filter-btn.red  { --f-c: var(--red); }
-        .filter-btn.green{ --f-c: var(--green); }
-
-        .search-box {
-            background: #0d0d0d; border: 1px solid #1a1a1a;
-            padding: 0.25rem 0.6rem; flex: 1; min-width: 120px;
-            font-family: 'Share Tech Mono', monospace; font-size: 0.65rem;
-            color: var(--white); letter-spacing: 0.05em; outline: none;
-            transition: 0.15s;
-        }
-        .search-box:focus { border-color: var(--red); }
-        .search-box::placeholder { color: #2a2a2a; }
-
-        .sort-btn {
-            background: #0d0d0d; border: 1px solid #1e1e1e;
-            padding: 0.25rem 0.65rem; cursor: pointer;
-            font-family: 'Share Tech Mono', monospace; font-size: 0.6rem;
-            color: #444; letter-spacing: 0.08em; text-transform: uppercase;
-            transition: 0.13s; user-select: none;
-        }
-        .sort-btn.active { border-color: var(--gold); color: var(--gold); }
-        .sort-btn:hover  { border-color: #444; color: #888; }
-
-        /* Results counter */
-        .results-bar { font-size: 0.58rem; color: #282828; letter-spacing: 0.12em; margin-bottom: 0.8rem; }
-        .results-bar .hl { color: var(--red); }
-
-        /* Weapon grid */
-        .weapon-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
-            gap: 6px;
+        /* ── RED LINE ── */
+        .redline {
+            height: 2px;
+            background: linear-gradient(90deg, var(--red) 0%, #fff 18%, var(--red) 35%, transparent 100%);
+            box-shadow: 0 0 10px var(--glow-r);
+            margin-bottom: 1.5rem;
         }
 
-        /* Weapon card */
-        .wcard {
-            background: #0a0a0a; border: 1px solid #1a1a1a;
-            cursor: pointer; transition: 0.18s; position: relative;
-            overflow: hidden; user-select: none;
-            animation: cardIn 0.3s ease both;
+        /* ── MAIN GRID ── */
+        .wiki-grid { display: flex; gap: 1.4rem; flex-wrap: wrap; }
+        .main-col  { flex: 3; min-width: 260px; }
+        .side-col  { flex: 1.1; min-width: 220px; }
+
+        /* ── PANELS ── */
+        .panel { background: #0b0b0b; border: 1px solid var(--border); margin-bottom: 1.4rem; }
+
+        .panel-head {
+            background: #0f0f0f;
+            border-bottom: 1px solid var(--border);
+            padding: 0.55rem 1rem;
+            display: flex; align-items: center; gap: 0.7rem;
         }
 
-        @keyframes cardIn {
-            from { opacity: 0; transform: translateY(8px); }
-            to   { opacity: 1; transform: translateY(0); }
+        .ph-dot {
+            width: 10px; height: 10px; flex-shrink: 0;
+            background: var(--red); box-shadow: 0 0 8px var(--red);
         }
+        .ph-dot.gold  { background: var(--gold); box-shadow: 0 0 8px var(--gold); }
 
-        .wcard::before {
-            content: ''; position: absolute; left: 0; top: 0;
-            width: 3px; height: 100%; background: var(--wc, #1e1e1e);
-            box-shadow: 0 0 8px var(--wc, transparent); transition: 0.18s;
+        .ph-title {
+            font-family: 'VT323', monospace;
+            font-size: 1.3rem; letter-spacing: 0.1em; text-transform: uppercase;
         }
+        .ph-title.gold { color: var(--gold); }
 
-        .wcard:hover { border-color: var(--wc, #333); background: color-mix(in srgb, var(--wc, #333) 5%, #0a0a0a); transform: translateY(-2px); }
-        .wcard.selected { border-color: var(--wc, #333); background: color-mix(in srgb, var(--wc, #333) 9%, #0a0a0a); box-shadow: 0 0 20px color-mix(in srgb, var(--wc, #333) 25%, transparent); }
+        .ph-tag { margin-left: auto; font-size: 0.55rem; color: #282828; letter-spacing: 0.15em; }
 
-        .wcard-head {
-            display: flex; align-items: center; gap: 8px;
-            padding: 0.6rem 0.7rem 0.4rem;
+        .panel-body { padding: 0.9rem 1rem; }
+
+        /* ── ENTITY LIST ── */
+        .entity-list { list-style: none; }
+
+        .ent {
             border-bottom: 1px solid #111;
+            padding: 0.75rem 0;
+            display: grid;
+            grid-template-columns: 22px 1fr;
+            gap: 0 10px;
+            align-items: start;
         }
 
-        .wcard-icon {
-            font-size: 1.4rem; width: 30px; text-align: center;
-            color: var(--wc, #333); filter: drop-shadow(0 0 6px var(--wc, transparent));
+        .ent:last-child { border-bottom: none; }
+        .ent-arrow { color: var(--red); font-size: 0.8rem; padding-top: 2px; }
+        .ent-name { font-size: 0.82rem; color: #fff; font-weight: 600; letter-spacing: 0.05em; margin-bottom: 0.2rem; }
+        .ent-desc { font-size: 0.7rem; color: #555; line-height: 1.5; }
+
+        .tags { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 0.3rem; }
+
+        .tag {
+            background: #0d0d0d; border: 1px solid #1e1e1e;
+            padding: 0.08rem 0.45rem;
+            font-size: 0.57rem; letter-spacing: 0.08em; text-transform: uppercase;
         }
 
-        .wcard-title { flex: 1; }
-        .wcard-name  { font-family: 'VT323', monospace; font-size: 1.15rem; letter-spacing: 0.06em; color: var(--white); }
-        .wcard-runame{ font-size: 0.55rem; color: #333; letter-spacing: 0.06em; margin-top: 1px; }
+        .tag.r { border-color: var(--red);   color: var(--red); }
+        .tag.g { border-color: var(--gold);  color: var(--gold); }
+        .tag.b { border-color: var(--blue);  color: var(--blue); }
+        .tag.n { border-color: var(--green); color: var(--green); }
 
-        .wcard-variant {
-            font-family: 'VT323', monospace; font-size: 0.85rem;
-            padding: 1px 7px; border: 1px solid var(--wc, #222);
-            color: var(--wc, #444); background: color-mix(in srgb, var(--wc, #000) 10%, transparent);
-            letter-spacing: 0.1em; white-space: nowrap;
+        /* ── BOSS ITEMS ── */
+        .boss {
+            border-bottom: 1px solid #111;
+            padding: 0.85rem 0;
+            display: grid;
+            grid-template-columns: 38px 1fr;
+            gap: 0 10px;
         }
 
-        .wcard-body { padding: 0.5rem 0.7rem; }
+        .boss:last-child { border-bottom: none; }
 
-        .wcard-desc { font-size: 0.65rem; color: #444; line-height: 1.5; margin-bottom: 0.5rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-
-        /* Mini stat bars */
-        .mini-stats { display: flex; flex-direction: column; gap: 3px; margin-bottom: 0.5rem; }
-        .mini-stat-row { display: flex; align-items: center; gap: 6px; }
-        .mini-stat-lbl { font-size: 0.52rem; color: #2e2e2e; letter-spacing: 0.12em; width: 52px; text-transform: uppercase; flex-shrink: 0; }
-        .mini-stat-bar { flex: 1; height: 3px; background: #111; overflow: hidden; }
-        .mini-stat-fill { height: 100%; background: var(--wc, var(--red)); box-shadow: 0 0 4px var(--wc, var(--red)); width: 0; transition: width 0.9s ease; }
-        .mini-stat-val  { font-family: 'VT323', monospace; font-size: 0.85rem; color: #2a2a2a; width: 28px; text-align: right; }
-
-        .wcard-tags { display: flex; flex-wrap: wrap; gap: 3px; }
-        .wtag {
-            background: #090909; border: 1px solid #181818;
-            padding: 1px 6px; font-size: 0.52rem; letter-spacing: 0.08em; text-transform: uppercase; color: #333;
+        .boss-sym {
+            font-family: 'VT323', monospace;
+            font-size: 2rem; color: var(--gold);
+            text-shadow: 0 0 10px var(--gold);
+            line-height: 1; text-align: center;
         }
 
-        .wcard-footer {
-            border-top: 1px solid #111; padding: 0.35rem 0.7rem;
-            display: flex; justify-content: space-between; align-items: center;
+        .boss-name { font-size: 0.82rem; color: #fff; font-weight: 700; margin-bottom: 0.15rem; }
+        .boss-sub  { font-size: 0.6rem; color: #333; letter-spacing: 0.08em; }
+        .boss-desc { font-size: 0.7rem; color: #555; margin-top: 0.3rem; line-height: 1.5; }
+
+        /* ── SECTOR ITEMS ── */
+        .sector {
+            border-bottom: 1px solid #111;
+            padding: 0.7rem 0;
+            display: grid;
+            grid-template-columns: 58px 1fr;
+            gap: 0 10px;
+            align-items: start;
         }
 
-        .wcard-slot-badge { font-size: 0.5rem; color: #222; letter-spacing: 0.12em; text-transform: uppercase; }
-        .wcard-arrow { font-size: 0.7rem; color: #222; transition: 0.15s; }
-        .wcard:hover .wcard-arrow, .wcard.selected .wcard-arrow { color: var(--wc, var(--red)); }
+        .sector:last-child { border-bottom: none; }
 
-        /* Compare checkbox */
-        .compare-check {
-            display: flex; align-items: center; gap: 5px;
-            font-size: 0.52rem; color: #282828; cursor: pointer;
-            padding: 2px 0; transition: 0.13s;
+        .sec-id {
+            font-family: 'VT323', monospace;
+            font-size: 1.7rem; color: var(--red);
+            text-shadow: 0 0 8px var(--red); line-height: 1;
         }
-        .compare-check input { display: none; }
-        .compare-box { width: 10px; height: 10px; border: 1px solid #222; display: flex; align-items: center; justify-content: center; transition: 0.13s; }
-        .compare-check:hover { color: var(--gold); }
-        .compare-check:hover .compare-box { border-color: var(--gold); }
-        .compare-check.checked .compare-box { border-color: var(--gold); background: var(--gold); }
-        .compare-check.checked { color: var(--gold); }
 
-        /* No results */
-        .no-results { text-align: center; padding: 3rem 1rem; color: #222; font-size: 0.8rem; letter-spacing: 0.2em; }
-        .no-results .nr-icon { font-size: 3rem; color: #151515; margin-bottom: 0.8rem; }
+        .sec-name { font-size: 0.78rem; color: #fff; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.2rem; }
+        .sec-desc { font-size: 0.68rem; color: #555; line-height: 1.5; }
 
-        /* ── DETAIL PANEL ── */
-        .detail-panel {
-            background: #080808; border: 1px solid #222;
-            border-top: 2px solid var(--dp-c, var(--red));
-            margin-top: 8px;
-            display: none;
-            animation: detailIn 0.2s ease both;
+        /* ── DATA READOUT ── */
+        .readout {
+            background: #050505; border: 1px solid #111;
+            padding: 0.6rem 0.8rem;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.62rem; color: #282828;
+            line-height: 1.9; margin-top: 0.8rem;
+        }
+
+        .readout .hl { color: var(--red); }
+        .readout .vl { color: #666; }
+
+        /* ── SIDE PANELS ── */
+        .side-panel { background: #0b0b0b; border: 1px solid var(--border); margin-bottom: 0.9rem; }
+
+        .sp-head {
+            background: #0d0d0d; border-bottom: 1px solid var(--border);
+            padding: 0.45rem 0.8rem;
+            font-size: 0.6rem; color: #444;
+            letter-spacing: 0.25em; text-transform: uppercase;
+            display: flex; align-items: center; gap: 0.5rem;
+        }
+
+        .sp-head::before {
+            content: '';
+            width: 5px; height: 5px; flex-shrink: 0;
+            background: var(--red); box-shadow: 0 0 5px var(--red);
+        }
+
+        .sp-body { padding: 0.8rem; }
+
+        /* V1 portrait */
+        .v1-portrait {
+            width: 100%; aspect-ratio: 1;
+            background: #080808; border-bottom: 1px solid var(--border);
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
             position: relative; overflow: hidden;
         }
 
-        @keyframes detailIn { from { opacity: 0; transform: scaleY(0.95); transform-origin: top; } to { opacity: 1; transform: scaleY(1); } }
+        .v1-glyph {
+            font-size: 5.5rem;
+            color: #111;
+            filter: drop-shadow(0 0 24px var(--red));
+            line-height: 1;
+        }
 
-        .detail-panel.open { display: block; }
+        .v1-lbl {
+            font-family: 'VT323', monospace;
+            font-size: 1rem; color: #1a1a1a;
+            letter-spacing: 0.4em; margin-top: 0.4rem;
+        }
 
-        .detail-scan {
-            position: absolute; top: -30%; left: 0; width: 100%; height: 25%;
-            background: linear-gradient(transparent, rgba(255,32,32,0.04), transparent);
-            animation: scan 4s linear infinite; pointer-events: none;
+        /* Scan animation */
+        .v1-portrait::after {
+            content: '';
+            position: absolute; top: -40%; left: 0;
+            width: 100%; height: 35%;
+            background: linear-gradient(transparent, rgba(255,32,32,0.05), transparent);
+            animation: scan 3s linear infinite;
         }
 
         @keyframes scan { to { top: 120%; } }
 
-        .detail-inner { display: flex; gap: 0; flex-wrap: wrap; }
-
-        .detail-left  { flex: 2; min-width: 260px; padding: 1.2rem 1.4rem; border-right: 1px solid #111; }
-        .detail-right { flex: 1; min-width: 200px; padding: 1.2rem 1rem; }
-
-        .dp-eyebrow { font-size: 0.55rem; color: var(--dp-c, var(--red)); letter-spacing: 0.3em; text-transform: uppercase; margin-bottom: 0.4rem; }
-        .dp-name { font-family: 'VT323', monospace; font-size: 2.2rem; color: var(--white); line-height: 1; margin-bottom: 0.1rem; letter-spacing: 0.05em; }
-        .dp-runame { font-size: 0.65rem; color: #333; letter-spacing: 0.1em; margin-bottom: 0.8rem; }
-
-        .dp-desc { font-size: 0.72rem; color: #555; line-height: 1.65; margin-bottom: 1rem; }
-
-        .dp-activation {
-            background: #050505; border: 1px solid #111;
-            padding: 0.7rem 0.9rem; margin-bottom: 0.8rem;
+        /* Machine stats */
+        .mstat {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0.38rem 0; border-bottom: 1px solid #0f0f0f;
+            font-size: 0.7rem;
         }
 
-        .dp-act-row { display: flex; gap: 8px; align-items: flex-start; margin-bottom: 0.4rem; font-size: 0.68rem; }
-        .dp-act-row:last-child { margin-bottom: 0; }
-        .dp-act-key { color: var(--dp-c, var(--red)); font-family: 'VT323', monospace; font-size: 0.9rem; width: 70px; flex-shrink: 0; }
-        .dp-act-desc { color: #555; line-height: 1.4; }
-
-        .dp-mechanics { margin-bottom: 0.8rem; }
-        .dp-mech-title { font-size: 0.56rem; color: #2a2a2a; letter-spacing: 0.25em; text-transform: uppercase; margin-bottom: 0.4rem; }
-
-        .dp-mech-item {
-            display: flex; gap: 8px; font-size: 0.66rem; color: #444;
-            padding: 0.28rem 0; border-bottom: 1px solid #0d0d0d; line-height: 1.45;
-        }
-        .dp-mech-item:last-child { border-bottom: none; }
-        .dp-mech-arrow { color: var(--dp-c, var(--red)); flex-shrink: 0; }
-
-        /* Full stat bars in detail */
-        .dp-stats { }
-        .dp-stat-title { font-size: 0.56rem; color: #2a2a2a; letter-spacing: 0.25em; text-transform: uppercase; margin-bottom: 0.6rem; }
-        .dp-stat-row { margin-bottom: 0.55rem; }
-        .dp-stat-head { display: flex; justify-content: space-between; margin-bottom: 3px; font-size: 0.62rem; }
-        .dp-stat-lbl { color: #333; letter-spacing: 0.1em; text-transform: uppercase; }
-        .dp-stat-val { font-family: 'VT323', monospace; font-size: 1rem; color: var(--dp-c, var(--red)); }
-        .dp-stat-bar { height: 4px; background: #111; border: 1px solid #161616; overflow: hidden; }
-        .dp-stat-fill { height: 100%; background: var(--dp-c, var(--red)); box-shadow: 0 0 5px var(--dp-c, var(--red)); width: 0; transition: width 0.8s ease; }
-
-        /* Readout box */
-        .readout {
-            background: #050505; border: 1px solid #111;
-            padding: 0.6rem 0.8rem; font-family: 'Fira Code', monospace;
-            font-size: 0.62rem; color: #282828; line-height: 1.9; margin-top: 0.8rem;
-        }
-        .readout .hl { color: var(--red); }
-        .readout .vl { color: #666; }
-
-        /* ── SIDE COLUMN ── */
-        .side-panel { background: #0b0b0b; border: 1px solid var(--border); margin-bottom: 0.9rem; }
-        .sp-head {
-            background: #0d0d0d; border-bottom: 1px solid var(--border);
-            padding: 0.45rem 0.8rem; font-size: 0.6rem; color: #444;
-            letter-spacing: 0.25em; text-transform: uppercase;
-            display: flex; align-items: center; gap: 0.5rem;
-        }
-        .sp-head::before { content: ''; width: 5px; height: 5px; flex-shrink: 0; background: var(--red); box-shadow: 0 0 5px var(--red); }
-        .sp-body { padding: 0.8rem; }
-
-        /* V1 portrait */
-        .v1-portrait { width: 100%; aspect-ratio: 1; background: #080808; border-bottom: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; overflow: hidden; }
-        .v1-glyph { font-size: 5.5rem; color: #111; filter: drop-shadow(0 0 24px var(--red)); line-height: 1; }
-        .v1-lbl { font-family: 'VT323', monospace; font-size: 1rem; color: #1a1a1a; letter-spacing: 0.4em; margin-top: 0.4rem; }
-        .v1-portrait::after { content: ''; position: absolute; top: -40%; left: 0; width: 100%; height: 35%; background: linear-gradient(transparent, rgba(255,32,32,0.05), transparent); animation: scan 3s linear infinite; }
-
-        /* mstat */
-        .mstat { display: flex; justify-content: space-between; align-items: center; padding: 0.38rem 0; border-bottom: 1px solid #0f0f0f; font-size: 0.7rem; }
         .mstat:last-child { border-bottom: none; }
         .mstat-k { color: #444; }
-        .mstat-v { font-family: 'VT323', monospace; font-size: 1rem; color: var(--white); }
+
+        .mstat-v {
+            font-family: 'VT323', monospace;
+            font-size: 1rem; color: var(--white);
+        }
+
         .mstat-v.r { color: var(--red); }
         .mstat-v.g { color: var(--gold); }
         .mstat-v.n { color: var(--green); }
 
-        /* Compare panel */
-        .compare-panel { display: none; }
-        .compare-panel.open { display: block; }
-        .cmp-row { display: flex; gap: 8px; align-items: center; padding: 0.35rem 0; border-bottom: 1px solid #0d0d0d; font-size: 0.65rem; }
-        .cmp-row:last-child { border-bottom: none; }
-        .cmp-lbl { color: #333; flex: 1; text-transform: uppercase; font-size: 0.58rem; letter-spacing: 0.08em; }
-        .cmp-a, .cmp-b { width: 38px; text-align: right; font-family: 'VT323', monospace; font-size: 1rem; }
-        .cmp-a { color: var(--blue); }
-        .cmp-b { color: var(--red); }
-        .cmp-win { text-shadow: 0 0 6px currentColor; }
+        /* Arsenal slots */
+        .aslot {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0.35rem 0; border-bottom: 1px solid #0f0f0f;
+            font-size: 0.68rem;
+        }
 
-        /* Keyboard hint */
-        .kb-hint { font-size: 0.52rem; color: #1a1a1a; letter-spacing: 0.1em; text-align: center; margin-top: 0.5rem; }
-        .kb-key { background: #111; border: 1px solid #222; padding: 0 4px; color: #2a2a2a; }
+        .aslot:last-child { border-bottom: none; }
 
-        /* Terminal log */
-        .term-log { background: #050505; border: 1px solid #0f0f0f; padding: 0.5rem 0.7rem; font-family: 'Fira Code', monospace; font-size: 0.6rem; line-height: 1.8; max-height: 120px; overflow-y: auto; }
-        .term-log::-webkit-scrollbar { width: 3px; }
-        .term-log::-webkit-scrollbar-thumb { background: #1e1e1e; }
-        .tl-line { color: #1e1e1e; }
-        .tl-line .tl-tag { color: var(--red); }
-        .tl-line .tl-val { color: #3a3a3a; }
-        .tl-line.new .tl-val { color: #555; }
+        /* Source links */
+        .src {
+            display: flex; align-items: center; gap: 9px;
+            padding: 0.45rem 0; border-bottom: 1px solid #0f0f0f;
+            font-size: 0.72rem; color: #555;
+            text-decoration: none; cursor: pointer; transition: 0.12s;
+        }
 
+        .src:hover { color: var(--white); }
+        .src:last-child { border-bottom: none; }
+        .src-ico { color: var(--red); width: 18px; text-align: center; }
+
+        /* Terminal button */
+        .term-btn {
+            width: 100%; background: #000;
+            border: 1px solid #282828; border-bottom: 2px solid #111;
+            color: var(--white);
+            padding: 0.55rem 1rem;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase;
+            cursor: pointer; display: flex; align-items: center;
+            justify-content: center; gap: 8px;
+            margin-top: 0.7rem; transition: 0.13s;
+        }
+
+        .term-btn::before { content: '> '; color: var(--red); }
+
+        .term-btn:hover {
+            border-color: var(--red);
+            background: rgba(255,32,32,0.06);
+        }
+
+        /* Blink cursor */
         @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
-        .cur { display: inline-block; width: 7px; height: 13px; background: var(--red); vertical-align: middle; animation: blink 1s step-end infinite; margin-left: 2px; }
 
-        /* Footer */
-        .site-footer { border-top: 1px solid #151515; padding: 0.9rem 0; margin-top: 1rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.4rem; font-size: 0.58rem; color: #282828; letter-spacing: 0.1em; text-transform: uppercase; }
-        .footer-logo { font-family: 'VT323', monospace; font-size: 1.2rem; color: var(--red); text-shadow: 0 0 6px var(--red); }
+        .cur {
+            display: inline-block; width: 7px; height: 13px;
+            background: var(--red); vertical-align: middle;
+            animation: blink 1s step-end infinite; margin-left: 2px;
+        }
 
-        /* Responsive */
-        @media (max-width: 860px) { .arsenal-side { flex: 0 0 100%; } .detail-left { border-right: none; border-bottom: 1px solid #111; } }
-        @media (max-width: 640px) { .logo-main { font-size: 2.8rem; } .weapon-grid { grid-template-columns: 1fr; } }
+        /* ── FOOTER ── */
+        .site-footer {
+            border-top: 1px solid #151515;
+            padding: 0.9rem 0; margin-top: 1rem;
+            display: flex; justify-content: space-between;
+            align-items: center; flex-wrap: wrap; gap: 0.4rem;
+            font-size: 0.58rem; color: #282828;
+            letter-spacing: 0.1em; text-transform: uppercase;
+        }
+
+        .footer-logo {
+            font-family: 'VT323', monospace;
+            font-size: 1.2rem; color: var(--red);
+            text-shadow: 0 0 6px var(--red);
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 760px) {
+            .logo-main { font-size: 2.8rem; }
+            .status-panel { min-width: 180px; }
+            .ws-slot { min-width: calc(50% - 4px); }
+        }
+
+        @media (max-width: 520px) {
+            .wiki-grid { flex-direction: column; }
+            .ws-slot   { min-width: 100%; }
+        }
     </style>
 </head>
 <body>
-
-<canvas id="bg-canvas"></canvas>
-
 <div class="page">
 
     <!-- ═══ HEADER ═══ -->
     <div class="site-header">
         <div class="header-top">
             <div>
-                <div class="logo-eyebrow">// SYSTEM DATABASE // АРСЕНАЛ V1 // ПОЛНЫЙ КАТАЛОГ</div>
-                <div class="logo-main"><span class="v1">V1</span> — АРСЕНАЛ</div>
-                <div class="logo-tagline">СРЕДСТВА НЕЙТРАЛИЗАЦИИ // ПОЛНЫЙ КАТАЛОГ МОДУЛЕЙ<span class="cur"></span></div>
+                <div class="logo-eyebrow">// SYSTEM DATABASE // UNIT PROFILE // ACTIVE</div>
+                <div class="logo-main"><span class="v1">V1</span> — ULTRAKILL</div>
+                <div class="logo-tagline">
+                    MANKIND IS INACTIVE. ENERGY IS FUEL. LOWER SECTOR IS FULL.<span class="cur"></span>
+                </div>
             </div>
+
             <div class="status-panel">
-                <div class="style-rank" id="dynamicRank">SSS</div>
+                <div class="style-rank" title="Ранг стиля">SSS</div>
                 <div class="divider"></div>
                 <div class="status-row">
                     <span class="status-label">ЭНЕРГИЯ</span>
-                    <div class="status-bar"><div class="bar-fill" data-w="78"></div></div>
+                    <div class="status-bar"><div class="bar-fill"     data-w="78"></div></div>
                 </div>
                 <div class="status-row">
                     <span class="status-label">РЕЗЕРВ</span>
@@ -453,7 +561,7 @@
                     <span class="status-label">СТИЛЬ</span>
                     <div class="status-bar"><div class="bar-fill green" data-w="95"></div></div>
                 </div>
-                <div class="sys-id">UNIT // V1 MACHINE // REV 1.4 // ARSENAL MODULE</div>
+                <div class="sys-id">UNIT // V1 MACHINE // REV 1.4</div>
             </div>
         </div>
     </div>
@@ -461,84 +569,289 @@
     <!-- ═══ TICKER ═══ -->
     <div class="ticker-wrap">
         <div class="ticker-inner">
-            <span class="ti">// <span class="r">АРСЕНАЛ</span> // МОДУЛЕЙ ЗАГРУЖЕНО: 14 // МАНИПУЛЯТОРОВ: 3 // ДАЛЬНОБОЙНЫХ: 3 // ИМПУЛЬСНЫХ: 2 // ГВОЗДЕВЫХ: 2 // РЕЛЬСОВЫХ: 3 // РАКЕТНЫХ: 2 //</span>
-            <span class="ti">// <span class="r">АРСЕНАЛ</span> // МОДУЛЕЙ ЗАГРУЖЕНО: 14 // МАНИПУЛЯТОРОВ: 3 // ДАЛЬНОБОЙНЫХ: 3 // ИМПУЛЬСНЫХ: 2 // ГВОЗДЕВЫХ: 2 // РЕЛЬСОВЫХ: 3 // РАКЕТНЫХ: 2 //</span>
+            <span class="ti">// <span class="r">АКТИВНА</span> // БЛОК ДАННЫХ V1 // НИЖНИЙ СЕКТОР: ДОСТУП РАЗРЕШЁН // АРСЕНАЛ: ЗАРЯЖЕН // ТОПЛИВО: КРИТИЧЕСКИ НИЗКОЕ //</span>
+            <span class="ti">// <span class="r">АКТИВНА</span> // БЛОК ДАННЫХ V1 // НИЖНИЙ СЕКТОР: ДОСТУП РАЗРЕШЁН // АРСЕНАЛ: ЗАРЯЖЕН // ТОПЛИВО: КРИТИЧЕСКИ НИЗКОЕ //</span>
         </div>
     </div>
 
-    <!-- ═══ NAVIGATION ═══ -->
+    <!-- ═══ WEAPON-SELECT NAVIGATION ═══ -->
     <div class="ws-label">// НАВИГАЦИЯ — ВЫБОР РАЗДЕЛА БАЗЫ ДАННЫХ</div>
     <div class="ws-grid">
-        <a href="index.html" class="ws-slot c-red">
-            <div class="slot-icon">◎</div>
-            <div><div class="slot-name">Главная</div><div class="slot-sub">ОБЗОР // ИНДЕКС</div></div>
-            <div class="slot-num">←</div>
-        </a>
-        <a href="weapons.html" class="ws-slot c-blue active">
+
+        <a href="weapons.html" class="ws-slot c-blue">
             <div class="slot-icon">⬡</div>
-            <div><div class="slot-name">Арсенал</div><div class="slot-sub">СРЕДСТВА // СЛОТ 1</div></div>
+            <div>
+                <div class="slot-name">Арсенал</div>
+                <div class="slot-sub">СРЕДСТВА // СЛОТ 1</div>
+            </div>
             <div class="slot-num">1</div>
         </a>
-        <a href="index.html#mobs" class="ws-slot c-orange">
+
+        <button class="ws-slot c-orange" onclick="navTo('mobs')">
             <div class="slot-icon">◈</div>
-            <div><div class="slot-name">Объекты</div><div class="slot-sub">ЦЕЛИ // СЛОТ 2</div></div>
+            <div>
+                <div class="slot-name">Объекты</div>
+                <div class="slot-sub">ЦЕЛИ // СЛОТ 2</div>
+            </div>
             <div class="slot-num">2</div>
-        </a>
-        <a href="index.html#bosses" class="ws-slot c-green">
+        </button>
+
+        <button class="ws-slot c-green" onclick="navTo('bosses')">
             <div class="slot-icon">★</div>
-            <div><div class="slot-name">Сущности</div><div class="slot-sub">КЛЮЧЕВЫЕ // СЛОТ 3</div></div>
+            <div>
+                <div class="slot-name">Сущности</div>
+                <div class="slot-sub">КЛЮЧЕВЫЕ // СЛОТ 3</div>
+            </div>
             <div class="slot-num">3</div>
-        </a>
-        <a href="index.html#layers" class="ws-slot c-gold">
+        </button>
+
+        <button class="ws-slot c-gold" onclick="navTo('layers')">
             <div class="slot-icon">▦</div>
-            <div><div class="slot-name">Секторы</div><div class="slot-sub">ЛОКАЦИИ // СЛОТ 4</div></div>
+            <div>
+                <div class="slot-name">Секторы</div>
+                <div class="slot-sub">ЛОКАЦИИ // СЛОТ 4</div>
+            </div>
             <div class="slot-num">4</div>
-        </a>
+        </button>
+
+        <button class="ws-slot c-pink" onclick="document.getElementById('statsBtn').click()">
+            <div class="slot-icon">◎</div>
+            <div>
+                <div class="slot-name">База данных</div>
+                <div class="slot-sub">СТАТИСТИКА // СЛОТ 5</div>
+            </div>
+            <div class="slot-num">5</div>
+        </button>
+
     </div>
 
     <div class="redline"></div>
 
-    <!-- ═══ ARSENAL LAYOUT ═══ -->
-    <div class="arsenal-layout">
+    <!-- ═══ WIKI GRID ═══ -->
+    <div class="wiki-grid">
 
         <!-- ── MAIN COLUMN ── -->
-        <div class="arsenal-main">
+        <div class="main-col">
 
-            <!-- Slot tabs -->
-            <div class="slot-tabs" id="slotTabs"></div>
+            <!-- MOBS -->
+            <div id="mobs" class="panel">
+                <div class="panel-head">
+                    <div class="ph-dot"></div>
+                    <div class="ph-title">КЛАССИФИКАЦИЯ ОБЪЕКТОВ — ЦЕЛИ В СРЕДЕ</div>
+                    <div class="ph-tag">SLOT 2 // ENV.ENTITIES</div>
+                </div>
+                <div class="panel-body">
+                    <ul class="entity-list">
 
-            <!-- Filter bar -->
-            <div class="filter-bar">
-                <span class="filter-label">ВАРИАНТ:</span>
-                <button class="filter-btn all active" data-variant="all">ВСЕ</button>
-                <button class="filter-btn blue" data-variant="blue">◼ СИНИЙ</button>
-                <button class="filter-btn red"  data-variant="red">◼ КРАСНЫЙ</button>
-                <button class="filter-btn green" data-variant="green">◼ ЗЕЛЁНЫЙ</button>
-                <input class="search-box" id="searchBox" type="text" placeholder="ПОИСК МОДУЛЯ..." autocomplete="off" spellcheck="false">
-                <button class="sort-btn" id="sortPower" title="Сортировать по мощности воздействия">МОЩНОСТЬ ↓</button>
-                <button class="sort-btn" id="sortSpeed" title="Сортировать по скорости">СКОРОСТЬ ↓</button>
-                <button class="sort-btn" id="sortRange" title="Сортировать по дальности">ДАЛЬНОСТЬ ↓</button>
-            </div>
+                        <li class="ent">
+                            <div class="ent-arrow">▸</div>
+                            <div>
+                                <div class="ent-name">FILTH — «Мерзость»</div>
+                                <div class="ent-desc">Массовые низкоприоритетные единицы среды. Базовый источник энергетического топлива для V1. Примитивная логика перемещения.</div>
+                                <div class="tags"><span class="tag n">ПРИОРИТЕТ: НИЗКИЙ</span><span class="tag">ТИП: МАССА</span></div>
+                            </div>
+                        </li>
 
-            <div class="results-bar" id="resultsBar">// РЕЗУЛЬТАТОВ: <span class="hl" id="resultsCount">14</span> // НАЖМИТЕ НА КАРТОЧКУ ДЛЯ ДЕТАЛЕЙ</div>
+                        <li class="ent">
+                            <div class="ent-arrow">▸</div>
+                            <div>
+                                <div class="ent-name">STRAY / SCHISM</div>
+                                <div class="ent-desc">Дистанционные объекты с импульсными проекциями. Сложность взаимодействия прямо пропорциональна рангу сущности.</div>
+                                <div class="tags"><span class="tag b">ДИСТАНЦИЯ: СРЕДНЯЯ</span><span class="tag">ТИП: ПРОЕКЦИЯ</span></div>
+                            </div>
+                        </li>
 
-            <!-- Weapon grid -->
-            <div class="weapon-grid" id="weaponGrid"></div>
+                        <li class="ent">
+                            <div class="ent-arrow">▸</div>
+                            <div>
+                                <div class="ent-name">STREETCLEANER</div>
+                                <div class="ent-desc">Термический модуль. Требует активного уклонения и перехвата импульсного потока. Приоритет: нейтрализация источника тепла.</div>
+                                <div class="tags"><span class="tag r">ОПАСНОСТЬ: ТЕРМИК</span><span class="tag">ТИП: УПРАВЛЯЕМЫЙ ИМПУЛЬС</span></div>
+                            </div>
+                        </li>
 
-            <!-- Detail panel -->
-            <div class="detail-panel" id="detailPanel">
-                <div class="detail-scan"></div>
-                <div class="detail-inner">
-                    <div class="detail-left" id="detailLeft"></div>
-                    <div class="detail-right" id="detailRight"></div>
+                        <li class="ent">
+                            <div class="ent-arrow">▸</div>
+                            <div>
+                                <div class="ent-name">MALICIOUS FACE</div>
+                                <div class="ent-desc">Воздушная конструкция с лазерным и ракетным воздействием. Параметр воздействия от миномётного импульса Hideous Mass — 60 единиц.</div>
+                                <div class="tags"><span class="tag r">ВОЗДЕЙСТВИЕ: 60</span><span class="tag">ТИП: ВОЗДУШНЫЙ</span><span class="tag g">ЛАЗЕР + РАКЕТА</span></div>
+                            </div>
+                        </li>
+
+                        <li class="ent">
+                            <div class="ent-arrow">▸</div>
+                            <div>
+                                <div class="ent-name">SOLDIER / SENTRY</div>
+                                <div class="ent-desc">Импульсные очереди. Функция Chargeback у Sentry возвращает проекцию к источнику (43 единицы воздействия).</div>
+                                <div class="tags"><span class="tag b">CHARGEBACK: 43</span><span class="tag">ТИП: ИМПУЛЬС</span></div>
+                            </div>
+                        </li>
+
+                        <li class="ent">
+                            <div class="ent-arrow">▸</div>
+                            <div>
+                                <div class="ent-name">V2 — ЗЕРКАЛЬНЫЙ МОДУЛЬ</div>
+                                <div class="ent-desc">Система, идентичная V1. Взаимодействие в секторах 1-4 и 4-4. Копирует арсенал и тактику V1. Нейтрализация требует асимметричного подхода.</div>
+                                <div class="tags"><span class="tag r">ПРИОРИТЕТ: КРИТИЧЕСКИЙ</span><span class="tag g">СЕКТОР: 1-4 // 4-4</span></div>
+                            </div>
+                        </li>
+
+                    </ul>
+                    <div class="readout">
+                        <span class="hl">// БАЗА ОБЪЕКТОВ:</span> <span class="vl">20+ типов — от Cerberus до Hideous Mass</span><br>
+                        <span class="hl">// ПРИМЕЧАНИЕ:</span>  <span class="vl">Каждый объект — трансформированная сущность нижнего сектора</span>
+                    </div>
                 </div>
             </div>
 
-        </div><!-- /main -->
+            <!-- BOSSES -->
+            <div id="bosses" class="panel">
+                <div class="panel-head">
+                    <div class="ph-dot gold"></div>
+                    <div class="ph-title gold">КЛЮЧЕВЫЕ СУЩНОСТИ — ЗНАЧИМЫЕ ОБЪЕКТЫ</div>
+                    <div class="ph-tag">SLOT 3 // PRIORITY.TARGETS</div>
+                </div>
+                <div class="panel-body">
+
+                    <div class="boss">
+                        <div class="boss-sym">★</div>
+                        <div>
+                            <div class="boss-name">MINOS PRIME — Король Минос</div>
+                            <div class="boss-sub">СЕКТОР: ЖАДНОСТЬ // 3-2 // БЫВШИЙ УПРАВИТЕЛЬ</div>
+                            <div class="boss-desc">Сверхскоростное взаимодействие с фазовыми переходами. Один из наиболее интенсивных объектов в базе данных. Требует полного контроля пространства.</div>
+                        </div>
+                    </div>
+
+                    <div class="boss">
+                        <div class="boss-sym">✦</div>
+                        <div>
+                            <div class="boss-name">GABRIEL — Архангел / Судья</div>
+                            <div class="boss-sub">СЕКТОР: 4-4 → 6-2 // ДВУХЭТАПНОЕ ВЗАИМОДЕЙСТВИЕ</div>
+                            <div class="boss-desc">Поведенческий сценарий изменяется после первого столкновения. Интенсивность второго этапа значительно превышает первый.</div>
+                        </div>
+                    </div>
+
+                    <div class="boss">
+                        <div class="boss-sym">◆</div>
+                        <div>
+                            <div class="boss-name">SISYPHUS PRIME — Сизиф Прайм</div>
+                            <div class="boss-sub">СЕКТОР: РАСКОЛ // ФИНАЛЬНЫЙ ОБЪЕКТ АКТА</div>
+                            <div class="boss-desc">Завершающий значимый объект сектора Раскол. Максимальный уровень интенсивности. Нейтрализация засчитывается как завершение акта.</div>
+                        </div>
+                    </div>
+
+                    <div class="boss">
+                        <div class="boss-sym">▲</div>
+                        <div>
+                            <div class="boss-name">CORPSE OF KING MINOS — Тело Короля</div>
+                            <div class="boss-sub">МАССИВНАЯ КОНСТРУКЦИЯ // ПЛАТФОРМЕННОЕ ВЗАИМОДЕЙСТВИЕ</div>
+                            <div class="boss-desc">Гигантская структура. Сессия проходит на динамических платформах. Приоритет — поддержание высокой мобильности V1.</div>
+                        </div>
+                    </div>
+
+                    <div class="boss">
+                        <div class="boss-sym">≋</div>
+                        <div>
+                            <div class="boss-name">LEVIATHAN — Левиафан</div>
+                            <div class="boss-sub">СЕКТОР: ТРЕВОГА // 5-4 // КРУПНЕЙШИЙ ОБЪЕКТ</div>
+                            <div class="boss-desc">Наибольший объект по физическим параметрам. Воздействие хвостом и проекциями. Среда — затопленный комплекс нижнего уровня.</div>
+                        </div>
+                    </div>
+
+                    <div class="boss">
+                        <div class="boss-sym">⬡</div>
+                        <div>
+                            <div class="boss-name">FLESH PRISON / PANOPTICON</div>
+                            <div class="boss-sub">ДОПОЛНИТЕЛЬНЫЕ ОБЪЕКТЫ // УСЛОВНАЯ АКТИВАЦИЯ</div>
+                            <div class="boss-desc">Нестандартные структуры с уникальными механиками взаимодействия. Доступны при выполнении скрытых условий в уровне.</div>
+                        </div>
+                    </div>
+
+                    <div class="readout">
+                        <span class="hl">// ОСОБЕННОСТЬ:</span> <span class="vl">Каждая значимая сущность имеет уникальные фазовые механики и поведенческие сценарии</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LAYERS -->
+            <div id="layers" class="panel">
+                <div class="panel-head">
+                    <div class="ph-dot gold"></div>
+                    <div class="ph-title">КАРТА СЕКТОРОВ — СТРУКТУРА НИЖНЕГО УРОВНЯ</div>
+                    <div class="ph-tag">SLOT 4 // SECTOR.MAP</div>
+                </div>
+                <div class="panel-body">
+
+                    <div class="sector">
+                        <div class="sec-id">0-X</div>
+                        <div>
+                            <div class="sec-name">ПРОЛОГ — ИНДУСТРИАЛЬНЫЕ КОМПЛЕКСЫ</div>
+                            <div class="sec-desc">Секторы 0-1 — 0-5. Руины надземных структур. Первичная инициализация систем V1 и обучение управлению арсеналом.</div>
+                        </div>
+                    </div>
+
+                    <div class="sector">
+                        <div class="sec-id">1-X</div>
+                        <div>
+                            <div class="sec-name">ЛИМБ — ГОТИЧЕСКИЕ СООРУЖЕНИЯ</div>
+                            <div class="sec-desc">Секторы 1-1 — 1-4. Архитектура нижнего уровня первого порядка. Первое взаимодействие с зеркальным модулем V2 в секторе 1-4.</div>
+                        </div>
+                    </div>
+
+                    <div class="sector">
+                        <div class="sec-id">2-X</div>
+                        <div>
+                            <div class="sec-name">ГНЕВ — МЕХАНИЧЕСКИЕ КОМПЛЕКСЫ</div>
+                            <div class="sec-desc">Секторы 2-1 — 2-4. Гигантские вращающиеся механические структуры. Высокая динамика среды. Сложная геометрия маршрутов.</div>
+                        </div>
+                    </div>
+
+                    <div class="sector">
+                        <div class="sec-id">3-X</div>
+                        <div>
+                            <div class="sec-name">ЖАДНОСТЬ — ЗОЛОТАЯ ПУСТОШЬ</div>
+                            <div class="sec-desc">Секторы 3-1 — 3-4. Территория металлических золотых структур. Ключевое взаимодействие: Minos Prime (сектор 3-2).</div>
+                        </div>
+                    </div>
+
+                    <div class="sector">
+                        <div class="sec-id">4-X</div>
+                        <div>
+                            <div class="sec-name">ЕРЕСЬ — ТЕРМИЧЕСКИЕ ЗОНЫ</div>
+                            <div class="sec-desc">Секторы 4-1 — 4-4. Лавовые области. Повторные сессии с Gabriel и V2 в секторе 4-4.</div>
+                        </div>
+                    </div>
+
+                    <div class="sector">
+                        <div class="sec-id">5-X</div>
+                        <div>
+                            <div class="sec-name">ТРЕВОГА — ЗАТОПЛЕННЫЙ КОМПЛЕКС</div>
+                            <div class="sec-desc">Секторы 5-1 — 5-4. Подводные и полузатопленные структуры. Ключевая сессия: Leviathan (сектор 5-4).</div>
+                        </div>
+                    </div>
+
+                    <div class="sector">
+                        <div class="sec-id">6-X</div>
+                        <div>
+                            <div class="sec-name">РАСКОЛ — ФИНАЛЬНЫЙ СЕКТОР</div>
+                            <div class="sec-desc">Секторы 6-1 — 6-4. Завершающий акт. Взаимодействие с Gabriel (6-2). Финальная цель: Sisyphus Prime.</div>
+                        </div>
+                    </div>
+
+                    <div class="readout">
+                        <span class="hl">// СКРЫТЫЕ ЗОНЫ:</span> <span class="vl">P-1, P-2, «0-S: The Witless»</span><br>
+                        <span class="hl">// ОСОБЫЙ РЕСУРС:</span> <span class="vl">Dual Wield — удвоенная длительность активации (до 120 сек)</span>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- /main-col -->
 
         <!-- ── SIDE COLUMN ── -->
-        <div class="arsenal-side">
+        <div class="side-col">
 
+            <!-- V1 Portrait -->
             <div class="side-panel">
                 <div class="sp-head">// UNIT PROFILE // V1</div>
                 <div class="v1-portrait">
@@ -547,843 +860,132 @@
                 </div>
             </div>
 
+            <!-- System stats -->
             <div class="side-panel">
-                <div class="sp-head">// ПАРАМЕТРЫ АРСЕНАЛА</div>
+                <div class="sp-head">// ПАРАМЕТРЫ СИСТЕМЫ</div>
                 <div class="sp-body">
-                    <div class="mstat"><span class="mstat-k">ВСЕГО МОДУЛЕЙ</span> <span class="mstat-v g" id="sideTotal">14</span></div>
-                    <div class="mstat"><span class="mstat-k">МАНИПУЛЯТОРОВ</span> <span class="mstat-v">3</span></div>
-                    <div class="mstat"><span class="mstat-k">ДАЛЬНОБОЙНЫХ</span>  <span class="mstat-v">3</span></div>
-                    <div class="mstat"><span class="mstat-k">ИМПУЛЬСНЫХ</span>    <span class="mstat-v">2</span></div>
-                    <div class="mstat"><span class="mstat-k">ГВОЗДЕВЫХ</span>     <span class="mstat-v">2</span></div>
-                    <div class="mstat"><span class="mstat-k">РЕЛЬСОВЫХ</span>     <span class="mstat-v">3</span></div>
-                    <div class="mstat"><span class="mstat-k">РАКЕТНЫХ</span>      <span class="mstat-v">2</span></div>
-                    <div class="mstat"><span class="mstat-k">АКТИВЕН</span>       <span class="mstat-v r" id="sideActive">—</span></div>
+                    <div class="mstat"><span class="mstat-k">КЛАСС</span>      <span class="mstat-v r">MACHINE</span></div>
+                    <div class="mstat"><span class="mstat-k">ТОПЛИВО</span>     <span class="mstat-v r">ЭНЕРГИЯ</span></div>
+                    <div class="mstat"><span class="mstat-k">ИСТОЧНИК</span>    <span class="mstat-v">РЕСУРС СРЕДЫ</span></div>
+                    <div class="mstat"><span class="mstat-k">СЛОТЫ АРС.</span>  <span class="mstat-v g">5 СЛОТОВ</span></div>
+                    <div class="mstat"><span class="mstat-k">ВАРИАЦИЙ</span>    <span class="mstat-v n">2 / СЛОТ</span></div>
+                    <div class="mstat"><span class="mstat-k">МАКС. РАНГ</span>  <span class="mstat-v g">SSS</span></div>
+                    <div class="mstat"><span class="mstat-k">СТАТУС</span>      <span class="mstat-v r">АКТИВЕН</span></div>
                 </div>
             </div>
 
-            <!-- Compare panel -->
+            <!-- Arsenal -->
             <div class="side-panel">
-                <div class="sp-head">// СРАВНЕНИЕ МОДУЛЕЙ</div>
+                <div class="sp-head">// АРСЕНАЛ // СЛОТЫ</div>
                 <div class="sp-body">
-                    <div style="font-size:0.6rem; color:#282828; margin-bottom:0.5rem; letter-spacing:0.1em;">
-                        ВЫБЕРИТЕ ДВА МОДУЛЯ (ФЛАГ "CMP")
+                    <div class="aslot">
+                        <span style="color:var(--blue)">◼ СЛОТ 1</span>
+                        <span style="font-size:0.72rem;">ДАЛЬНОБОЙНЫЙ</span>
                     </div>
-                    <div class="compare-panel" id="comparePanel">
-                        <div class="cmp-row">
-                            <span class="cmp-lbl">МОЩНОСТЬ</span>
-                            <span class="cmp-a" id="cmpAPower">—</span>
-                            <span class="cmp-b" id="cmpBPower">—</span>
-                        </div>
-                        <div class="cmp-row">
-                            <span class="cmp-lbl">СКОРОСТЬ</span>
-                            <span class="cmp-a" id="cmpASpeed">—</span>
-                            <span class="cmp-b" id="cmpBSpeed">—</span>
-                        </div>
-                        <div class="cmp-row">
-                            <span class="cmp-lbl">ДАЛЬНОСТЬ</span>
-                            <span class="cmp-a" id="cmpARange">—</span>
-                            <span class="cmp-b" id="cmpBRange">—</span>
-                        </div>
-                        <div class="cmp-row">
-                            <span class="cmp-lbl">УТИЛИТА</span>
-                            <span class="cmp-a" id="cmpAUtil">—</span>
-                            <span class="cmp-b" id="cmpBUtil">—</span>
-                        </div>
+                    <div class="aslot">
+                        <span style="color:var(--orange)">◼ СЛОТ 2</span>
+                        <span style="font-size:0.72rem;">УДАРНЫЙ</span>
                     </div>
-                    <div style="font-size:0.55rem; color:#1a1a1a; margin-top:0.5rem;">
-                        A: <span id="cmpNameA" style="color:#5599ff;">не выбран</span><br>
-                        B: <span id="cmpNameB" style="color:#ff2020;">не выбран</span>
+                    <div class="aslot">
+                        <span style="color:var(--green)">◼ СЛОТ 3</span>
+                        <span style="font-size:0.72rem;">ГВОЗДЕВОЙ</span>
+                    </div>
+                    <div class="aslot">
+                        <span style="color:var(--gold)">◼ СЛОТ 4</span>
+                        <span style="font-size:0.72rem;">РЕЛЬСОВЫЙ</span>
+                    </div>
+                    <div class="aslot">
+                        <span style="color:var(--pink)">◼ СЛОТ 5</span>
+                        <span style="font-size:0.72rem;">РАКЕТНЫЙ</span>
+                    </div>
+                    <div class="readout" style="margin-top:0.5rem; font-size:0.58rem;">
+                        <span class="hl">// ВАРИАЦИИ:</span> <span class="vl">СИНИЙ (base) / КРАСНЫЙ (alt)</span>
                     </div>
                 </div>
             </div>
 
-            <!-- Terminal log -->
+            <!-- Sources -->
+            <div class="side-panel">
+                <div class="sp-head">// ИСТОЧНИКИ ДАННЫХ</div>
+                <div class="sp-body">
+                    <a href="#" class="src"><span class="src-ico">⬡</span> ULTRAKILL — Steam (демо-доступ)</a>
+                    <a href="#" class="src"><span class="src-ico">◈</span> Справочная база (Fandom Wiki)</a>
+                    <a href="#" class="src"><span class="src-ico">◎</span> Сообщество New Blood Interactive</a>
+                    <button id="statsBtn" class="term-btn">СТАТИСТИКА БАЗЫ ДАННЫХ</button>
+                </div>
+            </div>
+
+            <!-- System log -->
             <div class="side-panel">
                 <div class="sp-head">// SYSTEM LOG // TERMINAL</div>
                 <div class="sp-body">
-                    <div class="term-log" id="termLog"></div>
-                    <div class="kb-hint" style="margin-top:0.6rem;">
-                        <span class="kb-key">1-6</span> смена слота &nbsp;
-                        <span class="kb-key">ESC</span> закрыть &nbsp;
-                        <span class="kb-key">F</span> поиск
+                    <div class="readout">
+                        <span class="hl">[SYS]</span>  <span class="vl">Загрузка блока... OK</span><br>
+                        <span class="hl">[V1]</span>   <span class="vl">Арсенал активирован</span><br>
+                        <span class="hl">[FUEL]</span> <span class="vl">Уровень: КРИТИЧЕСКИЙ</span><br>
+                        <span class="hl">[SCAN]</span> <span class="vl">Объектов: 20+</span><br>
+                        <span class="hl">[STL]</span>  <span class="vl">Ранг: SSS<span class="cur"></span></span>
                     </div>
                 </div>
             </div>
 
-        </div><!-- /side -->
+        </div><!-- /side-col -->
 
-    </div><!-- /layout -->
+    </div><!-- /wiki-grid -->
 
     <!-- ═══ FOOTER ═══ -->
     <div class="site-footer">
-        <div class="footer-logo">V1 // ARSENAL DATABASE</div>
+        <div class="footer-logo">V1 // ULTRAKILL</div>
         <div>// ENERGY IS FUEL // LOWER SECTOR IS FULL //</div>
-        <div>// ИСТОЧНИК: ULTRAKILL FANDOM WIKI //</div>
+        <div>// ДАННЫЕ: СПРАВОЧНАЯ БАЗА ULTRAKILL FANDOM //</div>
     </div>
 
 </div><!-- /page -->
 
 <script>
-/* ═══════════════════════════════════════════════
-   WEAPON DATABASE
-═══════════════════════════════════════════════ */
-const WEAPONS = [
-  /* ──────── ARM ──────── */
-  {
-    id: 'feedbacker', slot: 'arm', slotLabel: 'Манипулятор', slotNum: 0,
-    name: 'FEEDBACKER', ruName: 'Отражающий Манипулятор',
-    variant: 'blue', variantLabel: 'СИНИЙ', icon: '◎',
-    color: 'var(--blue)', colorHex: '#5599ff',
-    power: 65, speed: 95, range: 20, utility: 100,
-    desc: 'Базовый манипулятор V1. Позволяет отражать входящие проекции от объектов обратно к источнику. В момент контакта с активными сущностями восстанавливает топливный ресурс V1.',
-    primary: 'ПЕРВИЧНАЯ — Базовый удар манипулятором в ближней зоне',
-    secondary: 'ВТОРИЧНАЯ — Парирование проекции в момент столкновения',
-    tags: ['БАЗОВЫЙ', 'ПАРИРОВАНИЕ', 'РЕСУРС'],
-    mechanics: [
-      'Парирование отражает проекции обратно к источнику',
-      'Контакт с сущностями восстанавливает топливный ресурс',
-      'Тайминг парирования — решающий фактор эффективности',
-      'Отражённые проекции наносят повышенное воздействие',
-    ]
-  },
-  {
-    id: 'knuckleblaster', slot: 'arm', slotLabel: 'Манипулятор', slotNum: 0,
-    name: 'KNUCKLEBLASTER', ruName: 'Детонирующий Манипулятор',
-    variant: 'red', variantLabel: 'КРАСНЫЙ', icon: '◈',
-    color: 'var(--red)', colorHex: '#ff2020',
-    power: 100, speed: 80, range: 35, utility: 65,
-    desc: 'Альтернативный манипулятор. Генерирует ударную волну при активации в ближней зоне. Нейтрализует входящие проекции, но не отражает их. Высокий потенциал воздействия.',
-    primary: 'ПЕРВИЧНАЯ — Детонирующий удар с ударной волной в конусе',
-    secondary: 'ВТОРИЧНАЯ — Нейтрализация входящей проекции без отражения',
-    tags: ['МОЩНОСТЬ', 'УДАРНАЯ ВОЛНА', 'АЛЬТЕРНАТИВНЫЙ'],
-    mechanics: [
-      'Ударная волна воздействует на всё в зоне конуса',
-      'Уничтожает проекции без отражения — не возвращает ресурс',
-      'Максимальное воздействие среди манипуляторов',
-      'Не восстанавливает топливный ресурс при парировании',
-    ]
-  },
-  {
-    id: 'whiplash', slot: 'arm', slotLabel: 'Манипулятор', slotNum: 0,
-    name: 'WHIPLASH', ruName: 'Захватывающий Манипулятор',
-    variant: 'green', variantLabel: 'ЗЕЛЁНЫЙ', icon: '⌀',
-    color: 'var(--green)', colorHex: '#22ff88',
-    power: 45, speed: 100, range: 90, utility: 100,
-    desc: 'Дистанционный манипулятор с функцией захвата. Притягивает цели или объекты среды к V1, либо перебрасывает V1 к точке захвата. Ключевой инструмент для воздушного маневрирования.',
-    primary: 'ПЕРВИЧНАЯ — Захват активной сущности и притяжение к V1',
-    secondary: 'ВТОРИЧНАЯ — Захват объекта среды / перемещение V1 к точке',
-    tags: ['МОБИЛЬНОСТЬ', 'ЗАХВАТ', 'ДИСТАНЦИЯ'],
-    mechanics: [
-      'Захваченные сущности притягиваются вплотную к V1',
-      'Перебрасывает V1 к точкам захвата в среде',
-      'Открывает воздушные комбинации недоступные без него',
-      'Совместим с подбрасыванием для продлённых серий',
-    ]
-  },
-
-  /* ──────── REVOLVER ──────── */
-  {
-    id: 'piercer', slot: 'revolver', slotLabel: 'Дальнобойный модуль', slotNum: 1,
-    name: 'PIERCER REVOLVER', ruName: 'Пронизывающий Дальнобойный',
-    variant: 'blue', variantLabel: 'СИНИЙ', icon: '◆',
-    color: 'var(--blue)', colorHex: '#5599ff',
-    power: 80, speed: 85, range: 100, utility: 85,
-    desc: 'Базовый дальнобойный модуль. Выпускает проекцию, пронизывающую несколько объектов. Монеты в среде используются как рикошетные ретрансляторы для многоцелевого воздействия.',
-    primary: 'ПЕРВИЧНАЯ — Прокалывающий импульс сквозь несколько целей в линии',
-    secondary: 'ВТОРИЧНАЯ — Монета-ретранслятор: импульс рикошетит к ближайшей цели',
-    tags: ['ПРОНИКНОВЕНИЕ', 'МОНЕТА', 'ДАЛЬНОСТЬ'],
-    mechanics: [
-      'Проекция пронизывает несколько объектов по одной линии',
-      'Монеты перенаправляют импульс к ближайшей активной цели',
-      'Один импульс + монета = воздействие по нескольким целям',
-      'Парирование монеты усиливает рикошетный импульс',
-    ]
-  },
-  {
-    id: 'marksman', slot: 'revolver', slotLabel: 'Дальнобойный модуль', slotNum: 1,
-    name: 'MARKSMAN REVOLVER', ruName: 'Целевой Дальнобойный',
-    variant: 'red', variantLabel: 'КРАСНЫЙ', icon: '◆',
-    color: 'var(--red)', colorHex: '#ff2020',
-    power: 85, speed: 82, range: 100, utility: 90,
-    desc: 'Альтернативный дальнобойный модуль. Вторичный режим — закрученный импульс, который рикошетит через все монеты в поле зрения, а не только через ближайшую.',
-    primary: 'ПЕРВИЧНАЯ — Стандартный дальнобойный импульс',
-    secondary: 'ВТОРИЧНАЯ — Закрученный импульс пронизывает все монеты подряд',
-    tags: ['ТОЧНОСТЬ', 'МОНЕТА', 'ЗАКРУТКА'],
-    mechanics: [
-      'Закрученная проекция рикошетит от монеты к монете',
-      'Охватывает все монеты в поле зрения за одну активацию',
-      'Эффективность растёт с количеством монет в среде',
-      'Лучший выбор при множественном расположении монет',
-    ]
-  },
-  {
-    id: 'sharpshooter', slot: 'revolver', slotLabel: 'Дальнобойный модуль', slotNum: 1,
-    name: 'SHARPSHOOTER REVOLVER', ruName: 'Накопительный Дальнобойный',
-    variant: 'green', variantLabel: 'ЗЕЛЁНЫЙ', icon: '◆',
-    color: 'var(--green)', colorHex: '#22ff88',
-    power: 100, speed: 60, range: 100, utility: 75,
-    desc: 'Третий вариант дальнобойного модуля. Система накопления заряда — удержание кнопки активации концентрирует энергию. Полный заряд выдаёт критическое воздействие.',
-    primary: 'ПЕРВИЧНАЯ — Базовый дальнобойный импульс без накопления',
-    secondary: 'ВТОРИЧНАЯ — Удержание = накопление; отпуск = заряженный импульс',
-    tags: ['НАКОПИТЕЛЬ', 'МАКСИМУМ', 'ТОЧНОСТЬ'],
-    mechanics: [
-      'Накопление увеличивает воздействие до критического',
-      'Полный заряд нейтрализует большинство объектов мгновенно',
-      'Совместим с монетным рикошетом при полном заряде',
-      'Рекомендован для приоритетных высококласcных целей',
-    ]
-  },
-
-  /* ──────── SHOTGUN ──────── */
-  {
-    id: 'core_eject', slot: 'shotgun', slotLabel: 'Импульсный модуль', slotNum: 2,
-    name: 'CORE EJECT SHOTGUN', ruName: 'Эжекторный Импульсный',
-    variant: 'blue', variantLabel: 'СИНИЙ', icon: '⬡',
-    color: 'var(--blue)', colorHex: '#5599ff',
-    power: 85, speed: 78, range: 55, utility: 90,
-    desc: 'Базовый импульсный модуль с системой выброса теплового ядра. Первичная активация — широкий конус проекций. Вторичная — выброс теплового ядра для цепной детонации.',
-    primary: 'ПЕРВИЧНАЯ — Широкий конус проекций в ближней и средней зоне',
-    secondary: 'ВТОРИЧНАЯ — Выброс теплового ядра для последующей детонации',
-    tags: ['ЗОНА', 'ТЕПЛОВОЕ ЯДРО', 'КОМБО'],
-    mechanics: [
-      'Тепловое ядро детонирует при воздействии любого импульса',
-      'Рельсовый импульс + ядро = усиленный взрыв',
-      'Ядро можно использовать как платформу для воздушного боя',
-      'Два импульсных модуля = непрерывный поток тепловых ядер',
-    ]
-  },
-  {
-    id: 'pump_charge', slot: 'shotgun', slotLabel: 'Импульсный модуль', slotNum: 2,
-    name: 'PUMP CHARGE SHOTGUN', ruName: 'Накачивающий Импульсный',
-    variant: 'red', variantLabel: 'КРАСНЫЙ', icon: '⬡',
-    color: 'var(--red)', colorHex: '#ff2020',
-    power: 95, speed: 65, range: 60, utility: 78,
-    desc: 'Альтернативный импульсный модуль с системой накачки. Повторные нажатия вторичной активации накапливают мощность. Накопленный заряд расходуется следующей первичной активацией.',
-    primary: 'ПЕРВИЧНАЯ — Стандартный конус проекций / накопленный залп',
-    secondary: 'ВТОРИЧНАЯ — Накачка мощности следующей активации (до 3 стадий)',
-    tags: ['НАКАЧКА', 'МОЩНОСТЬ', 'КОНЦЕНТРАЦИЯ'],
-    mechanics: [
-      'Каждая накачка усиливает следующий первичный залп',
-      'До трёх стадий накачки с прогрессивным усилением',
-      'Полная накачка — критический залп по одной точке',
-      'Можно накапливать при переключении на другой модуль',
-    ]
-  },
-
-  /* ──────── NAILGUN ──────── */
-  {
-    id: 'attractor', slot: 'nailgun', slotLabel: 'Гвоздевой модуль', slotNum: 3,
-    name: 'ATTRACTOR NAILGUN', ruName: 'Магнитный Гвоздевой',
-    variant: 'blue', variantLabel: 'СИНИЙ', icon: '▣',
-    color: 'var(--blue)', colorHex: '#5599ff',
-    power: 65, speed: 100, range: 70, utility: 95,
-    desc: 'Базовый гвоздевой модуль с магнитной системой наведения. Высокая скорострельность. Вторичная активация выпускает магнитный гвоздь, концентрирующий весь поток на одной цели.',
-    primary: 'ПЕРВИЧНАЯ — Высокоскоростная очередь гвоздей',
-    secondary: 'ВТОРИЧНАЯ — Магнитный гвоздь-ретранслятор (притягивает очередь к цели)',
-    tags: ['МАГНИТ', 'СКОРОСТРЕЛЬНОСТЬ', 'ОЧЕРЕДЬ'],
-    mechanics: [
-      'Магнитный гвоздь концентрирует всю очередь на маркированной цели',
-      'Высокое суммарное воздействие при длительном непрерывном потоке',
-      'Эффективен против крупных малоподвижных объектов',
-      'Два магнитных гвоздя на двух целях — двойной поток',
-    ]
-  },
-  {
-    id: 'overheat', slot: 'nailgun', slotLabel: 'Гвоздевой модуль', slotNum: 3,
-    name: 'OVERHEAT NAILGUN', ruName: 'Термический Гвоздевой',
-    variant: 'red', variantLabel: 'КРАСНЫЙ', icon: '▣',
-    color: 'var(--red)', colorHex: '#ff2020',
-    power: 88, speed: 90, range: 65, utility: 82,
-    desc: 'Альтернативный гвоздевой модуль. Перегрев системы автоматически запускает вращающийся диск высокого воздействия. Вторичная активация — принудительный запуск диска.',
-    primary: 'ПЕРВИЧНАЯ — Очередь гвоздей (перегрев → автоматический диск)',
-    secondary: 'ВТОРИЧНАЯ — Принудительный выброс диска без ожидания перегрева',
-    tags: ['ПЕРЕГРЕВ', 'ДИСК', 'ТЕРМИЧЕСКИЙ'],
-    mechanics: [
-      'Диск вращается и пронизывает несколько объектов по линии',
-      'Принудительный выброс позволяет не ждать перегрева',
-      'Диски можно отражать манипулятором обратно к объектам',
-      'Совместим с магнитным гвоздём для концентрации дисков',
-    ]
-  },
-
-  /* ──────── RAILCANNON ──────── */
-  {
-    id: 'electric_rail', slot: 'railcannon', slotLabel: 'Рельсовый модуль', slotNum: 4,
-    name: 'ELECTRIC RAILCANNON', ruName: 'Электрический Рельсовый',
-    variant: 'blue', variantLabel: 'СИНИЙ', icon: '⚡',
-    color: 'var(--blue)', colorHex: '#5599ff',
-    power: 100, speed: 50, range: 100, utility: 72,
-    desc: 'Базовый рельсовый модуль. Мгновенный электрический импульс нейтрализует большинство объектов с одной активации. Значительное время перезарядки требует точного момента применения.',
-    primary: 'ПЕРВИЧНАЯ — Мгновенный электрический рельсовый импульс',
-    secondary: 'ВТОРИЧНАЯ — Нет альтернативного режима активации',
-    tags: ['ЭЛЕКТРИКА', 'МГНОВЕННОЕ', 'ВЫСОКОЕ ВОЗДЕЙСТВИЕ'],
-    mechanics: [
-      'Нейтрализует большинство объектов за одну активацию',
-      'Проекция мгновенная — упреждение прицела не требуется',
-      'Длительная перезарядка — применять только по приоритету',
-      'Активация через тепловое ядро усиливает взрыв',
-    ]
-  },
-  {
-    id: 'screwdriver_rail', slot: 'railcannon', slotLabel: 'Рельсовый модуль', slotNum: 4,
-    name: 'SCREWDRIVER RAILCANNON', ruName: 'Сверлящий Рельсовый',
-    variant: 'red', variantLabel: 'КРАСНЫЙ', icon: '⚡',
-    color: 'var(--red)', colorHex: '#ff2020',
-    power: 85, speed: 50, range: 100, utility: 80,
-    desc: 'Альтернативный рельсовый модуль. Вращающаяся проекция пронизывает несколько объектов по линии и задерживается внутри цели, продолжая непрерывное воздействие.',
-    primary: 'ПЕРВИЧНАЯ — Вращающийся рельсовый импульс по линии целей',
-    secondary: 'ВТОРИЧНАЯ — Нет альтернативного режима активации',
-    tags: ['ВРАЩЕНИЕ', 'ПРОНИКНОВЕНИЕ', 'ЛИНЕЙНОЕ'],
-    mechanics: [
-      'Пронизывает всех объектов по одной линии',
-      'Остаётся внутри цели — продолжает непрерывное воздействие',
-      'Оптимален при плотном линейном расположении объектов',
-      'Сочетается с группировкой целей манипулятором-захватом',
-    ]
-  },
-  {
-    id: 'malicious_rail', slot: 'railcannon', slotLabel: 'Рельсовый модуль', slotNum: 4,
-    name: 'MALICIOUS RAILCANNON', ruName: 'Деструктивный Рельсовый',
-    variant: 'green', variantLabel: 'ЗЕЛЁНЫЙ', icon: '⚡',
-    color: 'var(--green)', colorHex: '#22ff88',
-    power: 100, speed: 45, range: 100, utility: 75,
-    desc: 'Третий вариант рельсового модуля. Деструктивный лучевой импульс наивысшего воздействия. Нейтрализует практически любой объект мгновенно. Самая длительная перезарядка.',
-    primary: 'ПЕРВИЧНАЯ — Деструктивный луч максимального воздействия',
-    secondary: 'ВТОРИЧНАЯ — Нет альтернативного режима активации',
-    tags: ['МАКСИМУМ', 'ЛУЧ', 'КРИТИЧЕСКОЕ'],
-    mechanics: [
-      'Максимальное воздействие среди всех рельсовых модулей',
-      'Нейтрализует почти любой объект одной активацией',
-      'Самая длительная перезарядка в арсенале V1',
-      'Применять исключительно по приоритетным объектам',
-    ]
-  },
-
-  /* ──────── ROCKET ──────── */
-  {
-    id: 'freezeframe', slot: 'rocket', slotLabel: 'Ракетный модуль', slotNum: 5,
-    name: 'FREEZEFRAME ROCKET LAUNCHER', ruName: 'Криогенный Ракетный',
-    variant: 'blue', variantLabel: 'СИНИЙ', icon: '◎',
-    color: 'var(--blue)', colorHex: '#5599ff',
-    power: 88, speed: 60, range: 85, utility: 90,
-    desc: 'Базовый ракетный модуль. Запускает самонаводящуюся проекцию. Вторичная активация фиксирует проекцию в пространстве (криогенная заморозка) — детонирует при последующем воздействии.',
-    primary: 'ПЕРВИЧНАЯ — Самонаводящаяся ракетная проекция',
-    secondary: 'ВТОРИЧНАЯ — Криогенная фиксация проекции в пространстве',
-    tags: ['САМОНАВЕДЕНИЕ', 'КРИОФИКСАЦИЯ', 'ЛОВУШКА'],
-    mechanics: [
-      'Зафиксированная проекция остаётся в пространстве бесконечно',
-      'Детонирует при любом воздействии — включая собственный импульс',
-      'Создание ловушек в узких проходах среды',
-      'Можно парировать проекцию обратно к источнику',
-    ]
-  },
-  {
-    id: 'srs_canon', slot: 'rocket', slotLabel: 'Ракетный модуль', slotNum: 5,
-    name: 'S.R.S. CANON', ruName: 'Термический Ракетный',
-    variant: 'red', variantLabel: 'КРАСНЫЙ', icon: '◎',
-    color: 'var(--red)', colorHex: '#ff2020',
-    power: 95, speed: 55, range: 85, utility: 85,
-    desc: 'Альтернативный ракетный модуль. Вторичная активация запускает термическую проекцию с широким зональным воздействием. Идеален при скоплении объектов в ограниченном пространстве.',
-    primary: 'ПЕРВИЧНАЯ — Стандартная ракетная проекция',
-    secondary: 'ВТОРИЧНАЯ — Термический запуск: зональное воздействие по области',
-    tags: ['ТЕРМИЧЕСКИЙ', 'ЗОНА', 'СКОПЛЕНИЕ'],
-    mechanics: [
-      'Термическая проекция создаёт зону воздействия при детонации',
-      'Максимально эффективен при скоплении объектов',
-      'Синергия с тепловым ядром импульсного модуля',
-      'Можно парировать обратно для самонаведения на источник',
-    ]
-  },
-];
-
-/* ═══════════════════════════════════════════════
-   SLOT METADATA
-═══════════════════════════════════════════════ */
-const SLOTS = [
-  { id: 'all',        label: 'ВСЕ МОДУЛИ',      color: 'var(--white)',  tabC: 'var(--red)' },
-  { id: 'arm',        label: 'Манипулятор',      color: 'var(--green)', tabC: 'var(--green)' },
-  { id: 'revolver',   label: 'Дальнобойный',     color: 'var(--blue)',  tabC: 'var(--blue)' },
-  { id: 'shotgun',    label: 'Импульсный',        color: 'var(--orange)',tabC: 'var(--orange)' },
-  { id: 'nailgun',    label: 'Гвоздевой',         color: 'var(--green)', tabC: 'var(--green)' },
-  { id: 'railcannon', label: 'Рельсовый',         color: 'var(--gold)',  tabC: 'var(--gold)' },
-  { id: 'rocket',     label: 'Ракетный',           color: 'var(--pink)',  tabC: 'var(--pink)' },
-];
-
-/* ═══════════════════════════════════════════════
-   STATE
-═══════════════════════════════════════════════ */
-let state = {
-  slot: 'all',
-  variant: 'all',
-  search: '',
-  sortKey: null,
-  sortDir: -1,
-  selectedId: null,
-  compareA: null,
-  compareB: null,
-};
-
-/* ═══════════════════════════════════════════════
-   TERMINAL LOG
-═══════════════════════════════════════════════ */
-const termLog = document.getElementById('termLog');
-const logLines = [];
-
-function addLog(tag, msg) {
-  const line = { tag, msg };
-  logLines.push(line);
-  if (logLines.length > 20) logLines.shift();
-  renderLog();
-}
-
-function renderLog() {
-  const isNew = (i) => i === logLines.length - 1;
-  termLog.innerHTML = logLines.map((l, i) =>
-    `<div class="tl-line ${isNew(i) ? 'new' : ''}"><span class="tl-tag">[${l.tag}]</span> <span class="tl-val">${l.msg}</span></div>`
-  ).join('');
-  termLog.scrollTop = termLog.scrollHeight;
-}
-
-/* ═══════════════════════════════════════════════
-   BUILD SLOT TABS
-═══════════════════════════════════════════════ */
-function buildTabs() {
-  const container = document.getElementById('slotTabs');
-  container.innerHTML = '';
-  SLOTS.forEach(s => {
-    const count = s.id === 'all' ? WEAPONS.length : WEAPONS.filter(w => w.slot === s.id).length;
-    const tab = document.createElement('button');
-    tab.className = 'slot-tab' + (state.slot === s.id ? ' active' : '');
-    tab.style.setProperty('--tab-c', s.tabC);
-    tab.innerHTML = `${s.label} <span class="tab-count">${count}</span>`;
-    tab.addEventListener('click', () => {
-      state.slot = s.id;
-      state.selectedId = null;
-      closeDetail();
-      buildTabs();
-      renderGrid();
-      addLog('SLOT', `Категория: ${s.label.toUpperCase()}`);
-    });
-    container.appendChild(tab);
-  });
-}
-
-/* ═══════════════════════════════════════════════
-   FILTER + SORT WEAPONS
-═══════════════════════════════════════════════ */
-function getFiltered() {
-  let list = WEAPONS.slice();
-  if (state.slot !== 'all') list = list.filter(w => w.slot === state.slot);
-  if (state.variant !== 'all') list = list.filter(w => w.variant === state.variant);
-  if (state.search) {
-    const q = state.search.toLowerCase();
-    list = list.filter(w =>
-      w.name.toLowerCase().includes(q) ||
-      w.ruName.toLowerCase().includes(q) ||
-      w.desc.toLowerCase().includes(q) ||
-      w.tags.some(t => t.toLowerCase().includes(q))
-    );
-  }
-  if (state.sortKey) {
-    list.sort((a, b) => state.sortDir * (b[state.sortKey] - a[state.sortKey]));
-  }
-  return list;
-}
-
-/* ═══════════════════════════════════════════════
-   RENDER GRID
-═══════════════════════════════════════════════ */
-function renderGrid() {
-  const grid = document.getElementById('weaponGrid');
-  const countEl = document.getElementById('resultsCount');
-  const list = getFiltered();
-  countEl.textContent = list.length;
-
-  if (list.length === 0) {
-    grid.innerHTML = `<div class="no-results" style="grid-column:1/-1">
-      <div class="nr-icon">◎</div>
-      <div>// МОДУЛИ НЕ НАЙДЕНЫ //</div>
-      <div style="margin-top:0.5rem; font-size:0.6rem; color:#1a1a1a;">ИЗМЕНИТЕ ПАРАМЕТРЫ ФИЛЬТРА</div>
-    </div>`;
-    return;
-  }
-
-  grid.innerHTML = '';
-  list.forEach((w, idx) => {
-    const card = document.createElement('div');
-    card.className = 'wcard' + (state.selectedId === w.id ? ' selected' : '');
-    card.style.setProperty('--wc', w.color);
-    card.style.animationDelay = (idx * 0.04) + 's';
-    card.dataset.id = w.id;
-
-    const isCompA = state.compareA === w.id;
-    const isCompB = state.compareB === w.id;
-    const compChecked = isCompA || isCompB;
-
-    card.innerHTML = `
-      <div class="wcard-head">
-        <div class="wcard-icon">${w.icon}</div>
-        <div class="wcard-title">
-          <div class="wcard-name">${w.name}</div>
-          <div class="wcard-runame">${w.ruName}</div>
-        </div>
-        <div class="wcard-variant">${w.variantLabel}</div>
-      </div>
-      <div class="wcard-body">
-        <div class="wcard-desc">${w.desc}</div>
-        <div class="mini-stats">
-          <div class="mini-stat-row">
-            <div class="mini-stat-lbl">МОЩНОСТЬ</div>
-            <div class="mini-stat-bar"><div class="mini-stat-fill" data-val="${w.power}"></div></div>
-            <div class="mini-stat-val">${w.power}</div>
-          </div>
-          <div class="mini-stat-row">
-            <div class="mini-stat-lbl">СКОРОСТЬ</div>
-            <div class="mini-stat-bar"><div class="mini-stat-fill" data-val="${w.speed}"></div></div>
-            <div class="mini-stat-val">${w.speed}</div>
-          </div>
-          <div class="mini-stat-row">
-            <div class="mini-stat-lbl">ДАЛЬНОСТЬ</div>
-            <div class="mini-stat-bar"><div class="mini-stat-fill" data-val="${w.range}"></div></div>
-            <div class="mini-stat-val">${w.range}</div>
-          </div>
-        </div>
-        <div class="wcard-tags">${w.tags.map(t => `<span class="wtag">${t}</span>`).join('')}</div>
-      </div>
-      <div class="wcard-footer">
-        <label class="compare-check ${compChecked ? 'checked' : ''}" data-cmp="${w.id}">
-          <input type="checkbox" ${compChecked ? 'checked' : ''}>
-          <div class="compare-box">${compChecked ? '✓' : ''}</div>
-          CMP
-        </label>
-        <span class="wcard-slot-badge">${w.slotLabel.toUpperCase()}</span>
-        <span class="wcard-arrow">▸</span>
-      </div>
-    `;
-
-    // Click card = open detail
-    card.addEventListener('click', (e) => {
-      if (e.target.closest('.compare-check')) return;
-      openDetail(w);
-    });
-
-    // Compare checkbox
-    card.querySelector('.compare-check').addEventListener('click', (e) => {
-      e.stopPropagation();
-      toggleCompare(w.id);
-    });
-
-    grid.appendChild(card);
-  });
-
-  // Animate mini bars
-  requestAnimationFrame(() => {
-    document.querySelectorAll('.mini-stat-fill').forEach(bar => {
-      const val = bar.dataset.val;
-      bar.style.width = '0';
-      setTimeout(() => { bar.style.width = val + '%'; }, 100);
-    });
-  });
-}
-
-/* ═══════════════════════════════════════════════
-   DETAIL PANEL
-═══════════════════════════════════════════════ */
-function openDetail(w) {
-  state.selectedId = w.id;
-  document.getElementById('sideActive').textContent = w.name;
-
-  const panel = document.getElementById('detailPanel');
-  const left  = document.getElementById('detailLeft');
-  const right = document.getElementById('detailRight');
-
-  panel.style.setProperty('--dp-c', w.color);
-
-  left.innerHTML = `
-    <div class="dp-eyebrow">// ${w.slotLabel.toUpperCase()} // ВАРИАНТ: ${w.variantLabel} //</div>
-    <div class="dp-name">${w.name}</div>
-    <div class="dp-runame">${w.ruName}</div>
-    <div class="dp-desc" id="dpDesc"></div>
-    <div class="dp-activation">
-      <div class="dp-act-row"><span class="dp-act-key">РЕЖИМ 1</span><span class="dp-act-desc">${w.primary}</span></div>
-      <div class="dp-act-row"><span class="dp-act-key">РЕЖИМ 2</span><span class="dp-act-desc">${w.secondary}</span></div>
-    </div>
-    <div class="dp-mechanics">
-      <div class="dp-mech-title">// МЕХАНИКИ ВЗАИМОДЕЙСТВИЯ</div>
-      ${w.mechanics.map(m => `<div class="dp-mech-item"><span class="dp-mech-arrow">▸</span>${m}</div>`).join('')}
-    </div>
-  `;
-
-  right.innerHTML = `
-    <div class="dp-stats">
-      <div class="dp-stat-title">// ХАРАКТЕРИСТИКИ МОДУЛЯ</div>
-      ${['power','speed','range','utility'].map(k => `
-        <div class="dp-stat-row">
-          <div class="dp-stat-head">
-            <span class="dp-stat-lbl">${({power:'МОЩНОСТЬ',speed:'СКОРОСТЬ',range:'ДАЛЬНОСТЬ',utility:'УТИЛИТА'})[k]}</span>
-            <span class="dp-stat-val">${w[k]}</span>
-          </div>
-          <div class="dp-stat-bar"><div class="dp-stat-fill" data-val="${w[k]}"></div></div>
-        </div>
-      `).join('')}
-    </div>
-    <div class="readout" style="margin-top:1rem;">
-      <span class="hl">[СЛОТ]</span>  <span class="vl">${w.slotLabel}</span><br>
-      <span class="hl">[ВАРИАНТ]</span> <span class="vl">${w.variantLabel}</span><br>
-      <span class="hl">[ТЕГИ]</span>  <span class="vl">${w.tags.join(' / ')}</span><br>
-      <span class="hl">[СТАТУС]</span> <span class="vl">АКТИВЕН<span class="cur"></span></span>
-    </div>
-  `;
-
-  panel.classList.add('open');
-  panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-
-  // Animate description typing
-  typeText(document.getElementById('dpDesc'), w.desc, 18);
-
-  // Animate stat bars
-  requestAnimationFrame(() => {
-    setTimeout(() => {
-      document.querySelectorAll('.dp-stat-fill').forEach(bar => {
-        bar.style.width = bar.dataset.val + '%';
-      });
-    }, 200);
-  });
-
-  // Refresh grid selection
-  renderGrid();
-  addLog('INFO', `Модуль выбран: ${w.name}`);
-}
-
-function closeDetail() {
-  document.getElementById('detailPanel').classList.remove('open');
-  state.selectedId = null;
-  document.getElementById('sideActive').textContent = '—';
-}
-
-/* ═══════════════════════════════════════════════
-   TYPING EFFECT
-═══════════════════════════════════════════════ */
-function typeText(el, text, speed = 20) {
-  el.textContent = '';
-  let i = 0;
-  const iv = setInterval(() => {
-    if (i >= text.length) { clearInterval(iv); return; }
-    el.textContent += text[i++];
-  }, speed);
-}
-
-/* ═══════════════════════════════════════════════
-   COMPARE
-═══════════════════════════════════════════════ */
-function toggleCompare(id) {
-  if (state.compareA === id) { state.compareA = null; }
-  else if (state.compareB === id) { state.compareB = null; }
-  else if (!state.compareA) { state.compareA = id; }
-  else if (!state.compareB) { state.compareB = id; }
-  else { state.compareA = state.compareB; state.compareB = id; }
-  updateCompare();
-  renderGrid();
-}
-
-function updateCompare() {
-  const panel = document.getElementById('comparePanel');
-  const wA = WEAPONS.find(w => w.id === state.compareA);
-  const wB = WEAPONS.find(w => w.id === state.compareB);
-
-  document.getElementById('cmpNameA').textContent = wA ? wA.name : 'не выбран';
-  document.getElementById('cmpNameB').textContent = wB ? wB.name : 'не выбран';
-
-  if (wA && wB) {
-    panel.classList.add('open');
-    const keys = ['Power','Speed','Range','Util'];
-    const wKeys = ['power','speed','range','utility'];
-    keys.forEach((k, i) => {
-      const vA = wA[wKeys[i]]; const vB = wB[wKeys[i]];
-      const aEl = document.getElementById('cmpA'+k);
-      const bEl = document.getElementById('cmpB'+k);
-      aEl.textContent = vA; bEl.textContent = vB;
-      aEl.className = 'cmp-a' + (vA >= vB ? ' cmp-win' : '');
-      bEl.className = 'cmp-b' + (vB >= vA ? ' cmp-win' : '');
-    });
-    addLog('CMP', `${wA.name} vs ${wB.name}`);
-  } else {
-    panel.classList.remove('open');
-  }
-}
-
-/* ═══════════════════════════════════════════════
-   FILTER BUTTONS
-═══════════════════════════════════════════════ */
-document.querySelectorAll('.filter-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    state.variant = btn.dataset.variant;
-    state.selectedId = null;
-    closeDetail();
-    renderGrid();
-    addLog('FILTER', `Вариант: ${btn.textContent.trim()}`);
-  });
-});
-
-/* ═══════════════════════════════════════════════
-   SEARCH
-═══════════════════════════════════════════════ */
-const searchBox = document.getElementById('searchBox');
-let searchTimer;
-searchBox.addEventListener('input', () => {
-  clearTimeout(searchTimer);
-  searchTimer = setTimeout(() => {
-    state.search = searchBox.value.trim();
-    state.selectedId = null;
-    closeDetail();
-    renderGrid();
-    if (state.search) addLog('SEARCH', `Запрос: "${state.search}"`);
-  }, 200);
-});
-
-/* ═══════════════════════════════════════════════
-   SORT BUTTONS
-═══════════════════════════════════════════════ */
-const SORT_MAP = { sortPower: 'power', sortSpeed: 'speed', sortRange: 'range' };
-Object.entries(SORT_MAP).forEach(([btnId, key]) => {
-  const btn = document.getElementById(btnId);
-  btn.addEventListener('click', () => {
-    if (state.sortKey === key) {
-      state.sortDir *= -1;
-      btn.textContent = key.toUpperCase().slice(0,7) + ' ' + (state.sortDir === -1 ? '↓' : '↑');
-    } else {
-      document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
-      state.sortKey = key; state.sortDir = -1;
-      btn.textContent = key.toUpperCase().slice(0,7) + ' ↓';
+    /* ── Smooth scroll + flash ── */
+    function navTo(id) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        el.style.transition = 'border-color 0.1s, box-shadow 0.1s';
+        el.style.borderColor = 'var(--red)';
+        el.style.boxShadow   = '0 0 24px rgba(255,32,32,0.25)';
+        setTimeout(() => { el.style.borderColor = ''; el.style.boxShadow = ''; }, 900);
     }
-    btn.classList.toggle('active', true);
-    renderGrid();
-    addLog('SORT', `По: ${key.toUpperCase()}`);
-  });
-});
 
-/* ═══════════════════════════════════════════════
-   KEYBOARD SHORTCUTS
-═══════════════════════════════════════════════ */
-const keySlotMap = { '1':'arm', '2':'revolver', '3':'shotgun', '4':'nailgun', '5':'railcannon', '6':'rocket', '0':'all' };
+    /* ── Active slot state ── */
+    document.querySelectorAll('.ws-slot').forEach(slot => {
+        slot.addEventListener('click', function () {
+            document.querySelectorAll('.ws-slot').forEach(s => s.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
 
-document.addEventListener('keydown', (e) => {
-  if (document.activeElement === searchBox) {
-    if (e.key === 'Escape') { searchBox.blur(); searchBox.value = ''; state.search = ''; renderGrid(); }
-    return;
-  }
-  if (e.key === 'f' || e.key === 'F') { e.preventDefault(); searchBox.focus(); return; }
-  if (e.key === 'Escape') { closeDetail(); renderGrid(); addLog('SYS','Панель закрыта'); return; }
-  if (keySlotMap[e.key]) {
-    state.slot = keySlotMap[e.key];
-    state.selectedId = null;
-    closeDetail();
-    buildTabs();
-    renderGrid();
-    addLog('KEY', `Слот: ${state.slot.toUpperCase()}`);
-  }
-});
+    /* ── Stats button ── */
+    document.getElementById('statsBtn').addEventListener('click', () => {
+        alert(
+            '// SYSTEM DATABASE //\n\n' +
+            'ULTRAKILL — Fandom Wiki\n' +
+            'Создана : 12 ноября 2020\n' +
+            'Статей  : 219\n' +
+            'Файлов  : 2 830\n' +
+            'Правок  : 50 498\n\n' +
+            '[STATUS: ACTIVE]'
+        );
+    });
 
-/* ═══════════════════════════════════════════════
-   STATUS BAR ANIMATION
-═══════════════════════════════════════════════ */
-window.addEventListener('load', () => {
-  document.querySelectorAll('.bar-fill').forEach(bar => {
-    bar.style.width = '0';
-    setTimeout(() => { bar.style.width = (bar.dataset.w || 0) + '%'; }, 400);
-  });
-});
-
-/* ═══════════════════════════════════════════════
-   GLITCH RANK ANIMATION
-═══════════════════════════════════════════════ */
-const RANKS = ['D','C','B','A','S','SS','SSS'];
-let rankIdx = 6;
-setInterval(() => {
-  const el = document.getElementById('dynamicRank');
-  if (Math.random() < 0.15) {
-    el.textContent = RANKS[Math.floor(Math.random() * RANKS.length)];
-    setTimeout(() => { el.textContent = 'SSS'; }, 150);
-  }
-}, 2000);
-
-/* ═══════════════════════════════════════════════
-   BACKGROUND PARTICLE CANVAS
-═══════════════════════════════════════════════ */
-(function() {
-  const canvas = document.getElementById('bg-canvas');
-  const ctx = canvas.getContext('2d');
-  let particles = [];
-  let W, H;
-
-  function resize() {
-    W = canvas.width  = window.innerWidth;
-    H = canvas.height = window.innerHeight;
-  }
-  window.addEventListener('resize', resize);
-  resize();
-
-  class Particle {
-    constructor() { this.reset(); }
-    reset() {
-      this.x = Math.random() * W;
-      this.y = H + 10;
-      this.size = Math.random() * 1.5 + 0.3;
-      this.speed = Math.random() * 0.4 + 0.1;
-      this.alpha = Math.random() * 0.3 + 0.05;
-      this.drift = (Math.random() - 0.5) * 0.3;
-      this.color = Math.random() < 0.7 ? `rgba(255,32,32,` : `rgba(255,200,200,`;
-    }
-    update() {
-      this.y -= this.speed;
-      this.x += this.drift;
-      if (this.y < -5) this.reset();
-    }
-    draw() {
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-      ctx.fillStyle = this.color + this.alpha + ')';
-      ctx.fill();
-    }
-  }
-
-  for (let i = 0; i < 55; i++) {
-    const p = new Particle();
-    p.y = Math.random() * H;
-    particles.push(p);
-  }
-
-  function loop() {
-    ctx.clearRect(0, 0, W, H);
-    particles.forEach(p => { p.update(); p.draw(); });
-    requestAnimationFrame(loop);
-  }
-  loop();
-})();
-
-/* ═══════════════════════════════════════════════
-   NAVIGATION SLOT ACTIVE STATE
-═══════════════════════════════════════════════ */
-document.querySelectorAll('.ws-slot').forEach(slot => {
-  slot.addEventListener('click', function() {
-    document.querySelectorAll('.ws-slot').forEach(s => s.classList.remove('active'));
-    this.classList.add('active');
-  });
-});
-
-/* ═══════════════════════════════════════════════
-   INIT
-═══════════════════════════════════════════════ */
-addLog('SYS', 'База данных загружена');
-addLog('ARS', 'Модулей в каталоге: ' + WEAPONS.length);
-addLog('V1',  'Арсенал инициализирован');
-addLog('FUEL','Уровень ресурса: КРИТИЧЕСКИЙ');
-addLog('STL', 'Ранг стиля: SSS');
-
-buildTabs();
-renderGrid();
+    /* ── Animate status bars on load ── */
+    window.addEventListener('load', () => {
+        document.querySelectorAll('.bar-fill').forEach(bar => {
+            const w = bar.dataset.w + '%';
+            bar.style.width = '0';
+            setTimeout(() => {
+                bar.style.transition = 'width 1.1s ease';
+                bar.style.width = w;
+            }, 400);
+        });
+    });
 </script>
 </body>
 </html>
