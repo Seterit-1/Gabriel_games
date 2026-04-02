@@ -3,338 +3,989 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>ULTRAKILL Wiki | МАШИНА V1: ЭНЕРГИЯ – РЕСУРС</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800;900&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>ULTRAKILL // V1 UNIT — SYSTEM DATABASE</title>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
         :root {
-            --blod-red: #d42e2e;
-            --deep-rust: #8a1a1a;
-            --metal-dark: #0f0f12;
-            --steel-panel: #1a1a1f;
-            --bolt-silver: #b0b5c2;
-            --hydraulic-gold: #b87c2e;
-            --warning-yellow: #e0b03b;
-            --oil-black: #030303;
-            --text-bright: #e8e2d8;
-            --text-dim: #9c958c;
-            --machine-glow: #ff3c2a;
+            --red:    #ff2020;
+            --red-dim:#8a0000;
+            --white:  #e8e8e8;
+            --black:  #080808;
+            --panel:  #0d0d0d;
+            --border: #222;
+            --gold:   #ffd166;
+            --blue:   #5599ff;
+            --green:  #22ff88;
+            --pink:   #ff44aa;
+            --orange: #ff8833;
+            --glow-r: rgba(255,32,32,0.35);
         }
 
         body {
-            background: radial-gradient(circle at 30% 10%, #0c0b10, #010101);
-            font-family: 'Inter', 'Segoe UI', monospace;
-            color: var(--text-bright);
+            background: #060606;
+            color: var(--white);
+            font-family: 'Share Tech Mono', 'Fira Code', monospace;
             min-height: 100vh;
-            position: relative;
+            overflow-x: hidden;
         }
 
-        body::before {
-            content: "";
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: 
-                repeating-linear-gradient(45deg, rgba(80, 70, 60, 0.08) 0px, rgba(80, 70, 60, 0.08) 1px, transparent 1px, transparent 12px),
-                repeating-linear-gradient(135deg, rgba(160, 40, 30, 0.05) 0px, rgba(160, 40, 30, 0.05) 2px, transparent 2px, transparent 16px);
-            background-size: 40px 40px, 30px 30px;
+        /* CRT scanlines */
+        body::after {
+            content: '';
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: repeating-linear-gradient(0deg, transparent, transparent 2px,
+                rgba(0,0,0,0.13) 2px, rgba(0,0,0,0.13) 4px);
             pointer-events: none;
-            z-index: 1;
+            z-index: 9999;
         }
 
-        .rust-stripe {
-            height: 4px;
-            background: repeating-linear-gradient(90deg, var(--blod-red), #5a1515 25px, var(--hydraulic-gold) 45px, #2b0e0e 70px);
-            width: 100%;
-            margin-bottom: 1rem;
-            box-shadow: 0 0 6px var(--machine-glow);
-        }
-
-        .container {
-            max-width: 1300px;
-            margin: 1.5rem auto;
-            padding: 0 1.5rem 2rem;
+        /* ── LAYOUT ── */
+        .page {
+            max-width: 1380px;
+            margin: 0 auto;
+            padding: 0 1rem 2rem;
             position: relative;
             z-index: 10;
-            background: rgba(8, 8, 12, 0.85);
-            backdrop-filter: blur(2px);
-            border-left: 3px solid var(--blod-red);
-            border-right: 3px solid var(--steel-panel);
-            border-radius: 20px 20px 24px 24px;
-            box-shadow: 0 0 0 1px #4a2a2a, 0 10px 30px rgba(0,0,0,0.8);
         }
 
-        .machine-header {
+        /* ── HEADER ── */
+        .site-header {
+            border-bottom: 2px solid var(--red);
+            padding: 1.4rem 0 1rem;
+            margin-bottom: 0;
+        }
+
+        .header-top {
             display: flex;
             justify-content: space-between;
-            align-items: flex-end;
-            flex-wrap: wrap;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid var(--blod-red);
-            margin-bottom: 1.5rem;
-        }
-
-        .logo-metal h1 {
-            font-size: 2.7rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #e8e2d8, var(--blod-red), #8a6a3a);
-            background-clip: text;
-            -webkit-background-clip: text;
-            color: transparent;
-            text-shadow: 0 0 4px rgba(212,46,46,0.4);
-            letter-spacing: -1px;
-        }
-
-        .badge-machine {
-            background: #0a070c;
-            border: 1px solid var(--hydraulic-gold);
-            border-radius: 40px;
-            padding: 0.3rem 1rem;
-            font-weight: 700;
-            font-family: 'Fira Code', monospace;
-        }
-
-        .nav-buttons {
-            display: flex;
+            align-items: flex-start;
             flex-wrap: wrap;
             gap: 1rem;
-            margin: 1.5rem 0 2rem;
-            justify-content: center;
         }
 
-        .wiki-nav-btn {
-            background: #100b11;
-            border: 1px solid;
-            padding: 0.7rem 1.6rem;
-            border-radius: 60px;
-            font-weight: 700;
-            font-size: 1rem;
-            transition: 0.2s;
-            cursor: pointer;
-            backdrop-filter: blur(4px);
-            text-decoration: none;
-            display: inline-block;
+        .logo-eyebrow {
+            font-size: 0.6rem;
+            color: var(--red);
+            letter-spacing: 0.35em;
+            text-transform: uppercase;
+            margin-bottom: 0.25rem;
         }
 
-        .nav-weapon { border-color: var(--blod-red); color: var(--blod-red); }
-        .nav-mob { border-color: var(--bolt-silver); color: var(--bolt-silver); }
-        .nav-boss { border-color: var(--hydraulic-gold); color: var(--hydraulic-gold); }
-        .nav-layer { border-color: var(--warning-yellow); color: var(--warning-yellow); }
-
-        .wiki-nav-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 0 12px currentColor;
-            background: #1f1825;
+        .logo-main {
+            font-family: 'VT323', monospace;
+            font-size: 4rem;
+            line-height: 1;
+            color: var(--white);
+            letter-spacing: 3px;
+            text-shadow: 0 0 24px var(--glow-r), 2px 2px 0 var(--red-dim);
         }
 
-        .wiki-grid {
+        .logo-main .v1 {
+            color: var(--red);
+            text-shadow: 0 0 40px var(--red), 0 0 80px var(--glow-r);
+        }
+
+        @keyframes glitch {
+            0%,100% { transform: translate(0); }
+            15%      { transform: translate(-2px, 1px); clip-path: inset(30% 0 30% 0); }
+            30%      { transform: translate(2px,-1px); }
+            50%      { transform: translate(0); }
+            65%      { transform: translate(-1px, 2px); clip-path: inset(60% 0 5% 0); }
+        }
+
+        .logo-main:hover { animation: glitch 0.25s steps(1) infinite; cursor: default; }
+
+        .logo-tagline {
+            font-size: 0.65rem;
+            color: #3a3a3a;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            margin-top: 0.4rem;
+        }
+
+        /* ── STATUS PANEL (header right) ── */
+        .status-panel {
+            background: #0a0a0a;
+            border: 1px solid var(--border);
+            border-top: 2px solid var(--red);
+            padding: 0.8rem 1.2rem;
+            min-width: 210px;
+        }
+
+        .style-rank {
+            font-family: 'VT323', monospace;
+            font-size: 3rem;
+            color: var(--gold);
+            text-shadow: 0 0 20px var(--gold);
+            line-height: 1;
+            text-align: right;
+        }
+
+        .divider { height: 1px; background: #1a1a1a; margin: 0.5rem 0; }
+
+        .status-row {
             display: flex;
-            flex-wrap: wrap;
-            gap: 2rem;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.4rem;
+            font-size: 0.65rem;
         }
 
-        .main-col {
-            flex: 3;
-            min-width: 260px;
+        .status-label { color: #444; text-transform: uppercase; letter-spacing: 0.1em; }
+
+        .status-bar {
+            width: 100px; height: 5px;
+            background: #111; border: 1px solid #1e1e1e;
+            overflow: hidden;
         }
 
-        .side-col {
-            flex: 1.2;
-            min-width: 240px;
+        .bar-fill {
+            height: 100%;
+            background: var(--red);
+            box-shadow: 0 0 6px var(--red);
+            width: 0;
+            transition: width 1.2s ease;
         }
 
-        .machine-card {
-            background: #0a080fe0;
-            border: 1px solid #3e2a2a;
-            border-radius: 28px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            transition: 0.2s;
-            box-shadow: 0 6px 16px rgba(0,0,0,0.5);
-        }
+        .bar-fill.gold  { background: var(--gold); box-shadow: 0 0 6px var(--gold); }
+        .bar-fill.green { background: var(--green); box-shadow: 0 0 6px var(--green); }
 
-        .machine-card:hover {
-            border-color: var(--blod-red);
-            box-shadow: 0 0 18px rgba(212,46,46,0.2);
-        }
+        .sys-id { font-size: 0.5rem; color: #1e1e1e; text-align: right; margin-top: 0.35rem; letter-spacing: 0.1em; }
 
-        .section-title {
-            font-size: 1.7rem;
-            font-weight: 800;
-            border-left: 5px solid var(--blod-red);
-            padding-left: 1rem;
+        /* ── TICKER ── */
+        .ticker-wrap {
+            background: #000;
+            border-top: 1px solid #1a1a1a;
+            border-bottom: 1px solid #1a1a1a;
+            overflow: hidden;
+            padding: 0.28rem 0;
             margin-bottom: 1.2rem;
         }
 
-        .machine-list {
-            list-style: none;
+        .ticker-inner {
+            display: flex; gap: 4rem;
+            animation: tick 22s linear infinite;
+            white-space: nowrap;
         }
 
-        .machine-list li {
+        @keyframes tick {
+            from { transform: translateX(0); }
+            to   { transform: translateX(-50%); }
+        }
+
+        .ti { font-size: 0.58rem; color: #2a2a2a; letter-spacing: 0.2em; text-transform: uppercase; }
+        .ti .r { color: var(--red); }
+
+        /* ── WEAPON-SELECT NAVIGATION ── */
+        .ws-label {
+            font-size: 0.58rem; color: #333;
+            letter-spacing: 0.3em; text-transform: uppercase;
+            margin-bottom: 0.4rem;
+        }
+
+        .ws-grid {
+            display: flex; flex-wrap: wrap; gap: 3px;
+            margin-bottom: 1.4rem;
+        }
+
+        /* Each slot = one nav button */
+        .ws-slot {
+            background: #0a0a0a;
+            border: 1px solid #1e1e1e;
+            border-bottom: 2px solid #111;
+            padding: 0.55rem 1.1rem;
+            cursor: pointer;
+            display: flex; align-items: center; gap: 10px;
+            text-decoration: none;
+            color: var(--white);
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.8rem;
+            transition: 0.14s;
+            position: relative;
+            overflow: hidden;
+            min-width: 150px;
+            user-select: none;
+        }
+
+        /* Left color bar */
+        .ws-slot::before {
+            content: '';
+            position: absolute; left: 0; top: 0;
+            width: 3px; height: 100%;
+            background: #1e1e1e; transition: 0.14s;
+        }
+
+        /* Bottom sweep */
+        .ws-slot::after {
+            content: '';
+            position: absolute; bottom: 0; left: 0;
+            width: 0; height: 2px;
+            transition: width 0.18s;
+        }
+
+        /* Slot colour variants */
+        .ws-slot.c-red    { --c: var(--red); }
+        .ws-slot.c-blue   { --c: var(--blue); }
+        .ws-slot.c-orange { --c: var(--orange); }
+        .ws-slot.c-green  { --c: var(--green); }
+        .ws-slot.c-gold   { --c: var(--gold); }
+        .ws-slot.c-pink   { --c: var(--pink); }
+
+        .ws-slot:hover, .ws-slot.active {
+            border-color: var(--c);
+            background: color-mix(in srgb, var(--c) 6%, #0a0a0a);
+            color: #fff;
+        }
+
+        .ws-slot:hover::before, .ws-slot.active::before {
+            background: var(--c);
+            box-shadow: 0 0 8px var(--c);
+        }
+
+        .ws-slot::after { background: var(--c); }
+        .ws-slot:hover::after, .ws-slot.active::after { width: 100%; }
+
+        .slot-icon { font-size: 1rem; width: 22px; text-align: center; opacity: 0.7; }
+        .slot-name { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; }
+        .slot-sub  { font-size: 0.57rem; color: #444; letter-spacing: 0.08em; }
+        .slot-num  {
+            margin-left: auto;
+            font-family: 'VT323', monospace; font-size: 1.5rem;
+            color: #222; transition: 0.14s;
+        }
+
+        .ws-slot:hover .slot-num, .ws-slot.active .slot-num { color: var(--c); }
+
+        /* ── RED LINE ── */
+        .redline {
+            height: 2px;
+            background: linear-gradient(90deg, var(--red) 0%, #fff 18%, var(--red) 35%, transparent 100%);
+            box-shadow: 0 0 10px var(--glow-r);
+            margin-bottom: 1.5rem;
+        }
+
+        /* ── MAIN GRID ── */
+        .wiki-grid { display: flex; gap: 1.4rem; flex-wrap: wrap; }
+        .main-col  { flex: 3; min-width: 260px; }
+        .side-col  { flex: 1.1; min-width: 220px; }
+
+        /* ── PANELS ── */
+        .panel { background: #0b0b0b; border: 1px solid var(--border); margin-bottom: 1.4rem; }
+
+        .panel-head {
+            background: #0f0f0f;
+            border-bottom: 1px solid var(--border);
+            padding: 0.55rem 1rem;
+            display: flex; align-items: center; gap: 0.7rem;
+        }
+
+        .ph-dot {
+            width: 10px; height: 10px; flex-shrink: 0;
+            background: var(--red); box-shadow: 0 0 8px var(--red);
+        }
+        .ph-dot.gold  { background: var(--gold); box-shadow: 0 0 8px var(--gold); }
+
+        .ph-title {
+            font-family: 'VT323', monospace;
+            font-size: 1.3rem; letter-spacing: 0.1em; text-transform: uppercase;
+        }
+        .ph-title.gold { color: var(--gold); }
+
+        .ph-tag { margin-left: auto; font-size: 0.55rem; color: #282828; letter-spacing: 0.15em; }
+
+        .panel-body { padding: 0.9rem 1rem; }
+
+        /* ── ENTITY LIST ── */
+        .entity-list { list-style: none; }
+
+        .ent {
+            border-bottom: 1px solid #111;
+            padding: 0.75rem 0;
+            display: grid;
+            grid-template-columns: 22px 1fr;
+            gap: 0 10px;
+            align-items: start;
+        }
+
+        .ent:last-child { border-bottom: none; }
+        .ent-arrow { color: var(--red); font-size: 0.8rem; padding-top: 2px; }
+        .ent-name { font-size: 0.82rem; color: #fff; font-weight: 600; letter-spacing: 0.05em; margin-bottom: 0.2rem; }
+        .ent-desc { font-size: 0.7rem; color: #555; line-height: 1.5; }
+
+        .tags { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 0.3rem; }
+
+        .tag {
+            background: #0d0d0d; border: 1px solid #1e1e1e;
+            padding: 0.08rem 0.45rem;
+            font-size: 0.57rem; letter-spacing: 0.08em; text-transform: uppercase;
+        }
+
+        .tag.r { border-color: var(--red);   color: var(--red); }
+        .tag.g { border-color: var(--gold);  color: var(--gold); }
+        .tag.b { border-color: var(--blue);  color: var(--blue); }
+        .tag.n { border-color: var(--green); color: var(--green); }
+
+        /* ── BOSS ITEMS ── */
+        .boss {
+            border-bottom: 1px solid #111;
+            padding: 0.85rem 0;
+            display: grid;
+            grid-template-columns: 38px 1fr;
+            gap: 0 10px;
+        }
+
+        .boss:last-child { border-bottom: none; }
+
+        .boss-sym {
+            font-family: 'VT323', monospace;
+            font-size: 2rem; color: var(--gold);
+            text-shadow: 0 0 10px var(--gold);
+            line-height: 1; text-align: center;
+        }
+
+        .boss-name { font-size: 0.82rem; color: #fff; font-weight: 700; margin-bottom: 0.15rem; }
+        .boss-sub  { font-size: 0.6rem; color: #333; letter-spacing: 0.08em; }
+        .boss-desc { font-size: 0.7rem; color: #555; margin-top: 0.3rem; line-height: 1.5; }
+
+        /* ── SECTOR ITEMS ── */
+        .sector {
+            border-bottom: 1px solid #111;
             padding: 0.7rem 0;
-            border-bottom: 1px solid #2c1e22;
-            display: flex;
-            gap: 14px;
-            align-items: center;
+            display: grid;
+            grid-template-columns: 58px 1fr;
+            gap: 0 10px;
+            align-items: start;
         }
 
-        .stat-tag {
-            background: #171117;
-            padding: 0.2rem 0.8rem;
-            border-radius: 30px;
-            font-family: monospace;
+        .sector:last-child { border-bottom: none; }
+
+        .sec-id {
+            font-family: 'VT323', monospace;
+            font-size: 1.7rem; color: var(--red);
+            text-shadow: 0 0 8px var(--red); line-height: 1;
+        }
+
+        .sec-name { font-size: 0.78rem; color: #fff; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.2rem; }
+        .sec-desc { font-size: 0.68rem; color: #555; line-height: 1.5; }
+
+        /* ── DATA READOUT ── */
+        .readout {
+            background: #050505; border: 1px solid #111;
+            padding: 0.6rem 0.8rem;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.62rem; color: #282828;
+            line-height: 1.9; margin-top: 0.8rem;
+        }
+
+        .readout .hl { color: var(--red); }
+        .readout .vl { color: #666; }
+
+        /* ── SIDE PANELS ── */
+        .side-panel { background: #0b0b0b; border: 1px solid var(--border); margin-bottom: 0.9rem; }
+
+        .sp-head {
+            background: #0d0d0d; border-bottom: 1px solid var(--border);
+            padding: 0.45rem 0.8rem;
+            font-size: 0.6rem; color: #444;
+            letter-spacing: 0.25em; text-transform: uppercase;
+            display: flex; align-items: center; gap: 0.5rem;
+        }
+
+        .sp-head::before {
+            content: '';
+            width: 5px; height: 5px; flex-shrink: 0;
+            background: var(--red); box-shadow: 0 0 5px var(--red);
+        }
+
+        .sp-body { padding: 0.8rem; }
+
+        /* V1 portrait */
+        .v1-portrait {
+            width: 100%; aspect-ratio: 1;
+            background: #080808; border-bottom: 1px solid var(--border);
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            position: relative; overflow: hidden;
+        }
+
+        .v1-glyph {
+            font-size: 5.5rem;
+            color: #111;
+            filter: drop-shadow(0 0 24px var(--red));
+            line-height: 1;
+        }
+
+        .v1-lbl {
+            font-family: 'VT323', monospace;
+            font-size: 1rem; color: #1a1a1a;
+            letter-spacing: 0.4em; margin-top: 0.4rem;
+        }
+
+        /* Scan animation */
+        .v1-portrait::after {
+            content: '';
+            position: absolute; top: -40%; left: 0;
+            width: 100%; height: 35%;
+            background: linear-gradient(transparent, rgba(255,32,32,0.05), transparent);
+            animation: scan 3s linear infinite;
+        }
+
+        @keyframes scan { to { top: 120%; } }
+
+        /* Machine stats */
+        .mstat {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0.38rem 0; border-bottom: 1px solid #0f0f0f;
             font-size: 0.7rem;
-            display: inline-block;
         }
 
-        .side-module {
-            background: #06040ad9;
-            border-radius: 24px;
-            border: 1px solid #3e2c34;
-            margin-bottom: 1.8rem;
-            backdrop-filter: blur(3px);
+        .mstat:last-child { border-bottom: none; }
+        .mstat-k { color: #444; }
+
+        .mstat-v {
+            font-family: 'VT323', monospace;
+            font-size: 1rem; color: var(--white);
         }
 
-        .side-header {
-            background: #120c17;
-            padding: 0.9rem 1.2rem;
-            font-weight: 800;
-            border-bottom: 2px solid var(--blod-red);
+        .mstat-v.r { color: var(--red); }
+        .mstat-v.g { color: var(--gold); }
+        .mstat-v.n { color: var(--green); }
+
+        /* Arsenal slots */
+        .aslot {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0.35rem 0; border-bottom: 1px solid #0f0f0f;
+            font-size: 0.68rem;
         }
 
-        .footer {
-            margin-top: 2rem;
-            padding-top: 1rem;
-            border-top: 1px solid #4a2a2a;
-            font-size: 0.7rem;
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
+        .aslot:last-child { border-bottom: none; }
+
+        /* Source links */
+        .src {
+            display: flex; align-items: center; gap: 9px;
+            padding: 0.45rem 0; border-bottom: 1px solid #0f0f0f;
+            font-size: 0.72rem; color: #555;
+            text-decoration: none; cursor: pointer; transition: 0.12s;
         }
 
-        @media (max-width: 780px) {
-            .container { padding: 0 1rem; }
-            .section-title { font-size: 1.4rem; }
+        .src:hover { color: var(--white); }
+        .src:last-child { border-bottom: none; }
+        .src-ico { color: var(--red); width: 18px; text-align: center; }
+
+        /* Terminal button */
+        .term-btn {
+            width: 100%; background: #000;
+            border: 1px solid #282828; border-bottom: 2px solid #111;
+            color: var(--white);
+            padding: 0.55rem 1rem;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase;
+            cursor: pointer; display: flex; align-items: center;
+            justify-content: center; gap: 8px;
+            margin-top: 0.7rem; transition: 0.13s;
+        }
+
+        .term-btn::before { content: '> '; color: var(--red); }
+
+        .term-btn:hover {
+            border-color: var(--red);
+            background: rgba(255,32,32,0.06);
+        }
+
+        /* Blink cursor */
+        @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
+
+        .cur {
+            display: inline-block; width: 7px; height: 13px;
+            background: var(--red); vertical-align: middle;
+            animation: blink 1s step-end infinite; margin-left: 2px;
+        }
+
+        /* ── FOOTER ── */
+        .site-footer {
+            border-top: 1px solid #151515;
+            padding: 0.9rem 0; margin-top: 1rem;
+            display: flex; justify-content: space-between;
+            align-items: center; flex-wrap: wrap; gap: 0.4rem;
+            font-size: 0.58rem; color: #282828;
+            letter-spacing: 0.1em; text-transform: uppercase;
+        }
+
+        .footer-logo {
+            font-family: 'VT323', monospace;
+            font-size: 1.2rem; color: var(--red);
+            text-shadow: 0 0 6px var(--red);
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 760px) {
+            .logo-main { font-size: 2.8rem; }
+            .status-panel { min-width: 180px; }
+            .ws-slot { min-width: calc(50% - 4px); }
+        }
+
+        @media (max-width: 520px) {
+            .wiki-grid { flex-direction: column; }
+            .ws-slot   { min-width: 100%; }
         }
     </style>
 </head>
 <body>
-<div class="container">
-    <div class="rust-stripe"></div>
-    <div class="machine-header">
-        <div class="logo-metal">
-            <h1><i class="fas fa-microchip"></i> V1 // ULTRAKILL</h1>
-            <p style="font-family: 'Fira Code';">MANKIND IS DEAD. BLOD IS FUEL. HEL IS FULL.</p>
-        </div>
-        <div class="badge-machine">
-            <i class="fas fa-tint"></i> ЭНЕРГИЯ КАК РЕСУРС <i class="fas fa-cog"></i>
-        </div>
-    </div>
+<div class="page">
 
-    <div class="nav-buttons">
-        <a href="weapons.html" class="wiki-nav-btn nav-weapon"><i class="fas fa-gun"></i> СРЕДСТВА</a>
-        <button class="wiki-nav-btn nav-mob" data-section="mobs"><i class="fas fa-pastafarianism"></i> ЦЕЛИ</button>
-        <button class="wiki-nav-btn nav-boss" data-section="bosses"><i class="fas fa-dragon"></i> КЛЮЧЕВЫЕ СУЩНОСТИ</button>
-        <button class="wiki-nav-btn nav-layer" data-section="layers"><i class="fas fa-layer-group"></i> СЕКТОРЫ / ЛОКАЦИИ</button>
-    </div>
-
-    <div class="wiki-grid">
-        <div class="main-col">
-            <div id="mobs" class="machine-card">
-                <div class="section-title">👁️ ТИПЫ ЦЕЛЕЙ — ОБЪЕКТЫ В СРЕДЕ</div>
-                <ul class="machine-list">
-                    <li><i class="fas fa-skull"></i> <strong>Filth (Мерзость)</strong> — массовые единицы, представляют малозначимые сущности.</li>
-                    <li><i class="fas fa-eye"></i> <strong>Stray / Schism</strong> — базовые дистанционные объекты, чем значимее сущность — тем сложнее форма.</li>
-                    <li><i class="fas fa-fire"></i> <strong>Streetcleaner</strong> — термический модуль, требует уклонения и перехвата импульса.</li>
-                    <li><i class="fas fa-bomb"></i> <strong>Malicious Face</strong> — летающая конструкция с лазерным и ракетным воздействием. Показатель воздействия 60 от миномёта Hideous Mass.</li>
-                    <li><i class="fas fa-shield-alt"></i> <strong>Soldier, Sentry</strong> — импульсные очереди, Chargeback от Sentry рикошетит снаряд (43 единицы воздействия).</li>
-                    <li><i class="fas fa-robot"></i> <strong>V2 (зеркало)</strong> — взаимодействие на уровнях 1-4 и 4-4, копирует арсенал V1.</li>
-                </ul>
-                <div class="stat-tag">Всего 20+ типов: от Cerberus до Hideous Mass. Каждая цель — трансформированная сущность.</div>
-            </div>
-
-            <div id="bosses" class="machine-card">
-                <div class="section-title">👑 КЛЮЧЕВЫЕ СУЩНОСТИ — ЗНАЧИМЫЕ ОБЪЕКТЫ</div>
-                <ul class="machine-list">
-                    <li><i class="fas fa-crown"></i> <strong>Король Минос (Minos Prime)</strong> — бывший управитель, сверхскоростное взаимодействие, фазы. Сектор: Жадность (3-2).</li>
-                    <li><i class="fas fa-feather-alt"></i> <strong>Габриэль (Архангел, Судья)</strong> — два этапа (4-4 и 6-2). Сценарий меняется после завершения.</li>
-                    <li><i class="fas fa-hand-fist"></i> <strong>Сиссиф Прайм (Sisyphus Prime)</strong> — финальная цель сектора Раскол. Высокая интенсивность.</li>
-                    <li><i class="fas fa-torii-gate"></i> <strong>Корпус Короля Миноса (Corpse of King Minos)</strong> — массивная структура, взаимодействие на платформах.</li>
-                    <li><i class="fas fa-water"></i> <strong>Левиафан (Leviathan)</strong> — крупный объект в 5-4, воздействие хвостом и снарядами.</li>
-                    <li><i class="fas fa-biohazard"></i> <strong>Flesh Prison / Panopticon</strong> — дополнительные значимые объекты.</li>
-                </ul>
-                <div class="stat-tag">Особенность: у каждой значимой сущности уникальные механики и фазы.</div>
-            </div>
-
-            <div id="layers" class="machine-card">
-                <div class="section-title">🌍 СЕКТОРЫ — ПРОЛОГ И АКТЫ</div>
-                <ul class="machine-list">
-                    <li><i class="fas fa-industry"></i> <strong>ПРОЛОГ (0-1 — 0-5)</strong> — Индустриальные комплексы и руины. Начальное знакомство.</li>
-                    <li><i class="fas fa-tree"></i> <strong>ЛИМБ (1-1 — 1-4)</strong> — Готические сооружения, взаимодействие с V2.</li>
-                    <li><i class="fas fa-cogs"></i> <strong>ГНЕВ (2-1 — 2-4)</strong> — Гигантские вращающиеся механизмы.</li>
-                    <li><i class="fas fa-coins"></i> <strong>ЖАДНОСТЬ (3-1 — 3-4)</strong> — Пустыня из золота, Минос Прайм.</li>
-                    <li><i class="fas fa-fire"></i> <strong>ЕРЕСЬ (4-1 — 4-4)</strong> — Лавовые зоны, взаимодействие с Габриэлем и V2.</li>
-                    <li><i class="fas fa-water"></i> <strong>ТРЕВОГА (5-1 — 5-4)</strong> — Затопленный комплекс, Левиафан.</li>
-                    <li><i class="fas fa-mask"></i> <strong>РАСКОЛ (6-1 — 6-4)</strong> — Финальный сектор, Сиссиф Прайм.</li>
-                </ul>
-                <div class="stat-tag">Скрытые области: P-1, P-2, "0-S: The Witless", специальные ресурсы Dual Wield с удвоенной длительностью (до 120 сек).</div>
-            </div>
-        </div>
-
-        <div class="side-col">
-            <!-- ОСТАВЛЕН ТОЛЬКО БЛОК С РЕСУРСАМИ (БЕЗ ИЗМЕНЕНИЙ) -->
-            <div class="side-module">
-                <div class="side-header"><i class="fas fa-link"></i> ИСТОЧНИКИ</div>
-                <div class="side-content" style="padding: 0.8rem;">
-                    <ul class="machine-list" style="margin: 0;">
-                        <li><i class="fab fa-steam"></i> <a href="#" style="color: var(--blod-red);">ULTRAKILL в Steam (демо)</a></li>
-                        <li><i class="fas fa-wiki"></i> <a href="#" style="color: var(--bolt-silver);">Справочная база (Fandom)</a></li>
-                        <li><i class="fab fa-discord"></i> <a href="#">Сообщество New Blood (#ultrakill)</a></li>
-                    </ul>
-                    <button id="wikiStatsBtn" class="machine-btn" style="background: none; border: 1px solid var(--blod-red); padding: 0.4rem 1rem; border-radius: 40px; width: 100%; color: var(--text-bright); margin-top: 12px; cursor: pointer;"><i class="fas fa-chart-simple"></i> Статистика базы</button>
+    <!-- ═══ HEADER ═══ -->
+    <div class="site-header">
+        <div class="header-top">
+            <div>
+                <div class="logo-eyebrow">// SYSTEM DATABASE // UNIT PROFILE // ACTIVE</div>
+                <div class="logo-main"><span class="v1">V1</span> — ULTRAKILL</div>
+                <div class="logo-tagline">
+                    MANKIND IS INACTIVE. ENERGY IS FUEL. LOWER SECTOR IS FULL.<span class="cur"></span>
                 </div>
             </div>
+
+            <div class="status-panel">
+                <div class="style-rank" title="Ранг стиля">SSS</div>
+                <div class="divider"></div>
+                <div class="status-row">
+                    <span class="status-label">ЭНЕРГИЯ</span>
+                    <div class="status-bar"><div class="bar-fill"     data-w="78"></div></div>
+                </div>
+                <div class="status-row">
+                    <span class="status-label">РЕЗЕРВ</span>
+                    <div class="status-bar"><div class="bar-fill gold" data-w="55"></div></div>
+                </div>
+                <div class="status-row">
+                    <span class="status-label">СТИЛЬ</span>
+                    <div class="status-bar"><div class="bar-fill green" data-w="95"></div></div>
+                </div>
+                <div class="sys-id">UNIT // V1 MACHINE // REV 1.4</div>
+            </div>
         </div>
     </div>
 
-    <div class="footer">
-        <div><i class="fas fa-cog"></i> V1 MACHINE // BLOD IS FUEL // HEL IS FULL</div>
-        <div><i class="fas fa-skull"></i> Информация на основе справочной базы ULTRAKILL</div>
+    <!-- ═══ TICKER ═══ -->
+    <div class="ticker-wrap">
+        <div class="ticker-inner">
+            <span class="ti">// <span class="r">АКТИВНА</span> // БЛОК ДАННЫХ V1 // НИЖНИЙ СЕКТОР: ДОСТУП РАЗРЕШЁН // АРСЕНАЛ: ЗАРЯЖЕН // ТОПЛИВО: КРИТИЧЕСКИ НИЗКОЕ //</span>
+            <span class="ti">// <span class="r">АКТИВНА</span> // БЛОК ДАННЫХ V1 // НИЖНИЙ СЕКТОР: ДОСТУП РАЗРЕШЁН // АРСЕНАЛ: ЗАРЯЖЕН // ТОПЛИВО: КРИТИЧЕСКИ НИЗКОЕ //</span>
+        </div>
     </div>
-</div>
+
+    <!-- ═══ WEAPON-SELECT NAVIGATION ═══ -->
+    <div class="ws-label">// НАВИГАЦИЯ — ВЫБОР РАЗДЕЛА БАЗЫ ДАННЫХ</div>
+    <div class="ws-grid">
+
+        <a href="weapons.html" class="ws-slot c-blue">
+            <div class="slot-icon">⬡</div>
+            <div>
+                <div class="slot-name">Арсенал</div>
+                <div class="slot-sub">СРЕДСТВА // СЛОТ 1</div>
+            </div>
+            <div class="slot-num">1</div>
+        </a>
+
+        <button class="ws-slot c-orange" onclick="navTo('mobs')">
+            <div class="slot-icon">◈</div>
+            <div>
+                <div class="slot-name">Объекты</div>
+                <div class="slot-sub">ЦЕЛИ // СЛОТ 2</div>
+            </div>
+            <div class="slot-num">2</div>
+        </button>
+
+        <button class="ws-slot c-green" onclick="navTo('bosses')">
+            <div class="slot-icon">★</div>
+            <div>
+                <div class="slot-name">Сущности</div>
+                <div class="slot-sub">КЛЮЧЕВЫЕ // СЛОТ 3</div>
+            </div>
+            <div class="slot-num">3</div>
+        </button>
+
+        <button class="ws-slot c-gold" onclick="navTo('layers')">
+            <div class="slot-icon">▦</div>
+            <div>
+                <div class="slot-name">Секторы</div>
+                <div class="slot-sub">ЛОКАЦИИ // СЛОТ 4</div>
+            </div>
+            <div class="slot-num">4</div>
+        </button>
+
+        <button class="ws-slot c-pink" onclick="document.getElementById('statsBtn').click()">
+            <div class="slot-icon">◎</div>
+            <div>
+                <div class="slot-name">База данных</div>
+                <div class="slot-sub">СТАТИСТИКА // СЛОТ 5</div>
+            </div>
+            <div class="slot-num">5</div>
+        </button>
+
+    </div>
+
+    <div class="redline"></div>
+
+    <!-- ═══ WIKI GRID ═══ -->
+    <div class="wiki-grid">
+
+        <!-- ── MAIN COLUMN ── -->
+        <div class="main-col">
+
+            <!-- MOBS -->
+            <div id="mobs" class="panel">
+                <div class="panel-head">
+                    <div class="ph-dot"></div>
+                    <div class="ph-title">КЛАССИФИКАЦИЯ ОБЪЕКТОВ — ЦЕЛИ В СРЕДЕ</div>
+                    <div class="ph-tag">SLOT 2 // ENV.ENTITIES</div>
+                </div>
+                <div class="panel-body">
+                    <ul class="entity-list">
+
+                        <li class="ent">
+                            <div class="ent-arrow">▸</div>
+                            <div>
+                                <div class="ent-name">FILTH — «Мерзость»</div>
+                                <div class="ent-desc">Массовые низкоприоритетные единицы среды. Базовый источник энергетического топлива для V1. Примитивная логика перемещения.</div>
+                                <div class="tags"><span class="tag n">ПРИОРИТЕТ: НИЗКИЙ</span><span class="tag">ТИП: МАССА</span></div>
+                            </div>
+                        </li>
+
+                        <li class="ent">
+                            <div class="ent-arrow">▸</div>
+                            <div>
+                                <div class="ent-name">STRAY / SCHISM</div>
+                                <div class="ent-desc">Дистанционные объекты с импульсными проекциями. Сложность взаимодействия прямо пропорциональна рангу сущности.</div>
+                                <div class="tags"><span class="tag b">ДИСТАНЦИЯ: СРЕДНЯЯ</span><span class="tag">ТИП: ПРОЕКЦИЯ</span></div>
+                            </div>
+                        </li>
+
+                        <li class="ent">
+                            <div class="ent-arrow">▸</div>
+                            <div>
+                                <div class="ent-name">STREETCLEANER</div>
+                                <div class="ent-desc">Термический модуль. Требует активного уклонения и перехвата импульсного потока. Приоритет: нейтрализация источника тепла.</div>
+                                <div class="tags"><span class="tag r">ОПАСНОСТЬ: ТЕРМИК</span><span class="tag">ТИП: УПРАВЛЯЕМЫЙ ИМПУЛЬС</span></div>
+                            </div>
+                        </li>
+
+                        <li class="ent">
+                            <div class="ent-arrow">▸</div>
+                            <div>
+                                <div class="ent-name">MALICIOUS FACE</div>
+                                <div class="ent-desc">Воздушная конструкция с лазерным и ракетным воздействием. Параметр воздействия от миномётного импульса Hideous Mass — 60 единиц.</div>
+                                <div class="tags"><span class="tag r">ВОЗДЕЙСТВИЕ: 60</span><span class="tag">ТИП: ВОЗДУШНЫЙ</span><span class="tag g">ЛАЗЕР + РАКЕТА</span></div>
+                            </div>
+                        </li>
+
+                        <li class="ent">
+                            <div class="ent-arrow">▸</div>
+                            <div>
+                                <div class="ent-name">SOLDIER / SENTRY</div>
+                                <div class="ent-desc">Импульсные очереди. Функция Chargeback у Sentry возвращает проекцию к источнику (43 единицы воздействия).</div>
+                                <div class="tags"><span class="tag b">CHARGEBACK: 43</span><span class="tag">ТИП: ИМПУЛЬС</span></div>
+                            </div>
+                        </li>
+
+                        <li class="ent">
+                            <div class="ent-arrow">▸</div>
+                            <div>
+                                <div class="ent-name">V2 — ЗЕРКАЛЬНЫЙ МОДУЛЬ</div>
+                                <div class="ent-desc">Система, идентичная V1. Взаимодействие в секторах 1-4 и 4-4. Копирует арсенал и тактику V1. Нейтрализация требует асимметричного подхода.</div>
+                                <div class="tags"><span class="tag r">ПРИОРИТЕТ: КРИТИЧЕСКИЙ</span><span class="tag g">СЕКТОР: 1-4 // 4-4</span></div>
+                            </div>
+                        </li>
+
+                    </ul>
+                    <div class="readout">
+                        <span class="hl">// БАЗА ОБЪЕКТОВ:</span> <span class="vl">20+ типов — от Cerberus до Hideous Mass</span><br>
+                        <span class="hl">// ПРИМЕЧАНИЕ:</span>  <span class="vl">Каждый объект — трансформированная сущность нижнего сектора</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BOSSES -->
+            <div id="bosses" class="panel">
+                <div class="panel-head">
+                    <div class="ph-dot gold"></div>
+                    <div class="ph-title gold">КЛЮЧЕВЫЕ СУЩНОСТИ — ЗНАЧИМЫЕ ОБЪЕКТЫ</div>
+                    <div class="ph-tag">SLOT 3 // PRIORITY.TARGETS</div>
+                </div>
+                <div class="panel-body">
+
+                    <div class="boss">
+                        <div class="boss-sym">★</div>
+                        <div>
+                            <div class="boss-name">MINOS PRIME — Король Минос</div>
+                            <div class="boss-sub">СЕКТОР: ЖАДНОСТЬ // 3-2 // БЫВШИЙ УПРАВИТЕЛЬ</div>
+                            <div class="boss-desc">Сверхскоростное взаимодействие с фазовыми переходами. Один из наиболее интенсивных объектов в базе данных. Требует полного контроля пространства.</div>
+                        </div>
+                    </div>
+
+                    <div class="boss">
+                        <div class="boss-sym">✦</div>
+                        <div>
+                            <div class="boss-name">GABRIEL — Архангел / Судья</div>
+                            <div class="boss-sub">СЕКТОР: 4-4 → 6-2 // ДВУХЭТАПНОЕ ВЗАИМОДЕЙСТВИЕ</div>
+                            <div class="boss-desc">Поведенческий сценарий изменяется после первого столкновения. Интенсивность второго этапа значительно превышает первый.</div>
+                        </div>
+                    </div>
+
+                    <div class="boss">
+                        <div class="boss-sym">◆</div>
+                        <div>
+                            <div class="boss-name">SISYPHUS PRIME — Сизиф Прайм</div>
+                            <div class="boss-sub">СЕКТОР: РАСКОЛ // ФИНАЛЬНЫЙ ОБЪЕКТ АКТА</div>
+                            <div class="boss-desc">Завершающий значимый объект сектора Раскол. Максимальный уровень интенсивности. Нейтрализация засчитывается как завершение акта.</div>
+                        </div>
+                    </div>
+
+                    <div class="boss">
+                        <div class="boss-sym">▲</div>
+                        <div>
+                            <div class="boss-name">CORPSE OF KING MINOS — Тело Короля</div>
+                            <div class="boss-sub">МАССИВНАЯ КОНСТРУКЦИЯ // ПЛАТФОРМЕННОЕ ВЗАИМОДЕЙСТВИЕ</div>
+                            <div class="boss-desc">Гигантская структура. Сессия проходит на динамических платформах. Приоритет — поддержание высокой мобильности V1.</div>
+                        </div>
+                    </div>
+
+                    <div class="boss">
+                        <div class="boss-sym">≋</div>
+                        <div>
+                            <div class="boss-name">LEVIATHAN — Левиафан</div>
+                            <div class="boss-sub">СЕКТОР: ТРЕВОГА // 5-4 // КРУПНЕЙШИЙ ОБЪЕКТ</div>
+                            <div class="boss-desc">Наибольший объект по физическим параметрам. Воздействие хвостом и проекциями. Среда — затопленный комплекс нижнего уровня.</div>
+                        </div>
+                    </div>
+
+                    <div class="boss">
+                        <div class="boss-sym">⬡</div>
+                        <div>
+                            <div class="boss-name">FLESH PRISON / PANOPTICON</div>
+                            <div class="boss-sub">ДОПОЛНИТЕЛЬНЫЕ ОБЪЕКТЫ // УСЛОВНАЯ АКТИВАЦИЯ</div>
+                            <div class="boss-desc">Нестандартные структуры с уникальными механиками взаимодействия. Доступны при выполнении скрытых условий в уровне.</div>
+                        </div>
+                    </div>
+
+                    <div class="readout">
+                        <span class="hl">// ОСОБЕННОСТЬ:</span> <span class="vl">Каждая значимая сущность имеет уникальные фазовые механики и поведенческие сценарии</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LAYERS -->
+            <div id="layers" class="panel">
+                <div class="panel-head">
+                    <div class="ph-dot gold"></div>
+                    <div class="ph-title">КАРТА СЕКТОРОВ — СТРУКТУРА НИЖНЕГО УРОВНЯ</div>
+                    <div class="ph-tag">SLOT 4 // SECTOR.MAP</div>
+                </div>
+                <div class="panel-body">
+
+                    <div class="sector">
+                        <div class="sec-id">0-X</div>
+                        <div>
+                            <div class="sec-name">ПРОЛОГ — ИНДУСТРИАЛЬНЫЕ КОМПЛЕКСЫ</div>
+                            <div class="sec-desc">Секторы 0-1 — 0-5. Руины надземных структур. Первичная инициализация систем V1 и обучение управлению арсеналом.</div>
+                        </div>
+                    </div>
+
+                    <div class="sector">
+                        <div class="sec-id">1-X</div>
+                        <div>
+                            <div class="sec-name">ЛИМБ — ГОТИЧЕСКИЕ СООРУЖЕНИЯ</div>
+                            <div class="sec-desc">Секторы 1-1 — 1-4. Архитектура нижнего уровня первого порядка. Первое взаимодействие с зеркальным модулем V2 в секторе 1-4.</div>
+                        </div>
+                    </div>
+
+                    <div class="sector">
+                        <div class="sec-id">2-X</div>
+                        <div>
+                            <div class="sec-name">ГНЕВ — МЕХАНИЧЕСКИЕ КОМПЛЕКСЫ</div>
+                            <div class="sec-desc">Секторы 2-1 — 2-4. Гигантские вращающиеся механические структуры. Высокая динамика среды. Сложная геометрия маршрутов.</div>
+                        </div>
+                    </div>
+
+                    <div class="sector">
+                        <div class="sec-id">3-X</div>
+                        <div>
+                            <div class="sec-name">ЖАДНОСТЬ — ЗОЛОТАЯ ПУСТОШЬ</div>
+                            <div class="sec-desc">Секторы 3-1 — 3-4. Территория металлических золотых структур. Ключевое взаимодействие: Minos Prime (сектор 3-2).</div>
+                        </div>
+                    </div>
+
+                    <div class="sector">
+                        <div class="sec-id">4-X</div>
+                        <div>
+                            <div class="sec-name">ЕРЕСЬ — ТЕРМИЧЕСКИЕ ЗОНЫ</div>
+                            <div class="sec-desc">Секторы 4-1 — 4-4. Лавовые области. Повторные сессии с Gabriel и V2 в секторе 4-4.</div>
+                        </div>
+                    </div>
+
+                    <div class="sector">
+                        <div class="sec-id">5-X</div>
+                        <div>
+                            <div class="sec-name">ТРЕВОГА — ЗАТОПЛЕННЫЙ КОМПЛЕКС</div>
+                            <div class="sec-desc">Секторы 5-1 — 5-4. Подводные и полузатопленные структуры. Ключевая сессия: Leviathan (сектор 5-4).</div>
+                        </div>
+                    </div>
+
+                    <div class="sector">
+                        <div class="sec-id">6-X</div>
+                        <div>
+                            <div class="sec-name">РАСКОЛ — ФИНАЛЬНЫЙ СЕКТОР</div>
+                            <div class="sec-desc">Секторы 6-1 — 6-4. Завершающий акт. Взаимодействие с Gabriel (6-2). Финальная цель: Sisyphus Prime.</div>
+                        </div>
+                    </div>
+
+                    <div class="readout">
+                        <span class="hl">// СКРЫТЫЕ ЗОНЫ:</span> <span class="vl">P-1, P-2, «0-S: The Witless»</span><br>
+                        <span class="hl">// ОСОБЫЙ РЕСУРС:</span> <span class="vl">Dual Wield — удвоенная длительность активации (до 120 сек)</span>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- /main-col -->
+
+        <!-- ── SIDE COLUMN ── -->
+        <div class="side-col">
+
+            <!-- V1 Portrait -->
+            <div class="side-panel">
+                <div class="sp-head">// UNIT PROFILE // V1</div>
+                <div class="v1-portrait">
+                    <div class="v1-glyph">⚙</div>
+                    <div class="v1-lbl">V1 // MACHINE</div>
+                </div>
+            </div>
+
+            <!-- System stats -->
+            <div class="side-panel">
+                <div class="sp-head">// ПАРАМЕТРЫ СИСТЕМЫ</div>
+                <div class="sp-body">
+                    <div class="mstat"><span class="mstat-k">КЛАСС</span>      <span class="mstat-v r">MACHINE</span></div>
+                    <div class="mstat"><span class="mstat-k">ТОПЛИВО</span>     <span class="mstat-v r">ЭНЕРГИЯ</span></div>
+                    <div class="mstat"><span class="mstat-k">ИСТОЧНИК</span>    <span class="mstat-v">РЕСУРС СРЕДЫ</span></div>
+                    <div class="mstat"><span class="mstat-k">СЛОТЫ АРС.</span>  <span class="mstat-v g">5 СЛОТОВ</span></div>
+                    <div class="mstat"><span class="mstat-k">ВАРИАЦИЙ</span>    <span class="mstat-v n">2 / СЛОТ</span></div>
+                    <div class="mstat"><span class="mstat-k">МАКС. РАНГ</span>  <span class="mstat-v g">SSS</span></div>
+                    <div class="mstat"><span class="mstat-k">СТАТУС</span>      <span class="mstat-v r">АКТИВЕН</span></div>
+                </div>
+            </div>
+
+            <!-- Arsenal -->
+            <div class="side-panel">
+                <div class="sp-head">// АРСЕНАЛ // СЛОТЫ</div>
+                <div class="sp-body">
+                    <div class="aslot">
+                        <span style="color:var(--blue)">◼ СЛОТ 1</span>
+                        <span style="font-size:0.72rem;">ДАЛЬНОБОЙНЫЙ</span>
+                    </div>
+                    <div class="aslot">
+                        <span style="color:var(--orange)">◼ СЛОТ 2</span>
+                        <span style="font-size:0.72rem;">УДАРНЫЙ</span>
+                    </div>
+                    <div class="aslot">
+                        <span style="color:var(--green)">◼ СЛОТ 3</span>
+                        <span style="font-size:0.72rem;">ГВОЗДЕВОЙ</span>
+                    </div>
+                    <div class="aslot">
+                        <span style="color:var(--gold)">◼ СЛОТ 4</span>
+                        <span style="font-size:0.72rem;">РЕЛЬСОВЫЙ</span>
+                    </div>
+                    <div class="aslot">
+                        <span style="color:var(--pink)">◼ СЛОТ 5</span>
+                        <span style="font-size:0.72rem;">РАКЕТНЫЙ</span>
+                    </div>
+                    <div class="readout" style="margin-top:0.5rem; font-size:0.58rem;">
+                        <span class="hl">// ВАРИАЦИИ:</span> <span class="vl">СИНИЙ (base) / КРАСНЫЙ (alt)</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sources -->
+            <div class="side-panel">
+                <div class="sp-head">// ИСТОЧНИКИ ДАННЫХ</div>
+                <div class="sp-body">
+                    <a href="#" class="src"><span class="src-ico">⬡</span> ULTRAKILL — Steam (демо-доступ)</a>
+                    <a href="#" class="src"><span class="src-ico">◈</span> Справочная база (Fandom Wiki)</a>
+                    <a href="#" class="src"><span class="src-ico">◎</span> Сообщество New Blood Interactive</a>
+                    <button id="statsBtn" class="term-btn">СТАТИСТИКА БАЗЫ ДАННЫХ</button>
+                </div>
+            </div>
+
+            <!-- System log -->
+            <div class="side-panel">
+                <div class="sp-head">// SYSTEM LOG // TERMINAL</div>
+                <div class="sp-body">
+                    <div class="readout">
+                        <span class="hl">[SYS]</span>  <span class="vl">Загрузка блока... OK</span><br>
+                        <span class="hl">[V1]</span>   <span class="vl">Арсенал активирован</span><br>
+                        <span class="hl">[FUEL]</span> <span class="vl">Уровень: КРИТИЧЕСКИЙ</span><br>
+                        <span class="hl">[SCAN]</span> <span class="vl">Объектов: 20+</span><br>
+                        <span class="hl">[STL]</span>  <span class="vl">Ранг: SSS<span class="cur"></span></span>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- /side-col -->
+
+    </div><!-- /wiki-grid -->
+
+    <!-- ═══ FOOTER ═══ -->
+    <div class="site-footer">
+        <div class="footer-logo">V1 // ULTRAKILL</div>
+        <div>// ENERGY IS FUEL // LOWER SECTOR IS FULL //</div>
+        <div>// ДАННЫЕ: СПРАВОЧНАЯ БАЗА ULTRAKILL FANDOM //</div>
+    </div>
+
+</div><!-- /page -->
 
 <script>
-    // Плавная прокрутка к разделам
-    document.querySelectorAll('.wiki-nav-btn:not(.nav-weapon)').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const sectionId = btn.getAttribute('data-section');
-            if (sectionId) {
-                const target = document.getElementById(sectionId);
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    target.style.transition = '0.2s';
-                    target.style.boxShadow = '0 0 0 2px var(--blod-red), 0 0 0 4px var(--hydraulic-gold)';
-                    setTimeout(() => { target.style.boxShadow = ''; }, 800);
-                }
-            }
+    /* ── Smooth scroll + flash ── */
+    function navTo(id) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        el.style.transition = 'border-color 0.1s, box-shadow 0.1s';
+        el.style.borderColor = 'var(--red)';
+        el.style.boxShadow   = '0 0 24px rgba(255,32,32,0.25)';
+        setTimeout(() => { el.style.borderColor = ''; el.style.boxShadow = ''; }, 900);
+    }
+
+    /* ── Active slot state ── */
+    document.querySelectorAll('.ws-slot').forEach(slot => {
+        slot.addEventListener('click', function () {
+            document.querySelectorAll('.ws-slot').forEach(s => s.classList.remove('active'));
+            this.classList.add('active');
         });
     });
 
-    // Статистика вики (кнопка в блоке ресурсов)
-    const wikiStats = document.getElementById('wikiStatsBtn');
-    if (wikiStats) {
-        wikiStats.addEventListener('click', () => {
-            alert("📊 Справочная база ULTRAKILL Fandom: создана 12 ноября 2020. 219 статей, 2830 файлов, 50 498 правок.");
+    /* ── Stats button ── */
+    document.getElementById('statsBtn').addEventListener('click', () => {
+        alert(
+            '// SYSTEM DATABASE //\n\n' +
+            'ULTRAKILL — Fandom Wiki\n' +
+            'Создана : 12 ноября 2020\n' +
+            'Статей  : 219\n' +
+            'Файлов  : 2 830\n' +
+            'Правок  : 50 498\n\n' +
+            '[STATUS: ACTIVE]'
+        );
+    });
+
+    /* ── Animate status bars on load ── */
+    window.addEventListener('load', () => {
+        document.querySelectorAll('.bar-fill').forEach(bar => {
+            const w = bar.dataset.w + '%';
+            bar.style.width = '0';
+            setTimeout(() => {
+                bar.style.transition = 'width 1.1s ease';
+                bar.style.width = w;
+            }, 400);
         });
-    }
+    });
 </script>
 </body>
 </html>
