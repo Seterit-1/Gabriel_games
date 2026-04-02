@@ -209,23 +209,21 @@
 
         .weapon-category[data-weapon="revolver"] .weapon-frame {
             border-color: var(--terminal-green);
-            box-shadow: 0 0 15px rgba(63, 224, 160, 0.3);
         }
         .weapon-category[data-weapon="shotgun"] .weapon-frame {
             border-color: var(--terminal-red);
-            box-shadow: 0 0 15px rgba(255, 60, 90, 0.3);
+        }
+        .weapon-category[data-weapon="nailgun"] .weapon-frame {
+            border-color: #3f9eff;
         }
         .weapon-category[data-weapon="railcannon"] .weapon-frame {
-            border-color: #3f9eff;
-            box-shadow: 0 0 15px rgba(63, 158, 255, 0.3);
+            border-color: #9b59b6;
         }
         .weapon-category[data-weapon="rocket"] .weapon-frame {
             border-color: var(--terminal-amber);
-            box-shadow: 0 0 15px rgba(240, 168, 48, 0.3);
         }
         .weapon-category[data-weapon="arms"] .weapon-frame {
             border-color: #ff6ac4;
-            box-shadow: 0 0 15px rgba(255, 106, 196, 0.3);
         }
 
         .weapon-frame:hover {
@@ -255,11 +253,57 @@
             color: var(--terminal-amber);
         }
 
+        /* Стили для переключателя версий */
+        .variant-toggle {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            padding: 0.25rem;
+            background: #0b0f13;
+            border-radius: 40px;
+            width: fit-content;
+            border: 1px solid #2a3a30;
+        }
+
+        .toggle-btn {
+            background: transparent;
+            border: none;
+            padding: 0.3rem 1rem;
+            border-radius: 30px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.7rem;
+            font-weight: 600;
+            cursor: pointer;
+            color: var(--terminal-gray);
+            transition: 0.2s;
+        }
+
+        .toggle-btn.active {
+            background: var(--terminal-green);
+            color: #0a0c0f;
+            box-shadow: 0 0 8px var(--terminal-green);
+        }
+
+        .toggle-btn:first-child.active {
+            background: var(--terminal-green);
+        }
+
+        .toggle-btn:last-child.active {
+            background: var(--terminal-amber);
+            color: #0a0c0f;
+            box-shadow: 0 0 8px var(--terminal-amber);
+        }
+
+        .variants-container {
+            position: relative;
+        }
+
         .variants {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 1rem;
             margin-top: 1rem;
+            transition: 0.2s;
         }
 
         .variant-card {
@@ -384,12 +428,12 @@
 
     <div class="terminal-content">
         <div class="boot-header">
-            <h1><i class="fas fa-microchip"></i> V1 WEAPON ARSENAL v.2.0.1<span class="blink-cursor"></span></h1>
-            <p>> ACCESSING WEAPON DATABASE // BLOD-FUELED ORDNANCE // TOTAL: 5 PRIMARY SYSTEMS + VARIANTS</p>
+            <h1><i class="fas fa-microchip"></i> V1 WEAPON ARSENAL v.2.1.0<span class="blink-cursor"></span></h1>
+            <p>> ACCESSING WEAPON DATABASE // BLOD-FUELED ORDNANCE // TOTAL: 6 PRIMARY SYSTEMS + VARIANTS + ALTERNATES</p>
         </div>
 
         <div class="weapon-grid">
-            <!-- ========== REVOLVER (изменено минимально: Rev0lver) ========== -->
+            <!-- ========== REV0LVER (с переключателем стандарт/альтернатива) ========== -->
             <div class="weapon-category" data-weapon="revolver">
                 <div class="weapon-image-container">
                     <div class="weapon-frame">
@@ -397,35 +441,59 @@
                     </div>
                 </div>
                 <div class="weapon-name"><i class="fas fa-crosshairs"></i> REV0LVER</div>
-                <div class="variants">
-                    <div class="variant-card">
-                        <div class="variant-image">
-                            <img src="1000045244.jpg" alt="Piercer" class="variant-img" onerror="this.src='https://placehold.co/300x80/1a2a22/3fe0a0?text=Piercer'">
+                
+                <!-- Переключатель версий -->
+                <div class="variant-toggle">
+                    <button class="toggle-btn active" data-variant="standard">STANDARD</button>
+                    <button class="toggle-btn" data-variant="alternate">ALTERNATE</button>
+                </div>
+
+                <!-- Стандартные варианты -->
+                <div class="variants-container standard-variants">
+                    <div class="variants">
+                        <div class="variant-card">
+                            <div class="variant-image">
+                                <img src="1000045244.jpg" alt="Piercer" class="variant-img" onerror="this.src='https://placehold.co/300x80/1a2a22/3fe0a0?text=Piercer'">
+                            </div>
+                            <div class="variant-title"><code>Piercer</code> — Precision Shot</div>
+                            <div class="variant-desc">Высокое воздействие на одну цель. Заряжаемый импульс с бронебойным эффектом. Неограниченный ресурс.</div>
+                            <div class="stat-line">⚡ Эффективность: 2.5x | 🔥 Особенность: проход сквозь цели</div>
                         </div>
-                        <div class="variant-title"><code>Piercer</code> — Precision Shot</div>
-                        <div class="variant-desc">Высокое воздействие на одну цель. Заряжаемый импульс с бронебойным эффектом. Неограниченный ресурс.</div>
-                        <div class="stat-line">⚡ Эффективность: 2.5x | 🔥 Особенность: проход сквозь цели</div>
+                        <div class="variant-card">
+                            <div class="variant-image">
+                                <img src="1000045244.jpg" alt="Marksman" class="variant-img" onerror="this.src='https://placehold.co/300x80/1a2a22/3fe0a0?text=Marksman'">
+                            </div>
+                            <div class="variant-title"><code>Marksman</code> — Coin System</div>
+                            <div class="variant-desc">Подброшенная монета позволяет перенаправлять импульс в уязвимые зоны целей. До 4 отскоков.</div>
+                            <div class="stat-line">🪙 Механика: критическое воздействие + стиль</div>
+                        </div>
                     </div>
-                    <div class="variant-card">
-                        <div class="variant-image">
-                            <img src="1000045244.jpg" alt="Marksman" class="variant-img" onerror="this.src='https://placehold.co/300x80/1a2a22/3fe0a0?text=Marksman'">
+                </div>
+
+                <!-- Альтернативные варианты (скрыты по умолчанию) -->
+                <div class="variants-container alternate-variants" style="display: none;">
+                    <div class="variants">
+                        <div class="variant-card">
+                            <div class="variant-image">
+                                <img src="1000045244.jpg" alt="Slab Piercer" class="variant-img" onerror="this.src='https://placehold.co/300x80/1a2a22/3fe0a0?text=Slab+Piercer'">
+                            </div>
+                            <div class="variant-title"><code>Slab Piercer</code> — Heavy Caliber</div>
+                            <div class="variant-desc">Утяжелённая версия. Медленная перезарядка, но крайне высокая эффективность. Пробивает несколько целей.</div>
+                            <div class="stat-line">💥 Эффективность: 4x | 🕒 Медленная перезарядка</div>
                         </div>
-                        <div class="variant-title"><code>Marksman</code> — Coin System</div>
-                        <div class="variant-desc">Подброшенная монета позволяет перенаправлять импульс в уязвимые зоны целей. До 4 отскоков.</div>
-                        <div class="stat-line">🪙 Механика: критическое воздействие + стиль</div>
-                    </div>
-                    <div class="variant-card">
-                        <div class="variant-image">
-                            <img src="1000045244.jpg" alt="Sharpshooter" class="variant-img" onerror="this.src='https://placehold.co/300x80/1a2a22/3fe0a0?text=Sharpshooter'">
+                        <div class="variant-card">
+                            <div class="variant-image">
+                                <img src="1000045244.jpg" alt="Slab Marksman" class="variant-img" onerror="this.src='https://placehold.co/300x80/1a2a22/3fe0a0?text=Slab+Marksman'">
+                            </div>
+                            <div class="variant-title"><code>Slab Marksman</code> — Heavy Coin</div>
+                            <div class="variant-desc">Утяжелённая монета. Медленнее, но рикошет наносит значительно больше воздействия.</div>
+                            <div class="stat-line">🪙 Критическое воздействие: 3x</div>
                         </div>
-                        <div class="variant-title"><code>Alternate (Sharpshooter)</code></div>
-                        <div class="variant-desc">Альтернативная версия. Детонирует снаряды Shotgun и импульсы V2 при попадании.</div>
-                        <div class="stat-line">💥 Детонация: снаряды Core Eject, ракеты</div>
                     </div>
                 </div>
             </div>
 
-            <!-- ========== SHOTGUN (изменено: Sh0tgun) ========== -->
+            <!-- ========== SH0TGUN (с переключателем стандарт/альтернатива) ========== -->
             <div class="weapon-category" data-weapon="shotgun">
                 <div class="weapon-image-container">
                     <div class="weapon-frame">
@@ -433,71 +501,135 @@
                     </div>
                 </div>
                 <div class="weapon-name"><i class="fas fa-gun"></i> SH0TGUN</div>
-                <div class="variants">
-                    <div class="variant-card">
-                        <div class="variant-image">
-                            <img src="1000045244.jpg" alt="Core Eject" class="variant-img" onerror="this.src='https://placehold.co/300x80/1a2a22/ff3c5a?text=Core+Eject'">
+                
+                <div class="variant-toggle">
+                    <button class="toggle-btn active" data-variant="standard">STANDARD</button>
+                    <button class="toggle-btn" data-variant="alternate">ALTERNATE</button>
+                </div>
+
+                <div class="variants-container standard-variants">
+                    <div class="variants">
+                        <div class="variant-card">
+                            <div class="variant-image">
+                                <img src="1000045244.jpg" alt="Core Eject" class="variant-img" onerror="this.src='https://placehold.co/300x80/1a2a22/ff3c5a?text=Core+Eject'">
+                            </div>
+                            <div class="variant-title"><code>Core Eject</code> — Grenade Launcher</div>
+                            <div class="variant-desc">Импульс термическим зарядом, который активируется при контакте. Возможно отражение для Nuke-механики.</div>
+                            <div class="stat-line">💣 Радиус: 8m | 🔥 Воспламенение целей</div>
                         </div>
-                        <div class="variant-title"><code>Core Eject</code> — Grenade Launcher</div>
-                        <div class="variant-desc">Импульс термическим зарядом, который активируется при контакте. Возможно отражение для Nuke-механики.</div>
-                        <div class="stat-line">💣 Радиус: 8m | 🔥 Воспламенение целей</div>
+                        <div class="variant-card">
+                            <div class="variant-image">
+                                <img src="1000045244.jpg" alt="Pump Charge" class="variant-img" onerror="this.src='https://placehold.co/300x80/1a2a22/ff3c5a?text=Pump+Charge'">
+                            </div>
+                            <div class="variant-title"><code>Pump Charge</code> — Overload</div>
+                            <div class="variant-desc">Накопление заряда для мощного импульса. 3 уровня: от двойной эффективности до само-воздействия.</div>
+                            <div class="stat-line">⚠️ Риск: перезаряд воздействует на оператора | 💪 Max эффективность: 10x</div>
+                        </div>
                     </div>
-                    <div class="variant-card">
-                        <div class="variant-image">
-                            <img src="1000045244.jpg" alt="Pump Charge" class="variant-img" onerror="this.src='https://placehold.co/300x80/1a2a22/ff3c5a?text=Pump+Charge'">
+                </div>
+
+                <div class="variants-container alternate-variants" style="display: none;">
+                    <div class="variants">
+                        <div class="variant-card">
+                            <div class="variant-image">
+                                <img src="1000045244.jpg" alt="Jackhammer" class="variant-img" onerror="this.src='https://placehold.co/300x80/1a2a22/ff3c5a?text=Jackhammer'">
+                            </div>
+                            <div class="variant-title"><code>Jackhammer</code> — Automatic Shotgun</div>
+                            <div class="variant-desc">Полностью автоматический модуль с высокой частотой активации. Можно использовать для ускорения.</div>
+                            <div class="stat-line">🏃 Движение: отдача даёт ускорение | 🔄 Быстрая перезарядка</div>
                         </div>
-                        <div class="variant-title"><code>Pump Charge</code> — Overload</div>
-                        <div class="variant-desc">Накопление заряда для мощного импульса. 3 уровня: от двойной эффективности до само-воздействия.</div>
-                        <div class="stat-line">⚠️ Риск: перезаряд воздействует на оператора | 💪 Max эффективность: 10x</div>
-                    </div>
-                    <div class="variant-card">
-                        <div class="variant-image">
-                            <img src="1000045244.jpg" alt="Jackhammer" class="variant-img" onerror="this.src='https://placehold.co/300x80/1a2a22/ff3c5a?text=Jackhammer'">
-                        </div>
-                        <div class="variant-title"><code>Alternate</code> — Jackhammer</div>
-                        <div class="variant-desc">Автоматический модуль с отдачей. Можно использовать для дополнительного перемещения.</div>
-                        <div class="stat-line">🏃 Движение: отдача даёт ускорение</div>
                     </div>
                 </div>
             </div>
 
-            <!-- ========== RAILCANNON (без изменений — слово неопасное) ========== -->
+            <!-- ========== NAILGUN (НОВОЕ ОРУЖИЕ с переключателем) ========== -->
+            <div class="weapon-category" data-weapon="nailgun">
+                <div class="weapon-image-container">
+                    <div class="weapon-frame">
+                        <img src="1000045244.jpg" alt="Nailgun" class="weapon-img" onerror="this.src='https://placehold.co/400x200/1a2a22/3f9eff?text=NAILGUN'">
+                    </div>
+                </div>
+                <div class="weapon-name"><i class="fas fa-gripfire"></i> NAILGUN</div>
+                
+                <div class="variant-toggle">
+                    <button class="toggle-btn active" data-variant="standard">STANDARD</button>
+                    <button class="toggle-btn" data-variant="alternate">ALTERNATE</button>
+                </div>
+
+                <div class="variants-container standard-variants">
+                    <div class="variants">
+                        <div class="variant-card">
+                            <div class="variant-image">
+                                <img src="1000045244.jpg" alt="Attractor" class="variant-img" onerror="this.src='https://placehold.co/300x80/1a2a22/3f9eff?text=Attractor'">
+                            </div>
+                            <div class="variant-title"><code>Attractor</code> — Magnet</div>
+                            <div class="variant-desc">Выпускает магнит, который притягивает гвозди к целям. Высокая частота воздействия.</div>
+                            <div class="stat-line">🧲 Магнит: радиус 6m | 📍 Перенаправление гвоздей</div>
+                        </div>
+                        <div class="variant-card">
+                            <div class="variant-image">
+                                <img src="1000045244.jpg" alt="Overheat" class="variant-img" onerror="this.src='https://placehold.co/300x80/1a2a22/3f9eff?text=Overheat'">
+                            </div>
+                            <div class="variant-title"><code>Overheat</code> — Heat Sink</div>
+                            <div class="variant-desc">Накопление тепла при активации. При перегреве наносит дополнительное воздействие.</div>
+                            <div class="stat-line">🔥 Перегрев: взрыв | ⚠️ Требует охлаждения</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="variants-container alternate-variants" style="display: none;">
+                    <div class="variants">
+                        <div class="variant-card">
+                            <div class="variant-image">
+                                <img src="1000045244.jpg" alt="Sawblade Launcher" class="variant-img" onerror="this.src='https://placehold.co/300x80/1a2a22/3f9eff?text=Sawblade+Launcher'">
+                            </div>
+                            <div class="variant-title"><code>Sawblade Launcher</code> — Circular Saw</div>
+                            <div class="variant-desc">Выпускает циркулярные диски, которые рикошетят от поверхностей и наносят многократное воздействие.</div>
+                            <div class="stat-line">🔄 Рикошет: до 5 раз | ⚙️ Может быть подмагничен</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========== RAILCANNON (без альтернатив) ========== -->
             <div class="weapon-category" data-weapon="railcannon">
                 <div class="weapon-image-container">
                     <div class="weapon-frame">
-                        <img src="1000045244.jpg" alt="Railcannon" class="weapon-img" onerror="this.src='https://placehold.co/400x200/1a2a22/3f9eff?text=RAILCANNON'">
+                        <img src="1000045244.jpg" alt="Railcannon" class="weapon-img" onerror="this.src='https://placehold.co/400x200/1a2a22/9b59b6?text=RAILCANNON'">
                     </div>
                 </div>
                 <div class="weapon-name"><i class="fas fa-bolt"></i> RAILCANNON</div>
                 <div class="variants">
-                    <div class="variant-card">
-                        <div class="variant-image">
-                            <img src="1000045244.jpg" alt="Electric Railcannon" class="variant-img" onerror="this.src='https://placehold.co/300x80/1a2a22/3f9eff?text=Electric'">
+                    <div class="variants">
+                        <div class="variant-card">
+                            <div class="variant-image">
+                                <img src="1000045244.jpg" alt="Electric" class="variant-img" onerror="this.src='https://placehold.co/300x80/1a2a22/9b59b6?text=Electric'">
+                            </div>
+                            <div class="variant-title"><code>Electric</code> — Chain Lightning</div>
+                            <div class="variant-desc">Электрический луч, перепрыгивающий между целями. Высокий контроль пространства.</div>
+                            <div class="stat-line">⚡ Перескок: до 5 целей | 🕒 Медленная перезарядка</div>
                         </div>
-                        <div class="variant-title"><code>Electric</code> — Chain Lightning</div>
-                        <div class="variant-desc">Электрический луч, который перепрыгивает между целями. Высокий контроль пространства.</div>
-                        <div class="stat-line">⚡ Перескок: до 5 целей | 🕒 Перезарядка: медленная</div>
-                    </div>
-                    <div class="variant-card">
-                        <div class="variant-image">
-                            <img src="1000045244.jpg" alt="Malicious Railcannon" class="variant-img" onerror="this.src='https://placehold.co/300x80/1a2a22/3f9eff?text=Malicious'">
+                        <div class="variant-card">
+                            <div class="variant-image">
+                                <img src="1000045244.jpg" alt="Malicious" class="variant-img" onerror="this.src='https://placehold.co/300x80/1a2a22/9b59b6?text=Malicious'">
+                            </div>
+                            <div class="variant-title"><code>Malicious</code> — Explosive Beam</div>
+                            <div class="variant-desc">Мощный импульс по линии воздействия. Комбо с замороженной ракетой даёт Nuke.</div>
+                            <div class="stat-line">💥 Nuke: радиус 25m</div>
                         </div>
-                        <div class="variant-title"><code>Malicious</code> — Explosive Beam</div>
-                        <div class="variant-desc">Мощный импульс по линии воздействия. Комбо с замороженной ракетой даёт Nuke.</div>
-                        <div class="stat-line">💥 Nuke: радиус 25m</div>
-                    </div>
-                    <div class="variant-card">
-                        <div class="variant-image">
-                            <img src="1000045244.jpg" alt="Screwdriver" class="variant-img" onerror="this.src='https://placehold.co/300x80/1a2a22/3f9eff?text=Screwdriver'">
+                        <div class="variant-card">
+                            <div class="variant-image">
+                                <img src="1000045244.jpg" alt="Screwdriver" class="variant-img" onerror="this.src='https://placehold.co/300x80/1a2a22/9b59b6?text=Screwdriver'">
+                            </div>
+                            <div class="variant-title"><code>Screwdriver</code> — Drill</div>
+                            <div class="variant-desc">Внедряет модуль в цель, воздействующий с течением времени. Можно парировать для мгновенного эффекта.</div>
+                            <div class="stat-line">🩸 Восстановление: 10% HP за такт | 🔄 Parry refund</div>
                         </div>
-                        <div class="variant-title"><code>Screwdriver</code> — Drill</div>
-                        <div class="variant-desc">Внедряет модуль в цель, который воздействует с течением времени. Можно парировать для мгновенного эффекта.</div>
-                        <div class="stat-line">🩸 Восстановление: 10% HP за такт | 🔄 Parry refund</div>
                     </div>
                 </div>
             </div>
 
-            <!-- ========== ROCKET LAUNCHER (изменено: R0cket Launcher / Raket) ========== -->
+            <!-- ========== R0CKET LAUNCHER (без альтернатив) ========== -->
             <div class="weapon-category" data-weapon="rocket">
                 <div class="weapon-image-container">
                     <div class="weapon-frame">
@@ -506,34 +638,28 @@
                 </div>
                 <div class="weapon-name"><i class="fas fa-rocket"></i> R0CKET LAUNCHER</div>
                 <div class="variants">
-                    <div class="variant-card">
-                        <div class="variant-image">
-                            <img src="1000045244.jpg" alt="Freezeframe" class="variant-img" onerror="this.src='https://placehold.co/300x80/1a2a22/f0a830?text=Freezeframe'">
+                    <div class="variants">
+                        <div class="variant-card">
+                            <div class="variant-image">
+                                <img src="1000045244.jpg" alt="Freezeframe" class="variant-img" onerror="this.src='https://placehold.co/300x80/1a2a22/f0a830?text=Freezeframe'">
+                            </div>
+                            <div class="variant-title"><code>Freezeframe</code> — Time Stop</div>
+                            <div class="variant-desc">Замораживает ракету в воздухе. Можно использовать как платформу или для Nuke.</div>
+                            <div class="stat-line">❄️ Заморозка: 3 сек | 🛸 Rocket Riding</div>
                         </div>
-                        <div class="variant-title"><code>Freezeframe</code> — Time Stop</div>
-                        <div class="variant-desc">Замораживает ракету в воздухе. Можно использовать как платформу или для Nuke.</div>
-                        <div class="stat-line">❄️ Заморозка: 3 сек | 🛸 Rocket Riding</div>
-                    </div>
-                    <div class="variant-card">
-                        <div class="variant-image">
-                            <img src="1000045244.jpg" alt="Standard Rocket" class="variant-img" onerror="this.src='https://placehold.co/300x80/1a2a22/f0a830?text=Standard'">
+                        <div class="variant-card">
+                            <div class="variant-image">
+                                <img src="1000045244.jpg" alt="Standard" class="variant-img" onerror="this.src='https://placehold.co/300x80/1a2a22/f0a830?text=Standard'">
+                            </div>
+                            <div class="variant-title"><code>Standard</code> — Homing</div>
+                            <div class="variant-desc">Управляемые ракеты с лёгким самонаведением. Высокая частота активации.</div>
+                            <div class="stat-line">🎯 Наведение: 15° | 🔄 2 ракеты в магазине</div>
                         </div>
-                        <div class="variant-title"><code>Standard</code> — Homing</div>
-                        <div class="variant-desc">Управляемые ракеты с лёгким самонаведением. Высокая частота активации.</div>
-                        <div class="stat-line">🎯 Наведение: 15° | 🔄 2 ракеты в магазине</div>
-                    </div>
-                    <div class="variant-card">
-                        <div class="variant-image">
-                            <img src="1000045244.jpg" alt="Cannonball" class="variant-img" onerror="this.src='https://placehold.co/300x80/1a2a22/f0a830?text=Cannonball'">
-                        </div>
-                        <div class="variant-title"><code>Alternate</code> — Cannonball</div>
-                        <div class="variant-desc">Замедленный тяжёлый снаряд с высоким воздействием. Можно отразить Feedbacker'ом.</div>
-                        <div class="stat-line">🏀 Рикошет: +стиль | 💀 Воздействие: 50</div>
                     </div>
                 </div>
             </div>
 
-            <!-- ========== ARMS (без изменений — слово нейтральное) ========== -->
+            <!-- ========== ARMS (без альтернатив) ========== -->
             <div class="weapon-category" data-weapon="arms">
                 <div class="weapon-image-container">
                     <div class="weapon-frame">
@@ -542,31 +668,39 @@
                 </div>
                 <div class="weapon-name"><i class="fas fa-fist-raised"></i> ARMS — FEEDBACKER / KNUCKLEBLASTER</div>
                 <div class="variants">
-                    <div class="variant-card">
-                        <div class="variant-image">
-                            <img src="1000045244.jpg" alt="Feedbacker" class="variant-img" onerror="this.src='https://placehold.co/300x80/1a2a22/ff6ac4?text=Feedbacker'">
+                    <div class="variants">
+                        <div class="variant-card">
+                            <div class="variant-image">
+                                <img src="1000045244.jpg" alt="Feedbacker" class="variant-img" onerror="this.src='https://placehold.co/300x80/1a2a22/ff6ac4?text=Feedbacker'">
+                            </div>
+                            <div class="variant-title"><code>Feedbacker</code> — Parry Master</div>
+                            <div class="variant-desc">Перехватывает любые снаряды и воздействия целей. Отражённые ракеты наносят тройную эффективность.</div>
+                            <div class="stat-line">🛡️ Окно перехвата: 6 кадров | ✨ Chargeback</div>
                         </div>
-                        <div class="variant-title"><code>Feedbacker</code> — Parry Master</div>
-                        <div class="variant-desc">Перехватывает любые снаряды и воздействия целей. Отражённые ракеты и снаряды наносят тройную эффективность.</div>
-                        <div class="stat-line">🛡️ Окно перехвата: 6 кадров | ✨ Chargeback: рикошет снарядов</div>
-                    </div>
-                    <div class="variant-card">
-                        <div class="variant-image">
-                            <img src="1000045244.jpg" alt="Knuckleblaster" class="variant-img" onerror="this.src='https://placehold.co/300x80/1a2a22/ff6ac4?text=Knuckleblaster'">
+                        <div class="variant-card">
+                            <div class="variant-image">
+                                <img src="1000045244.jpg" alt="Knuckleblaster" class="variant-img" onerror="this.src='https://placehold.co/300x80/1a2a22/ff6ac4?text=Knuckleblaster'">
+                            </div>
+                            <div class="variant-title"><code>Knuckleblaster</code> — Shockwave</div>
+                            <div class="variant-desc">Мощный импульс с ударной волной. Разрушает защитные конструкции целей.</div>
+                            <div class="stat-line">💢 Разрушение: щиты | 🌪️ Радиус: 4m</div>
                         </div>
-                        <div class="variant-title"><code>Knuckleblaster</code> — Shockwave</div>
-                        <div class="variant-desc">Мощный импульс с ударной волной. Разрушает защитные конструкции целей и отбрасывает группу.</div>
-                        <div class="stat-line">💢 Разрушение: щиты Soldat | 🌪️ Радиус: 4m</div>
                     </div>
                 </div>
             </div>
         </div>
 
-       
+        <div class="image-guide">
+            <h4><i class="fas fa-image"></i> 📸 КАК ЗАМЕНИТЬ ИЗОБРАЖЕНИЯ:</h4>
+            <p>1. Поместите ваши <code>.jpg</code> или <code>.png</code> файлы в ту же папку.</p>
+            <p>2. Замените <code>src="1000045244.jpg"</code> на имя вашего файла для каждого оружия.</p>
+            <p>3. <strong>Переключатель STANDARD/ALTERNATE</strong> показывает разные варианты для Rev0lver, Sh0tgun и Nailgun.</p>
+        </div>
+
         <div class="ascii-art">
             ╔══════════════════════════════════════════════════════════╗
             ║  [V1 WEAPON SYSTEM]  > BLOD = AMMO                       ║
-            ║  > ALTERNATE VARIANTS UNLOCKABLE VIA SECRET LEVELS        ║
+            ║  > ALTERNATE VARIANTS: SECRET UNLOCKABLES                ║
             ╚══════════════════════════════════════════════════════════╝
         </div>
 
@@ -578,6 +712,33 @@
 </div>
 
 <script>
+    // Переключатель между стандартными и альтернативными вариантами
+    document.querySelectorAll('.weapon-category').forEach(category => {
+        const toggleBtns = category.querySelectorAll('.toggle-btn');
+        if (toggleBtns.length === 0) return;
+
+        const standardContainer = category.querySelector('.standard-variants');
+        const alternateContainer = category.querySelector('.alternate-variants');
+
+        toggleBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Убираем активный класс у всех кнопок в этой категории
+                toggleBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                const variant = btn.getAttribute('data-variant');
+                if (variant === 'standard') {
+                    if (standardContainer) standardContainer.style.display = 'block';
+                    if (alternateContainer) alternateContainer.style.display = 'none';
+                } else {
+                    if (standardContainer) standardContainer.style.display = 'none';
+                    if (alternateContainer) alternateContainer.style.display = 'block';
+                }
+            });
+        });
+    });
+
+    // Эффект клика в стиле терминала
     document.body.addEventListener('click', (e) => {
         if (e.target.closest('.back-link')) return;
         const flash = document.createElement('div');
@@ -592,7 +753,6 @@
         document.body.appendChild(flash);
         setTimeout(() => flash.remove(), 80);
     });
-    console.log("SLIME OS 2 TERMINAL // WEAPON ARSENAL LOADED (censored-friendly version)");
 </script>
 </body>
 </html>
