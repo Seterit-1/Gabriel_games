@@ -14,7 +14,6 @@
             user-select: none;
         }
 
-        /* SLIME OS 2 TERMINAL STYLE */
         :root {
             --terminal-bg: #0a0c0f;
             --terminal-green: #3fe0a0;
@@ -36,7 +35,6 @@
             position: relative;
         }
 
-        /* Эффект ЭЛТ-монитора */
         body::before {
             content: "";
             position: fixed;
@@ -73,7 +71,6 @@
             overflow: hidden;
         }
 
-        /* Верхняя панель терминала */
         .terminal-bar {
             background: #0d1117;
             padding: 0.8rem 1.2rem;
@@ -128,7 +125,6 @@
             text-shadow: 0 0 5px var(--terminal-green);
         }
 
-        /* Содержимое терминала */
         .terminal-content {
             padding: 1.8rem;
         }
@@ -177,7 +173,6 @@
             50% { opacity: 0; }
         }
 
-        /* Сетка оружия */
         .weapon-grid {
             display: flex;
             flex-direction: column;
@@ -196,7 +191,6 @@
             border-left-color: var(--terminal-red);
         }
 
-        /* СТИЛИ ДЛЯ ИЗОБРАЖЕНИЙ ОРУЖИЯ */
         .weapon-image-container {
             margin-bottom: 1rem;
             display: flex;
@@ -213,7 +207,6 @@
             display: inline-block;
         }
 
-        /* Разные рамки для разных типов оружия */
         .weapon-category[data-weapon="revolver"] .weapon-frame {
             border-color: var(--terminal-green);
             box-shadow: 0 0 15px rgba(63, 224, 160, 0.3);
@@ -282,7 +275,6 @@
             transform: translateX(4px);
         }
 
-        /* Изображения для каждого варианта оружия */
         .variant-image {
             margin-bottom: 0.8rem;
             text-align: center;
@@ -336,7 +328,6 @@
             flex-wrap: wrap;
         }
 
-        /* Инструкция по замене изображений */
         .image-guide {
             background: #0d1117;
             border: 1px solid var(--terminal-amber);
@@ -385,7 +376,7 @@
                 <div class="dot dot-green"></div>
             </div>
             <div class="terminal-path">
-                <i class="fas fa-terminal"></i> V1@HELL:/arsenal/weapons
+                <i class="fas fa-terminal"></i> V1@HEL:/arsenal/weapons
             </div>
         </div>
         <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> EXIT TO MAIN SHELL</a>
@@ -394,11 +385,10 @@
     <div class="terminal-content">
         <div class="boot-header">
             <h1><i class="fas fa-microchip"></i> V1 WEAPON ARSENAL v.2.0.1<span class="blink-cursor"></span></h1>
-            <p>> ACCESSING WEAPON DATABASE // BLOOD-FUELED ORDNANCE // TOTAL: 5 PRIMARY SYSTEMS + VARIANTS</p>
+            <p>> ACCESSING WEAPON DATABASE // BLOD-FUELED ORDNANCE // TOTAL: 5 PRIMARY SYSTEMS + VARIANTS</p>
         </div>
 
         <div class="weapon-grid">
-            <!-- REVOLVER -->
             <div class="weapon-category" data-weapon="revolver">
                 <div class="weapon-image-container">
                     <div class="weapon-frame">
@@ -434,7 +424,6 @@
                 </div>
             </div>
 
-            <!-- SHOTGUN -->
             <div class="weapon-category" data-weapon="shotgun">
                 <div class="weapon-image-container">
                     <div class="weapon-frame">
@@ -470,7 +459,6 @@
                 </div>
             </div>
 
-            <!-- RAILCANNON -->
             <div class="weapon-category" data-weapon="railcannon">
                 <div class="weapon-image-container">
                     <div class="weapon-frame">
@@ -506,7 +494,6 @@
                 </div>
             </div>
 
-            <!-- ROCKET LAUNCHER -->
             <div class="weapon-category" data-weapon="rocket">
                 <div class="weapon-image-container">
                     <div class="weapon-frame">
@@ -542,7 +529,6 @@
                 </div>
             </div>
 
-            <!-- ARMS -->
             <div class="weapon-category" data-weapon="arms">
                 <div class="weapon-image-container">
                     <div class="weapon-frame">
@@ -571,11 +557,11 @@
             </div>
         </div>
 
-        
+       
 
         <div class="ascii-art">
             ╔══════════════════════════════════════════════════════════╗
-            ║  [V1 WEAPON SYSTEM]  > BLOOD = AMMO                       ║
+            ║  [V1 WEAPON SYSTEM]  > BLOD = AMMO                       ║
             ║  > ALTERNATE VARIANTS UNLOCKABLE VIA SECRET LEVELS        ║
             ╚══════════════════════════════════════════════════════════╝
         </div>
@@ -588,7 +574,6 @@
 </div>
 
 <script>
-    // Эффект клика в стиле терминала
     document.body.addEventListener('click', (e) => {
         if (e.target.closest('.back-link')) return;
         const flash = document.createElement('div');

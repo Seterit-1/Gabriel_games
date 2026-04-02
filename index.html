@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>ULTRAKILL Wiki | МАШИНА V1: КРОВЬ – ТОПЛИВО</title>
+    <title>ULTRAKILL Wiki | МАШИНА V1: Красная жидкость – ТОПЛИВО</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800;900&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
@@ -15,7 +14,7 @@
         }
 
         :root {
-            --blood-red: #d42e2e;
+            --blod-red: #d42e2e;
             --deep-rust: #8a1a1a;
             --metal-dark: #0f0f12;
             --steel-panel: #1a1a1f;
@@ -53,7 +52,7 @@
 
         .rust-stripe {
             height: 4px;
-            background: repeating-linear-gradient(90deg, var(--blood-red), #5a1515 25px, var(--hydraulic-gold) 45px, #2b0e0e 70px);
+            background: repeating-linear-gradient(90deg, var(--blod-red), #5a1515 25px, var(--hydraulic-gold) 45px, #2b0e0e 70px);
             width: 100%;
             margin-bottom: 1rem;
             box-shadow: 0 0 6px var(--machine-glow);
@@ -67,7 +66,7 @@
             z-index: 10;
             background: rgba(8, 8, 12, 0.85);
             backdrop-filter: blur(2px);
-            border-left: 3px solid var(--blood-red);
+            border-left: 3px solid var(--blod-red);
             border-right: 3px solid var(--steel-panel);
             border-radius: 20px 20px 24px 24px;
             box-shadow: 0 0 0 1px #4a2a2a, 0 10px 30px rgba(0,0,0,0.8);
@@ -79,14 +78,14 @@
             align-items: flex-end;
             flex-wrap: wrap;
             padding-bottom: 1rem;
-            border-bottom: 2px solid var(--blood-red);
+            border-bottom: 2px solid var(--blod-red);
             margin-bottom: 1.5rem;
         }
 
         .logo-metal h1 {
             font-size: 2.7rem;
             font-weight: 800;
-            background: linear-gradient(135deg, #e8e2d8, var(--blood-red), #8a6a3a);
+            background: linear-gradient(135deg, #e8e2d8, var(--blod-red), #8a6a3a);
             background-clip: text;
             -webkit-background-clip: text;
             color: transparent;
@@ -125,7 +124,7 @@
             display: inline-block;
         }
 
-        .nav-weapon { border-color: var(--blood-red); color: var(--blood-red); }
+        .nav-weapon { border-color: var(--blod-red); color: var(--blod-red); }
         .nav-mob { border-color: var(--bolt-silver); color: var(--bolt-silver); }
         .nav-boss { border-color: var(--hydraulic-gold); color: var(--hydraulic-gold); }
         .nav-layer { border-color: var(--warning-yellow); color: var(--warning-yellow); }
@@ -163,14 +162,14 @@
         }
 
         .machine-card:hover {
-            border-color: var(--blood-red);
+            border-color: var(--blod-red);
             box-shadow: 0 0 18px rgba(212,46,46,0.2);
         }
 
         .section-title {
             font-size: 1.7rem;
             font-weight: 800;
-            border-left: 5px solid var(--blood-red);
+            border-left: 5px solid var(--blod-red);
             padding-left: 1rem;
             margin-bottom: 1.2rem;
         }
@@ -208,12 +207,12 @@
             background: #120c17;
             padding: 0.9rem 1.2rem;
             font-weight: 800;
-            border-bottom: 2px solid var(--blood-red);
+            border-bottom: 2px solid var(--blod-red);
         }
 
         .machine-btn {
             background: none;
-            border: 1px solid var(--blood-red);
+            border: 1px solid var(--blod-red);
             padding: 0.4rem 1rem;
             border-radius: 40px;
             width: 100%;
@@ -243,7 +242,7 @@
             .section-title { font-size: 1.4rem; }
         }
 
-        .blood-splatter {
+        .blod-splatter {
             position: fixed;
             width: 18px;
             height: 18px;
@@ -267,14 +266,13 @@
     <div class="machine-header">
         <div class="logo-metal">
             <h1><i class="fas fa-microchip"></i> V1 // ULTRAKILL</h1>
-            <p style="font-family: 'Fira Code';">MANKIND IS DEAD. BLOOD IS FUEL. HELL IS FULL.</p>
+            <p style="font-family: 'Fira Code';">MANKIND IS DEAD. BLOD IS FUEL. HEL IS FULL.</p>
         </div>
         <div class="badge-machine">
-            <i class="fas fa-tint"></i> КРОВЬ КАК ТОПЛИВО <i class="fas fa-cog"></i>
+            <i class="fas fa-tint"></i> Красная жидкость КАК ТОПЛИВО <i class="fas fa-cog"></i>
         </div>
     </div>
 
-    <!-- КНОПКИ НАВИГАЦИИ -->
     <div class="nav-buttons">
         <a href="weapons.html" class="wiki-nav-btn nav-weapon"><i class="fas fa-gun"></i> ОРУЖИЕ</a>
         <button class="wiki-nav-btn nav-mob" data-section="mobs"><i class="fas fa-pastafarianism"></i> МОБЫ</button>
@@ -284,7 +282,6 @@
 
     <div class="wiki-grid">
         <div class="main-col">
-            <!-- МОБЫ -->
             <div id="mobs" class="machine-card">
                 <div class="section-title">👁️ ВРАЖЕСКИЙ СОСТАВ — ХАСКИ И ДЕМОНЫ</div>
                 <ul class="machine-list">
@@ -298,7 +295,6 @@
                 <div class="stat-tag">Всего 20+ типов: от Cerberus до Hideous Mass. Каждый враг — искажённая душа или орудие ада.</div>
             </div>
 
-            <!-- БОССЫ -->
             <div id="bosses" class="machine-card">
                 <div class="section-title">👑 БОССЫ — ПОВЕЛИТЕЛИ АДА И ПРАЙМЫ</div>
                 <ul class="machine-list">
@@ -312,7 +308,6 @@
                 <div class="stat-tag">Особенность: у каждого босса уникальные механики и фазы, основанные на "Божественной комедии".</div>
             </div>
 
-            <!-- СЛОИ -->
             <div id="layers" class="machine-card">
                 <div class="section-title">🌍 КРУГИ АДА — ПРОЛОГ И АКТЫ</div>
                 <ul class="machine-list">
@@ -328,12 +323,11 @@
             </div>
         </div>
 
-        <!-- САЙДБАР -->
         <div class="side-col">
             <div class="side-module">
                 <div class="side-header"><i class="fas fa-microchip"></i> СПЕЦИФИКАЦИЯ V1</div>
                 <div class="side-content" style="padding: 1rem;">
-                    <p><i class="fas fa-tint" style="color: var(--blood-red);"></i> <strong>Топливо:</strong> кровь врагов — единственный способ восстановления здоровья.</p>
+                    <p><i class="fas fa-tint" style="color: var(--blod-red);"></i> <strong>Топливо:</strong> красная жидкость врагов — единственный способ восстановления здоровья.</p>
                     <p><i class="fas fa-bolt"></i> <strong>Движение:</strong> слайд, стена-прыжок, Slam Storage (баг с сохранением импульса).</p>
                     <p><i class="fas fa-chart-line"></i> <strong>Система стиля:</strong> от D до ULTRAKILL (ранг P требует убить всех врагов и собрать секреты).</p>
                     <p><i class="fas fa-dice-d6"></i> <strong>Секретные приёмы:</strong> отражение снарядов (Chargeback), Nuke-взрыв, отскок от монет.</p>
@@ -353,7 +347,7 @@
                 <div class="side-header"><i class="fas fa-link"></i> ОФИЦИАЛЬНЫЕ РЕСУРСЫ</div>
                 <div class="side-content" style="padding: 0.8rem;">
                     <ul class="machine-list" style="margin: 0;">
-                        <li><i class="fab fa-steam"></i> <a href="#" style="color: var(--blood-red);">ULTRAKILL в Steam (демо)</a></li>
+                        <li><i class="fab fa-steam"></i> <a href="#" style="color: var(--blod-red);">ULTRAKILL в Steam (демо)</a></li>
                         <li><i class="fas fa-wiki"></i> <a href="#" style="color: var(--bolt-silver);">Fandom вики (источник данных)</a></li>
                         <li><i class="fab fa-discord"></i> <a href="#">New Blood Discord (#ultrakill)</a></li>
                     </ul>
@@ -372,7 +366,7 @@
     </div>
 
     <div class="footer">
-        <div><i class="fas fa-cog"></i> V1 MACHINE // BLOOD IS FUEL // HELL IS FULL</div>
+        <div><i class="fas fa-cog"></i> V1 MACHINE // BLOD IS FUEL // HEL IS FULL</div>
         <div><i class="fas fa-skull"></i> Информация основана на ULTRAKILL Fandom Wiki</div>
     </div>
 </div>
@@ -380,7 +374,7 @@
 <script>
     function createSplatter(e) {
         const splat = document.createElement('div');
-        splat.classList.add('blood-splatter');
+        splat.classList.add('blod-splatter');
         splat.style.left = e.clientX - 8 + 'px';
         splat.style.top = e.clientY - 8 + 'px';
         document.body.appendChild(splat);
@@ -395,7 +389,7 @@
                 if (target) {
                     target.scrollIntoView({ behavior: 'smooth', block: 'start' });
                     target.style.transition = '0.2s';
-                    target.style.boxShadow = '0 0 0 2px var(--blood-red), 0 0 0 4px var(--hydraulic-gold)';
+                    target.style.boxShadow = '0 0 0 2px var(--blod-red), 0 0 0 4px var(--hydraulic-gold)';
                     setTimeout(() => { target.style.boxShadow = ''; }, 800);
                 }
             }
@@ -405,7 +399,7 @@
     const loreBtn = document.getElementById('loreBtn');
     if (loreBtn) {
         loreBtn.addEventListener('click', () => {
-            alert("«MANKIND IS DEAD. BLOOD IS FUEL. HELL IS FULL.» — вступление к игре. V1 — машина, не знающая пощады.");
+            alert("«MANKIND IS DEAD. BLOD IS FUEL. HEL IS FULL.» — вступление к игре. V1 — машина, не знающая пощады.");
             createSplatter({ clientX: window.innerWidth/2, clientY: window.innerHeight/2 });
         });
     }
@@ -436,4 +430,3 @@
 </script>
 </body>
 </html>
-
