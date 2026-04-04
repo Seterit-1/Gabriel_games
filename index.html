@@ -8,6 +8,9 @@
     <style>
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
+        /* ══════════════════════════════════════
+           THEME VARIABLES
+        ══════════════════════════════════════ */
         :root {
             --acc:       #ff2020;
             --acc-dim:   #8a0000;
@@ -96,6 +99,21 @@
             --c-orange:  #bb5522;
         }
 
+        /* ══════════════════════════════════════
+           THEME BACKGROUND CANVAS
+        ══════════════════════════════════════ */
+        #theme-bg-canvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 2;
+            opacity: 1;
+        }
+
+        /* ══════════════════════════════════════
+           BASE STYLES
+        ══════════════════════════════════════ */
         body {
             background: var(--body-bg);
             color: var(--text-p);
@@ -184,6 +202,9 @@
             margin-top: 0.4rem;
         }
 
+        /* ══════════════════════════════════════
+           THEME SELECTOR PANEL
+        ══════════════════════════════════════ */
         .theme-panel {
             background: var(--panel-bg);
             border: 1px solid var(--panel-bd);
@@ -636,18 +657,15 @@
 </head>
 <body data-theme="dark">
 
-<!-- ══ ANIMATED BACKGROUND CANVAS ══ -->
-<canvas id="bgCanvas" style="
-    position: fixed; top: 0; left: 0;
-    width: 100vw; height: 100vh;
-    z-index: 3; pointer-events: none;
-    opacity: 0; transition: opacity 0.8s ease;
-"></canvas>
+<!-- ═══ THEME BACKGROUND CANVAS ═══ -->
+<canvas id="theme-bg-canvas"></canvas>
 
 <div class="page">
 
+    <!-- ═══ HEADER ═══ -->
     <div class="site-header">
         <div class="header-top">
+
             <div>
                 <div class="logo-eyebrow">// SYSTEM DATABASE // UNIT PROFILE // ACTIVE</div>
                 <div class="logo-main"><span class="v1">V1</span> — ULTRAKILL</div>
@@ -659,40 +677,59 @@
             <div class="theme-panel" id="themePanel">
                 <div class="tp-head">// ТЕМА ИНТЕРФЕЙСА</div>
                 <div class="tp-grid">
-                    <button class="tp-btn t-dark active" data-tv="dark" onclick="setTheme('dark')" title="Оригинальная тёмная тема">
+
+                    <button class="tp-btn t-dark active"
+                            data-tv="dark"
+                            onclick="setTheme('dark')"
+                            title="Оригинальная тёмная тема">
                         <div class="tp-swatch"></div>
                         <div class="tp-info">
                             <div class="tp-name">DARK</div>
                             <div class="tp-sub">ORIGINAL</div>
                         </div>
                     </button>
-                    <button class="tp-btn t-v1" data-tv="v1" onclick="setTheme('v1')" title="V1 — Машина / Синяя тема">
+
+                    <button class="tp-btn t-v1"
+                            data-tv="v1"
+                            onclick="setTheme('v1')"
+                            title="V1 — Машина / Синяя тема">
                         <div class="tp-swatch"></div>
                         <div class="tp-info">
                             <div class="tp-name">V1</div>
                             <div class="tp-sub">MACHINE // BLUE</div>
                         </div>
                     </button>
-                    <button class="tp-btn t-v2" data-tv="v2" onclick="setTheme('v2')" title="V2 — Зеркальный модуль / Красная тема">
+
+                    <button class="tp-btn t-v2"
+                            data-tv="v2"
+                            onclick="setTheme('v2')"
+                            title="V2 — Зеркальный модуль / Красная тема">
                         <div class="tp-swatch"></div>
                         <div class="tp-info">
                             <div class="tp-name">V2</div>
                             <div class="tp-sub">MIRROR // RED</div>
                         </div>
                     </button>
-                    <button class="tp-btn t-gabriel" data-tv="gabriel" onclick="setTheme('gabriel')" title="GABRIEL — Архангел / Судья / Белая тема">
+
+                    <button class="tp-btn t-gabriel"
+                            data-tv="gabriel"
+                            onclick="setTheme('gabriel')"
+                            title="GABRIEL — Архангел / Судья / Белая тема">
                         <div class="tp-swatch"></div>
                         <div class="tp-info">
                             <div class="tp-name">GABRIEL</div>
                             <div class="tp-sub">JUDGE // WHITE</div>
                         </div>
                     </button>
+
                 </div>
                 <div class="tp-current" id="tpCurrent">АКТИВНА: DARK // ORIGINAL</div>
             </div>
+
         </div>
     </div>
 
+    <!-- ═══ TICKER ═══ -->
     <div class="ticker-wrap">
         <div class="ticker-inner">
             <span class="ti">// <span class="r">АКТИВНА</span> // БЛОК ДАННЫХ V1 // НИЖНИЙ СЕКТОР: ДОСТУП РАЗРЕШЁН // АРСЕНАЛ: ЗАРЯЖЕН // ТОПЛИВО: КРИТИЧЕСКИ НИЗКОЕ //</span>
@@ -700,8 +737,10 @@
         </div>
     </div>
 
+    <!-- ═══ NAVIGATION ═══ -->
     <div class="ws-label">// НАВИГАЦИЯ — ВЫБОР РАЗДЕЛА БАЗЫ ДАННЫХ</div>
     <div class="ws-grid">
+
         <a href="weapons.html" class="ws-slot c-blue">
             <div class="slot-icon">⬡</div>
             <div>
@@ -710,6 +749,7 @@
             </div>
             <div class="slot-num">1</div>
         </a>
+
         <button class="ws-slot c-gold" onclick="navTo('layers')">
             <div class="slot-icon">▦</div>
             <div>
@@ -718,6 +758,7 @@
             </div>
             <div class="slot-num">2</div>
         </button>
+
         <button class="ws-slot c-pink" onclick="document.getElementById('statsBtn').click()">
             <div class="slot-icon">◎</div>
             <div>
@@ -726,12 +767,16 @@
             </div>
             <div class="slot-num">3</div>
         </button>
+
     </div>
 
     <div class="redline"></div>
 
+    <!-- ═══ WIKI GRID ═══ -->
     <div class="wiki-grid">
+
         <div class="main-col">
+
             <div id="bosses" class="panel">
                 <div class="panel-head">
                     <div class="ph-dot gold"></div>
@@ -739,6 +784,7 @@
                     <div class="ph-tag">PRIORITY.TARGETS</div>
                 </div>
                 <div class="panel-body">
+
                     <div class="boss">
                         <div class="boss-sym">★</div>
                         <div>
@@ -747,6 +793,7 @@
                             <div class="boss-desc">Сверхскоростное взаимодействие с фазовыми переходами. Один из наиболее интенсивных объектов в базе данных. Требует полного контроля пространства.</div>
                         </div>
                     </div>
+
                     <div class="boss">
                         <div class="boss-sym">✦</div>
                         <div>
@@ -755,6 +802,7 @@
                             <div class="boss-desc">Поведенческий сценарий изменяется после первого столкновения. Интенсивность второго этапа значительно превышает первый.</div>
                         </div>
                     </div>
+
                     <div class="boss">
                         <div class="boss-sym">◆</div>
                         <div>
@@ -763,6 +811,7 @@
                             <div class="boss-desc">Завершающий значимый объект сектора Раскол. Максимальный уровень интенсивности. Нейтрализация засчитывается как завершение акта.</div>
                         </div>
                     </div>
+
                     <div class="boss">
                         <div class="boss-sym">▲</div>
                         <div>
@@ -771,6 +820,7 @@
                             <div class="boss-desc">Гигантская структура. Сессия проходит на динамических платформах. Приоритет — поддержание высокой мобильности V1.</div>
                         </div>
                     </div>
+
                     <div class="boss">
                         <div class="boss-sym">≋</div>
                         <div>
@@ -779,6 +829,7 @@
                             <div class="boss-desc">Наибольший объект по физическим параметрам. Воздействие хвостом и проекциями. Среда — затопленный комплекс нижнего уровня.</div>
                         </div>
                     </div>
+
                     <div class="boss">
                         <div class="boss-sym">⬡</div>
                         <div>
@@ -787,10 +838,12 @@
                             <div class="boss-desc">Нестандартные структуры с уникальными механиками взаимодействия. Доступны при выполнении скрытых условий в уровне.</div>
                         </div>
                     </div>
+
                     <div class="readout">
                         <span class="hl">// ОСОБЕННОСТЬ:</span>
                         <span class="vl">Каждая значимая сущность имеет уникальные фазовые механики и поведенческие сценарии</span>
                     </div>
+
                 </div>
             </div>
 
@@ -801,6 +854,7 @@
                     <div class="ph-tag">SECTOR.MAP</div>
                 </div>
                 <div class="panel-body">
+
                     <div class="sector">
                         <div class="sec-id">0-X</div>
                         <div>
@@ -808,6 +862,7 @@
                             <div class="sec-desc">Секторы 0-1 — 0-5. Руины надземных структур. Первичная инициализация систем V1 и обучение управлению арсеналом.</div>
                         </div>
                     </div>
+
                     <div class="sector">
                         <div class="sec-id">1-X</div>
                         <div>
@@ -815,6 +870,7 @@
                             <div class="sec-desc">Секторы 1-1 — 1-4. Архитектура нижнего уровня первого порядка. Первое взаимодействие с зеркальным модулем V2 в секторе 1-4.</div>
                         </div>
                     </div>
+
                     <div class="sector">
                         <div class="sec-id">2-X</div>
                         <div>
@@ -822,6 +878,7 @@
                             <div class="sec-desc">Секторы 2-1 — 2-4. Гигантские вращающиеся механические структуры. Высокая динамика среды. Сложная геометрия маршрутов.</div>
                         </div>
                     </div>
+
                     <div class="sector">
                         <div class="sec-id">3-X</div>
                         <div>
@@ -829,6 +886,7 @@
                             <div class="sec-desc">Секторы 3-1 — 3-4. Территория металлических золотых структур. Ключевое взаимодействие: Minos Prime (сектор 3-2).</div>
                         </div>
                     </div>
+
                     <div class="sector">
                         <div class="sec-id">4-X</div>
                         <div>
@@ -836,6 +894,7 @@
                             <div class="sec-desc">Секторы 4-1 — 4-4. Лавовые области. Повторные сессии с Gabriel и V2 в секторе 4-4.</div>
                         </div>
                     </div>
+
                     <div class="sector">
                         <div class="sec-id">5-X</div>
                         <div>
@@ -843,6 +902,7 @@
                             <div class="sec-desc">Секторы 5-1 — 5-4. Подводные и полузатопленные структуры. Ключевая сессия: Leviathan (сектор 5-4).</div>
                         </div>
                     </div>
+
                     <div class="sector">
                         <div class="sec-id">6-X</div>
                         <div>
@@ -850,17 +910,21 @@
                             <div class="sec-desc">Секторы 6-1 — 6-4. Завершающий акт. Взаимодействие с Gabriel (6-2). Финальная цель: Sisyphus Prime.</div>
                         </div>
                     </div>
+
                     <div class="readout">
                         <span class="hl">// СКРЫТЫЕ ЗОНЫ:</span>
                         <span class="vl">P-1, P-2, «0-S: The Witless»</span><br>
                         <span class="hl">// ОСОБЫЙ РЕСУРС:</span>
                         <span class="vl">Dual Wield — удвоенная длительность активации (до 120 сек)</span>
                     </div>
+
                 </div>
             </div>
+
         </div>
 
         <div class="side-col">
+
             <div class="side-panel">
                 <div class="sp-head">// UNIT PROFILE // V1</div>
                 <div class="v1-portrait">
@@ -868,6 +932,7 @@
                     <div class="v1-lbl">V1 // MACHINE</div>
                 </div>
             </div>
+
             <div class="side-panel">
                 <div class="sp-head">// ПАРАМЕТРЫ СИСТЕМЫ</div>
                 <div class="sp-body">
@@ -880,20 +945,37 @@
                     <div class="mstat"><span class="mstat-k">СТАТУС</span>     <span class="mstat-v r">АКТИВЕН</span></div>
                 </div>
             </div>
+
             <div class="side-panel">
                 <div class="sp-head">// АРСЕНАЛ // СЛОТЫ</div>
                 <div class="sp-body">
-                    <div class="aslot"><span style="color:var(--c-blue)">◼ СЛОТ 1</span><span>ДАЛЬНОБОЙНЫЙ</span></div>
-                    <div class="aslot"><span style="color:var(--c-orange)">◼ СЛОТ 2</span><span>УДАРНЫЙ</span></div>
-                    <div class="aslot"><span style="color:var(--c-green)">◼ СЛОТ 3</span><span>ГВОЗДЕВОЙ</span></div>
-                    <div class="aslot"><span style="color:var(--c-gold)">◼ СЛОТ 4</span><span>РЕЛЬСОВЫЙ</span></div>
-                    <div class="aslot"><span style="color:var(--c-pink)">◼ СЛОТ 5</span><span>РАКЕТНЫЙ</span></div>
+                    <div class="aslot">
+                        <span style="color:var(--c-blue)">◼ СЛОТ 1</span>
+                        <span>ДАЛЬНОБОЙНЫЙ</span>
+                    </div>
+                    <div class="aslot">
+                        <span style="color:var(--c-orange)">◼ СЛОТ 2</span>
+                        <span>УДАРНЫЙ</span>
+                    </div>
+                    <div class="aslot">
+                        <span style="color:var(--c-green)">◼ СЛОТ 3</span>
+                        <span>ГВОЗДЕВОЙ</span>
+                    </div>
+                    <div class="aslot">
+                        <span style="color:var(--c-gold)">◼ СЛОТ 4</span>
+                        <span>РЕЛЬСОВЫЙ</span>
+                    </div>
+                    <div class="aslot">
+                        <span style="color:var(--c-pink)">◼ СЛОТ 5</span>
+                        <span>РАКЕТНЫЙ</span>
+                    </div>
                     <div class="readout" style="margin-top:0.5rem; font-size:0.58rem;">
                         <span class="hl">// ВАРИАЦИИ:</span>
                         <span class="vl">СИНИЙ (base) / КРАСНЫЙ (alt)</span>
                     </div>
                 </div>
             </div>
+
             <div class="side-panel">
                 <div class="sp-head">// ИСТОЧНИКИ ДАННЫХ</div>
                 <div class="sp-body">
@@ -903,6 +985,7 @@
                     <button id="statsBtn" class="term-btn">СТАТИСТИКА БАЗЫ ДАННЫХ</button>
                 </div>
             </div>
+
             <div class="side-panel">
                 <div class="sp-head">// SYSTEM LOG // TERMINAL</div>
                 <div class="sp-body">
@@ -915,9 +998,12 @@
                     </div>
                 </div>
             </div>
+
         </div>
+
     </div>
 
+    <!-- ═══ FOOTER ═══ -->
     <div class="site-footer">
         <div class="footer-logo">V1 // ULTRAKILL</div>
         <div>// ENERGY IS FUEL // LOWER SECTOR IS FULL //</div>
@@ -927,731 +1013,774 @@
 </div>
 
 <script>
-/* ══════════════════════════════════════
-   THEME SWITCHER
-══════════════════════════════════════ */
-const THEME_LABELS = {
-    dark:    'DARK // ORIGINAL',
-    v1:      'V1 // MACHINE // BLUE',
-    v2:      'V2 // MIRROR // RED',
-    gabriel: 'GABRIEL // JUDGE // WHITE'
-};
+    /* ══════════════════════════════════════
+       THEME SWITCHER
+    ══════════════════════════════════════ */
+    const THEME_LABELS = {
+        dark:    'DARK // ORIGINAL',
+        v1:      'V1 // MACHINE // BLUE',
+        v2:      'V2 // MIRROR // RED',
+        gabriel: 'GABRIEL // JUDGE // WHITE'
+    };
 
-function setTheme(t) {
-    document.body.setAttribute('data-theme', t);
-    document.querySelectorAll('.tp-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.tv === t);
-    });
-    const lbl = document.getElementById('tpCurrent');
-    if (lbl) lbl.textContent = 'АКТИВНА: ' + THEME_LABELS[t];
-    try { localStorage.setItem('uk_theme', t); } catch(e) {}
-    BgAnim.start(t);
-}
-
-(function () {
-    try {
-        const saved = localStorage.getItem('uk_theme');
-        if (saved && THEME_LABELS[saved]) setTheme(saved);
-    } catch(e) {}
-})();
-
-function navTo(id) {
-    const el = document.getElementById(id);
-    if (!el) return;
-    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    el.style.transition = 'border-color 0.1s, box-shadow 0.1s';
-    el.style.borderColor = 'var(--acc)';
-    el.style.boxShadow   = '0 0 24px var(--acc-glow)';
-    setTimeout(() => { el.style.borderColor = ''; el.style.boxShadow = ''; }, 900);
-}
-
-document.querySelectorAll('.ws-slot').forEach(slot => {
-    slot.addEventListener('click', function () {
-        document.querySelectorAll('.ws-slot').forEach(s => s.classList.remove('active'));
-        this.classList.add('active');
-    });
-});
-
-document.getElementById('statsBtn').addEventListener('click', () => {
-    alert(
-        '// SYSTEM DATABASE //\n\n' +
-        'ULTRAKILL — Fandom Wiki\n' +
-        'Создана : 12 ноября 2020\n' +
-        'Статей  : 219\n' +
-        'Файлов  : 2 830\n' +
-        'Правок  : 50 498\n\n' +
-        '[STATUS: ACTIVE]'
-    );
-});
-
-/* ══════════════════════════════════════
-   ANIMATED BACKGROUND ENGINE
-══════════════════════════════════════ */
-const BgAnim = (function() {
-
-    const cv  = document.getElementById('bgCanvas');
-    const ctx = cv.getContext('2d');
-    let W, H, rafId = null, curTheme = 'dark';
-
-    /* ── resize ── */
-    function resize() {
-        W = cv.width  = window.innerWidth;
-        H = cv.height = window.innerHeight;
-    }
-    window.addEventListener('resize', () => { resize(); BgAnim.start(curTheme); });
-    resize();
-
-    /* ── stop ── */
-    function stop() {
-        if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
-        ctx.clearRect(0, 0, W, H);
+    function setTheme(t) {
+        document.body.setAttribute('data-theme', t);
+        document.querySelectorAll('.tp-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.tv === t);
+        });
+        const lbl = document.getElementById('tpCurrent');
+        if (lbl) lbl.textContent = 'АКТИВНА: ' + THEME_LABELS[t];
+        try { localStorage.setItem('uk_theme', t); } catch(e) {}
     }
 
-    /* ── utility ── */
-    function rnd(a, b) { return a + Math.random() * (b - a); }
-    function rndInt(a, b) { return Math.floor(rnd(a, b + 1)); }
+    (function () {
+        try {
+            const saved = localStorage.getItem('uk_theme');
+            if (saved && THEME_LABELS[saved]) setTheme(saved);
+        } catch(e) {}
+    })();
 
     /* ══════════════════════════════════════
-       V1 — MACHINE // ELECTRIC BLUE
-       Circuit nodes + orthogonal traces
-       Rotating gears | Binary fragments
-       Electric spark particles
+       NAVIGATION HELPERS
     ══════════════════════════════════════ */
-    function animV1() {
-        cv.style.opacity = '1';
+    function navTo(id) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        el.style.transition = 'border-color 0.1s, box-shadow 0.1s';
+        el.style.borderColor = 'var(--acc)';
+        el.style.boxShadow   = '0 0 24px var(--acc-glow)';
+        setTimeout(() => {
+            el.style.borderColor = '';
+            el.style.boxShadow   = '';
+        }, 900);
+    }
 
-        /* — Circuit nodes — */
-        const NODES = 28;
-        const nodes = Array.from({length: NODES}, () => ({
-            x: rnd(0, W), y: rnd(0, H),
-            vx: rnd(-0.25, 0.25), vy: rnd(-0.25, 0.25),
-            r: rnd(1.5, 3.5),
-            phase: rnd(0, Math.PI * 2)
-        }));
-
-        /* — Gears — */
-        const GEARS = 7;
-        const gears = Array.from({length: GEARS}, () => ({
-            x: rnd(0, W), y: rnd(0, H),
-            rad: rnd(22, 55),
-            teeth: rndInt(7, 12),
-            angle: rnd(0, Math.PI * 2),
-            spd: rnd(-0.006, 0.006),
-            alpha: rnd(0.04, 0.10)
-        }));
-
-        /* — Binary rain columns — */
-        const COLS = Math.floor(W / 28);
-        const rain = Array.from({length: COLS}, (_, i) => ({
-            x: i * 28 + rnd(0, 28),
-            y: rnd(-H, 0),
-            spd: rnd(0.4, 1.2),
-            len: rndInt(4, 14),
-            chars: [],
-            timer: 0,
-            interval: rndInt(8, 20)
-        }));
-        rain.forEach(col => {
-            for (let i = 0; i < col.len; i++) {
-                col.chars.push(Math.random() > 0.5 ? '1' : '0');
-            }
+    document.querySelectorAll('.ws-slot').forEach(slot => {
+        slot.addEventListener('click', function () {
+            document.querySelectorAll('.ws-slot').forEach(s => s.classList.remove('active'));
+            this.classList.add('active');
         });
+    });
 
-        /* — Sparks — */
-        const SPARKS = 55;
-        function mkSpark() {
-            return { x: rnd(0,W), y: rnd(0,H),
-                     vx: rnd(-1.2,1.2), vy: rnd(-1.2,1.2),
-                     life: 1, decay: rnd(0.006, 0.016),
-                     r: rnd(0.6, 2.2) };
+    document.getElementById('statsBtn').addEventListener('click', () => {
+        alert(
+            '// SYSTEM DATABASE //\n\n' +
+            'ULTRAKILL — Fandom Wiki\n' +
+            'Создана : 12 ноября 2020\n' +
+            'Статей  : 219\n' +
+            'Файлов  : 2 830\n' +
+            'Правок  : 50 498\n\n' +
+            '[STATUS: ACTIVE]'
+        );
+    });
+
+    /* ══════════════════════════════════════
+       THEME BACKGROUND ANIMATION ENGINE
+    ══════════════════════════════════════ */
+    (function () {
+        const canvas = document.getElementById('theme-bg-canvas');
+        const ctx    = canvas.getContext('2d');
+
+        let activeTheme = 'dark';
+        let particles   = [];
+        let extras      = [];
+        let sparks      = [];
+        let animId      = null;
+
+        /* ── Utility ── */
+        function rand(a, b) { return a + Math.random() * (b - a); }
+
+        function resize() {
+            canvas.width  = window.innerWidth;
+            canvas.height = window.innerHeight;
         }
-        const sparks = Array.from({length: SPARKS}, mkSpark);
+        window.addEventListener('resize', function () {
+            resize();
+            initForTheme(activeTheme);
+        });
+        resize();
 
-        /* — Traveling signals on circuit traces — */
-        const signals = [];
-        function mkSignal(ax, ay, bx, by) {
-            return { ax, ay, bx, by, mx: bx, my: ay,
-                     t: 0, spd: rnd(0.006, 0.018), life: 1 };
-        }
+        /* ════════════════════════════════
+           V1  —  Machine / Electric Blue
+           Circuit nodes, hex grid, gears,
+           electric sparks, propeller blades
+        ════════════════════════════════ */
+        function initV1() {
+            particles = [];
+            extras    = [];
+            sparks    = [];
 
-        /* — Hex fragments — */
-        const hexTexts = Array.from({length: 18}, () => ({
-            x: rnd(0, W), y: rnd(0, H),
-            txt: '0x' + Math.floor(rnd(0, 0xFFFF)).toString(16).toUpperCase().padStart(4,'0'),
-            alpha: rnd(0, 0.15), dir: 1,
-            spd: rnd(0.0015, 0.004)
-        }));
-
-        /* — Gear draw helper — */
-        function drawGear(g) {
-            const {x, y, rad, teeth, angle} = g;
-            const innerR = rad * 0.62;
-            const toothR = rad * 1.32;
-            const step   = (Math.PI * 2) / teeth;
-            ctx.beginPath();
-            for (let i = 0; i < teeth; i++) {
-                const a  = i * step + angle;
-                const a1 = a - step * 0.2;
-                const a2 = a + step * 0.2;
-                ctx.lineTo(innerR * Math.cos(a1) + x, innerR * Math.sin(a1) + y);
-                ctx.lineTo(toothR * Math.cos(a1) + x, toothR * Math.sin(a1) + y);
-                ctx.lineTo(toothR * Math.cos(a2) + x, toothR * Math.sin(a2) + y);
-                ctx.lineTo(innerR * Math.cos(a2) + x, innerR * Math.sin(a2) + y);
+            /* Circuit nodes */
+            for (let i = 0; i < 65; i++) {
+                particles.push({
+                    kind  : Math.random() > 0.58 ? 'hex' : 'dot',
+                    x     : rand(0, canvas.width),
+                    y     : rand(0, canvas.height),
+                    vx    : rand(-0.28, 0.28),
+                    vy    : rand(-0.28, 0.28),
+                    r     : rand(1.8, 3.8),
+                    hexR  : rand(9, 20),
+                    rot   : rand(0, Math.PI * 2),
+                    rotV  : rand(-0.012, 0.012),
+                    alpha : rand(0.28, 0.65),
+                    phase : rand(0, Math.PI * 2),
+                });
             }
-            ctx.closePath();
+
+            /* Large background gears */
+            const gPos = [[0.08,0.12],[0.88,0.82],[0.52,0.50],[0.92,0.08],[0.06,0.88],[0.72,0.22]];
+            gPos.forEach(function ([fx, fy]) {
+                extras.push({
+                    kind  : 'gear',
+                    x     : fx * canvas.width,
+                    y     : fy * canvas.height,
+                    r     : rand(48, 95),
+                    rot   : rand(0, Math.PI * 2),
+                    rotV  : rand(-0.0035, 0.0035) || 0.002,
+                    alpha : 0.055,
+                });
+            });
+
+            /* Propeller (V1 signature) */
+            extras.push({
+                kind  : 'propeller',
+                x     : canvas.width * 0.5,
+                y     : canvas.height * 0.5,
+                r     : Math.min(canvas.width, canvas.height) * 0.18,
+                rot   : 0,
+                rotV  : 0.012,
+                alpha : 0.03,
+            });
+
+            /* Floating hex ring outlines */
+            for (let i = 0; i < 8; i++) {
+                extras.push({
+                    kind  : 'hexring',
+                    x     : rand(50, canvas.width - 50),
+                    y     : rand(50, canvas.height - 50),
+                    r     : rand(25, 55),
+                    rot   : rand(0, Math.PI * 2),
+                    rotV  : rand(-0.006, 0.006),
+                    alpha : rand(0.03, 0.07),
+                    phase : rand(0, Math.PI * 2),
+                });
+            }
         }
 
-        let tick = 0;
+        function drawV1() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        function frame() {
-            rafId = requestAnimationFrame(frame);
-            ctx.clearRect(0, 0, W, H);
-            tick++;
+            /* Update extras */
+            extras.forEach(function (e) {
+                e.rot += e.rotV;
+                if (e.phase !== undefined) e.phase += 0.018;
 
-            /* ─ circuit traces between nearby nodes ─ */
-            for (let i = 0; i < NODES; i++) {
-                for (let j = i + 1; j < NODES; j++) {
-                    const dx = nodes[j].x - nodes[i].x;
-                    const dy = nodes[j].y - nodes[i].y;
+                if (e.kind === 'gear') {
+                    drawGear(e.x, e.y, e.r, e.rot, '58,153,255', e.alpha);
+                } else if (e.kind === 'propeller') {
+                    drawPropeller(e.x, e.y, e.r, e.rot, '58,153,255', e.alpha);
+                } else if (e.kind === 'hexring') {
+                    const a = e.alpha * (0.5 + 0.5 * Math.sin(e.phase));
+                    drawHexOutline(e.x, e.y, e.r, e.rot, '58,153,255', a, 1);
+                    drawHexOutline(e.x, e.y, e.r * 0.65, e.rot + Math.PI / 6, '58,153,255', a * 0.5, 0.5);
+                }
+            });
+
+            /* Update particles */
+            particles.forEach(function (p) {
+                p.x    += p.vx;
+                p.y    += p.vy;
+                p.rot  += p.rotV;
+                p.phase += 0.022;
+                if (p.x < -25) p.x = canvas.width  + 25;
+                if (p.x > canvas.width  + 25) p.x = -25;
+                if (p.y < -25) p.y = canvas.height + 25;
+                if (p.y > canvas.height + 25) p.y = -25;
+            });
+
+            /* Connection lines */
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const a = particles[i], b = particles[j];
+                    const dx = a.x - b.x, dy = a.y - b.y;
                     const d  = Math.sqrt(dx * dx + dy * dy);
-                    if (d > 210) continue;
-                    const a = (1 - d / 210) * 0.12;
-                    ctx.strokeStyle = `rgba(58,153,255,${a})`;
-                    ctx.lineWidth = 0.6;
-                    ctx.beginPath();
-                    ctx.moveTo(nodes[i].x, nodes[i].y);
-                    ctx.lineTo(nodes[j].x, nodes[i].y);
-                    ctx.lineTo(nodes[j].x, nodes[j].y);
-                    ctx.stroke();
-                    /* spawn traveling signal occasionally */
-                    if (tick % 180 === 0 && Math.random() < 0.08) {
-                        signals.push(mkSignal(nodes[i].x, nodes[i].y, nodes[j].x, nodes[j].y));
+                    if (d < 135) {
+                        ctx.beginPath();
+                        ctx.strokeStyle = 'rgba(58,153,255,' + ((1 - d / 135) * 0.11) + ')';
+                        ctx.lineWidth   = 0.65;
+                        ctx.moveTo(a.x, a.y);
+                        ctx.lineTo(b.x, b.y);
+                        ctx.stroke();
                     }
                 }
             }
 
-            /* ─ traveling signals ─ */
-            for (let i = signals.length - 1; i >= 0; i--) {
-                const s = signals[i];
-                s.t += s.spd;
-                if (s.t >= 1) { signals.splice(i, 1); continue; }
-                let px, py;
-                if (s.t < 0.5) {
-                    const tt = s.t * 2;
-                    px = s.ax + (s.mx - s.ax) * tt;
-                    py = s.ay;
+            /* Draw particles */
+            particles.forEach(function (p) {
+                const a = p.alpha * (0.55 + 0.45 * Math.sin(p.phase));
+                if (p.kind === 'hex') {
+                    drawHexOutline(p.x, p.y, p.hexR, p.rot, '58,153,255', a * 0.8, 0.55);
                 } else {
-                    const tt = (s.t - 0.5) * 2;
-                    px = s.mx;
-                    py = s.ay + (s.by - s.ay) * tt;
+                    const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 3.5);
+                    g.addColorStop(0, 'rgba(58,153,255,' + a + ')');
+                    g.addColorStop(1, 'rgba(58,153,255,0)');
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.r * 3.5, 0, Math.PI * 2);
+                    ctx.fillStyle = g;
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(58,153,255,' + a + ')';
+                    ctx.fill();
                 }
-                ctx.shadowBlur = 8;
-                ctx.shadowColor = '#3a99ff';
-                ctx.fillStyle = `rgba(120,200,255,${0.8 * (1 - s.t)})`;
-                ctx.beginPath();
-                ctx.arc(px, py, 2.5, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.shadowBlur = 0;
-            }
-
-            /* ─ nodes ─ */
-            nodes.forEach(n => {
-                n.x += n.vx; n.y += n.vy;
-                n.phase += 0.025;
-                if (n.x < 0 || n.x > W) n.vx *= -1;
-                if (n.y < 0 || n.y > H) n.vy *= -1;
-                const pulse = (Math.sin(n.phase) + 1) * 0.5;
-                ctx.shadowBlur = 8;
-                ctx.shadowColor = '#3a99ff';
-                ctx.fillStyle = `rgba(58,153,255,${0.18 + pulse * 0.28})`;
-                ctx.beginPath();
-                ctx.arc(n.x, n.y, n.r * (1 + pulse * 0.4), 0, Math.PI * 2);
-                ctx.fill();
-                ctx.shadowBlur = 0;
-                /* small square "chip" at node */
-                ctx.strokeStyle = `rgba(58,153,255,${0.1 + pulse * 0.12})`;
-                ctx.lineWidth = 0.5;
-                const sq = n.r * 2.5;
-                ctx.strokeRect(n.x - sq, n.y - sq, sq * 2, sq * 2);
             });
 
-            /* ─ gears ─ */
-            gears.forEach(g => {
-                g.angle += g.spd;
+            /* Random electric sparks */
+            if (Math.random() < 0.022) {
+                addSparks(rand(0, canvas.width), rand(0, canvas.height), 58, 153, 255);
+            }
+        }
+
+        /* ════════════════════════════════
+           V2  —  Mirror / Crimson
+           Mirrored nodes, glitch jumps,
+           cracked circuit, red gears
+        ════════════════════════════════ */
+        function initV2() {
+            particles = [];
+            extras    = [];
+            sparks    = [];
+
+            /* Mirrored particle pairs */
+            for (let i = 0; i < 28; i++) {
+                const x   = rand(30, canvas.width / 2 - 10);
+                const y   = rand(0,  canvas.height);
+                const vx  = rand(-0.3, 0.3);
+                const vy  = rand(-0.3, 0.3);
+                const cfg = {
+                    r          : rand(1.8, 3.4),
+                    hexR       : rand(9, 18),
+                    rot        : rand(0, Math.PI * 2),
+                    rotV       : rand(-0.014, 0.014),
+                    alpha      : rand(0.3, 0.6),
+                    phase      : rand(0, Math.PI * 2),
+                    glitchTick : Math.floor(rand(60, 260)),
+                    kind       : Math.random() > 0.6 ? 'hex' : 'dot',
+                };
+
+                particles.push(Object.assign({ x, y, vx, vy, mirrorSide: false }, cfg));
+                particles.push(Object.assign({
+                    x: canvas.width - x, y,
+                    vx: -vx, vy,
+                    mirrorSide: true,
+                    alpha: cfg.alpha * 0.75,
+                    phase: cfg.phase + Math.PI,
+                    glitchTick: cfg.glitchTick + 20,
+                }, JSON.parse(JSON.stringify(cfg))));
+            }
+
+            /* Red gears */
+            const gPos = [[0.12,0.18],[0.82,0.78],[0.48,0.48],[0.9,0.1],[0.08,0.82]];
+            gPos.forEach(function ([fx, fy]) {
+                extras.push({
+                    kind  : 'gear',
+                    x     : fx * canvas.width,
+                    y     : fy * canvas.height,
+                    r     : rand(42, 88),
+                    rot   : rand(0, Math.PI * 2),
+                    rotV  : rand(-0.004, 0.004) || 0.003,
+                    alpha : 0.045,
+                });
+            });
+
+            /* Cracked-mirror arc rings */
+            for (let i = 0; i < 5; i++) {
+                extras.push({
+                    kind  : 'crackarc',
+                    x     : rand(60, canvas.width  - 60),
+                    y     : rand(60, canvas.height - 60),
+                    r     : rand(20, 50),
+                    rot   : rand(0, Math.PI * 2),
+                    rotV  : rand(-0.008, 0.008),
+                    alpha : rand(0.03, 0.065),
+                    phase : rand(0, Math.PI * 2),
+                });
+            }
+        }
+
+        function drawV2() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            /* Subtle mirror axis */
+            ctx.save();
+            ctx.setLineDash([5, 10]);
+            ctx.strokeStyle = 'rgba(255,24,24,0.035)';
+            ctx.lineWidth   = 1;
+            ctx.beginPath();
+            ctx.moveTo(canvas.width / 2, 0);
+            ctx.lineTo(canvas.width / 2, canvas.height);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            ctx.restore();
+
+            /* Extras */
+            extras.forEach(function (e) {
+                e.rot += e.rotV;
+                if (e.phase !== undefined) e.phase += 0.02;
+
+                if (e.kind === 'gear') {
+                    drawGear(e.x, e.y, e.r, e.rot, '255,24,24', e.alpha);
+                } else if (e.kind === 'crackarc') {
+                    const a = e.alpha * (0.5 + 0.5 * Math.sin(e.phase));
+                    ctx.save();
+                    ctx.translate(e.x, e.y);
+                    ctx.rotate(e.rot);
+                    ctx.strokeStyle = 'rgba(255,24,24,' + a + ')';
+                    ctx.lineWidth   = 0.8;
+                    /* 3 broken arcs suggesting a cracked circle */
+                    for (let k = 0; k < 3; k++) {
+                        const start = (k / 3) * Math.PI * 2 + 0.25;
+                        const end   = start + 1.6;
+                        ctx.beginPath();
+                        ctx.arc(0, 0, e.r, start, end);
+                        ctx.stroke();
+                    }
+                    ctx.restore();
+                }
+            });
+
+            /* Update particles */
+            particles.forEach(function (p) {
+                p.x    += p.vx;
+                p.y    += p.vy;
+                p.rot  += p.rotV;
+                p.phase += 0.025;
+                p.glitchTick--;
+
+                if (p.glitchTick <= 0) {
+                    /* Glitch: snap to new random position */
+                    if (!p.mirrorSide) {
+                        p.x = rand(10, canvas.width / 2 - 10);
+                    } else {
+                        p.x = rand(canvas.width / 2 + 10, canvas.width - 10);
+                    }
+                    p.y = rand(0, canvas.height);
+                    p.glitchTick = Math.floor(rand(70, 300));
+                }
+
+                if (p.x < -25) p.x = canvas.width  + 25;
+                if (p.x > canvas.width  + 25) p.x = -25;
+                if (p.y < -25) p.y = canvas.height + 25;
+                if (p.y > canvas.height + 25) p.y = -25;
+            });
+
+            /* Connection lines */
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const a = particles[i], b = particles[j];
+                    const dx = a.x - b.x, dy = a.y - b.y;
+                    const d  = Math.sqrt(dx * dx + dy * dy);
+                    if (d < 115) {
+                        ctx.beginPath();
+                        ctx.strokeStyle = 'rgba(255,24,24,' + ((1 - d / 115) * 0.1) + ')';
+                        ctx.lineWidth   = 0.6;
+                        ctx.moveTo(a.x, a.y);
+                        ctx.lineTo(b.x, b.y);
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            /* Draw particles */
+            particles.forEach(function (p) {
+                const a = p.alpha * (0.55 + 0.45 * Math.sin(p.phase));
+                if (p.kind === 'hex') {
+                    drawHexOutline(p.x, p.y, p.hexR, p.rot, '255,24,24', a * 0.8, 0.5);
+                } else {
+                    const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 3.5);
+                    g.addColorStop(0, 'rgba(255,24,24,' + a + ')');
+                    g.addColorStop(1, 'rgba(255,24,24,0)');
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.r * 3.5, 0, Math.PI * 2);
+                    ctx.fillStyle = g;
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(255,24,24,' + a + ')';
+                    ctx.fill();
+                }
+            });
+
+            /* Occasional sparks */
+            if (Math.random() < 0.016) {
+                addSparks(rand(0, canvas.width), rand(0, canvas.height), 255, 24, 24);
+            }
+        }
+
+        /* ════════════════════════════════
+           GABRIEL  —  Archangel / Judge
+           Falling feathers, divine light
+           rays, glowing halos, wing outlines
+        ════════════════════════════════ */
+        function initGabriel() {
+            particles = [];
+            extras    = [];
+            sparks    = [];
+
+            /* Falling feathers */
+            for (let i = 0; i < 30; i++) {
+                particles.push({
+                    kind     : 'feather',
+                    x        : rand(-60, canvas.width + 60),
+                    y        : rand(-250, canvas.height),
+                    vy       : rand(0.28, 0.82),
+                    vx       : rand(-0.12, 0.12),
+                    len      : rand(22, 50),
+                    rot      : rand(-0.35, 0.35),
+                    swing    : rand(0, Math.PI * 2),
+                    swingSpd : rand(0.012, 0.032),
+                    alpha    : rand(0.07, 0.18),
+                    golden   : Math.random() > 0.4,
+                });
+            }
+
+            /* Golden halos scattered */
+            for (let i = 0; i < 5; i++) {
+                extras.push({
+                    kind      : 'halo',
+                    x         : rand(80, canvas.width  - 80),
+                    y         : rand(80, canvas.height - 80),
+                    r         : rand(38, 88),
+                    alpha     : rand(0.045, 0.10),
+                    phase     : rand(0, Math.PI * 2),
+                    phaseSpd  : rand(0.012, 0.026),
+                    rot       : rand(0, Math.PI * 2),
+                    rotV      : rand(-0.004, 0.004),
+                });
+            }
+
+            /* Light rays from top-centre */
+            for (let i = 0; i < 7; i++) {
+                extras.push({
+                    kind     : 'ray',
+                    angle    : rand(-0.55, 0.55),
+                    alpha    : rand(0.025, 0.065),
+                    halfW    : rand(25, 70),
+                    len      : rand(canvas.height * 0.45, canvas.height * 0.95),
+                    phase    : rand(0, Math.PI * 2),
+                    phaseSpd : rand(0.007, 0.018),
+                });
+            }
+
+            /* Faint wing silhouettes (left + right of center) */
+            extras.push({ kind: 'wing', side: -1, alpha: 0.04, phase: 0, phaseSpd: 0.009 });
+            extras.push({ kind: 'wing', side:  1, alpha: 0.04, phase: Math.PI, phaseSpd: 0.009 });
+        }
+
+        function drawGabriel() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const cx = canvas.width  / 2;
+            const cy = canvas.height / 2;
+
+            /* ── Light rays (back layer) ── */
+            extras.filter(function (e) { return e.kind === 'ray'; }).forEach(function (r) {
+                r.phase += r.phaseSpd;
+                const a = r.alpha * (0.55 + 0.45 * Math.sin(r.phase));
                 ctx.save();
-                ctx.globalAlpha = g.alpha;
-                ctx.strokeStyle = '#5ab4ff';
-                ctx.lineWidth = 0.8;
-                drawGear(g);
-                ctx.stroke();
+                ctx.translate(cx, -40);
+                ctx.rotate(r.angle);
+                const g = ctx.createLinearGradient(0, 0, 0, r.len);
+                g.addColorStop(0, 'rgba(200,152,30,' + a + ')');
+                g.addColorStop(0.6, 'rgba(255,220,120,' + (a * 0.3) + ')');
+                g.addColorStop(1, 'rgba(200,152,30,0)');
                 ctx.beginPath();
-                ctx.arc(g.x, g.y, g.rad * 0.28, 0, Math.PI * 2);
-                ctx.stroke();
-                /* cross at center */
+                ctx.moveTo(-r.halfW * 0.3, 0);
+                ctx.lineTo(r.halfW * 0.3, 0);
+                ctx.lineTo(r.halfW * 1.8, r.len);
+                ctx.lineTo(-r.halfW * 1.8, r.len);
+                ctx.closePath();
+                ctx.fillStyle = g;
+                ctx.fill();
+                ctx.restore();
+            });
+
+            /* ── Wing silhouettes ── */
+            extras.filter(function (e) { return e.kind === 'wing'; }).forEach(function (w) {
+                w.phase += w.phaseSpd;
+                const a    = w.alpha * (0.6 + 0.4 * Math.sin(w.phase));
+                const span = Math.min(cx * 0.9, 260);
+                const baseX = cx + w.side * span * 0.1;
+
+                ctx.save();
+                ctx.strokeStyle = 'rgba(180,140,20,' + a + ')';
+                ctx.lineWidth   = 1;
+
+                /* 5 arched "primary feather" curves per wing */
+                for (let f = 0; f < 5; f++) {
+                    const t    = (f + 1) / 6;
+                    const endX = baseX + w.side * span * t;
+                    const endY = cy + 20 + f * 14;
+                    const cpX  = baseX + w.side * span * t * 0.55;
+                    const cpY  = cy - 60 - f * 8;
+                    ctx.beginPath();
+                    ctx.moveTo(baseX, cy);
+                    ctx.quadraticCurveTo(cpX, cpY, endX, endY);
+                    ctx.stroke();
+                }
+                /* Wing arch */
                 ctx.beginPath();
-                ctx.moveTo(g.x - g.rad * 0.15, g.y);
-                ctx.lineTo(g.x + g.rad * 0.15, g.y);
-                ctx.moveTo(g.x, g.y - g.rad * 0.15);
-                ctx.lineTo(g.x, g.y + g.rad * 0.15);
+                ctx.moveTo(baseX, cy + 70);
+                ctx.quadraticCurveTo(
+                    baseX + w.side * span * 0.6, cy - 80,
+                    baseX + w.side * span, cy + 30
+                );
+                ctx.strokeStyle = 'rgba(200,152,30,' + (a * 0.6) + ')';
+                ctx.lineWidth   = 1.2;
                 ctx.stroke();
                 ctx.restore();
             });
 
-            /* ─ binary rain ─ */
-            rain.forEach(col => {
-                col.timer++;
-                if (col.timer >= col.interval) {
-                    col.timer = 0;
-                    col.chars.unshift(Math.random() > 0.5 ? '1' : '0');
-                    if (col.chars.length > col.len + 4) col.chars.pop();
-                }
-                col.y += col.spd;
-                if (col.y > H + 200) { col.y = rnd(-200, -50); }
-                col.chars.forEach((ch, idx) => {
-                    const alpha = idx === 0 ? 0.5 : Math.max(0, 0.18 - idx * 0.025);
-                    if (alpha <= 0) return;
-                    ctx.fillStyle = `rgba(58,153,255,${alpha})`;
-                    ctx.font = `${idx === 0 ? 'bold ' : ''}10px "Share Tech Mono", monospace`;
-                    ctx.fillText(ch, col.x, col.y - idx * 14);
-                });
-            });
+            /* ── Halos ── */
+            extras.filter(function (e) { return e.kind === 'halo'; }).forEach(function (h) {
+                h.phase += h.phaseSpd;
+                h.rot   += h.rotV;
+                const a = h.alpha * (0.5 + 0.5 * Math.sin(h.phase));
+                const r = h.r * (0.94 + 0.06 * Math.sin(h.phase * 1.4));
 
-            /* ─ hex fragments ─ */
-            hexTexts.forEach(h => {
-                h.alpha += h.dir * h.spd;
-                if (h.alpha > 0.14) h.dir = -1;
-                if (h.alpha < 0)    { h.dir = 1; h.alpha = 0; h.x = rnd(0,W); h.y = rnd(0,H); h.txt = '0x' + Math.floor(rnd(0,0xFFFF)).toString(16).toUpperCase().padStart(4,'0'); }
-                ctx.fillStyle = `rgba(100,180,255,${h.alpha})`;
-                ctx.font = '9px "Fira Code", monospace';
-                ctx.fillText(h.txt, h.x, h.y);
-            });
-
-            /* ─ sparks ─ */
-            sparks.forEach((s, i) => {
-                s.x += s.vx; s.y += s.vy;
-                s.life -= s.decay;
-                if (s.life <= 0) { sparks[i] = mkSpark(); return; }
-                ctx.shadowBlur = 5;
-                ctx.shadowColor = '#3a99ff';
-                ctx.fillStyle = `rgba(130,200,255,${s.life * 0.35})`;
+                /* Outer ring */
                 ctx.beginPath();
-                ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.shadowBlur = 0;
-            });
-        }
-        frame();
-    }
-
-    /* ══════════════════════════════════════
-       V2 — MIRROR MODULE // CRIMSON
-       Symmetric mirrored particles
-       Red lightning bursts | Glitch slices
-       Aggressive energy wave
-    ══════════════════════════════════════ */
-    function animV2() {
-        cv.style.opacity = '1';
-
-        /* — Mirror particles (left half only, right is mirrored) — */
-        const PAIRS = 30;
-        function mkPair() {
-            return { x: rnd(0, W * 0.5), y: rnd(0, H),
-                     vx: rnd(-0.6, 0.6), vy: rnd(-0.6, 0.6),
-                     r: rnd(0.8, 2.5), phase: rnd(0, Math.PI * 2) };
-        }
-        const pairs = Array.from({length: PAIRS}, mkPair);
-
-        /* — Lightning bolts — */
-        const lightnings = [];
-        let ltTimer = 0;
-        function mkLt() {
-            const x0 = rnd(0, W);
-            const y0 = rnd(0, H * 0.6);
-            const pts = [{x: x0, y: y0}];
-            let cx = x0, cy = y0;
-            while (cy < y0 + rnd(120, 280)) {
-                cx += rnd(-60, 60);
-                cy += rnd(18, 40);
-                pts.push({x: cx, y: cy});
-                /* branch */
-                if (Math.random() < 0.3) {
-                    pts.push({x: cx + rnd(-40, 40), y: cy + rnd(20, 60)});
-                    pts.push({x: cx, y: cy});
-                }
-            }
-            return { pts, life: rnd(0.7, 1), decay: rnd(0.04, 0.09) };
-        }
-
-        /* — Aggressive dust — */
-        const DUST = 70;
-        function mkDust() {
-            return { x: rnd(0,W), y: rnd(0,H),
-                     vx: rnd(-1.0, 1.0), vy: rnd(-1.0, 1.0),
-                     r: rnd(0.4, 1.8), alpha: rnd(0.05, 0.2),
-                     life: rnd(0.4, 1), decay: rnd(0.003, 0.01) };
-        }
-        const dust = Array.from({length: DUST}, mkDust);
-
-        /* — Radial shockwave rings — */
-        const rings = [];
-        let ringTimer = 0;
-        function mkRing() {
-            return { x: rnd(0,W), y: rnd(0,H), r: 5, maxR: rnd(80,200), life: 1, decay: rnd(0.007,0.015) };
-        }
-
-        /* — Mirror shard lines — */
-        const SHARDS = 12;
-        const shards = Array.from({length: SHARDS}, () => ({
-            x: rnd(0, W), y: rnd(0, H),
-            len: rnd(30, 120), angle: rnd(0, Math.PI),
-            alpha: rnd(0.02, 0.08), spd: rnd(-0.003, 0.003)
-        }));
-
-        let tick = 0;
-
-        function frame() {
-            rafId = requestAnimationFrame(frame);
-            ctx.clearRect(0, 0, W, H);
-            tick++;
-
-            /* ─ central mirror axis ─ */
-            const cx = W * 0.5;
-            const axGrad = ctx.createLinearGradient(0, 0, 0, H);
-            axGrad.addColorStop(0,   'rgba(255,24,24,0)');
-            axGrad.addColorStop(0.25,'rgba(255,24,24,0.06)');
-            axGrad.addColorStop(0.5, 'rgba(255,24,24,0.14)');
-            axGrad.addColorStop(0.75,'rgba(255,24,24,0.06)');
-            axGrad.addColorStop(1,   'rgba(255,24,24,0)');
-            ctx.strokeStyle = axGrad;
-            ctx.lineWidth   = 1.2;
-            ctx.setLineDash([6, 14]);
-            ctx.beginPath();
-            ctx.moveTo(cx, 0); ctx.lineTo(cx, H);
-            ctx.stroke();
-            ctx.setLineDash([]);
-
-            /* ─ mirror particles ─ */
-            pairs.forEach(p => {
-                p.phase += 0.022;
-                p.x += p.vx; p.y += p.vy;
-                if (p.x < 0 || p.x > cx) p.vx *= -1;
-                if (p.y < 0 || p.y > H)  p.vy *= -1;
-                const a = 0.25 + 0.18 * Math.sin(p.phase);
-                const mx = W - p.x;
-                /* Left */
-                ctx.shadowBlur  = 7;
-                ctx.shadowColor = '#ff1818';
-                ctx.fillStyle   = `rgba(255,40,40,${a})`;
-                ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
-                /* Right mirror */
-                ctx.fillStyle   = `rgba(255,100,100,${a * 0.65})`;
-                ctx.beginPath(); ctx.arc(mx, p.y, p.r, 0, Math.PI * 2); ctx.fill();
-                ctx.shadowBlur  = 0;
-                /* connector */
-                const ca = (1 - Math.abs(p.x / cx - 0.5) * 2) * 0.04;
-                ctx.strokeStyle = `rgba(255,24,24,${ca})`;
-                ctx.lineWidth   = 0.4;
-                ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(mx, p.y); ctx.stroke();
-            });
-
-            /* ─ lightning ─ */
-            ltTimer++;
-            if (ltTimer > rnd(45, 100)) { lightnings.push(mkLt()); ltTimer = 0; }
-            for (let i = lightnings.length - 1; i >= 0; i--) {
-                const l = lightnings[i];
-                l.life -= l.decay;
-                if (l.life <= 0) { lightnings.splice(i, 1); continue; }
-                ctx.shadowBlur  = 12 * l.life;
-                ctx.shadowColor = '#ff1818';
-                ctx.strokeStyle = `rgba(255,24,24,${l.life})`;
-                ctx.lineWidth   = l.life * 1.8;
-                ctx.beginPath();
-                ctx.moveTo(l.pts[0].x, l.pts[0].y);
-                l.pts.forEach(p => ctx.lineTo(p.x, p.y));
+                ctx.arc(h.x, h.y, r, 0, Math.PI * 2);
+                ctx.strokeStyle = 'rgba(200,152,30,' + a + ')';
+                ctx.lineWidth   = 1.4;
                 ctx.stroke();
-                /* inner glow */
-                ctx.strokeStyle = `rgba(255,180,180,${l.life * 0.6})`;
-                ctx.lineWidth   = l.life * 0.5;
+                /* Inner ring */
                 ctx.beginPath();
-                ctx.moveTo(l.pts[0].x, l.pts[0].y);
-                l.pts.forEach(p => ctx.lineTo(p.x, p.y));
-                ctx.stroke();
-                ctx.shadowBlur = 0;
-            }
-
-            /* ─ shockwave rings ─ */
-            ringTimer++;
-            if (ringTimer > rnd(80, 160)) { rings.push(mkRing()); ringTimer = 0; }
-            for (let i = rings.length - 1; i >= 0; i--) {
-                const rg = rings[i];
-                rg.r    += (rg.maxR - rg.r) * 0.035;
-                rg.life -= rg.decay;
-                if (rg.life <= 0) { rings.splice(i, 1); continue; }
-                ctx.strokeStyle = `rgba(255,24,24,${rg.life * 0.12})`;
-                ctx.lineWidth   = 1;
-                ctx.beginPath();
-                ctx.arc(rg.x, rg.y, rg.r, 0, Math.PI * 2);
-                ctx.stroke();
-            }
-
-            /* ─ glitch horizontal slices ─ */
-            if (Math.random() < 0.025) {
-                const gy = Math.floor(rnd(0, H - 5));
-                const gh = Math.floor(rnd(1, 4));
-                try {
-                    const id = ctx.getImageData(0, gy, W, gh);
-                    ctx.putImageData(id, Math.floor(rnd(-18, 18)), gy);
-                } catch(e) {}
-            }
-
-            /* ─ shard lines ─ */
-            shards.forEach(s => {
-                s.angle += s.spd;
-                const ex = s.x + Math.cos(s.angle) * s.len;
-                const ey = s.y + Math.sin(s.angle) * s.len;
-                ctx.strokeStyle = `rgba(255,24,24,${s.alpha})`;
+                ctx.arc(h.x, h.y, r * 0.72, 0, Math.PI * 2);
+                ctx.strokeStyle = 'rgba(220,180,60,' + (a * 0.45) + ')';
                 ctx.lineWidth   = 0.6;
-                ctx.beginPath();
-                ctx.moveTo(s.x, s.y); ctx.lineTo(ex, ey);
                 ctx.stroke();
+                /* Cross tick marks on outer ring */
+                ctx.save();
+                ctx.translate(h.x, h.y);
+                ctx.rotate(h.rot);
+                for (let k = 0; k < 8; k++) {
+                    const ang = (k / 8) * Math.PI * 2;
+                    ctx.beginPath();
+                    ctx.moveTo(Math.cos(ang) * r, Math.sin(ang) * r);
+                    ctx.lineTo(Math.cos(ang) * (r + 5), Math.sin(ang) * (r + 5));
+                    ctx.strokeStyle = 'rgba(200,152,30,' + a + ')';
+                    ctx.lineWidth   = 0.8;
+                    ctx.stroke();
+                }
+                ctx.restore();
             });
 
-            /* ─ aggressive dust ─ */
-            dust.forEach((d, i) => {
-                d.x += d.vx; d.y += d.vy;
-                d.life -= d.decay;
-                if (d.life <= 0) { dust[i] = mkDust(); return; }
-                if (d.x < 0) d.x = W; if (d.x > W) d.x = 0;
-                if (d.y < 0) d.y = H; if (d.y > H) d.y = 0;
-                ctx.fillStyle = `rgba(255,40,40,${d.life * d.alpha})`;
-                ctx.beginPath(); ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2); ctx.fill();
+            /* ── Feathers ── */
+            particles.forEach(function (p) {
+                p.swing += p.swingSpd;
+                p.y     += p.vy;
+                p.x     += p.vx + Math.sin(p.swing) * 0.18;
+                p.rot    = Math.sin(p.swing * 0.5) * 0.32;
+
+                if (p.y > canvas.height + 70) {
+                    p.y = rand(-120, -20);
+                    p.x = rand(-60, canvas.width + 60);
+                }
+
+                drawFeather(p.x, p.y, p.len, p.rot, p.alpha, p.golden);
             });
         }
-        frame();
-    }
 
-    /* ══════════════════════════════════════
-       GABRIEL — ARCHANGEL // JUDGE // GOLD
-       Falling feathers | Divine light rays
-       Floating gold dust | Halo ring pulses
-       Wing silhouette | Cross light beams
-    ══════════════════════════════════════ */
-    function animGabriel() {
-        cv.style.opacity = '1';
+        function drawFeather(x, y, len, rot, alpha, golden) {
+            const shaft  = golden ? '200,152,30' : '180,150,80';
+            const barb   = golden ? '220,180,60' : '200,170,100';
 
-        /* — Light rays from heaven ─ */
-        const RAYS = 10;
-        const rays = Array.from({length: RAYS}, (_, i) => {
-            const spread = Math.PI * 0.55;
-            const base   = Math.PI * 0.5;
-            return {
-                angle: base - spread * 0.5 + (i / (RAYS - 1)) * spread,
-                len:   rnd(250, 550),
-                width: rnd(8, 28),
-                alpha: rnd(0.03, 0.08),
-                phase: rnd(0, Math.PI * 2),
-                pspd:  rnd(0.008, 0.022)
-            };
-        });
-
-        /* — Feathers — */
-        const FEATHERS = 22;
-        function mkFeather(fromTop) {
-            return {
-                x: rnd(0, W),
-                y: fromTop ? rnd(-80, -20) : rnd(0, H),
-                vy: rnd(0.35, 1.0),
-                vx: rnd(-0.3, 0.3),
-                angle: rnd(0, Math.PI * 2),
-                rotSpd: rnd(-0.018, 0.018),
-                size:   rnd(12, 32),
-                alpha:  rnd(0.08, 0.22),
-                sway:   rnd(0, Math.PI * 2),
-                swaySpd: rnd(0.012, 0.03)
-            };
-        }
-        const feathers = Array.from({length: FEATHERS}, () => mkFeather(false));
-
-        /* — Gold dust — */
-        const GOLD = 90;
-        function mkGold() {
-            return { x: rnd(0,W), y: H + rnd(0, 20),
-                     vx: rnd(-0.22, 0.22), vy: -rnd(0.2, 0.7),
-                     r: rnd(0.5, 2.2), alpha: rnd(0.12, 0.45),
-                     life: 1, decay: rnd(0.002, 0.007), wave: rnd(0, Math.PI * 2) };
-        }
-        const gold = Array.from({length: GOLD}, () => { const g = mkGold(); g.y = rnd(0, H); return g; });
-
-        /* — Halo rings — */
-        const halos = [];
-        let haloTimer = 0;
-        function mkHalo() {
-            return { x: rnd(W * 0.2, W * 0.8), y: rnd(H * 0.1, H * 0.5),
-                     r: 10, maxR: rnd(100, 220),
-                     life: 1, decay: rnd(0.004, 0.009) };
-        }
-
-        /* — Cross beams — */
-        const CROSS = 4;
-        const crosses = Array.from({length: CROSS}, () => ({
-            x: rnd(W * 0.1, W * 0.9), y: rnd(H * 0.2, H * 0.8),
-            alpha: rnd(0.02, 0.06), size: rnd(30, 80),
-            phase: rnd(0, Math.PI * 2), pspd: rnd(0.01, 0.025)
-        }));
-
-        /* ─ feather draw ─ */
-        function drawFeather(f) {
             ctx.save();
-            ctx.translate(f.x, f.y);
-            ctx.rotate(f.angle);
-            ctx.globalAlpha = f.alpha;
-            ctx.strokeStyle = '#c8981e';
-            ctx.lineWidth   = 0.9;
-            ctx.shadowBlur  = 5;
-            ctx.shadowColor = 'rgba(200,152,30,0.45)';
-            /* stem */
+            ctx.translate(x, y);
+            ctx.rotate(rot);
+
+            /* Shaft */
             ctx.beginPath();
-            ctx.moveTo(0, -f.size * 0.9);
-            ctx.lineTo(0,  f.size * 0.9);
+            ctx.moveTo(0, -len * 0.5);
+            ctx.lineTo(0,  len * 0.5);
+            ctx.strokeStyle = 'rgba(' + shaft + ',' + alpha + ')';
+            ctx.lineWidth   = 0.9;
             ctx.stroke();
-            /* barbs */
-            const barbs = 10;
-            for (let i = 0; i < barbs; i++) {
-                const t   = -0.75 + (i / barbs) * 1.5;
-                const by  = t * f.size;
-                const bw  = (1 - Math.abs(t) * 0.7) * f.size * 0.55;
-                const drp = Math.abs(t) * f.size * 0.18;
-                ctx.globalAlpha = f.alpha * 0.6;
+
+            /* Barbs */
+            const steps = Math.floor(len / 3.5);
+            for (let i = 0; i < steps; i++) {
+                const t  = i / steps;
+                const by = -len * 0.5 + t * len;
+                const bw = Math.sin(t * Math.PI) * len * 0.38;
+                const ba = alpha * Math.sin(t * Math.PI);
+                if (ba < 0.005) continue;
+
+                /* Right barb */
                 ctx.beginPath();
                 ctx.moveTo(0, by);
-                ctx.quadraticCurveTo(bw * 0.45, by - bw * 0.22, bw, by + drp);
+                ctx.quadraticCurveTo(bw * 0.45, by + len * 0.055, bw, by + len * 0.048);
+                ctx.strokeStyle = 'rgba(' + barb + ',' + ba + ')';
+                ctx.lineWidth   = 0.45;
                 ctx.stroke();
+
+                /* Left barb */
                 ctx.beginPath();
                 ctx.moveTo(0, by);
-                ctx.quadraticCurveTo(-bw * 0.45, by - bw * 0.22, -bw, by + drp);
+                ctx.quadraticCurveTo(-bw * 0.45, by + len * 0.055, -bw, by + len * 0.048);
+                ctx.stroke();
+            }
+
+            ctx.restore();
+        }
+
+        /* ════════════════════════════════
+           SHARED DRAW HELPERS
+        ════════════════════════════════ */
+        function drawGear(x, y, r, rot, rgb, alpha) {
+            const teeth = 10;
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.rotate(rot);
+            ctx.strokeStyle = 'rgba(' + rgb + ',' + alpha + ')';
+            ctx.lineWidth   = 1;
+            ctx.beginPath();
+            for (let i = 0; i <= teeth * 2; i++) {
+                const ang = (i / (teeth * 2)) * Math.PI * 2;
+                const rad = (i % 2 === 0) ? r : r * 0.8;
+                if (i === 0) ctx.moveTo(Math.cos(ang) * rad, Math.sin(ang) * rad);
+                else         ctx.lineTo(Math.cos(ang) * rad, Math.sin(ang) * rad);
+            }
+            ctx.closePath();
+            ctx.stroke();
+            /* Hub rings */
+            ctx.beginPath(); ctx.arc(0, 0, r * 0.38, 0, Math.PI * 2); ctx.stroke();
+            ctx.beginPath(); ctx.arc(0, 0, r * 0.16, 0, Math.PI * 2); ctx.stroke();
+            /* Spokes */
+            for (let s = 0; s < 5; s++) {
+                const a = (s / 5) * Math.PI * 2;
+                ctx.beginPath();
+                ctx.moveTo(Math.cos(a) * r * 0.16, Math.sin(a) * r * 0.16);
+                ctx.lineTo(Math.cos(a) * r * 0.38, Math.sin(a) * r * 0.38);
                 ctx.stroke();
             }
             ctx.restore();
         }
 
-        let tick = 0;
-        const rayOriX = W * 0.5;
-        const rayOriY = -60;
-
-        function frame() {
-            rafId = requestAnimationFrame(frame);
-            ctx.clearRect(0, 0, W, H);
-            tick++;
-
-            /* ─ divine light rays ─ */
-            rays.forEach(ray => {
-                ray.phase += ray.pspd;
-                const a   = ray.alpha * (0.65 + 0.35 * Math.sin(ray.phase));
-                const ex  = rayOriX + Math.cos(ray.angle) * ray.len;
-                const ey  = rayOriY + Math.sin(ray.angle) * ray.len;
-                const g   = ctx.createLinearGradient(rayOriX, rayOriY, ex, ey);
-                g.addColorStop(0,   `rgba(200,152,30,${a * 2.2})`);
-                g.addColorStop(0.5, `rgba(200,152,30,${a})`);
-                g.addColorStop(1,   'rgba(200,152,30,0)');
-                ctx.strokeStyle = g;
-                ctx.lineWidth   = ray.width * (0.85 + 0.15 * Math.sin(ray.phase));
+        function drawPropeller(x, y, r, rot, rgb, alpha) {
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.rotate(rot);
+            ctx.strokeStyle = 'rgba(' + rgb + ',' + alpha + ')';
+            ctx.fillStyle   = 'rgba(' + rgb + ',' + (alpha * 0.3) + ')';
+            ctx.lineWidth   = 0.8;
+            /* 3 blades */
+            for (let b = 0; b < 3; b++) {
+                ctx.save();
+                ctx.rotate((b / 3) * Math.PI * 2);
                 ctx.beginPath();
-                ctx.moveTo(rayOriX, rayOriY);
-                ctx.lineTo(ex, ey);
-                ctx.stroke();
-            });
-
-            /* ─ central light source bloom ─ */
-            const bloom = ctx.createRadialGradient(rayOriX, rayOriY, 0, rayOriX, rayOriY, 180);
-            bloom.addColorStop(0,   `rgba(255,230,160,${0.06 + 0.03 * Math.sin(tick * 0.04)})`);
-            bloom.addColorStop(0.5, 'rgba(200,152,30,0.02)');
-            bloom.addColorStop(1,   'rgba(200,152,30,0)');
-            ctx.fillStyle = bloom;
-            ctx.beginPath();
-            ctx.arc(rayOriX, rayOriY, 180, 0, Math.PI * 2);
-            ctx.fill();
-
-            /* ─ halo rings ─ */
-            haloTimer++;
-            if (haloTimer > rnd(100, 200)) { halos.push(mkHalo()); haloTimer = 0; }
-            for (let i = halos.length - 1; i >= 0; i--) {
-                const h = halos[i];
-                h.r    += (h.maxR - h.r) * 0.025;
-                h.life -= h.decay;
-                if (h.life <= 0) { halos.splice(i, 1); continue; }
-                ctx.shadowBlur  = 6;
-                ctx.shadowColor = 'rgba(200,152,30,0.3)';
-                ctx.strokeStyle = `rgba(200,152,30,${h.life * 0.12})`;
-                ctx.lineWidth   = 1.2;
-                ctx.beginPath();
-                ctx.ellipse(h.x, h.y, h.r, h.r * 0.28, 0, 0, Math.PI * 2);
-                ctx.stroke();
-                ctx.shadowBlur = 0;
-            }
-
-            /* ─ cross beams ─ */
-            crosses.forEach(c => {
-                c.phase += c.pspd;
-                const a = c.alpha * (0.6 + 0.4 * Math.sin(c.phase));
-                ctx.strokeStyle = `rgba(200,152,30,${a})`;
-                ctx.lineWidth   = 1;
-                ctx.beginPath();
-                ctx.moveTo(c.x - c.size, c.y);
-                ctx.lineTo(c.x + c.size, c.y);
-                ctx.moveTo(c.x, c.y - c.size);
-                ctx.lineTo(c.x, c.y + c.size * 1.4);
-                ctx.stroke();
-            });
-
-            /* ─ gold dust ─ */
-            gold.forEach((d, i) => {
-                d.wave += 0.02;
-                d.x    += d.vx + Math.sin(d.wave + i) * 0.18;
-                d.y    += d.vy;
-                d.life -= d.decay;
-                if (d.life <= 0 || d.y < -10) { gold[i] = mkGold(); return; }
-                ctx.shadowBlur  = 3;
-                ctx.shadowColor = 'rgba(200,152,30,0.5)';
-                ctx.fillStyle   = `rgba(200,152,30,${d.life * d.alpha})`;
-                ctx.beginPath();
-                ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
+                ctx.ellipse(r * 0.5, 0, r * 0.55, r * 0.12, 0, 0, Math.PI * 2);
                 ctx.fill();
-                ctx.shadowBlur = 0;
-            });
-
-            /* ─ feathers ─ */
-            feathers.forEach((f, i) => {
-                f.sway   += f.swaySpd;
-                f.x      += f.vx + Math.sin(f.sway) * 0.45;
-                f.y      += f.vy;
-                f.angle  += f.rotSpd;
-                if (f.y > H + 70) { feathers[i] = mkFeather(true); return; }
-                drawFeather(f);
-            });
-        }
-        frame();
-    }
-
-    /* ══════════════════════════════════════
-       PUBLIC API
-    ══════════════════════════════════════ */
-    return {
-        start(theme) {
-            curTheme = theme;
-            stop();
-            if (theme === 'dark' || !theme) {
-                cv.style.opacity = '0';
-                return;
+                ctx.stroke();
+                ctx.restore();
             }
-            if (theme === 'v1')      animV1();
-            else if (theme === 'v2') animV2();
-            else if (theme === 'gabriel') animGabriel();
+            /* Hub */
+            ctx.beginPath();
+            ctx.arc(0, 0, r * 0.06, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(' + rgb + ',' + (alpha * 1.5) + ')';
+            ctx.fill();
+            ctx.restore();
         }
-    };
-})();
 
-/* init on load with saved/current theme */
-BgAnim.start(document.body.getAttribute('data-theme') || 'dark');
+        function drawHexOutline(x, y, r, rot, rgb, alpha, lw) {
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.rotate(rot);
+            ctx.strokeStyle = 'rgba(' + rgb + ',' + alpha + ')';
+            ctx.lineWidth   = lw || 0.6;
+            ctx.beginPath();
+            for (let i = 0; i <= 6; i++) {
+                const ang = (i / 6) * Math.PI * 2;
+                if (i === 0) ctx.moveTo(Math.cos(ang) * r, Math.sin(ang) * r);
+                else         ctx.lineTo(Math.cos(ang) * r, Math.sin(ang) * r);
+            }
+            ctx.closePath();
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        /* ── Sparks ── */
+        function addSparks(x, y, r, g, b) {
+            for (let i = 0; i < 6; i++) {
+                sparks.push({
+                    x, y,
+                    vx   : rand(-3.5, 3.5),
+                    vy   : rand(-3.5, 3.5),
+                    life : 1,
+                    r, g, b,
+                });
+            }
+        }
+
+        function tickSparks() {
+            sparks = sparks.filter(function (s) { return s.life > 0; });
+            sparks.forEach(function (s) {
+                s.x    += s.vx;
+                s.y    += s.vy;
+                s.vx   *= 0.87;
+                s.vy   *= 0.87;
+                s.life -= 0.055;
+                ctx.beginPath();
+                ctx.arc(s.x, s.y, 1.6 * s.life, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(' + s.r + ',' + s.g + ',' + s.b + ',' + s.life + ')';
+                ctx.fill();
+            });
+        }
+
+        /* ════════════════════════════════
+           MAIN LOOP
+        ════════════════════════════════ */
+        function loop() {
+            switch (activeTheme) {
+                case 'v1':      drawV1();      break;
+                case 'v2':      drawV2();      break;
+                case 'gabriel': drawGabriel(); break;
+                default:
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    break;
+            }
+            tickSparks();
+            animId = requestAnimationFrame(loop);
+        }
+
+        function initForTheme(t) {
+            activeTheme = t;
+            particles   = [];
+            extras      = [];
+            sparks      = [];
+            switch (t) {
+                case 'v1':      initV1();      break;
+                case 'v2':      initV2();      break;
+                case 'gabriel': initGabriel(); break;
+            }
+        }
+
+        /* ── Hook into setTheme ── */
+        var _origSetTheme = window.setTheme;
+        window.setTheme = function (t) {
+            _origSetTheme(t);
+            initForTheme(t);
+        };
+
+        /* ── Bootstrap ── */
+        var boot = 'dark';
+        try { boot = localStorage.getItem('uk_theme') || 'dark'; } catch (e) {}
+        initForTheme(boot);
+        loop();
+
+    })();
 </script>
 </body>
 </html>
