@@ -1058,13 +1058,13 @@
     });
 
     /* ══════════════════════════════════════════════════════════
-       THEME BACKGROUND ANIMATION ENGINE
-       V1      → Цифровой дождь (бинарный код) + трассировка
-                 схем (уникально: цифровой/машинный стиль)
+       THEME BACKGROUND ANIMATION ENGINE  v3
+       V1      → Бинарный дождь + гекс-сетка + трассировка схем
+                 + пакеты данных + скан-линия
        V2      → Зеркальные осколки + глитч-полосы + помехи
-                 (уникально: физическое разрушение/зеркало)
+                 + RGB-смещение + трещины + ударные волны
        GABRIEL → Падающие перья + лучи света + нимбы
-                 (уникально: небесное/ангельское)
+                 + крылья + световые частицы + мандала + вспышки
        DARK    → нет анимации
     ══════════════════════════════════════════════════════════ */
     (function () {
@@ -1072,11 +1072,13 @@
         var ctx    = canvas.getContext('2d');
 
         var activeTheme = 'dark';
-        var S = {};          /* state object, reset on each init */
-        var animId = null;
+        var S  = {};
+        var frame = 0;
 
-        function rand(a, b) { return a + Math.random() * (b - a); }
+        /* ── утилиты ── */
+        function rand(a, b)    { return a + Math.random() * (b - a); }
         function randInt(a, b) { return Math.floor(rand(a, b + 1)); }
+        function clamp(v,mn,mx){ return Math.max(mn, Math.min(mx, v)); }
 
         function resize() {
             canvas.width  = window.innerWidth;
@@ -1088,129 +1090,198 @@
         });
         resize();
 
-        /* ══════════════════════════════════════
-           V1 — БИНАРНЫЙ ДОЖДЬ + ТРАССИРОВКА СХЕМ
-           Уникальность: цифровая/матричная эстетика,
-           ни одного элемента нет в других темах
-        ══════════════════════════════════════ */
+        /* ════════════════════════════════════════════
+           V1  —  DIGITAL RAIN  +  HEX GRID  +  CIRCUITS
+        ════════════════════════════════════════════ */
         function initV1() {
-            S = { cols: [], circuits: [], scanY: 0, scanSpd: 1.5 };
+            S = {
+                cols        : [],
+                circuits    : [],
+                dataPackets : [],
+                hexNodes    : [],
+                scanY       : 0,
+                scanSpd     : 1.5,
+                globalPhase : 0,
+            };
 
-            /* Бинарные колонки */
-            var colW   = 18;
-            var numCol = Math.ceil(canvas.width / colW) + 1;
+            /* бинарные колонки */
+            var colW   = 17;
+            var numCol = Math.ceil(canvas.width / colW) + 2;
             for (var i = 0; i < numCol; i++) {
                 S.cols.push({
-                    x      : i * colW,
-                    y      : rand(-canvas.height, 0),
-                    speed  : rand(0.6, 2.2),
-                    len    : randInt(5, 20),
-                    alpha  : rand(0.04, 0.15),
-                    chars  : [],
-                    tick   : 0,
-                    tickMax: randInt(3, 9),
+                    x       : i * colW + rand(-3, 3),
+                    y       : rand(-canvas.height, 0),
+                    speed   : rand(0.55, 2.4),
+                    len     : randInt(4, 24),
+                    alpha   : rand(0.03, 0.14),
+                    chars   : [],
+                    tick    : 0,
+                    tickMax : randInt(2, 9),
+                    hexMode : Math.random() > 0.72,
                 });
             }
 
-            /* Трассы схем */
-            for (var c = 0; c < 10; c++) {
-                S.circuits.push(makeCircuit());
+            /* трассировка схем */
+            for (var c = 0; c < 16; c++) S.circuits.push(makeV1Circuit());
+
+            /* гексагональная сетка */
+            var hs = 44;
+            var rows = Math.ceil(canvas.height / (hs * 1.732)) + 2;
+            var cols = Math.ceil(canvas.width  / (hs * 2))     + 2;
+            for (var r = 0; r < rows; r++) {
+                for (var cl = 0; cl < cols; cl++) {
+                    if (Math.random() > 0.58) continue;
+                    S.hexNodes.push({
+                        x        : cl * hs * 2 + (r % 2) * hs,
+                        y        : r * hs * 1.732,
+                        r        : hs * 0.92,
+                        alpha    : rand(0.01, 0.042),
+                        phase    : rand(0, Math.PI * 2),
+                        phaseSpd : rand(0.005, 0.02),
+                        lit      : Math.random() > 0.78,
+                        litPulse : rand(0, Math.PI * 2),
+                    });
+                }
+            }
+
+            /* пакеты данных */
+            for (var p = 0; p < 7; p++) {
+                S.dataPackets.push({
+                    circIdx : p % S.circuits.length,
+                    t       : rand(0, 1),
+                    speed   : rand(0.005, 0.016),
+                    alpha   : rand(0.35, 0.8),
+                    trail   : [],
+                    trailMax: randInt(4, 10),
+                });
             }
         }
 
-        function makeCircuit() {
-            var sx  = rand(0, canvas.width);
-            var sy  = rand(0, canvas.height);
+        function makeV1Circuit() {
+            var sx = rand(0, canvas.width);
+            var sy = rand(0, canvas.height);
             var pts = [{ x: sx, y: sy }];
             var cx  = sx, cy = sy;
-            var n   = randInt(4, 14);
+            var n   = randInt(5, 18);
             for (var i = 0; i < n; i++) {
                 var horiz = Math.random() > 0.5;
-                var dist  = rand(25, 130);
+                var dist  = rand(28, 130);
                 var dir   = Math.random() > 0.5 ? 1 : -1;
-                if (horiz) cx += dir * dist;
-                else        cy += dir * dist;
+                if (horiz) cx += dir * dist; else cy += dir * dist;
+                cx = clamp(cx, 8, canvas.width  - 8);
+                cy = clamp(cy, 8, canvas.height - 8);
                 pts.push({ x: cx, y: cy });
             }
             return {
-                pts     : pts,
-                progress: 0,
-                speed   : rand(0.003, 0.007),
-                alpha   : rand(0.055, 0.13),
-                phase   : rand(0, Math.PI * 2),
+                pts      : pts,
+                progress : 0,
+                speed    : rand(0.0018, 0.006),
+                alpha    : rand(0.05, 0.15),
+                phase    : rand(0, Math.PI * 2),
             };
         }
 
         function drawV1() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
+            frame++;
+            S.globalPhase += 0.011;
 
-            /* Скользящая линия сканирования */
+            /* скан-линия */
             S.scanY += S.scanSpd;
-            if (S.scanY > canvas.height + 60) S.scanY = -60;
-            var sg = ctx.createLinearGradient(0, S.scanY - 45, 0, S.scanY + 45);
-            sg.addColorStop(0,   'rgba(58,153,255,0)');
-            sg.addColorStop(0.5, 'rgba(58,153,255,0.022)');
-            sg.addColorStop(1,   'rgba(58,153,255,0)');
+            if (S.scanY > canvas.height + 90) S.scanY = -90;
+            var sg = ctx.createLinearGradient(0, S.scanY - 70, 0, S.scanY + 70);
+            sg.addColorStop(0,    'rgba(58,153,255,0)');
+            sg.addColorStop(0.42, 'rgba(58,153,255,0.016)');
+            sg.addColorStop(0.5,  'rgba(120,190,255,0.032)');
+            sg.addColorStop(0.58, 'rgba(58,153,255,0.016)');
+            sg.addColorStop(1,    'rgba(58,153,255,0)');
             ctx.fillStyle = sg;
-            ctx.fillRect(0, S.scanY - 45, canvas.width, 90);
+            ctx.fillRect(0, S.scanY - 70, canvas.width, 140);
 
-            /* Бинарный дождь */
+            /* гекс-сетка */
+            S.hexNodes.forEach(function (node) {
+                node.phase    += node.phaseSpd;
+                node.litPulse += 0.038;
+                var a = node.alpha * (0.5 + 0.5 * Math.sin(node.phase));
+                if (node.lit) a = Math.min(0.11, a + 0.048 * Math.abs(Math.sin(node.litPulse)));
+                ctx.strokeStyle = 'rgba(58,153,255,' + a + ')';
+                ctx.lineWidth   = 0.5;
+                ctx.beginPath();
+                for (var k = 0; k < 6; k++) {
+                    var ang = (k / 6) * Math.PI * 2 - Math.PI / 6;
+                    var hx  = node.x + Math.cos(ang) * node.r;
+                    var hy  = node.y + Math.sin(ang) * node.r;
+                    k === 0 ? ctx.moveTo(hx, hy) : ctx.lineTo(hx, hy);
+                }
+                ctx.closePath();
+                ctx.stroke();
+                if (node.lit) {
+                    ctx.beginPath();
+                    ctx.arc(node.x, node.y, 2.6, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(120,210,255,' + (a * 3.5) + ')';
+                    ctx.fill();
+                    /* внешнее свечение узла */
+                    ctx.beginPath();
+                    ctx.arc(node.x, node.y, 6, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(58,153,255,' + (a * 0.7) + ')';
+                    ctx.fill();
+                }
+            });
+
+            /* бинарный дождь */
+            var HEX = '0123456789ABCDEF';
             S.cols.forEach(function (col) {
                 col.tick++;
                 if (col.tick >= col.tickMax) {
                     col.tick = 0;
-                    col.chars.unshift(Math.random() > 0.5 ? '1' : '0');
+                    var ch = col.hexMode
+                        ? HEX.charAt(randInt(0, 15))
+                        : (Math.random() > 0.5 ? '1' : '0');
+                    col.chars.unshift(ch);
                     if (col.chars.length > col.len) col.chars.pop();
                     col.y += col.speed * col.tickMax;
                     if (col.y > canvas.height + col.len * 16) {
-                        col.y      = -col.len * 16;
-                        col.chars  = [];
-                        col.speed  = rand(0.6, 2.2);
-                        col.alpha  = rand(0.04, 0.15);
-                        col.len    = randInt(5, 20);
+                        col.y       = -col.len * 16;
+                        col.chars   = [];
+                        col.speed   = rand(0.55, 2.4);
+                        col.alpha   = rand(0.03, 0.14);
+                        col.len     = randInt(4, 24);
+                        col.hexMode = Math.random() > 0.72;
                     }
                 }
                 ctx.font = '13px "Share Tech Mono",monospace';
                 col.chars.forEach(function (ch, idx) {
                     var cy = col.y - idx * 15;
                     if (cy < -15 || cy > canvas.height + 15) return;
-                    var bright = idx === 0 ? 1.0 : (1 - idx / col.chars.length) * 0.65;
-                    /* Верхний символ — ярче, почти белый */
-                    if (idx === 0) {
-                        ctx.fillStyle = 'rgba(160,220,255,' + (col.alpha * 2.5) + ')';
-                    } else {
-                        ctx.fillStyle = 'rgba(58,153,255,' + (col.alpha * bright) + ')';
-                    }
+                    var bright = 1 - idx / col.chars.length;
+                    if (idx === 0)       ctx.fillStyle = 'rgba(200,238,255,' + (col.alpha * 3.8) + ')';
+                    else if (idx < 3)    ctx.fillStyle = 'rgba(140,212,255,' + (col.alpha * 2.4 * bright) + ')';
+                    else                 ctx.fillStyle = 'rgba(58,153,255,'  + (col.alpha * bright) + ')';
                     ctx.fillText(ch, col.x, cy);
                 });
             });
 
-            /* Трассировка схем */
+            /* трассировка схем */
             S.circuits.forEach(function (circ, idx) {
-                circ.phase    += 0.018;
+                circ.phase    += 0.014;
                 circ.progress += circ.speed;
-
-                if (circ.progress > 1.12) {
-                    S.circuits[idx] = makeCircuit();
+                if (circ.progress > 1.25) {
+                    S.circuits[idx] = makeV1Circuit();
                     return;
                 }
-
                 var pts      = circ.pts;
                 var total    = pts.length - 1;
                 var drawUpTo = circ.progress * total;
                 var a        = circ.alpha * (0.5 + 0.5 * Math.sin(circ.phase));
 
                 ctx.strokeStyle = 'rgba(58,153,255,' + a + ')';
-                ctx.lineWidth   = 0.8;
+                ctx.lineWidth   = 0.9;
                 ctx.beginPath();
-
                 var fullSegs = Math.floor(drawUpTo);
                 for (var s = 0; s < fullSegs && s < total; s++) {
-                    if (s === 0) ctx.moveTo(pts[0].x, pts[0].y);
+                    s === 0 ? ctx.moveTo(pts[0].x, pts[0].y) : void 0;
                     ctx.lineTo(pts[s + 1].x, pts[s + 1].y);
                 }
-
-                /* Частичный последний сегмент */
                 if (fullSegs < total) {
                     var frac = drawUpTo - fullSegs;
                     var px   = pts[fullSegs].x + (pts[fullSegs + 1].x - pts[fullSegs].x) * frac;
@@ -1218,418 +1289,628 @@
                     if (fullSegs === 0) ctx.moveTo(pts[0].x, pts[0].y);
                     ctx.lineTo(px, py);
                     ctx.stroke();
-
-                    /* Яркий узел на кончике */
-                    ctx.beginPath();
-                    ctx.arc(px, py, 2.2, 0, Math.PI * 2);
-                    ctx.fillStyle = 'rgba(140,210,255,' + (a * 2.2) + ')';
-                    ctx.fill();
+                    /* кончик — яркая точка */
+                    ctx.beginPath(); ctx.arc(px, py, 3,  0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(165,225,255,' + (a * 3.2) + ')'; ctx.fill();
+                    ctx.beginPath(); ctx.arc(px, py, 7,  0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(58,153,255,'  + (a * 0.45) + ')'; ctx.fill();
+                    ctx.beginPath(); ctx.arc(px, py, 13, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(58,153,255,'  + (a * 0.1) + ')'; ctx.fill();
                 } else {
                     ctx.stroke();
                 }
-
-                /* Точки в узлах */
+                /* узловые точки */
                 for (var n = 0; n <= Math.min(fullSegs, total); n++) {
                     ctx.beginPath();
-                    ctx.arc(pts[n].x, pts[n].y, 1.6, 0, Math.PI * 2);
-                    ctx.fillStyle = 'rgba(58,153,255,' + (a * 1.6) + ')';
+                    ctx.arc(pts[n].x, pts[n].y, 1.8, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(58,153,255,' + (a * 2) + ')';
                     ctx.fill();
                 }
             });
+
+            /* пакеты данных */
+            S.dataPackets.forEach(function (pkt) {
+                pkt.t += pkt.speed;
+                if (pkt.t > 1) { pkt.t = 0; pkt.trail = []; }
+                var circ = S.circuits[pkt.circIdx % S.circuits.length];
+                if (!circ || circ.pts.length < 2) return;
+                var pts   = circ.pts;
+                var total = pts.length - 1;
+                var at    = pkt.t * total;
+                var seg   = Math.min(Math.floor(at), total - 1);
+                var frac  = at - seg;
+                var px    = pts[seg].x + (pts[seg + 1].x - pts[seg].x) * frac;
+                var py    = pts[seg].y + (pts[seg + 1].y - pts[seg].y) * frac;
+
+                pkt.trail.push({ x: px, y: py });
+                if (pkt.trail.length > pkt.trailMax) pkt.trail.shift();
+
+                /* след */
+                pkt.trail.forEach(function (pt, ti) {
+                    var ta = (ti / pkt.trail.length) * pkt.alpha * 0.35;
+                    ctx.beginPath();
+                    ctx.arc(pt.x, pt.y, 1.5, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(100,200,255,' + ta + ')';
+                    ctx.fill();
+                });
+
+                /* ядро пакета */
+                ctx.beginPath(); ctx.arc(px, py, 3.8, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(200,240,255,' + pkt.alpha + ')'; ctx.fill();
+                ctx.beginPath(); ctx.arc(px, py, 8,   0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(58,153,255,'   + (pkt.alpha * 0.28) + ')'; ctx.fill();
+            });
         }
 
-        /* ══════════════════════════════════════
-           V2 — ЗЕРКАЛЬНЫЕ ОСКОЛКИ + ГЛИТЧ-ПОЛОСЫ
-           Уникальность: тема разрушения/симметрии,
-           осколки стекла + помехи экрана
-        ══════════════════════════════════════ */
+        /* ════════════════════════════════════════════
+           V2  —  MIRROR SHARDS  +  GLITCH  +  CRACKS
+        ════════════════════════════════════════════ */
         function initV2() {
             S = {
-                shards     : [],
-                glitchBars : [],
-                glitchTimer: randInt(20, 60),
-                staticPts  : [],
-                noiseTimer : 0,
+                shards       : [],
+                glitchBars   : [],
+                glitchTimer  : randInt(12, 45),
+                staticPts    : [],
+                cracks       : [],
+                crackTimer   : randInt(90, 220),
+                rgbLife      : 0,
+                shockwaves   : [],
+                swTimer      : randInt(60, 200),
+                noiseFrame   : 0,
+                vigPhase     : 0,
             };
-
-            /* Осколки зеркала — появляются с обеих сторон симметрично */
-            for (var i = 0; i < 18; i++) {
-                S.shards.push(makeShard());
-            }
-
-            /* Статичный шум — фиксированные точки */
-            for (var j = 0; j < 120; j++) {
+            for (var i = 0; i < 24; i++) S.shards.push(makeV2Shard());
+            for (var j = 0; j < 200; j++) {
                 S.staticPts.push({
-                    x    : rand(0, canvas.width),
-                    y    : rand(0, canvas.height),
-                    r    : rand(0.5, 2),
-                    alpha: rand(0.02, 0.08),
-                    blink: rand(0, Math.PI * 2),
-                    spd  : rand(0.04, 0.12),
+                    x     : rand(0, canvas.width),
+                    y     : rand(0, canvas.height),
+                    r     : rand(0.4, 1.9),
+                    alpha : rand(0.012, 0.06),
+                    blink : rand(0, Math.PI * 2),
+                    spd   : rand(0.04, 0.14),
                 });
             }
+            for (var c = 0; c < 5; c++) S.cracks.push(makeV2Crack());
         }
 
-        function makeShard() {
-            /* Осколок строится как неровный треугольник */
-            var cx   = rand(20, canvas.width / 2 - 20);
-            var cy   = rand(0, canvas.height);
-            var size = rand(18, 60);
+        function makeV2Shard() {
+            var cx   = rand(20, canvas.width / 2 - 14);
+            var cy   = rand(15, canvas.height - 15);
+            var size = rand(16, 72);
             var pts  = [];
-            var n    = randInt(3, 5);
+            var n    = randInt(3, 6);
             for (var i = 0; i < n; i++) {
-                var ang = (i / n) * Math.PI * 2 + rand(-0.4, 0.4);
-                var r   = size * rand(0.5, 1.0);
+                var ang = (i / n) * Math.PI * 2 + rand(-0.5, 0.5);
+                var r   = size * rand(0.44, 1.08);
                 pts.push({ x: cx + Math.cos(ang) * r, y: cy + Math.sin(ang) * r });
             }
             return {
-                pts  : pts,
-                cx   : cx,   /* левая сторона */
-                cy   : cy,
-                vy   : rand(-0.15, 0.15),
-                vx   : rand(-0.08, 0.08),
-                rot  : rand(0, Math.PI * 2),
-                rotV : rand(-0.006, 0.006),
-                alpha: rand(0.04, 0.12),
-                phase: rand(0, Math.PI * 2),
-                spd  : rand(0.016, 0.032),
-                life : rand(0.6, 1.0),
-                decay: rand(0.0008, 0.002),
+                pts     : pts,
+                cx      : cx, cy   : cy,
+                vy      : rand(-0.14, 0.14), vx : rand(-0.07, 0.07),
+                rot     : rand(0, Math.PI * 2),
+                rotV    : rand(-0.006, 0.006),
+                alpha   : rand(0.04, 0.15),
+                phase   : rand(0, Math.PI * 2),
+                spd     : rand(0.013, 0.032),
+                life    : rand(0.65, 1.0),
+                decay   : rand(0.0005, 0.0019),
+                gleam   : Math.random() > 0.55,
+            };
+        }
+
+        function makeV2Crack() {
+            var sx  = canvas.width / 2 + rand(-80, 80);
+            var sy  = rand(40, canvas.height - 40);
+            var pts = [{ x: sx, y: sy }];
+            var cx  = sx, cy = sy;
+            for (var i = 0; i < randInt(4, 10); i++) {
+                cx += rand(-95, 95);
+                cy += rand(-65, 85);
+                cx  = clamp(cx, 8, canvas.width  - 8);
+                cy  = clamp(cy, 8, canvas.height - 8);
+                pts.push({ x: cx, y: cy });
+            }
+            return {
+                pts      : pts,
+                alpha    : rand(0.022, 0.065),
+                phase    : rand(0, Math.PI * 2),
+                phaseSpd : rand(0.007, 0.022),
+                life     : rand(0.7, 1.4),
+                decay    : rand(0.0008, 0.003),
             };
         }
 
         function drawV2() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             var W = canvas.width, H = canvas.height;
+            S.noiseFrame++;
+            S.vigPhase += 0.009;
 
-            /* Вертикальная ось зеркала */
-            ctx.setLineDash([4, 9]);
-            ctx.strokeStyle = 'rgba(255,24,24,0.028)';
-            ctx.lineWidth   = 1;
-            ctx.beginPath();
-            ctx.moveTo(W / 2, 0);
-            ctx.lineTo(W / 2, H);
-            ctx.stroke();
-            ctx.setLineDash([]);
+            /* пульсирующая виньетка */
+            var vAlpha = 0.038 + 0.018 * Math.sin(S.vigPhase);
+            var vg = ctx.createRadialGradient(W / 2, H / 2, 0, W / 2, H / 2, Math.max(W, H) * 0.72);
+            vg.addColorStop(0,   'rgba(255,0,0,0)');
+            vg.addColorStop(0.7, 'rgba(140,0,0,' + (vAlpha * 0.4) + ')');
+            vg.addColorStop(1,   'rgba(90,0,0,'  + vAlpha + ')');
+            ctx.fillStyle = vg;
+            ctx.fillRect(0, 0, W, H);
 
-            /* Фоновый статичный шум */
-            S.noiseTimer++;
-            if (S.noiseTimer % 4 === 0) {
+            /* зеркальная полоса по центру */
+            var mg = ctx.createLinearGradient(W / 2 - 40, 0, W / 2 + 40, 0);
+            mg.addColorStop(0,   'rgba(255,24,24,0)');
+            mg.addColorStop(0.5, 'rgba(255,24,24,0.016)');
+            mg.addColorStop(1,   'rgba(255,24,24,0)');
+            ctx.fillStyle = mg;
+            ctx.fillRect(0, 0, W, H);
+
+            /* статический шум */
+            if (S.noiseFrame % 3 === 0) {
                 S.staticPts.forEach(function (pt) {
                     pt.blink += pt.spd;
-                    var a = pt.alpha * (0.4 + 0.6 * Math.abs(Math.sin(pt.blink)));
-                    ctx.beginPath();
-                    ctx.arc(pt.x, pt.y, pt.r, 0, Math.PI * 2);
-                    ctx.fillStyle = 'rgba(255,24,24,' + a + ')';
-                    ctx.fill();
-                    /* Зеркально */
-                    ctx.beginPath();
-                    ctx.arc(W - pt.x, pt.y, pt.r * 0.8, 0, Math.PI * 2);
-                    ctx.fillStyle = 'rgba(255,24,24,' + (a * 0.6) + ')';
-                    ctx.fill();
+                    var a = pt.alpha * (0.3 + 0.7 * Math.abs(Math.sin(pt.blink)));
+                    ctx.beginPath(); ctx.arc(pt.x,     pt.y, pt.r,        0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(255,24,24,' + a + ')'; ctx.fill();
+                    ctx.beginPath(); ctx.arc(W - pt.x, pt.y, pt.r * 0.7,  0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(255,24,24,' + (a * 0.5) + ')'; ctx.fill();
                 });
             }
 
-            /* Глитч-полосы */
-            S.glitchTimer--;
-            if (S.glitchTimer <= 0) {
-                S.glitchTimer = randInt(10, 55);
-                if (S.glitchBars.length < 7) {
-                    S.glitchBars.push({
-                        y    : rand(0, H),
-                        h    : rand(1, 9),
-                        life : rand(0.4, 1.0),
-                        shift: rand(-40, 40),
-                        alpha: rand(0.04, 0.11),
-                    });
-                }
+            /* трещины */
+            S.crackTimer--;
+            if (S.crackTimer <= 0) {
+                S.crackTimer = randInt(110, 260);
+                S.cracks.push(makeV2Crack());
             }
-            S.glitchBars = S.glitchBars.filter(function (b) { return b.life > 0; });
-            S.glitchBars.forEach(function (b) {
-                b.life -= 0.045;
-                /* Основная полоса */
-                ctx.fillStyle = 'rgba(255,24,24,' + (b.alpha * b.life) + ')';
-                ctx.fillRect(0, b.y, W, b.h);
-                /* Смещённая копия — имитация хроматической аберрации */
-                ctx.fillStyle = 'rgba(255,80,60,' + (b.alpha * b.life * 0.4) + ')';
-                ctx.fillRect(b.shift, b.y + b.h * 0.3, W * 0.55, b.h * 0.5);
-                ctx.fillStyle = 'rgba(180,0,0,' + (b.alpha * b.life * 0.3) + ')';
-                ctx.fillRect(-b.shift, b.y - b.h * 0.2, W * 0.45, b.h * 0.4);
+            S.cracks = S.cracks.filter(function (c) { return c.life > 0; });
+            S.cracks.forEach(function (cr) {
+                cr.life  -= cr.decay;
+                cr.phase += cr.phaseSpd;
+                var a = cr.alpha * cr.life * (0.55 + 0.45 * Math.sin(cr.phase));
+                function drawCrackPoly(flip) {
+                    ctx.save();
+                    if (flip) { ctx.translate(W, 0); ctx.scale(-1, 1); }
+                    ctx.strokeStyle = 'rgba(255,24,24,' + (a * (flip ? 0.48 : 1)) + ')';
+                    ctx.lineWidth   = flip ? 0.55 : 0.85;
+                    ctx.setLineDash([]);
+                    ctx.beginPath();
+                    cr.pts.forEach(function (pt, i) { i === 0 ? ctx.moveTo(pt.x, pt.y) : ctx.lineTo(pt.x, pt.y); });
+                    ctx.stroke();
+                    ctx.restore();
+                }
+                drawCrackPoly(false);
+                drawCrackPoly(true);
             });
 
-            /* Осколки зеркала */
+            /* глитч-полосы */
+            S.glitchTimer--;
+            if (S.glitchTimer <= 0) {
+                S.glitchTimer = randInt(7, 48);
+                var nb = randInt(1, 5);
+                for (var nb2 = 0; nb2 < nb && S.glitchBars.length < 12; nb2++) {
+                    S.glitchBars.push({
+                        y     : rand(0, H),
+                        h     : rand(1, 14),
+                        life  : rand(0.25, 0.9),
+                        shift : rand(-60, 60),
+                        alpha : rand(0.035, 0.12),
+                        type  : randInt(0, 2),
+                    });
+                }
+                if (Math.random() < 0.28) S.rgbLife = rand(0.3, 0.85);
+            }
+
+            /* RGB-смещение */
+            if (S.rgbLife > 0) {
+                S.rgbLife -= 0.055;
+                var rA = 0.02 * S.rgbLife;
+                ctx.fillStyle = 'rgba(255,0,0,'   + rA + ')';         ctx.fillRect(rand(-10, 10), 0, W, H);
+                ctx.fillStyle = 'rgba(0,180,255,'  + (rA * 0.38) + ')'; ctx.fillRect(rand(-6, 6),  0, W, H);
+            }
+
+            S.glitchBars = S.glitchBars.filter(function (b) { return b.life > 0; });
+            S.glitchBars.forEach(function (b) {
+                b.life -= 0.052;
+                var a = b.alpha * b.life;
+                ctx.fillStyle = 'rgba(255,24,24,' + a + ')';
+                ctx.fillRect(0, b.y, W, b.h);
+                if (b.type === 1) {
+                    ctx.fillStyle = 'rgba(255,100,60,' + (a * 0.52) + ')';
+                    ctx.fillRect(b.shift, b.y, W * 0.58, b.h * 0.6);
+                    ctx.fillStyle = 'rgba(160,0,0,' + (a * 0.38) + ')';
+                    ctx.fillRect(-b.shift * 0.5, b.y - b.h * 0.2, W * 0.46, b.h * 0.45);
+                } else if (b.type === 2) {
+                    for (var px = 0; px < 18; px++) {
+                        ctx.fillStyle = 'rgba(255,24,24,' + (a * rand(0.4, 1.8)) + ')';
+                        ctx.fillRect(rand(0, W), b.y + rand(-b.h, b.h), rand(2, 22), rand(1, 5));
+                    }
+                }
+            });
+
+            /* осколки */
             S.shards.forEach(function (sh, idx) {
                 sh.phase += sh.spd;
                 sh.life  -= sh.decay;
                 sh.rot   += sh.rotV;
                 sh.cx    += sh.vx;
                 sh.cy    += sh.vy;
+                if (sh.life <= 0) { S.shards[idx] = makeV2Shard(); return; }
 
-                if (sh.life <= 0) {
-                    S.shards[idx] = makeShard();
-                    return;
-                }
-
-                var a   = sh.alpha * sh.life * (0.55 + 0.45 * Math.sin(sh.phase));
-                var pts = sh.pts;
-
-                /* Трансформированные вершины */
+                var a    = sh.alpha * sh.life * (0.48 + 0.52 * Math.sin(sh.phase));
                 var cosR = Math.cos(sh.rot), sinR = Math.sin(sh.rot);
-                function xfm(pt) {
-                    var dx = pt.x - sh.pts[0].x, dy = pt.y - sh.pts[0].y;
-                    return {
-                        x: sh.cx + cosR * dx - sinR * dy,
-                        y: sh.cy + sinR * dx + cosR * dy,
-                    };
+                var ox   = sh.pts[0].x, oy = sh.pts[0].y;
+                var tpts = sh.pts.map(function (pt) {
+                    var dx = pt.x - ox, dy = pt.y - oy;
+                    return { x: sh.cx + cosR * dx - sinR * dy, y: sh.cy + sinR * dx + cosR * dy };
+                });
+
+                function drawShardShape(flip) {
+                    ctx.save();
+                    if (flip) { ctx.translate(W, 0); ctx.scale(-1, 1); }
+                    ctx.beginPath();
+                    ctx.moveTo(tpts[0].x, tpts[0].y);
+                    for (var p = 1; p < tpts.length; p++) ctx.lineTo(tpts[p].x, tpts[p].y);
+                    ctx.closePath();
+                    ctx.strokeStyle = 'rgba(255,24,24,' + (a * (flip ? 0.62 : 1)) + ')';
+                    ctx.lineWidth   = flip ? 0.52 : 0.9;
+                    ctx.stroke();
+                    if (sh.gleam && !flip) {
+                        var gg = ctx.createLinearGradient(
+                            tpts[0].x, tpts[0].y,
+                            tpts[Math.min(2, tpts.length - 1)].x,
+                            tpts[Math.min(2, tpts.length - 1)].y
+                        );
+                        gg.addColorStop(0,   'rgba(255,120,120,' + (a * 0.28) + ')');
+                        gg.addColorStop(0.5, 'rgba(255,255,255,' + (a * 0.1)  + ')');
+                        gg.addColorStop(1,   'rgba(255,24,24,0)');
+                        ctx.fillStyle = gg;
+                    } else {
+                        ctx.fillStyle = 'rgba(255,24,24,' + (a * (flip ? 0.04 : 0.09)) + ')';
+                    }
+                    ctx.fill();
+                    ctx.restore();
                 }
-
-                var tpts = pts.map(xfm);
-
-                /* Левый осколок */
-                ctx.beginPath();
-                ctx.moveTo(tpts[0].x, tpts[0].y);
-                for (var p = 1; p < tpts.length; p++) ctx.lineTo(tpts[p].x, tpts[p].y);
-                ctx.closePath();
-                ctx.strokeStyle = 'rgba(255,24,24,' + a + ')';
-                ctx.lineWidth   = 0.7;
-                ctx.stroke();
-                /* Лёгкая заливка */
-                ctx.fillStyle = 'rgba(255,24,24,' + (a * 0.08) + ')';
-                ctx.fill();
-
-                /* Правый осколок (зеркальный) */
-                ctx.save();
-                ctx.translate(W, 0);
-                ctx.scale(-1, 1);
-                ctx.beginPath();
-                ctx.moveTo(tpts[0].x, tpts[0].y);
-                for (var q = 1; q < tpts.length; q++) ctx.lineTo(tpts[q].x, tpts[q].y);
-                ctx.closePath();
-                ctx.strokeStyle = 'rgba(255,24,24,' + (a * 0.7) + ')';
-                ctx.lineWidth   = 0.7;
-                ctx.stroke();
-                ctx.fillStyle = 'rgba(255,24,24,' + (a * 0.05) + ')';
-                ctx.fill();
-                ctx.restore();
+                drawShardShape(false);
+                drawShardShape(true);
             });
 
-            /* Редкая вспышка на весь экран */
-            if (Math.random() < 0.003) {
-                ctx.fillStyle = 'rgba(255,0,0,0.018)';
+            /* ударные волны */
+            S.swTimer--;
+            if (S.swTimer <= 0) {
+                S.swTimer = randInt(55, 210);
+                S.shockwaves.push({
+                    x     : W / 2 + rand(-60, 60),
+                    y     : rand(H * 0.15, H * 0.85),
+                    r     : 0,
+                    maxR  : rand(55, 200),
+                    speed : rand(1.4, 3.8),
+                    alpha : rand(0.055, 0.13),
+                });
+            }
+            S.shockwaves = S.shockwaves.filter(function (sw) { return sw.r < sw.maxR; });
+            S.shockwaves.forEach(function (sw) {
+                sw.r += sw.speed;
+                var a = sw.alpha * (1 - sw.r / sw.maxR);
+                ctx.beginPath(); ctx.arc(sw.x,     sw.y, sw.r, 0, Math.PI * 2);
+                ctx.strokeStyle = 'rgba(255,24,24,' + a + ')'; ctx.lineWidth = 1.3; ctx.stroke();
+                ctx.beginPath(); ctx.arc(W - sw.x, sw.y, sw.r, 0, Math.PI * 2);
+                ctx.strokeStyle = 'rgba(255,24,24,' + (a * 0.5) + ')'; ctx.lineWidth = 0.8; ctx.stroke();
+            });
+
+            /* редкие вспышки */
+            if (Math.random() < 0.002) {
+                ctx.fillStyle = 'rgba(255,0,0,0.022)';
                 ctx.fillRect(0, 0, W, H);
             }
+
+            /* ось зеркала (пунктир) */
+            ctx.save();
+            ctx.setLineDash([5, 14]);
+            ctx.strokeStyle = 'rgba(255,24,24,0.025)';
+            ctx.lineWidth   = 1;
+            ctx.beginPath(); ctx.moveTo(W / 2, 0); ctx.lineTo(W / 2, H); ctx.stroke();
+            ctx.setLineDash([]);
+            ctx.restore();
         }
 
-        /* ══════════════════════════════════════
-           GABRIEL — ПЕРЬЯ + ЛУЧИ СВЕТА + НИМБЫ
-           Уникальность: небесная/ангельская эстетика,
-           физика падения перьев, радиальные лучи
-        ══════════════════════════════════════ */
+        /* ════════════════════════════════════════════
+           GABRIEL  —  FEATHERS  +  RAYS  +  HALOS  +  WINGS  +  MOTES
+        ════════════════════════════════════════════ */
         function initGabriel() {
-            S = { feathers: [], halos: [], rays: [], wings: [] };
+            S = {
+                feathers    : [],
+                halos       : [],
+                rays        : [],
+                wings       : [
+                    { side: -1, phase: 0,       phaseSpd: 0.0065, alpha: 0.026, beatAmt: 0.055 },
+                    { side:  1, phase: Math.PI, phaseSpd: 0.0065, alpha: 0.026, beatAmt: 0.055 },
+                ],
+                lightMotes  : [],
+                mandalaPhase: 0,
+                mandalaSpd  : 0.0038,
+                divineFlash : 0,
+                ambPhase    : 0,
+            };
 
-            for (var i = 0; i < 30; i++) {
-                S.feathers.push(newFeather(true));
-            }
+            for (var i = 0; i < 46; i++) S.feathers.push(newGFeather(true));
 
-            for (var h = 0; h < 5; h++) {
+            for (var h = 0; h < 7; h++) {
                 S.halos.push({
-                    x       : rand(80, canvas.width  - 80),
-                    y       : rand(80, canvas.height - 80),
-                    r       : rand(34, 82),
-                    alpha   : rand(0.04, 0.09),
-                    phase   : rand(0, Math.PI * 2),
-                    phaseSpd: rand(0.01, 0.024),
-                    rot     : rand(0, Math.PI * 2),
-                    rotV    : rand(-0.003, 0.003),
+                    x        : rand(70, canvas.width  - 70),
+                    y        : rand(70, canvas.height - 70),
+                    r        : rand(28, 95),
+                    alpha    : rand(0.032, 0.078),
+                    phase    : rand(0, Math.PI * 2),
+                    phaseSpd : rand(0.007, 0.022),
+                    rot      : rand(0, Math.PI * 2),
+                    rotV     : rand(-0.004, 0.004),
+                    spokes   : randInt(8, 18),
+                    inner    : Math.random() > 0.45,
+                    innerR   : rand(0.55, 0.75),
                 });
             }
 
-            for (var r = 0; r < 8; r++) {
+            for (var r = 0; r < 12; r++) {
                 S.rays.push({
-                    angle   : rand(-0.58, 0.58),
-                    halfW   : rand(18, 68),
-                    len     : rand(canvas.height * 0.38, canvas.height * 0.92),
-                    alpha   : rand(0.022, 0.06),
-                    phase   : rand(0, Math.PI * 2),
-                    phaseSpd: rand(0.006, 0.016),
+                    angle    : rand(-0.78, 0.78),
+                    halfW    : rand(14, 78),
+                    len      : rand(canvas.height * 0.32, canvas.height),
+                    alpha    : rand(0.016, 0.052),
+                    phase    : rand(0, Math.PI * 2),
+                    phaseSpd : rand(0.004, 0.014),
                 });
             }
 
-            S.wings = [
-                { side: -1, phase: 0,         phaseSpd: 0.008, alpha: 0.032 },
-                { side:  1, phase: Math.PI,   phaseSpd: 0.008, alpha: 0.032 },
-            ];
+            for (var m = 0; m < 75; m++) {
+                S.lightMotes.push(newGMote(true));
+            }
         }
 
-        function newFeather(randomY) {
+        function newGFeather(randomY) {
             return {
-                x       : rand(-70, canvas.width + 70),
-                y       : randomY ? rand(-300, canvas.height) : rand(-220, -10),
-                vy      : rand(0.22, 0.72),
-                vx      : rand(-0.1, 0.1),
-                len     : rand(20, 50),
-                swing   : rand(0, Math.PI * 2),
-                swingSpd: rand(0.01, 0.03),
-                rot     : 0,
-                alpha   : rand(0.06, 0.17),
-                golden  : Math.random() > 0.36,
+                x        : rand(-90, canvas.width  + 90),
+                y        : randomY ? rand(-380, canvas.height) : rand(-280, -15),
+                vy       : rand(0.16, 0.68),
+                vx       : rand(-0.12, 0.12),
+                len      : rand(17, 58),
+                swing    : rand(0, Math.PI * 2),
+                swingSpd : rand(0.009, 0.028),
+                rot      : 0,
+                alpha    : rand(0.055, 0.17),
+                golden   : Math.random() > 0.34,
+            };
+        }
+
+        function newGMote(randomY) {
+            return {
+                x        : rand(0, canvas.width),
+                y        : randomY ? rand(0, canvas.height) : canvas.height + 20,
+                r        : rand(0.7, 3.0),
+                vy       : rand(-0.38, -0.07),
+                vx       : rand(-0.07, 0.07),
+                alpha    : rand(0.055, 0.19),
+                phase    : rand(0, Math.PI * 2),
+                phaseSpd : rand(0.02, 0.06),
             };
         }
 
         function drawGabriel() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            var cx = canvas.width / 2;
-            var cy = canvas.height / 2;
+            var W  = canvas.width, H = canvas.height;
+            var cx = W / 2,       cy = H / 2;
+            S.ambPhase    += 0.008;
+            S.mandalaPhase += S.mandalaSpd;
 
-            /* Лучи света из верхней точки */
+            /* мягкое рассеянное свечение сверху */
+            var ambA = 0.022 + 0.01 * Math.sin(S.ambPhase);
+            var ag = ctx.createRadialGradient(cx, -H * 0.12, 0, cx, -H * 0.12, H * 1.25);
+            ag.addColorStop(0,    'rgba(200,152,30,' + ambA + ')');
+            ag.addColorStop(0.45, 'rgba(200,152,30,' + (ambA * 0.35) + ')');
+            ag.addColorStop(1,    'rgba(200,152,30,0)');
+            ctx.fillStyle = ag;
+            ctx.fillRect(0, 0, W, H);
+
+            /* лучи света */
             S.rays.forEach(function (r) {
                 r.phase += r.phaseSpd;
-                var a = r.alpha * (0.5 + 0.5 * Math.sin(r.phase));
+                var a = r.alpha * (0.42 + 0.58 * Math.sin(r.phase));
                 ctx.save();
-                ctx.translate(cx, -35);
+                ctx.translate(cx, -50);
                 ctx.rotate(r.angle);
                 var g = ctx.createLinearGradient(0, 0, 0, r.len);
-                g.addColorStop(0,   'rgba(200,152,30,' + a + ')');
-                g.addColorStop(0.55,'rgba(255,215,110,' + (a * 0.32) + ')');
-                g.addColorStop(1,   'rgba(200,152,30,0)');
+                g.addColorStop(0,    'rgba(200,152,30,' + a + ')');
+                g.addColorStop(0.38, 'rgba(245,205,100,' + (a * 0.42) + ')');
+                g.addColorStop(0.72, 'rgba(200,152,30,'  + (a * 0.1) + ')');
+                g.addColorStop(1,    'rgba(200,152,30,0)');
                 ctx.beginPath();
-                ctx.moveTo(-r.halfW * 0.18, 0);
-                ctx.lineTo( r.halfW * 0.18, 0);
-                ctx.lineTo( r.halfW * 1.75, r.len);
-                ctx.lineTo(-r.halfW * 1.75, r.len);
+                ctx.moveTo(-r.halfW * 0.14, 0);
+                ctx.lineTo( r.halfW * 0.14, 0);
+                ctx.lineTo( r.halfW * 1.85, r.len);
+                ctx.lineTo(-r.halfW * 1.85, r.len);
                 ctx.closePath();
                 ctx.fillStyle = g;
                 ctx.fill();
                 ctx.restore();
             });
 
-            /* Крылья */
+            /* мандала */
+            var mAlpha = 0.022 + 0.01 * Math.sin(S.mandalaPhase * 1.7);
+            var mR     = Math.min(cx, cy) * 0.58;
+            ctx.save();
+            ctx.translate(cx, cy);
+            /* внешнее кольцо */
+            for (var ring = 1; ring <= 4; ring++) {
+                ctx.beginPath();
+                ctx.arc(0, 0, mR * (ring / 4), 0, Math.PI * 2);
+                ctx.strokeStyle = 'rgba(200,152,30,' + (mAlpha * (0.5 + 0.5 * (ring / 4))) + ')';
+                ctx.lineWidth   = 0.5;
+                ctx.stroke();
+            }
+            /* спицы (вращаются) */
+            ctx.rotate(S.mandalaPhase * 0.28);
+            for (var k = 0; k < 16; k++) {
+                var mAng = (k / 16) * Math.PI * 2;
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.lineTo(Math.cos(mAng) * mR, Math.sin(mAng) * mR);
+                ctx.strokeStyle = 'rgba(200,152,30,' + mAlpha + ')';
+                ctx.lineWidth   = 0.5;
+                ctx.stroke();
+                /* засечка на конце */
+                ctx.beginPath();
+                ctx.arc(Math.cos(mAng) * mR * 0.95, Math.sin(mAng) * mR * 0.95, 1.5, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(220,178,60,' + (mAlpha * 2) + ')';
+                ctx.fill();
+            }
+            ctx.restore();
+
+            /* крылья */
             S.wings.forEach(function (w) {
                 w.phase += w.phaseSpd;
-                var a    = w.alpha * (0.6 + 0.4 * Math.sin(w.phase));
-                var span = Math.min(cx * 0.88, 252);
-                var bx   = cx + w.side * span * 0.08;
+                var a    = w.alpha * (0.5 + 0.5 * Math.sin(w.phase));
+                var span = Math.min(cx * 0.94, 270);
+                var beat = Math.sin(w.phase * 0.48) * w.beatAmt;
 
                 ctx.save();
-                ctx.strokeStyle = 'rgba(180,140,20,' + a + ')';
-                ctx.lineWidth   = 0.85;
-
-                for (var f = 0; f < 5; f++) {
-                    var t = (f + 1) / 6;
+                /* перьевые дуги */
+                ctx.strokeStyle = 'rgba(175,138,18,' + a + ')';
+                ctx.lineWidth   = 0.78;
+                for (var f = 0; f < 7; f++) {
+                    var t    = (f + 1) / 8;
+                    var arcY = cy - 60 * (1 - t) - f * 7 + beat * span * t;
                     ctx.beginPath();
-                    ctx.moveTo(bx, cy);
+                    ctx.moveTo(cx, cy);
                     ctx.quadraticCurveTo(
-                        bx + w.side * span * t * 0.5,
-                        cy - 52 - f * 7,
-                        bx + w.side * span * t,
-                        cy + 16 + f * 13
+                        cx + w.side * span * t * 0.46, arcY,
+                        cx + w.side * span * t,        cy + 20 + f * 14 + beat * span * 0.28
                     );
                     ctx.stroke();
                 }
-
+                /* контур крыла */
                 ctx.beginPath();
-                ctx.moveTo(bx, cy + 68);
+                ctx.moveTo(cx, cy + 80);
                 ctx.quadraticCurveTo(
-                    bx + w.side * span * 0.56, cy - 78,
-                    bx + w.side * span, cy + 30
+                    cx + w.side * span * 0.58, cy - 92 + beat * span * 0.5,
+                    cx + w.side * span,         cy + 38
                 );
-                ctx.strokeStyle = 'rgba(200,152,30,' + (a * 0.52) + ')';
+                ctx.strokeStyle = 'rgba(200,152,30,' + (a * 0.58) + ')';
                 ctx.lineWidth   = 1.1;
                 ctx.stroke();
                 ctx.restore();
             });
 
-            /* Нимбы */
+            /* нимбы */
             S.halos.forEach(function (h) {
                 h.phase += h.phaseSpd;
                 h.rot   += h.rotV;
-                var a = h.alpha * (0.5 + 0.5 * Math.sin(h.phase));
-                var r = h.r * (0.95 + 0.05 * Math.sin(h.phase * 1.35));
+                var a = h.alpha * (0.44 + 0.56 * Math.sin(h.phase));
+                var r = h.r * (0.93 + 0.07 * Math.sin(h.phase * 1.25));
 
-                ctx.beginPath();
-                ctx.arc(h.x, h.y, r, 0, Math.PI * 2);
-                ctx.strokeStyle = 'rgba(200,152,30,' + a + ')';
-                ctx.lineWidth   = 1.35;
-                ctx.stroke();
+                /* внешнее кольцо */
+                ctx.beginPath(); ctx.arc(h.x, h.y, r, 0, Math.PI * 2);
+                ctx.strokeStyle = 'rgba(200,152,30,' + a + ')'; ctx.lineWidth = 1.45; ctx.stroke();
 
-                ctx.beginPath();
-                ctx.arc(h.x, h.y, r * 0.7, 0, Math.PI * 2);
-                ctx.strokeStyle = 'rgba(220,180,60,' + (a * 0.38) + ')';
-                ctx.lineWidth   = 0.5;
-                ctx.stroke();
+                /* внутреннее кольцо */
+                if (h.inner) {
+                    ctx.beginPath(); ctx.arc(h.x, h.y, r * h.innerR, 0, Math.PI * 2);
+                    ctx.strokeStyle = 'rgba(225,182,62,' + (a * 0.4) + ')'; ctx.lineWidth = 0.5; ctx.stroke();
+                }
 
+                /* радиальные спицы + засечки */
                 ctx.save();
                 ctx.translate(h.x, h.y);
                 ctx.rotate(h.rot);
-                for (var k = 0; k < 8; k++) {
-                    var ang = (k / 8) * Math.PI * 2;
+                for (var s = 0; s < h.spokes; s++) {
+                    var sang = (s / h.spokes) * Math.PI * 2;
+                    var sx1  = Math.cos(sang) * r;
+                    var sy1  = Math.sin(sang) * r;
                     ctx.beginPath();
-                    ctx.moveTo(Math.cos(ang) * r,       Math.sin(ang) * r);
-                    ctx.lineTo(Math.cos(ang) * (r + 6), Math.sin(ang) * (r + 6));
-                    ctx.strokeStyle = 'rgba(200,152,30,' + a + ')';
-                    ctx.lineWidth   = 0.7;
-                    ctx.stroke();
+                    ctx.moveTo(sx1, sy1);
+                    ctx.lineTo(Math.cos(sang) * (r + 8), Math.sin(sang) * (r + 8));
+                    ctx.strokeStyle = 'rgba(200,152,30,' + a + ')'; ctx.lineWidth = 0.65; ctx.stroke();
+                    /* точка на ободе */
+                    ctx.beginPath(); ctx.arc(sx1, sy1, 1.3, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(240,190,70,' + (a * 2.2) + ')'; ctx.fill();
                 }
                 ctx.restore();
+
+                /* свечение нимба */
+                var hg = ctx.createRadialGradient(h.x, h.y, r * 0.85, h.x, h.y, r * 1.3);
+                hg.addColorStop(0, 'rgba(200,152,30,' + (a * 0.22) + ')');
+                hg.addColorStop(1, 'rgba(200,152,30,0)');
+                ctx.beginPath(); ctx.arc(h.x, h.y, r * 1.3, 0, Math.PI * 2);
+                ctx.fillStyle = hg; ctx.fill();
             });
 
-            /* Падающие перья */
+            /* световые частицы */
+            S.lightMotes.forEach(function (m, idx) {
+                m.phase += m.phaseSpd;
+                m.y     += m.vy;
+                m.x     += m.vx + Math.sin(m.phase * 0.65) * 0.09;
+                if (m.y < -25) { S.lightMotes[idx] = newGMote(false); return; }
+                var a = m.alpha * (0.38 + 0.62 * Math.abs(Math.sin(m.phase)));
+                ctx.beginPath(); ctx.arc(m.x, m.y, m.r, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(225,182,62,' + a + ')'; ctx.fill();
+                /* нежное свечение */
+                ctx.beginPath(); ctx.arc(m.x, m.y, m.r * 2.8, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(200,152,30,' + (a * 0.18) + ')'; ctx.fill();
+            });
+
+            /* падающие перья */
             S.feathers.forEach(function (f, idx) {
                 f.swing += f.swingSpd;
                 f.y     += f.vy;
                 f.x     += f.vx + Math.sin(f.swing) * 0.14;
-                f.rot    = Math.sin(f.swing * 0.5) * 0.28;
-
-                if (f.y > canvas.height + 85) {
-                    S.feathers[idx] = newFeather(false);
-                    return;
-                }
-                drawFeather(f.x, f.y, f.len, f.rot, f.alpha, f.golden);
+                f.rot    = Math.sin(f.swing * 0.5) * 0.3;
+                if (f.y > H + 110) { S.feathers[idx] = newGFeather(false); return; }
+                drawGFeather(f.x, f.y, f.len, f.rot, f.alpha, f.golden);
             });
+
+            /* редкая divine вспышка */
+            if (Math.random() < 0.0022) S.divineFlash = rand(0.55, 1.3);
+            if (S.divineFlash > 0) {
+                ctx.fillStyle = 'rgba(255,232,130,' + (S.divineFlash * 0.024) + ')';
+                ctx.fillRect(0, 0, W, H);
+                S.divineFlash -= 0.06;
+            }
         }
 
-        function drawFeather(x, y, len, rot, alpha, golden) {
-            var shaft = golden ? '200,152,30' : '178,148,78';
-            var barb  = golden ? '220,178,58' : '198,168,98';
-
+        function drawGFeather(x, y, len, rot, alpha, golden) {
+            var shaft = golden ? '200,152,30' : '175,145,75';
+            var barb  = golden ? '222,180,58' : '198,168,98';
             ctx.save();
             ctx.translate(x, y);
             ctx.rotate(rot);
-
+            /* стержень */
             ctx.beginPath();
             ctx.moveTo(0, -len * 0.5);
             ctx.lineTo(0,  len * 0.5);
             ctx.strokeStyle = 'rgba(' + shaft + ',' + alpha + ')';
-            ctx.lineWidth   = 0.85;
+            ctx.lineWidth   = 0.9;
             ctx.stroke();
-
-            var steps = Math.floor(len / 3.8);
+            /* бородки */
+            var steps = Math.floor(len / 3.5);
             for (var i = 0; i < steps; i++) {
                 var t  = i / steps;
                 var by = -len * 0.5 + t * len;
-                var bw = Math.sin(t * Math.PI) * len * 0.36;
+                var bw = Math.sin(t * Math.PI) * len * 0.38;
                 var ba = alpha * Math.sin(t * Math.PI);
-                if (ba < 0.004) continue;
+                if (ba < 0.003) continue;
                 ctx.strokeStyle = 'rgba(' + barb + ',' + ba + ')';
                 ctx.lineWidth   = 0.4;
-
-                ctx.beginPath();
-                ctx.moveTo(0, by);
-                ctx.quadraticCurveTo(bw * 0.42, by + len * 0.052, bw, by + len * 0.046);
+                ctx.beginPath(); ctx.moveTo(0, by);
+                ctx.quadraticCurveTo( bw * 0.42, by + len * 0.05,  bw, by + len * 0.045);
                 ctx.stroke();
-
-                ctx.beginPath();
-                ctx.moveTo(0, by);
-                ctx.quadraticCurveTo(-bw * 0.42, by + len * 0.052, -bw, by + len * 0.046);
+                ctx.beginPath(); ctx.moveTo(0, by);
+                ctx.quadraticCurveTo(-bw * 0.42, by + len * 0.05, -bw, by + len * 0.045);
                 ctx.stroke();
             }
             ctx.restore();
         }
 
-        /* ══════════════════════════════════════
+        /* ════════════════════════════════════════════
            ГЛАВНЫЙ ЦИКЛ
-        ══════════════════════════════════════ */
+        ════════════════════════════════════════════ */
         function loop() {
             switch (activeTheme) {
                 case 'v1':      drawV1();      break;
@@ -1639,7 +1920,7 @@
                     ctx.clearRect(0, 0, canvas.width, canvas.height);
                     break;
             }
-            animId = requestAnimationFrame(loop);
+            requestAnimationFrame(loop);
         }
 
         function initForTheme(t) {
@@ -1652,14 +1933,14 @@
             }
         }
 
-        /* Перехватываем setTheme */
-        var _orig = window.setTheme;
+        /* перехватываем setTheme */
+        var _origSetTheme = window.setTheme;
         window.setTheme = function (t) {
-            _orig(t);
+            _origSetTheme(t);
             initForTheme(t);
         };
 
-        /* Запуск */
+        /* запуск */
         var boot = 'dark';
         try { boot = localStorage.getItem('uk_theme') || 'dark'; } catch (e) {}
         initForTheme(boot);
