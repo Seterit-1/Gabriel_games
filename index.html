@@ -6,765 +6,568 @@
     <title>ULTRAKILL // V1 UNIT — SYSTEM DATABASE</title>
     <link href="https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
     <style>
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-    :root {
-        --acc:#ff2020; --acc-dim:#8a0000; --acc-glow:rgba(255,32,32,.35);
-        --body-bg:#060606; --panel-bg:#0b0b0b; --panel-hd:#0f0f0f; --panel-bd:#222;
-        --text-p:#e8e8e8; --text-1:#555; --text-2:#333; --text-3:#282828; --text-4:#1e1e1e;
-        --ticker-bg:#000; --read-bg:#050505;
-        --c-gold:#ffd166; --c-blue:#5599ff; --c-green:#22ff88; --c-pink:#ff44aa; --c-orange:#ff8833;
-    }
-    body[data-theme="v1"] {
-        --acc:#3a99ff; --acc-dim:#003399; --acc-glow:rgba(58,153,255,.42);
-        --body-bg:#030912; --panel-bg:#060d1c; --panel-hd:#080f22; --panel-bd:#102244;
-        --text-p:#b8d0ff; --text-1:#3a5580; --text-2:#253858; --text-3:#162240; --text-4:#0f1830;
-        --ticker-bg:#020509; --read-bg:#040810;
-        --c-gold:#44aaff; --c-blue:#77ccff; --c-green:#33bbff; --c-pink:#6688ff; --c-orange:#4499ee;
-    }
-    body[data-theme="v2"] {
-        --acc:#ff1818; --acc-dim:#aa0000; --acc-glow:rgba(255,24,24,.52);
-        --body-bg:#070202; --panel-bg:#0d0404; --panel-hd:#110505; --panel-bd:#2a0606;
-        --text-p:#ffc8c8; --text-1:#883333; --text-2:#661818; --text-3:#3a0d0d; --text-4:#280808;
-        --ticker-bg:#040101; --read-bg:#060202;
-        --c-gold:#ff8855; --c-blue:#ff5544; --c-green:#ff4422; --c-pink:#ff2266; --c-orange:#ff7722;
-    }
-    body[data-theme="gabriel"] {
-        --acc:#c8981e; --acc-dim:#6a5000; --acc-glow:rgba(200,152,30,.32);
-        --body-bg:#f0ebe0; --panel-bg:#fafaf4; --panel-hd:#edead8; --panel-bd:#c8b880;
-        --text-p:#1a1508; --text-1:#7a6a40; --text-2:#a09060; --text-3:#bfb080; --text-4:#d0c898;
-        --ticker-bg:#e5dfc8; --read-bg:#f5f0e0;
-        --c-gold:#c8981e; --c-blue:#3366aa; --c-green:#227744; --c-pink:#aa3366; --c-orange:#bb5522;
-    }
+        :root {
+            --acc:       #ff2020;
+            --acc-dim:   #8a0000;
+            --acc-glow:  rgba(255,32,32,0.35);
+            --body-bg:   #060606;
+            --panel-bg:  #0b0b0b;
+            --panel-hd:  #0f0f0f;
+            --panel-bd:  #222222;
+            --text-p:    #e8e8e8;
+            --text-1:    #555555;
+            --text-2:    #333333;
+            --text-3:    #282828;
+            --text-4:    #1e1e1e;
+            --ticker-bg: #000000;
+            --read-bg:   #050505;
+            --c-gold:    #ffd166;
+            --c-blue:    #5599ff;
+            --c-green:   #22ff88;
+            --c-pink:    #ff44aa;
+            --c-orange:  #ff8833;
+        }
+        body[data-theme="v1"] {
+            --acc:       #3a99ff;
+            --acc-dim:   #003399;
+            --acc-glow:  rgba(58,153,255,0.42);
+            --body-bg:   #030912;
+            --panel-bg:  #060d1c;
+            --panel-hd:  #080f22;
+            --panel-bd:  #102244;
+            --text-p:    #b8d0ff;
+            --text-1:    #3a5580;
+            --text-2:    #253858;
+            --text-3:    #162240;
+            --text-4:    #0f1830;
+            --ticker-bg: #020509;
+            --read-bg:   #040810;
+            --c-gold:    #44aaff;
+            --c-blue:    #77ccff;
+            --c-green:   #33bbff;
+            --c-pink:    #6688ff;
+            --c-orange:  #4499ee;
+        }
+        body[data-theme="v2"] {
+            --acc:       #ff1818;
+            --acc-dim:   #aa0000;
+            --acc-glow:  rgba(255,24,24,0.52);
+            --body-bg:   #070202;
+            --panel-bg:  #0d0404;
+            --panel-hd:  #110505;
+            --panel-bd:  #2a0606;
+            --text-p:    #ffc8c8;
+            --text-1:    #883333;
+            --text-2:    #661818;
+            --text-3:    #3a0d0d;
+            --text-4:    #280808;
+            --ticker-bg: #040101;
+            --read-bg:   #060202;
+            --c-gold:    #ff8855;
+            --c-blue:    #ff5544;
+            --c-green:   #ff4422;
+            --c-pink:    #ff2266;
+            --c-orange:  #ff7722;
+        }
+        body[data-theme="gabriel"] {
+            --acc:       #c8981e;
+            --acc-dim:   #6a5000;
+            --acc-glow:  rgba(200,152,30,0.32);
+            --body-bg:   #f0ebe0;
+            --panel-bg:  #fafaf4;
+            --panel-hd:  #edead8;
+            --panel-bd:  #c8b880;
+            --text-p:    #1a1508;
+            --text-1:    #7a6a40;
+            --text-2:    #a09060;
+            --text-3:    #bfb080;
+            --text-4:    #d0c898;
+            --ticker-bg: #e5dfc8;
+            --read-bg:   #f5f0e0;
+            --c-gold:    #c8981e;
+            --c-blue:    #3366aa;
+            --c-green:   #227744;
+            --c-pink:    #aa3366;
+            --c-orange:  #bb5522;
+        }
 
-    /* ══════════════════════════════════════════
-       ОБЩИЙ КОНТЕЙНЕР ФОНА
-    ══════════════════════════════════════════ */
-    .theme-bg-wrap {
-        position: fixed; inset: 0;
-        pointer-events: none; z-index: 1;
-        overflow: hidden;
-    }
+        /* ══════════════════════════════════════════════════
+           CSS-фон: DARK + V1 (hex-сетка + скан-полоса)
+        ══════════════════════════════════════════════════ */
+        .theme-bg-wrap {
+            position: fixed; inset: 0;
+            pointer-events: none; z-index: 1;
+            overflow: hidden;
+        }
+        .bg-dark { position: absolute; inset: 0; display: none; }
+        [data-theme="dark"] .bg-dark,
+        [data-theme="v1"]   .bg-dark { display: block; }
 
-    /* ══════════════════════════════════════════
-       DARK — тонкая hex-сетка + scanline
-    ══════════════════════════════════════════ */
-    .bg-dark {
-        position: absolute; inset: 0; display: none;
-    }
-    [data-theme="dark"] .bg-dark,
-    [data-theme="v1"]   .bg-dark { display: block; }
+        .bg-dark-grid {
+            position: absolute; inset: 0;
+            background-image:
+                linear-gradient(60deg,  transparent 49.5%, rgba(255,32,32,.025) 50%, transparent 50.5%),
+                linear-gradient(120deg, transparent 49.5%, rgba(255,32,32,.018) 50%, transparent 50.5%),
+                linear-gradient(0deg,   transparent 49.5%, rgba(255,32,32,.015) 50%, transparent 50.5%);
+            background-size: 52px 90px;
+        }
+        [data-theme="v1"] .bg-dark-grid {
+            background-image:
+                linear-gradient(60deg,  transparent 49.5%, rgba(58,153,255,.03)  50%, transparent 50.5%),
+                linear-gradient(120deg, transparent 49.5%, rgba(58,153,255,.022) 50%, transparent 50.5%),
+                linear-gradient(0deg,   transparent 49.5%, rgba(58,153,255,.018) 50%, transparent 50.5%);
+            background-size: 52px 90px;
+        }
+        .bg-dark-scan {
+            position: absolute; left: 0; right: 0;
+            height: 110px; top: -110px;
+            background: linear-gradient(to bottom,
+                transparent,
+                rgba(255,32,32,.012) 42%, rgba(255,32,32,.028) 50%,
+                rgba(255,32,32,.012) 58%, transparent);
+            animation: darkScan 6s linear infinite;
+        }
+        [data-theme="v1"] .bg-dark-scan {
+            background: linear-gradient(to bottom,
+                transparent,
+                rgba(58,153,255,.014) 42%, rgba(58,153,255,.032) 50%,
+                rgba(58,153,255,.014) 58%, transparent);
+            animation-duration: 5s;
+        }
+        @keyframes darkScan {
+            from { transform: translateY(0); }
+            to   { transform: translateY(calc(100vh + 110px)); }
+        }
 
-    /* тихий шестиугольный паттерн */
-    .bg-dark-grid {
-        position: absolute; inset: 0;
-        background-image:
-            linear-gradient(60deg,  transparent 49.5%, rgba(255,32,32,.025) 50%, transparent 50.5%),
-            linear-gradient(120deg, transparent 49.5%, rgba(255,32,32,.018) 50%, transparent 50.5%),
-            linear-gradient(0deg,   transparent 49.5%, rgba(255,32,32,.015) 50%, transparent 50.5%);
-        background-size: 52px 90px;
-    }
-    [data-theme="v1"] .bg-dark-grid {
-        background-image:
-            linear-gradient(60deg,  transparent 49.5%, rgba(58,153,255,.03) 50%, transparent 50.5%),
-            linear-gradient(120deg, transparent 49.5%, rgba(58,153,255,.022) 50%, transparent 50.5%),
-            linear-gradient(0deg,   transparent 49.5%, rgba(58,153,255,.018) 50%, transparent 50.5%);
-        background-size: 52px 90px;
-    }
+        /* ══════════════════════════════════════════════════
+           Canvas: V2 + GABRIEL (JavaScript рисует поверх)
+        ══════════════════════════════════════════════════ */
+        #theme-bg-canvas {
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none; z-index: 2; opacity: 1;
+        }
 
-    /* скан-полоса */
-    .bg-dark-scan {
-        position: absolute; left: 0; right: 0;
-        height: 110px; top: -110px;
-        background: linear-gradient(to bottom,
-            transparent,
-            rgba(255,32,32,.012) 42%, rgba(255,32,32,.028) 50%,
-            rgba(255,32,32,.012) 58%, transparent);
-        animation: darkScan 6s linear infinite;
-    }
-    [data-theme="v1"] .bg-dark-scan {
-        background: linear-gradient(to bottom,
-            transparent,
-            rgba(58,153,255,.014) 42%, rgba(58,153,255,.032) 50%,
-            rgba(58,153,255,.014) 58%, transparent);
-        animation-duration: 5s;
-    }
-    @keyframes darkScan { from { transform: translateY(0); } to { transform: translateY(calc(100vh + 110px)); } }
+        /* ══════════════════════════════════════════════════
+           SCANLINES (общий оверлей поверх всего)
+        ══════════════════════════════════════════════════ */
+        body::after {
+            content: '';
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: repeating-linear-gradient(0deg,
+                transparent, transparent 2px,
+                rgba(0,0,0,0.12) 2px, rgba(0,0,0,0.12) 4px);
+            pointer-events: none;
+            z-index: 9999;
+        }
+        body[data-theme="gabriel"]::after {
+            background: repeating-linear-gradient(0deg,
+                transparent, transparent 2px,
+                rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
+        }
 
-    /* ══════════════════════════════════════════════════════════════
-       V2 — ЗЕРКАЛЬНЫЙ МОДУЛЬ
-       Разбитое зеркало · глитч · красная статика · трещины · осколки
-    ══════════════════════════════════════════════════════════════ */
-    .bg-v2 { position: absolute; inset: 0; display: none; }
-    [data-theme="v2"] .bg-v2 { display: block; }
-
-    /* Пульсирующая красная виньетка */
-    .bg-v2-vignette {
-        position: absolute; inset: 0;
-        background: radial-gradient(ellipse 88% 88% at 50% 50%,
-            transparent 30%, rgba(120,0,0,.07) 62%, rgba(70,0,0,.22) 100%);
-        animation: v2VigPulse 3.4s ease-in-out infinite alternate;
-    }
-    @keyframes v2VigPulse { from { opacity: .7; } to { opacity: 1; } }
-
-    /* Тонкая ось зеркала (пунктир по центру) */
-    .bg-v2-axis {
-        position: absolute; left: 50%; top: 0;
-        width: 1px; height: 100%;
-        background: linear-gradient(to bottom,
-            transparent 0%, rgba(255,24,24,.08) 20%,
-            rgba(255,24,24,.14) 50%, rgba(255,24,24,.08) 80%, transparent 100%);
-        animation: v2AxisPulse 2.6s ease-in-out infinite;
-    }
-    @keyframes v2AxisPulse { 0%,100% { opacity: .5; } 50% { opacity: 1; } }
-
-    /* Паттерн трещин — тонкие диагональные линии */
-    .bg-v2-cracks {
-        position: absolute; inset: 0;
-        background:
-            linear-gradient(134deg, transparent 44.2%, rgba(255,40,40,.038) 44.8%,
-                rgba(255,30,30,.016) 45.2%, transparent 45.9%),
-            linear-gradient(58deg,  transparent 37.8%, rgba(255,24,24,.028) 38.4%, transparent 39%),
-            linear-gradient(112deg, transparent 61.5%, rgba(255,50,30,.034) 62.1%, transparent 62.7%),
-            linear-gradient(79deg,  transparent 27.2%, rgba(200,0,0,.022)   27.8%, transparent 28.4%),
-            linear-gradient(163deg, transparent 70.6%, rgba(255,24,24,.031) 71.2%, transparent 71.9%),
-            linear-gradient(44deg,  transparent 54.4%, rgba(180,0,0,.021)   55.0%, transparent 55.6%),
-            linear-gradient(97deg,  transparent 33.1%, rgba(255,60,20,.018) 33.7%, transparent 34.3%),
-            linear-gradient(151deg, transparent 82.3%, rgba(200,10,10,.026) 82.9%, transparent 83.5%);
-        animation: v2CracksDrift 14s ease-in-out infinite alternate;
-    }
-    @keyframes v2CracksDrift {
-        0%   { transform: scale(1) rotate(0deg);     opacity: .75; }
-        50%  { transform: scale(1.004) rotate(.12deg); opacity: 1;  }
-        100% { transform: scale(1) rotate(0deg);     opacity: .82; }
-    }
-
-    /* Серия глитч-полос — горизонтальные вспышки */
-    .bg-v2-bars { position: absolute; inset: 0; }
-    .bg-v2-bar {
-        position: absolute; left: 0; right: 0;
-        background: rgba(255,24,24,.07);
-        animation: v2BarFlash linear infinite;
-    }
-    .bg-v2-bar:nth-child(1)  { top: 10.4%;  height: 2px;  animation-duration: 7.1s;  animation-delay: -1.1s; }
-    .bg-v2-bar:nth-child(2)  { top: 22.8%;  height: 1px;  animation-duration: 11.4s; animation-delay: -3.7s; }
-    .bg-v2-bar:nth-child(3)  { top: 37.5%;  height: 3px;  animation-duration: 5.9s;  animation-delay: -.7s;  }
-    .bg-v2-bar:nth-child(4)  { top: 51.2%;  height: 1px;  animation-duration: 14.1s; animation-delay: -6.0s; }
-    .bg-v2-bar:nth-child(5)  { top: 66.9%;  height: 2px;  animation-duration: 8.6s;  animation-delay: -2.3s; }
-    .bg-v2-bar:nth-child(6)  { top: 78.6%;  height: 4px;  animation-duration: 6.3s;  animation-delay: -4.9s; }
-    .bg-v2-bar:nth-child(7)  { top: 86.3%;  height: 1px;  animation-duration: 17.0s; animation-delay: -8.2s; }
-    .bg-v2-bar:nth-child(8)  { top: 43.7%;  height: 2px;  animation-duration: 9.4s;  animation-delay: -1.8s; }
-    .bg-v2-bar:nth-child(9)  { top: 58.1%;  height: 1px;  animation-duration: 12.7s; animation-delay: -5.5s; }
-    .bg-v2-bar:nth-child(10) { top: 92.4%;  height: 3px;  animation-duration: 4.8s;  animation-delay: -.3s;  }
-
-    @keyframes v2BarFlash {
-        0%,87%,100% { opacity: 0; transform: translateX(0); }
-        88%  { opacity: 1;   transform: translateX(-9px);  background: rgba(255,24,24,.09); }
-        89%  { opacity: .5;  transform: translateX(14px);  background: rgba(255,80,60,.12); }
-        90%  { opacity: 1;   transform: translateX(-5px);  }
-        91%  { opacity: 0; }
-        93%,95% { opacity: .8; transform: translateX(7px); background: rgba(180,0,0,.08); }
-        94%  { opacity: 0; }
-        96%  { opacity: 0; transform: translateX(0); }
-    }
-
-    /* Статический шум — мелкие точки с быстрой сменой позиции */
-    .bg-v2-noise {
-        position: absolute; inset: 0; opacity: .55;
-        background-image:
-            radial-gradient(circle, rgba(255,24,24,.18) 1px, transparent 1px),
-            radial-gradient(circle, rgba(255,24,24,.13) 1px, transparent 1px),
-            radial-gradient(circle, rgba(255,60,30,.15) 1px, transparent 1px),
-            radial-gradient(circle, rgba(200,0,0,.10)   1px, transparent 1px);
-        background-size: 37px 41px, 61px 57px, 83px 79px, 47px 53px;
-        animation: v2NoiseStep .18s steps(1) infinite;
-    }
-    @keyframes v2NoiseStep {
-        0%   { background-position: 11px 7px,   29px 33px, 53px 17px, 5px  41px; }
-        14%  { background-position: 24px 41px,  7px  19px, 71px  3px, 38px  9px; }
-        28%  { background-position: 38px 13px,  52px 47px,  5px 61px, 14px 55px; }
-        42%  { background-position:  4px 55px,  14px  3px, 41px 29px, 67px 27px; }
-        57%  { background-position: 48px 27px,  68px 11px, 19px 73px, 22px  3px; }
-        71%  { background-position: 20px 37px,  44px 53px, 63px 43px, 59px 47px; }
-        85%  { background-position: 62px  3px,  18px 67px, 37px  9px, 31px 61px; }
-        100% { background-position: 11px 7px,   29px 33px, 53px 17px,  5px 41px; }
-    }
-
-    /* RGB-смещение — тонкий цветной оверлей */
-    .bg-v2-rgb {
-        position: absolute; inset: 0;
-        animation: v2RgbShift 6.7s ease-in-out infinite;
-    }
-    @keyframes v2RgbShift {
-        0%,100% { box-shadow: none; opacity: 0; }
-        85%     { opacity: 0; }
-        86%     { box-shadow: inset 6px 0 0 rgba(255,0,0,.06), inset -6px 0 0 rgba(0,160,255,.04); opacity: 1; }
-        87%     { box-shadow: inset -4px 0 0 rgba(255,0,0,.04), inset  4px 0 0 rgba(0,160,255,.05); }
-        88%     { box-shadow: none; opacity: 0; }
-        92%     { box-shadow: inset 10px 0 0 rgba(255,0,0,.05), inset -3px 0 0 rgba(0,200,255,.03); opacity: 1; }
-        93%     { box-shadow: none; opacity: 0; }
-    }
-
-    /* Осколки — геометрические фигуры с clip-path (симметрично слева и справа) */
-    .bg-v2-shards { position: absolute; inset: 0; }
-    .v2-shard {
-        position: absolute;
-        border: 1px solid rgba(255,24,24,.1);
-        animation: v2ShardFloat ease-in-out infinite;
-    }
-    /* левая сторона */
-    .v2-shard:nth-child(1)  { width:46px; height:62px; top:11%; left:6%;   clip-path:polygon(20% 0%,100% 12%,82% 100%,0% 88%); animation-duration:8.3s;  animation-delay:-1.1s; }
-    .v2-shard:nth-child(2)  { width:33px; height:50px; top:27%; left:13%;  clip-path:polygon(0% 22%,78% 0%,100% 72%,28% 100%); animation-duration:11.8s; animation-delay:-3.2s; }
-    .v2-shard:nth-child(3)  { width:58px; height:39px; top:54%; left:5%;   clip-path:polygon(8% 0%,92% 4%,100% 93%,4% 100%);   animation-duration:9.5s;  animation-delay:-5.4s; }
-    .v2-shard:nth-child(4)  { width:29px; height:54px; top:71%; left:17%;  clip-path:polygon(32% 0%,100% 18%,68% 100%,0% 82%); animation-duration:13.2s; animation-delay:-2.1s; }
-    .v2-shard:nth-child(5)  { width:44px; height:36px; top:34%; left:41%;  clip-path:polygon(4% 8%,96% 0%,100% 96%,0% 100%);   animation-duration:7.9s;  animation-delay:-6.3s; }
-    .v2-shard:nth-child(6)  { width:38px; height:44px; top:82%; left:7%;   clip-path:polygon(15% 0%,100% 10%,90% 100%,5% 95%);  animation-duration:10.4s; animation-delay:-4.7s; }
-    /* правая сторона (зеркально) */
-    .v2-shard:nth-child(7)  { width:46px; height:62px; top:11%; right:6%;  clip-path:polygon(80% 0%,0% 12%,18% 100%,100% 88%);  animation-duration:8.3s;  animation-delay:-1.1s; }
-    .v2-shard:nth-child(8)  { width:33px; height:50px; top:27%; right:13%; clip-path:polygon(100% 22%,22% 0%,0% 72%,72% 100%); animation-duration:11.8s; animation-delay:-3.2s; }
-    .v2-shard:nth-child(9)  { width:58px; height:39px; top:54%; right:5%;  clip-path:polygon(92% 0%,8% 4%,0% 93%,96% 100%);    animation-duration:9.5s;  animation-delay:-5.4s; }
-    .v2-shard:nth-child(10) { width:29px; height:54px; top:71%; right:17%; clip-path:polygon(68% 0%,0% 18%,32% 100%,100% 82%); animation-duration:13.2s; animation-delay:-2.1s; }
-    .v2-shard:nth-child(11) { width:44px; height:36px; top:34%; right:41%; clip-path:polygon(96% 8%,4% 0%,0% 96%,100% 100%);   animation-duration:7.9s;  animation-delay:-6.3s; }
-    .v2-shard:nth-child(12) { width:38px; height:44px; top:82%; right:7%;  clip-path:polygon(85% 0%,0% 10%,10% 100%,95% 95%);  animation-duration:10.4s; animation-delay:-4.7s; }
-
-    @keyframes v2ShardFloat {
-        0%,100% { opacity:.44; transform:rotate(0deg) scale(1);       border-color:rgba(255,24,24,.08); }
-        22%     { opacity:.82; transform:rotate(2.1deg) scale(1.022); border-color:rgba(255,80,60,.16); }
-        48%     { opacity:.35; transform:rotate(-1.4deg) scale(.978); border-color:rgba(200,0,0,.06); }
-        73%     { opacity:.91; transform:rotate(1.6deg) scale(1.012); border-color:rgba(255,24,24,.2); }
-    }
-
-    /* Скан-полоса V2 */
-    .bg-v2-scan {
-        position: absolute; left:0; right:0; height:110px; top:-110px;
-        background: linear-gradient(to bottom,
-            transparent, rgba(255,24,24,.018) 42%,
-            rgba(255,40,40,.038) 50%, rgba(255,24,24,.018) 58%, transparent);
-        animation: v2Scan 4.8s linear infinite;
-    }
-    @keyframes v2Scan { from { transform:translateY(0); } to { transform:translateY(calc(100vh + 110px)); } }
-
-    /* Ударные волны */
-    .bg-v2-shockwave {
-        position: absolute;
-        border-radius: 50%;
-        border: 1px solid rgba(255,24,24,.18);
-        animation: v2Shock ease-out infinite;
-        transform-origin: center;
-    }
-    .bg-v2-shockwave:nth-child(1) { width:10px; height:10px; top:38%; left:48%;  animation-duration:4.2s; animation-delay:0s; }
-    .bg-v2-shockwave:nth-child(2) { width:10px; height:10px; top:62%; left:52%;  animation-duration:5.8s; animation-delay:-2s; }
-    .bg-v2-shockwave:nth-child(3) { width:10px; height:10px; top:22%; left:50%;  animation-duration:7.1s; animation-delay:-4s; }
-    @keyframes v2Shock {
-        0%   { transform:scale(1);   opacity:.7; border-width:1.2px; }
-        100% { transform:scale(24);  opacity:0;  border-width:.3px; }
-    }
-
-    /* ══════════════════════════════════════════════════════════════
-       GABRIEL — АРХАНГЕЛ / СУДЬЯ
-       Лучи · нимбы · перья · священная геометрия · золотые частицы
-    ══════════════════════════════════════════════════════════════ */
-    .bg-gabriel { position: absolute; inset: 0; display: none; }
-    [data-theme="gabriel"] .bg-gabriel { display: block; }
-
-    /* Рассеянное золотое свечение сверху */
-    .bg-gab-ambient {
-        position: absolute; inset: 0;
-        background: radial-gradient(ellipse 70% 55% at 50% -5%,
-            rgba(200,152,30,.12) 0%, rgba(220,180,60,.06) 40%, transparent 70%);
-        animation: gabAmbPulse 4.8s ease-in-out infinite alternate;
-    }
-    @keyframes gabAmbPulse { from { opacity:.65; } to { opacity: 1; } }
-
-    /* Конусообразные лучи света — conic-gradient */
-    .bg-gab-rays {
-        position: absolute; inset: 0;
-        background: conic-gradient(
-            from 270deg at 50% -18%,
-            rgba(200,152,30,.000) 0deg,   rgba(200,152,30,.052) 4deg,
-            rgba(200,152,30,.000) 9deg,   rgba(220,180,60,.044) 14deg,
-            rgba(200,152,30,.000) 20deg,  rgba(200,152,30,.061) 24deg,
-            rgba(200,152,30,.000) 30deg,  rgba(220,170,50,.038) 34deg,
-            rgba(200,152,30,.000) 40deg,  rgba(200,152,30,.055) 45deg,
-            rgba(200,152,30,.000) 51deg,  rgba(230,185,65,.042) 55deg,
-            rgba(200,152,30,.000) 61deg,  rgba(200,152,30,.048) 66deg,
-            rgba(200,152,30,.000) 72deg,  rgba(210,165,45,.035) 77deg,
-            rgba(200,152,30,.000) 83deg,  rgba(200,152,30,.058) 88deg,
-            rgba(200,152,30,.000) 95deg,  rgba(220,175,55,.041) 100deg,
-            rgba(200,152,30,.000) 107deg, rgba(200,152,30,.046) 113deg,
-            rgba(200,152,30,.000) 120deg
-        );
-        animation: gabRaysRot 28s linear infinite;
-        transform-origin: 50% -18%;
-    }
-    @keyframes gabRaysRot { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
-
-    /* Дополнительный слой лучей (медленнее, другой угол) */
-    .bg-gab-rays2 {
-        position: absolute; inset: 0;
-        background: conic-gradient(
-            from 270deg at 50% -10%,
-            rgba(245,205,100,.000) 0deg,  rgba(245,205,100,.032) 6.5deg,
-            rgba(245,205,100,.000) 14deg, rgba(240,200,90,.028)  21deg,
-            rgba(245,205,100,.000) 29deg, rgba(245,205,100,.036) 36deg,
-            rgba(245,205,100,.000) 45deg, rgba(240,195,85,.025)  52deg,
-            rgba(245,205,100,.000) 60deg, rgba(245,205,100,.033) 68deg,
-            rgba(245,205,100,.000) 77deg, rgba(240,200,90,.027)  84deg,
-            rgba(245,205,100,.000) 93deg, rgba(245,205,100,.031) 101deg,
-            rgba(245,205,100,.000) 110deg
-        );
-        animation: gabRays2Rot 42s linear infinite reverse;
-        transform-origin: 50% -10%;
-    }
-    @keyframes gabRays2Rot { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
-
-    /* Нимбы — кольца с засечками */
-    .bg-gab-halos { position: absolute; inset: 0; }
-    .gab-halo {
-        position: absolute;
-        border-radius: 50%;
-        border: 1.4px solid rgba(200,152,30,.09);
-        animation: gabHaloPulse ease-in-out infinite;
-    }
-    .gab-halo::before {
-        content: '';
-        position: absolute; inset: -5px;
-        border-radius: 50%;
-        border: .6px dashed rgba(200,152,30,.04);
-        animation: gabHaloRotInner linear infinite;
-    }
-    .gab-halo:nth-child(1)  { width:110px; height:110px; top: 6%;  left:12%;  animation-duration:5.1s;  animation-delay:-1.2s; }
-    .gab-halo:nth-child(1)::before  { animation-duration:18s; }
-    .gab-halo:nth-child(2)  { width:160px; height:160px; top:18%;  left:68%;  animation-duration:7.4s;  animation-delay:-3.1s; }
-    .gab-halo:nth-child(2)::before  { animation-duration:24s; }
-    .gab-halo:nth-child(3)  { width: 88px; height: 88px; top:42%;  left: 8%;  animation-duration:6.2s;  animation-delay: -.8s; }
-    .gab-halo:nth-child(3)::before  { animation-duration:14s; }
-    .gab-halo:nth-child(4)  { width:200px; height:200px; top:55%;  left:55%;  animation-duration:9.7s;  animation-delay:-5.4s; }
-    .gab-halo:nth-child(4)::before  { animation-duration:32s; animation-direction:reverse; }
-    .gab-halo:nth-child(5)  { width:130px; height:130px; top:72%;  left:22%;  animation-duration:8.3s;  animation-delay:-2.7s; }
-    .gab-halo:nth-child(5)::before  { animation-duration:21s; }
-    .gab-halo:nth-child(6)  { width: 72px; height: 72px; top:14%;  left:44%;  animation-duration:4.8s;  animation-delay:-4.0s; }
-    .gab-halo:nth-child(6)::before  { animation-duration:12s; animation-direction:reverse; }
-    .gab-halo:nth-child(7)  { width:180px; height:180px; top:32%;  left:30%;  animation-duration:11.2s; animation-delay:-7.3s; }
-    .gab-halo:nth-child(7)::before  { animation-duration:36s; }
-    .gab-halo:nth-child(8)  { width: 95px; height: 95px; top:84%;  left:72%;  animation-duration:6.6s;  animation-delay:-1.9s; }
-    .gab-halo:nth-child(8)::before  { animation-duration:16s; animation-direction:reverse; }
-
-    @keyframes gabHaloPulse {
-        0%,100% { opacity:.5;  transform:scale(1);     border-color:rgba(200,152,30,.07); }
-        40%     { opacity:.88; transform:scale(1.018); border-color:rgba(220,178,60,.16); }
-        70%     { opacity:.6;  transform:scale(.988);  border-color:rgba(200,152,30,.09); }
-    }
-    @keyframes gabHaloRotInner { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
-
-    /* Двойные кольца (внешнее + внутреннее) */
-    .gab-halo-double {
-        position: absolute;
-        border-radius: 50%;
-        border: .7px solid rgba(200,152,30,.05);
-        animation: gabHaloPulse ease-in-out infinite;
-    }
-    .gab-halo-double::after {
-        content: '';
-        position: absolute;
-        inset: 14%;
-        border-radius: 50%;
-        border: .5px solid rgba(220,178,60,.04);
-    }
-    .gab-halo-double:nth-child(1) { width:240px; height:240px; top:10%; left:35%;
-        animation-duration:13s; animation-delay:-6s; }
-    .gab-halo-double:nth-child(2) { width:310px; height:310px; top:50%; left:58%;
-        animation-duration:17s; animation-delay:-9s; }
-
-    /* Мандала — вращающееся кольцо по центру */
-    .bg-gab-mandala {
-        position: absolute;
-        width: min(55vw, 55vh); height: min(55vw, 55vh);
-        top: 50%; left: 50%;
-        transform: translate(-50%, -50%);
-        border-radius: 50%;
-        border: .6px solid rgba(200,152,30,.04);
-        animation: gabMandalaRot 44s linear infinite;
-    }
-    .bg-gab-mandala::before {
-        content: '';
-        position: absolute; inset: 8%;
-        border-radius: 50%;
-        border: .5px dashed rgba(200,152,30,.03);
-        animation: gabMandalaRot 28s linear infinite reverse;
-    }
-    .bg-gab-mandala::after {
-        content: '';
-        position: absolute; inset: 20%;
-        border-radius: 50%;
-        border: .7px solid rgba(220,178,60,.05);
-        animation: gabMandalaRot 18s linear infinite;
-    }
-    @keyframes gabMandalaRot { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
-
-    /* Золотые частицы — поднимаются вверх */
-    .bg-gab-motes { position: absolute; inset: 0; overflow: hidden; }
-    .gab-mote {
-        position: absolute;
-        border-radius: 50%;
-        background: rgba(220,178,60,.5);
-        animation: gabMoteRise linear infinite;
-        box-shadow: 0 0 4px rgba(200,152,30,.3);
-    }
-    .gab-mote:nth-child(1)  { width:2.5px; height:2.5px; left:7%;   animation-duration:9.4s;  animation-delay:-1.2s;  opacity:.55; }
-    .gab-mote:nth-child(2)  { width:1.5px; height:1.5px; left:14%;  animation-duration:13.1s; animation-delay:-4.7s;  opacity:.45; }
-    .gab-mote:nth-child(3)  { width:3.0px; height:3.0px; left:21%;  animation-duration:8.2s;  animation-delay:-2.9s;  opacity:.6;  }
-    .gab-mote:nth-child(4)  { width:2.0px; height:2.0px; left:31%;  animation-duration:11.5s; animation-delay:-.6s;   opacity:.5;  }
-    .gab-mote:nth-child(5)  { width:1.5px; height:1.5px; left:42%;  animation-duration:14.8s; animation-delay:-7.1s;  opacity:.4;  }
-    .gab-mote:nth-child(6)  { width:2.5px; height:2.5px; left:53%;  animation-duration:10.3s; animation-delay:-3.4s;  opacity:.58; }
-    .gab-mote:nth-child(7)  { width:1.8px; height:1.8px; left:61%;  animation-duration:12.6s; animation-delay:-5.8s;  opacity:.48; }
-    .gab-mote:nth-child(8)  { width:3.2px; height:3.2px; left:72%;  animation-duration:7.9s;  animation-delay:-1.5s;  opacity:.62; }
-    .gab-mote:nth-child(9)  { width:2.0px; height:2.0px; left:81%;  animation-duration:15.4s; animation-delay:-8.3s;  opacity:.44; }
-    .gab-mote:nth-child(10) { width:1.5px; height:1.5px; left:88%;  animation-duration:9.7s;  animation-delay:-2.2s;  opacity:.5;  }
-    .gab-mote:nth-child(11) { width:2.8px; height:2.8px; left:17%;  animation-duration:11.2s; animation-delay:-6.6s;  opacity:.56; }
-    .gab-mote:nth-child(12) { width:1.8px; height:1.8px; left:35%;  animation-duration:16.8s; animation-delay:-9.1s;  opacity:.42; }
-    .gab-mote:nth-child(13) { width:2.2px; height:2.2px; left:48%;  animation-duration:8.6s;  animation-delay:-3.8s;  opacity:.54; }
-    .gab-mote:nth-child(14) { width:1.6px; height:1.6px; left:66%;  animation-duration:13.9s; animation-delay:-5.2s;  opacity:.46; }
-    .gab-mote:nth-child(15) { width:3.0px; height:3.0px; left:78%;  animation-duration:10.8s; animation-delay:-7.9s;  opacity:.6;  }
-    .gab-mote:nth-child(16) { width:2.0px; height:2.0px; left:92%;  animation-duration:12.2s; animation-delay:-4.1s;  opacity:.5;  }
-    .gab-mote:nth-child(17) { width:1.5px; height:1.5px; left:4%;   animation-duration:17.5s; animation-delay:-1.8s;  opacity:.4;  }
-    .gab-mote:nth-child(18) { width:2.6px; height:2.6px; left:57%;  animation-duration:9.1s;  animation-delay:-6.4s;  opacity:.57; }
-    @keyframes gabMoteRise {
-        0%   { bottom:-10px; opacity:0; transform:translateX(0); }
-        10%  { opacity:var(--mo, .5); }
-        85%  { opacity:var(--mo, .5); }
-        100% { bottom:110%; transform:translateX(calc(sin(var(--mi,.5) * 6.28) * 22px)); opacity:0; }
-    }
-
-    /* Падающие перья — тонкие линии */
-    .bg-gab-feathers { position: absolute; inset: 0; overflow: hidden; }
-    .gab-feather {
-        position: absolute;
-        border-radius: 0 50% 50% 0;
-        animation: gabFeatherFall linear infinite;
-        transform-origin: top center;
-    }
-    .gab-feather::before {
-        content: '';
-        position: absolute;
-        top: 0; left: 50%;
-        width: 1px;
-        height: 100%;
-        background: linear-gradient(to bottom, rgba(200,152,30,.18), rgba(200,152,30,.06), transparent);
-    }
-    /* золотые */
-    .gab-feather:nth-child(1)  { width:6px;  height:38px; left:5%;   border:none; animation-duration:8.2s;  animation-delay:-1.3s; }
-    .gab-feather:nth-child(2)  { width:5px;  height:28px; left:16%;  border:none; animation-duration:12.4s; animation-delay:-5.1s; }
-    .gab-feather:nth-child(3)  { width:7px;  height:44px; left:28%;  border:none; animation-duration:9.7s;  animation-delay:-2.8s; }
-    .gab-feather:nth-child(4)  { width:5px;  height:32px; left:41%;  border:none; animation-duration:11.1s; animation-delay:-7.4s; }
-    .gab-feather:nth-child(5)  { width:6px;  height:40px; left:54%;  border:none; animation-duration:7.6s;  animation-delay:-3.6s; }
-    .gab-feather:nth-child(6)  { width:4px;  height:25px; left:67%;  border:none; animation-duration:14.3s; animation-delay:-9.2s; }
-    .gab-feather:nth-child(7)  { width:7px;  height:48px; left:79%;  border:none; animation-duration:10.8s; animation-delay:-4.5s; }
-    .gab-feather:nth-child(8)  { width:5px;  height:34px; left:91%;  border:none; animation-duration:8.9s;  animation-delay:-1.9s; }
-    .gab-feather:nth-child(9)  { width:6px;  height:36px; left:34%;  border:none; animation-duration:13.6s; animation-delay:-6.8s; }
-    .gab-feather:nth-child(10) { width:5px;  height:30px; left:73%;  border:none; animation-duration:9.2s;  animation-delay:-8.1s; }
-
-    @keyframes gabFeatherFall {
-        0%   { top:-60px; opacity:0; transform:rotate(-15deg) translateX(0); }
-        8%   { opacity:.7; }
-        50%  { transform:rotate(8deg) translateX(12px); }
-        92%  { opacity:.5; }
-        100% { top:110%;  opacity:0; transform:rotate(-10deg) translateX(-8px); }
-    }
-
-    /* Крылья — svg-подобные формы через clip-path */
-    .bg-gab-wings { position: absolute; inset: 0; }
-    .gab-wing {
-        position: absolute;
-        background: rgba(200,152,30,.022);
-        animation: gabWingBeat ease-in-out infinite;
-        transform-origin: 50% 80%;
-    }
-    .gab-wing:nth-child(1) {
-        width: min(35vw,350px); height: min(50vh,420px);
-        top: 5%; left: 0;
-        clip-path: polygon(100% 55%, 75% 0%, 40% 8%, 10% 30%, 0% 70%, 15% 100%, 60% 90%);
-        animation-duration: 6.4s;
-        animation-delay: 0s;
-    }
-    .gab-wing:nth-child(2) {
-        width: min(35vw,350px); height: min(50vh,420px);
-        top: 5%; right: 0;
-        clip-path: polygon(0% 55%, 25% 0%, 60% 8%, 90% 30%, 100% 70%, 85% 100%, 40% 90%);
-        animation-duration: 6.4s;
-        animation-delay: 0s;
-    }
-    @keyframes gabWingBeat {
-        0%,100% { opacity:.5; transform:scaleX(1) scaleY(1) rotate(0deg); }
-        40%     { opacity:.8; transform:scaleX(1.06) scaleY(1.04) rotate(-1.5deg); }
-        70%     { opacity:.6; transform:scaleX(.95) scaleY(.97) rotate(.8deg); }
-    }
-    .gab-wing:nth-child(2) { animation-direction: reverse; }
-
-    /* Мягкая виньетка снизу (эффект освещения) */
-    .bg-gab-vignette {
-        position: absolute; inset: 0;
-        background: radial-gradient(ellipse 110% 60% at 50% 105%,
-            rgba(180,130,10,.07) 0%, transparent 55%);
-        animation: gabAmbPulse 5.5s ease-in-out infinite alternate;
-    }
-
-    /* ═══ SCANLINES (общий оверлей) ═══ */
-    body::after {
-        content: '';
-        position: fixed; top:0; left:0;
-        width:100%; height:100%;
-        background: repeating-linear-gradient(0deg,
-            transparent, transparent 2px,
-            rgba(0,0,0,.11) 2px, rgba(0,0,0,.11) 4px);
-        pointer-events: none;
-        z-index: 9999;
-    }
-    body[data-theme="gabriel"]::after {
-        background: repeating-linear-gradient(0deg,
-            transparent, transparent 2px,
-            rgba(0,0,0,.03) 2px, rgba(0,0,0,.03) 4px);
-    }
-
-    /* ═══ ОСТАЛЬНЫЕ СТИЛИ ═══ */
-    body {
-        background: var(--body-bg); color: var(--text-p);
-        font-family: 'Share Tech Mono','Fira Code',monospace;
-        min-height:100vh; overflow-x:hidden;
-        transition: background .35s, color .35s;
-    }
-    .page { max-width:1380px; margin:0 auto; padding:0 1rem 2rem; position:relative; z-index:10; }
-
-    .site-header { border-bottom:2px solid var(--acc); padding:1.4rem 0 1rem; margin-bottom:0; transition:border-color .35s; }
-    .header-top  { display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:1rem; }
-
-    .logo-eyebrow { font-size:.6rem; color:var(--acc); letter-spacing:.35em; text-transform:uppercase; margin-bottom:.25rem; }
-    .logo-main    { font-family:'VT323',monospace; font-size:4rem; line-height:1; color:var(--text-p); letter-spacing:3px;
-                    text-shadow:0 0 24px var(--acc-glow),2px 2px 0 var(--acc-dim); }
-    .logo-main .v1{ color:var(--acc); text-shadow:0 0 40px var(--acc),0 0 80px var(--acc-glow); }
-    @keyframes glitch {
-        0%,100% { transform:translate(0); }
-        15%     { transform:translate(-2px,1px); clip-path:inset(30% 0 30% 0); }
-        30%     { transform:translate(2px,-1px); }
-        50%     { transform:translate(0); }
-        65%     { transform:translate(-1px,2px); clip-path:inset(60% 0 5% 0); }
-    }
-    .logo-main:hover { animation:glitch .25s steps(1) infinite; cursor:default; }
-    .logo-tagline { font-size:.65rem; color:var(--text-2); letter-spacing:.2em; text-transform:uppercase; margin-top:.4rem; }
-
-    .theme-panel { background:var(--panel-bg); border:1px solid var(--panel-bd); border-top:2px solid var(--acc); padding:.75rem .95rem; min-width:230px; transition:background .35s,border-color .35s; }
-    .tp-head { font-size:.52rem; color:var(--text-2); letter-spacing:.25em; text-transform:uppercase; margin-bottom:.55rem; display:flex; align-items:center; gap:.4rem; }
-    .tp-head::before { content:''; width:5px; height:5px; flex-shrink:0; background:var(--acc); box-shadow:0 0 5px var(--acc); }
-    .tp-grid { display:grid; grid-template-columns:1fr 1fr; gap:4px; }
-    .tp-btn  { background:transparent; border:1px solid var(--text-4); padding:.45rem .6rem; cursor:pointer; display:flex; align-items:center; gap:7px; font-family:'Share Tech Mono',monospace; color:var(--text-p); transition:.16s; text-align:left; position:relative; overflow:hidden; }
-    .tp-btn::after { content:''; position:absolute; bottom:0; left:0; width:0; height:2px; transition:width .18s; }
-    .tp-btn:hover::after,.tp-btn.active::after { width:100%; }
-    .tp-swatch { width:9px; height:9px; flex-shrink:0; transition:box-shadow .2s; }
-    .t-dark   .tp-swatch { background:#aaa; }
-    .t-v1     .tp-swatch { background:#3a99ff; box-shadow:0 0 6px #3a99ff; }
-    .t-v2     .tp-swatch { background:#ff1818; box-shadow:0 0 6px #ff1818; }
-    .t-gabriel .tp-swatch { background:#c8981e; box-shadow:0 0 6px #c8981e; }
-    .t-dark::after    { background:#aaa; }
-    .t-v1::after      { background:#3a99ff; }
-    .t-v2::after      { background:#ff1818; }
-    .t-gabriel::after { background:#c8981e; }
-    .tp-btn.t-dark:hover,.tp-btn.t-dark.active     { border-color:#aaa;     background:rgba(180,180,180,.07); }
-    .tp-btn.t-v1:hover,.tp-btn.t-v1.active         { border-color:#3a99ff;  background:rgba(58,153,255,.09); }
-    .tp-btn.t-v2:hover,.tp-btn.t-v2.active         { border-color:#ff1818;  background:rgba(255,24,24,.09); }
-    .tp-btn.t-gabriel:hover,.tp-btn.t-gabriel.active{ border-color:#c8981e; background:rgba(200,152,30,.09); }
-    .tp-info { display:flex; flex-direction:column; gap:1px; }
-    .tp-name { font-size:.72rem; letter-spacing:.06em; text-transform:uppercase; }
-    .tp-sub  { font-size:.48rem; color:var(--text-1); letter-spacing:.1em; text-transform:uppercase; }
-    .tp-current { font-size:.47rem; color:var(--text-3); letter-spacing:.15em; text-transform:uppercase; text-align:right; margin-top:.45rem; }
-
-    .ticker-wrap  { background:var(--ticker-bg); border-top:1px solid var(--text-4); border-bottom:1px solid var(--text-4); overflow:hidden; padding:.28rem 0; margin-bottom:1.2rem; }
-    .ticker-inner { display:flex; gap:4rem; animation:tick 22s linear infinite; white-space:nowrap; }
-    @keyframes tick { from { transform:translateX(0); } to { transform:translateX(-50%); } }
-    .ti   { font-size:.58rem; color:var(--text-2); letter-spacing:.2em; text-transform:uppercase; }
-    .ti .r{ color:var(--acc); }
-
-    .ws-label { font-size:.58rem; color:var(--text-2); letter-spacing:.3em; text-transform:uppercase; margin-bottom:.4rem; }
-    .ws-grid  { display:flex; flex-wrap:wrap; gap:3px; margin-bottom:1.4rem; }
-    .ws-slot  { background:var(--panel-bg); border:1px solid var(--text-4); border-bottom:2px solid var(--text-4); padding:.55rem 1.1rem; cursor:pointer; display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--text-p); font-family:'Share Tech Mono',monospace; font-size:.8rem; transition:.14s; position:relative; overflow:hidden; min-width:150px; user-select:none; }
-    .ws-slot::before { content:''; position:absolute; left:0; top:0; width:3px; height:100%; background:var(--text-4); transition:.14s; }
-    .ws-slot::after  { content:''; position:absolute; bottom:0; left:0; width:0; height:2px; transition:width .18s; }
-    .ws-slot.c-red  { --c:var(--acc); }
-    .ws-slot.c-blue { --c:var(--c-blue); }
-    .ws-slot.c-gold { --c:var(--c-gold); }
-    .ws-slot.c-pink { --c:var(--c-pink); }
-    .ws-slot:hover,.ws-slot.active { border-color:var(--c); background:color-mix(in srgb,var(--c) 6%,var(--panel-bg)); }
-    .ws-slot:hover::before,.ws-slot.active::before { background:var(--c); box-shadow:0 0 8px var(--c); }
-    .ws-slot::after { background:var(--c); }
-    .ws-slot:hover::after,.ws-slot.active::after { width:100%; }
-    .slot-icon { font-size:1rem; width:22px; text-align:center; opacity:.7; }
-    .slot-name { font-size:.78rem; text-transform:uppercase; letter-spacing:.05em; }
-    .slot-sub  { font-size:.57rem; color:var(--text-1); letter-spacing:.08em; }
-    .slot-num  { margin-left:auto; font-family:'VT323',monospace; font-size:1.5rem; color:var(--text-2); transition:.14s; }
-    .ws-slot:hover .slot-num,.ws-slot.active .slot-num { color:var(--c); }
-
-    .redline { height:2px; background:linear-gradient(90deg,var(--acc) 0%,var(--text-p) 18%,var(--acc) 35%,transparent 100%); box-shadow:0 0 10px var(--acc-glow); margin-bottom:1.5rem; }
-
-    .wiki-grid { display:flex; gap:1.4rem; flex-wrap:wrap; }
-    .main-col  { flex:3; min-width:260px; }
-    .side-col  { flex:1.1; min-width:220px; }
-
-    .panel      { background:var(--panel-bg); border:1px solid var(--panel-bd); margin-bottom:1.4rem; }
-    .panel-head { background:var(--panel-hd); border-bottom:1px solid var(--panel-bd); padding:.55rem 1rem; display:flex; align-items:center; gap:.7rem; }
-    .ph-dot     { width:10px; height:10px; flex-shrink:0; background:var(--acc); box-shadow:0 0 8px var(--acc); }
-    .ph-dot.gold{ background:var(--c-gold); box-shadow:0 0 8px var(--c-gold); }
-    .ph-title   { font-family:'VT323',monospace; font-size:1.3rem; letter-spacing:.1em; text-transform:uppercase; color:var(--text-p); }
-    .ph-title.gold { color:var(--c-gold); }
-    .ph-tag     { margin-left:auto; font-size:.55rem; color:var(--text-3); letter-spacing:.15em; }
-    .panel-body { padding:.9rem 1rem; }
-
-    .boss        { border-bottom:1px solid var(--text-4); padding:.85rem 0; display:grid; grid-template-columns:38px 1fr; gap:0 10px; }
-    .boss:last-child { border-bottom:none; }
-    .boss-sym    { font-family:'VT323',monospace; font-size:2rem; color:var(--c-gold); text-shadow:0 0 10px var(--c-gold); line-height:1; text-align:center; }
-    .boss-name   { font-size:.82rem; color:var(--text-p); font-weight:700; margin-bottom:.15rem; }
-    .boss-sub    { font-size:.6rem; color:var(--text-2); letter-spacing:.08em; }
-    .boss-desc   { font-size:.7rem; color:var(--text-1); margin-top:.3rem; line-height:1.5; }
-
-    .sector          { border-bottom:1px solid var(--text-4); padding:.7rem 0; display:grid; grid-template-columns:58px 1fr; gap:0 10px; align-items:start; }
-    .sector:last-child { border-bottom:none; }
-    .sec-id    { font-family:'VT323',monospace; font-size:1.7rem; color:var(--acc); text-shadow:0 0 8px var(--acc); line-height:1; }
-    .sec-name  { font-size:.78rem; color:var(--text-p); font-weight:700; text-transform:uppercase; letter-spacing:.08em; margin-bottom:.2rem; }
-    .sec-desc  { font-size:.68rem; color:var(--text-1); line-height:1.5; }
-
-    .readout { background:var(--read-bg); border:1px solid var(--text-4); padding:.6rem .8rem; font-family:'Fira Code',monospace; font-size:.62rem; color:var(--text-2); line-height:1.9; margin-top:.8rem; }
-    .readout .hl { color:var(--acc); }
-    .readout .vl { color:var(--text-1); }
-
-    .side-panel { background:var(--panel-bg); border:1px solid var(--panel-bd); margin-bottom:.9rem; }
-    .sp-head    { background:var(--panel-hd); border-bottom:1px solid var(--panel-bd); padding:.45rem .8rem; font-size:.6rem; color:var(--text-1); letter-spacing:.25em; text-transform:uppercase; display:flex; align-items:center; gap:.5rem; }
-    .sp-head::before { content:''; width:5px; height:5px; flex-shrink:0; background:var(--acc); box-shadow:0 0 5px var(--acc); }
-    .sp-body { padding:.8rem; }
-
-    .v1-portrait  { width:100%; aspect-ratio:1; background:var(--panel-hd); border-bottom:1px solid var(--panel-bd); display:flex; flex-direction:column; align-items:center; justify-content:center; position:relative; overflow:hidden; }
-    .v1-glyph     { font-size:5.5rem; color:var(--text-4); filter:drop-shadow(0 0 24px var(--acc)); line-height:1; }
-    .v1-lbl       { font-family:'VT323',monospace; font-size:1rem; color:var(--text-3); letter-spacing:.4em; margin-top:.4rem; }
-    .v1-portrait::after { content:''; position:absolute; top:-40%; left:0; width:100%; height:35%; background:linear-gradient(transparent,var(--acc-glow),transparent); animation:scan 3s linear infinite; }
-    @keyframes scan { to { top:120%; } }
-
-    .mstat { display:flex; justify-content:space-between; align-items:center; padding:.38rem 0; border-bottom:1px solid var(--text-4); font-size:.7rem; }
-    .mstat:last-child { border-bottom:none; }
-    .mstat-k { color:var(--text-1); }
-    .mstat-v { font-family:'VT323',monospace; font-size:1rem; color:var(--text-p); }
-    .mstat-v.r { color:var(--acc); }
-    .mstat-v.g { color:var(--c-gold); }
-    .mstat-v.n { color:var(--c-green); }
-
-    .aslot { display:flex; justify-content:space-between; align-items:center; padding:.35rem 0; border-bottom:1px solid var(--text-4); font-size:.68rem; color:var(--text-p); }
-    .aslot:last-child { border-bottom:none; }
-
-    .src { display:flex; align-items:center; gap:9px; padding:.45rem 0; border-bottom:1px solid var(--text-4); font-size:.72rem; color:var(--text-1); text-decoration:none; cursor:pointer; transition:.12s; }
-    .src:hover { color:var(--text-p); }
-    .src:last-child { border-bottom:none; }
-    .src-ico { color:var(--acc); width:18px; text-align:center; }
-
-    .term-btn { width:100%; background:var(--ticker-bg); border:1px solid var(--text-3); border-bottom:2px solid var(--text-4); color:var(--text-p); padding:.55rem 1rem; font-family:'Share Tech Mono',monospace; font-size:.72rem; letter-spacing:.1em; text-transform:uppercase; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; margin-top:.7rem; transition:.13s; }
-    .term-btn::before { content:'> '; color:var(--acc); }
-    .term-btn:hover   { border-color:var(--acc); background:var(--acc-glow); }
-
-    @keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0; } }
-    .cur { display:inline-block; width:7px; height:13px; background:var(--acc); vertical-align:middle; animation:blink 1s step-end infinite; margin-left:2px; }
-
-    .site-footer { border-top:1px solid var(--text-4); padding:.9rem 0; margin-top:1rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:.4rem; font-size:.58rem; color:var(--text-3); letter-spacing:.1em; text-transform:uppercase; }
-    .footer-logo { font-family:'VT323',monospace; font-size:1.2rem; color:var(--acc); text-shadow:0 0 6px var(--acc); }
-
-    @media (max-width:760px) {
-        .logo-main   { font-size:2.8rem; }
-        .theme-panel { min-width:190px; }
-        .ws-slot     { min-width:calc(50% - 4px); }
-    }
-    @media (max-width:520px) {
-        .wiki-grid { flex-direction:column; }
-        .ws-slot   { min-width:100%; }
-        .tp-grid   { grid-template-columns:1fr 1fr; }
-    }
+        /* ══════════════════════════════════════════════════
+           ОСНОВНЫЕ СТИЛИ СТРАНИЦЫ
+        ══════════════════════════════════════════════════ */
+        body {
+            background: var(--body-bg);
+            color: var(--text-p);
+            font-family: 'Share Tech Mono', 'Fira Code', monospace;
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: background 0.35s, color 0.35s;
+        }
+        .page {
+            max-width: 1380px;
+            margin: 0 auto;
+            padding: 0 1rem 2rem;
+            position: relative;
+            z-index: 10;
+        }
+        .site-header {
+            border-bottom: 2px solid var(--acc);
+            padding: 1.4rem 0 1rem;
+            margin-bottom: 0;
+            transition: border-color 0.35s;
+        }
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .logo-eyebrow {
+            font-size: 0.6rem;
+            color: var(--acc);
+            letter-spacing: 0.35em;
+            text-transform: uppercase;
+            margin-bottom: 0.25rem;
+        }
+        .logo-main {
+            font-family: 'VT323', monospace;
+            font-size: 4rem;
+            line-height: 1;
+            color: var(--text-p);
+            letter-spacing: 3px;
+            text-shadow: 0 0 24px var(--acc-glow), 2px 2px 0 var(--acc-dim);
+        }
+        .logo-main .v1 {
+            color: var(--acc);
+            text-shadow: 0 0 40px var(--acc), 0 0 80px var(--acc-glow);
+        }
+        @keyframes glitch {
+            0%,100% { transform: translate(0); }
+            15%     { transform: translate(-2px,1px); clip-path: inset(30% 0 30% 0); }
+            30%     { transform: translate(2px,-1px); }
+            50%     { transform: translate(0); }
+            65%     { transform: translate(-1px,2px); clip-path: inset(60% 0 5% 0); }
+        }
+        .logo-main:hover { animation: glitch 0.25s steps(1) infinite; cursor: default; }
+        .logo-tagline {
+            font-size: 0.65rem;
+            color: var(--text-2);
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            margin-top: 0.4rem;
+        }
+        .theme-panel {
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-bd);
+            border-top: 2px solid var(--acc);
+            padding: 0.75rem 0.95rem;
+            min-width: 230px;
+            transition: background 0.35s, border-color 0.35s;
+        }
+        .tp-head {
+            font-size: 0.52rem;
+            color: var(--text-2);
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            margin-bottom: 0.55rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .tp-head::before {
+            content: '';
+            width: 5px; height: 5px; flex-shrink: 0;
+            background: var(--acc);
+            box-shadow: 0 0 5px var(--acc);
+        }
+        .tp-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4px;
+        }
+        .tp-btn {
+            background: transparent;
+            border: 1px solid var(--text-4);
+            padding: 0.45rem 0.6rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-family: 'Share Tech Mono', monospace;
+            color: var(--text-p);
+            transition: 0.16s;
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+        }
+        .tp-btn::after {
+            content: '';
+            position: absolute; bottom: 0; left: 0;
+            width: 0; height: 2px;
+            transition: width 0.18s;
+        }
+        .tp-btn:hover::after, .tp-btn.active::after { width: 100%; }
+        .tp-swatch {
+            width: 9px; height: 9px;
+            flex-shrink: 0;
+            transition: box-shadow 0.2s;
+        }
+        .t-dark    .tp-swatch { background: #aaaaaa; }
+        .t-v1      .tp-swatch { background: #3a99ff; box-shadow: 0 0 6px #3a99ff; }
+        .t-v2      .tp-swatch { background: #ff1818; box-shadow: 0 0 6px #ff1818; }
+        .t-gabriel .tp-swatch { background: #c8981e; box-shadow: 0 0 6px #c8981e; }
+        .t-dark::after    { background: #aaaaaa; }
+        .t-v1::after      { background: #3a99ff; }
+        .t-v2::after      { background: #ff1818; }
+        .t-gabriel::after { background: #c8981e; }
+        .tp-btn.t-dark:hover,    .tp-btn.t-dark.active    { border-color: #aaaaaa; background: rgba(180,180,180,0.07); }
+        .tp-btn.t-v1:hover,      .tp-btn.t-v1.active      { border-color: #3a99ff; background: rgba(58,153,255,0.09); }
+        .tp-btn.t-v2:hover,      .tp-btn.t-v2.active      { border-color: #ff1818; background: rgba(255,24,24,0.09); }
+        .tp-btn.t-gabriel:hover, .tp-btn.t-gabriel.active { border-color: #c8981e; background: rgba(200,152,30,0.09); }
+        .tp-info { display: flex; flex-direction: column; gap: 1px; }
+        .tp-name { font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; }
+        .tp-sub  { font-size: 0.48rem; color: var(--text-1); letter-spacing: 0.1em; text-transform: uppercase; }
+        .tp-current {
+            font-size: 0.47rem;
+            color: var(--text-3);
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            text-align: right;
+            margin-top: 0.45rem;
+        }
+        .ticker-wrap {
+            background: var(--ticker-bg);
+            border-top: 1px solid var(--text-4);
+            border-bottom: 1px solid var(--text-4);
+            overflow: hidden;
+            padding: 0.28rem 0;
+            margin-bottom: 1.2rem;
+        }
+        .ticker-inner {
+            display: flex; gap: 4rem;
+            animation: tick 22s linear infinite;
+            white-space: nowrap;
+        }
+        @keyframes tick {
+            from { transform: translateX(0); }
+            to   { transform: translateX(-50%); }
+        }
+        .ti   { font-size: 0.58rem; color: var(--text-2); letter-spacing: 0.2em; text-transform: uppercase; }
+        .ti .r{ color: var(--acc); }
+        .ws-label {
+            font-size: 0.58rem; color: var(--text-2);
+            letter-spacing: 0.3em; text-transform: uppercase;
+            margin-bottom: 0.4rem;
+        }
+        .ws-grid { display: flex; flex-wrap: wrap; gap: 3px; margin-bottom: 1.4rem; }
+        .ws-slot {
+            background: var(--panel-bg);
+            border: 1px solid var(--text-4);
+            border-bottom: 2px solid var(--text-4);
+            padding: 0.55rem 1.1rem;
+            cursor: pointer;
+            display: flex; align-items: center; gap: 10px;
+            text-decoration: none;
+            color: var(--text-p);
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.8rem;
+            transition: 0.14s;
+            position: relative;
+            overflow: hidden;
+            min-width: 150px;
+            user-select: none;
+        }
+        .ws-slot::before {
+            content: '';
+            position: absolute; left: 0; top: 0;
+            width: 3px; height: 100%;
+            background: var(--text-4); transition: 0.14s;
+        }
+        .ws-slot::after {
+            content: '';
+            position: absolute; bottom: 0; left: 0;
+            width: 0; height: 2px;
+            transition: width 0.18s;
+        }
+        .ws-slot.c-red  { --c: var(--acc); }
+        .ws-slot.c-blue { --c: var(--c-blue); }
+        .ws-slot.c-gold { --c: var(--c-gold); }
+        .ws-slot.c-pink { --c: var(--c-pink); }
+        .ws-slot:hover, .ws-slot.active {
+            border-color: var(--c);
+            background: color-mix(in srgb, var(--c) 6%, var(--panel-bg));
+        }
+        .ws-slot:hover::before, .ws-slot.active::before { background: var(--c); box-shadow: 0 0 8px var(--c); }
+        .ws-slot::after { background: var(--c); }
+        .ws-slot:hover::after, .ws-slot.active::after { width: 100%; }
+        .slot-icon { font-size: 1rem; width: 22px; text-align: center; opacity: 0.7; }
+        .slot-name { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; }
+        .slot-sub  { font-size: 0.57rem; color: var(--text-1); letter-spacing: 0.08em; }
+        .slot-num  {
+            margin-left: auto;
+            font-family: 'VT323', monospace; font-size: 1.5rem;
+            color: var(--text-2); transition: 0.14s;
+        }
+        .ws-slot:hover .slot-num, .ws-slot.active .slot-num { color: var(--c); }
+        .redline {
+            height: 2px;
+            background: linear-gradient(90deg, var(--acc) 0%, var(--text-p) 18%, var(--acc) 35%, transparent 100%);
+            box-shadow: 0 0 10px var(--acc-glow);
+            margin-bottom: 1.5rem;
+        }
+        .wiki-grid { display: flex; gap: 1.4rem; flex-wrap: wrap; }
+        .main-col  { flex: 3; min-width: 260px; }
+        .side-col  { flex: 1.1; min-width: 220px; }
+        .panel      { background: var(--panel-bg); border: 1px solid var(--panel-bd); margin-bottom: 1.4rem; }
+        .panel-head {
+            background: var(--panel-hd);
+            border-bottom: 1px solid var(--panel-bd);
+            padding: 0.55rem 1rem;
+            display: flex; align-items: center; gap: 0.7rem;
+        }
+        .ph-dot      { width: 10px; height: 10px; flex-shrink: 0; background: var(--acc); box-shadow: 0 0 8px var(--acc); }
+        .ph-dot.gold { background: var(--c-gold); box-shadow: 0 0 8px var(--c-gold); }
+        .ph-title    { font-family: 'VT323', monospace; font-size: 1.3rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-p); }
+        .ph-title.gold { color: var(--c-gold); }
+        .ph-tag { margin-left: auto; font-size: 0.55rem; color: var(--text-3); letter-spacing: 0.15em; }
+        .panel-body { padding: 0.9rem 1rem; }
+        .boss {
+            border-bottom: 1px solid var(--text-4);
+            padding: 0.85rem 0;
+            display: grid;
+            grid-template-columns: 38px 1fr;
+            gap: 0 10px;
+        }
+        .boss:last-child { border-bottom: none; }
+        .boss-sym  { font-family: 'VT323', monospace; font-size: 2rem; color: var(--c-gold); text-shadow: 0 0 10px var(--c-gold); line-height: 1; text-align: center; }
+        .boss-name { font-size: 0.82rem; color: var(--text-p); font-weight: 700; margin-bottom: 0.15rem; }
+        .boss-sub  { font-size: 0.6rem; color: var(--text-2); letter-spacing: 0.08em; }
+        .boss-desc { font-size: 0.7rem; color: var(--text-1); margin-top: 0.3rem; line-height: 1.5; }
+        .sector {
+            border-bottom: 1px solid var(--text-4);
+            padding: 0.7rem 0;
+            display: grid;
+            grid-template-columns: 58px 1fr;
+            gap: 0 10px;
+            align-items: start;
+        }
+        .sector:last-child { border-bottom: none; }
+        .sec-id   { font-family: 'VT323', monospace; font-size: 1.7rem; color: var(--acc); text-shadow: 0 0 8px var(--acc); line-height: 1; }
+        .sec-name { font-size: 0.78rem; color: var(--text-p); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.2rem; }
+        .sec-desc { font-size: 0.68rem; color: var(--text-1); line-height: 1.5; }
+        .readout {
+            background: var(--read-bg);
+            border: 1px solid var(--text-4);
+            padding: 0.6rem 0.8rem;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.62rem; color: var(--text-2);
+            line-height: 1.9; margin-top: 0.8rem;
+        }
+        .readout .hl { color: var(--acc); }
+        .readout .vl { color: var(--text-1); }
+        .side-panel { background: var(--panel-bg); border: 1px solid var(--panel-bd); margin-bottom: 0.9rem; }
+        .sp-head {
+            background: var(--panel-hd); border-bottom: 1px solid var(--panel-bd);
+            padding: 0.45rem 0.8rem;
+            font-size: 0.6rem; color: var(--text-1);
+            letter-spacing: 0.25em; text-transform: uppercase;
+            display: flex; align-items: center; gap: 0.5rem;
+        }
+        .sp-head::before {
+            content: '';
+            width: 5px; height: 5px; flex-shrink: 0;
+            background: var(--acc); box-shadow: 0 0 5px var(--acc);
+        }
+        .sp-body { padding: 0.8rem; }
+        .v1-portrait {
+            width: 100%; aspect-ratio: 1;
+            background: var(--panel-hd); border-bottom: 1px solid var(--panel-bd);
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            position: relative; overflow: hidden;
+        }
+        .v1-glyph { font-size: 5.5rem; color: var(--text-4); filter: drop-shadow(0 0 24px var(--acc)); line-height: 1; }
+        .v1-lbl   { font-family: 'VT323', monospace; font-size: 1rem; color: var(--text-3); letter-spacing: 0.4em; margin-top: 0.4rem; }
+        .v1-portrait::after {
+            content: '';
+            position: absolute; top: -40%; left: 0;
+            width: 100%; height: 35%;
+            background: linear-gradient(transparent, var(--acc-glow), transparent);
+            animation: scan 3s linear infinite;
+        }
+        @keyframes scan { to { top: 120%; } }
+        .mstat {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0.38rem 0; border-bottom: 1px solid var(--text-4);
+            font-size: 0.7rem;
+        }
+        .mstat:last-child { border-bottom: none; }
+        .mstat-k { color: var(--text-1); }
+        .mstat-v { font-family: 'VT323', monospace; font-size: 1rem; color: var(--text-p); }
+        .mstat-v.r { color: var(--acc); }
+        .mstat-v.g { color: var(--c-gold); }
+        .mstat-v.n { color: var(--c-green); }
+        .aslot {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0.35rem 0; border-bottom: 1px solid var(--text-4);
+            font-size: 0.68rem; color: var(--text-p);
+        }
+        .aslot:last-child { border-bottom: none; }
+        .tags { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 0.3rem; }
+        .tag {
+            background: var(--panel-hd); border: 1px solid var(--text-4);
+            padding: 0.08rem 0.45rem;
+            font-size: 0.57rem; letter-spacing: 0.08em; text-transform: uppercase;
+            color: var(--text-2);
+        }
+        .tag.r { border-color: var(--acc);    color: var(--acc); }
+        .tag.g { border-color: var(--c-gold); color: var(--c-gold); }
+        .tag.b { border-color: var(--c-blue); color: var(--c-blue); }
+        .tag.n { border-color: var(--c-green);color: var(--c-green); }
+        .src {
+            display: flex; align-items: center; gap: 9px;
+            padding: 0.45rem 0; border-bottom: 1px solid var(--text-4);
+            font-size: 0.72rem; color: var(--text-1);
+            text-decoration: none; cursor: pointer; transition: 0.12s;
+        }
+        .src:hover { color: var(--text-p); }
+        .src:last-child { border-bottom: none; }
+        .src-ico { color: var(--acc); width: 18px; text-align: center; }
+        .term-btn {
+            width: 100%; background: var(--ticker-bg);
+            border: 1px solid var(--text-3); border-bottom: 2px solid var(--text-4);
+            color: var(--text-p);
+            padding: 0.55rem 1rem;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase;
+            cursor: pointer; display: flex; align-items: center;
+            justify-content: center; gap: 8px;
+            margin-top: 0.7rem; transition: 0.13s;
+        }
+        .term-btn::before { content: '> '; color: var(--acc); }
+        .term-btn:hover   { border-color: var(--acc); background: var(--acc-glow); }
+        .divider { height: 1px; background: var(--text-4); margin: 0.5rem 0; }
+        @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
+        .cur {
+            display: inline-block; width: 7px; height: 13px;
+            background: var(--acc); vertical-align: middle;
+            animation: blink 1s step-end infinite; margin-left: 2px;
+        }
+        .site-footer {
+            border-top: 1px solid var(--text-4);
+            padding: 0.9rem 0; margin-top: 1rem;
+            display: flex; justify-content: space-between;
+            align-items: center; flex-wrap: wrap; gap: 0.4rem;
+            font-size: 0.58rem; color: var(--text-3);
+            letter-spacing: 0.1em; text-transform: uppercase;
+        }
+        .footer-logo {
+            font-family: 'VT323', monospace;
+            font-size: 1.2rem; color: var(--acc);
+            text-shadow: 0 0 6px var(--acc);
+        }
+        @media (max-width: 760px) {
+            .logo-main   { font-size: 2.8rem; }
+            .theme-panel { min-width: 190px; }
+            .ws-slot     { min-width: calc(50% - 4px); }
+        }
+        @media (max-width: 520px) {
+            .wiki-grid { flex-direction: column; }
+            .ws-slot   { min-width: 100%; }
+            .tp-grid   { grid-template-columns: 1fr 1fr; }
+        }
     </style>
 </head>
 <body data-theme="dark">
 
-<!-- ═══════════════════ ФОНОВЫЕ СЛОИ (pure CSS) ═══════════════════ -->
+<!-- ═══════ CSS-фон: DARK и V1 (hex-сетка + скан-полоса) ═══════ -->
 <div class="theme-bg-wrap" aria-hidden="true">
-
-    <!-- DARK / V1 фон -->
     <div class="bg-dark">
         <div class="bg-dark-grid"></div>
         <div class="bg-dark-scan"></div>
     </div>
-
-    <!-- V2 фон -->
-    <div class="bg-v2">
-        <div class="bg-v2-vignette"></div>
-        <div class="bg-v2-cracks"></div>
-        <div class="bg-v2-axis"></div>
-        <div class="bg-v2-scan"></div>
-        <div class="bg-v2-noise"></div>
-        <div class="bg-v2-rgb"></div>
-        <div class="bg-v2-bars">
-            <div class="bg-v2-bar"></div><div class="bg-v2-bar"></div>
-            <div class="bg-v2-bar"></div><div class="bg-v2-bar"></div>
-            <div class="bg-v2-bar"></div><div class="bg-v2-bar"></div>
-            <div class="bg-v2-bar"></div><div class="bg-v2-bar"></div>
-            <div class="bg-v2-bar"></div><div class="bg-v2-bar"></div>
-        </div>
-        <div class="bg-v2-shards">
-            <div class="v2-shard"></div><div class="v2-shard"></div>
-            <div class="v2-shard"></div><div class="v2-shard"></div>
-            <div class="v2-shard"></div><div class="v2-shard"></div>
-            <div class="v2-shard"></div><div class="v2-shard"></div>
-            <div class="v2-shard"></div><div class="v2-shard"></div>
-            <div class="v2-shard"></div><div class="v2-shard"></div>
-        </div>
-        <div class="bg-v2-shockwave"></div>
-        <div class="bg-v2-shockwave"></div>
-        <div class="bg-v2-shockwave"></div>
-    </div>
-
-    <!-- GABRIEL фон -->
-    <div class="bg-gabriel">
-        <div class="bg-gab-ambient"></div>
-        <div class="bg-gab-rays"></div>
-        <div class="bg-gab-rays2"></div>
-        <div class="bg-gab-wings">
-            <div class="gab-wing"></div>
-            <div class="gab-wing"></div>
-        </div>
-        <div class="bg-gab-mandala"></div>
-        <div class="bg-gab-halos">
-            <div class="gab-halo"></div><div class="gab-halo"></div>
-            <div class="gab-halo"></div><div class="gab-halo"></div>
-            <div class="gab-halo"></div><div class="gab-halo"></div>
-            <div class="gab-halo"></div><div class="gab-halo"></div>
-        </div>
-        <div class="bg-gab-halos">
-            <div class="gab-halo-double"></div>
-            <div class="gab-halo-double"></div>
-        </div>
-        <div class="bg-gab-feathers">
-            <div class="gab-feather"></div><div class="gab-feather"></div>
-            <div class="gab-feather"></div><div class="gab-feather"></div>
-            <div class="gab-feather"></div><div class="gab-feather"></div>
-            <div class="gab-feather"></div><div class="gab-feather"></div>
-            <div class="gab-feather"></div><div class="gab-feather"></div>
-        </div>
-        <div class="bg-gab-motes">
-            <div class="gab-mote"></div><div class="gab-mote"></div>
-            <div class="gab-mote"></div><div class="gab-mote"></div>
-            <div class="gab-mote"></div><div class="gab-mote"></div>
-            <div class="gab-mote"></div><div class="gab-mote"></div>
-            <div class="gab-mote"></div><div class="gab-mote"></div>
-            <div class="gab-mote"></div><div class="gab-mote"></div>
-            <div class="gab-mote"></div><div class="gab-mote"></div>
-            <div class="gab-mote"></div><div class="gab-mote"></div>
-            <div class="gab-mote"></div><div class="gab-mote"></div>
-        </div>
-        <div class="bg-gab-vignette"></div>
-    </div>
-
 </div>
-<!-- ═════════════════════════════════════════════════════════════════ -->
+
+<!-- ═══════ Canvas-фон: V2 и GABRIEL (JavaScript) ═══════ -->
+<canvas id="theme-bg-canvas"></canvas>
 
 <div class="page">
 
@@ -773,26 +576,53 @@
             <div>
                 <div class="logo-eyebrow">// SYSTEM DATABASE // UNIT PROFILE // ACTIVE</div>
                 <div class="logo-main"><span class="v1">V1</span> — ULTRAKILL</div>
-                <div class="logo-tagline">MANKIND IS INACTIVE. ENERGY IS FUEL. LOWER SECTOR IS FULL.<span class="cur"></span></div>
+                <div class="logo-tagline">
+                    MANKIND IS INACTIVE. ENERGY IS FUEL. LOWER SECTOR IS FULL.<span class="cur"></span>
+                </div>
             </div>
+
             <div class="theme-panel" id="themePanel">
                 <div class="tp-head">// ТЕМА ИНТЕРФЕЙСА</div>
                 <div class="tp-grid">
-                    <button class="tp-btn t-dark active" data-tv="dark" onclick="setTheme('dark')">
+                    <button class="tp-btn t-dark active"
+                            data-tv="dark"
+                            onclick="setTheme('dark')"
+                            title="Оригинальная тёмная тема">
                         <div class="tp-swatch"></div>
-                        <div class="tp-info"><div class="tp-name">DARK</div><div class="tp-sub">ORIGINAL</div></div>
+                        <div class="tp-info">
+                            <div class="tp-name">DARK</div>
+                            <div class="tp-sub">ORIGINAL</div>
+                        </div>
                     </button>
-                    <button class="tp-btn t-v1" data-tv="v1" onclick="setTheme('v1')">
+                    <button class="tp-btn t-v1"
+                            data-tv="v1"
+                            onclick="setTheme('v1')"
+                            title="V1 — Машина / Синяя тема">
                         <div class="tp-swatch"></div>
-                        <div class="tp-info"><div class="tp-name">V1</div><div class="tp-sub">MACHINE // BLUE</div></div>
+                        <div class="tp-info">
+                            <div class="tp-name">V1</div>
+                            <div class="tp-sub">MACHINE // BLUE</div>
+                        </div>
                     </button>
-                    <button class="tp-btn t-v2" data-tv="v2" onclick="setTheme('v2')">
+                    <button class="tp-btn t-v2"
+                            data-tv="v2"
+                            onclick="setTheme('v2')"
+                            title="V2 — Зеркальный модуль / Красная тема">
                         <div class="tp-swatch"></div>
-                        <div class="tp-info"><div class="tp-name">V2</div><div class="tp-sub">MIRROR // RED</div></div>
+                        <div class="tp-info">
+                            <div class="tp-name">V2</div>
+                            <div class="tp-sub">MIRROR // RED</div>
+                        </div>
                     </button>
-                    <button class="tp-btn t-gabriel" data-tv="gabriel" onclick="setTheme('gabriel')">
+                    <button class="tp-btn t-gabriel"
+                            data-tv="gabriel"
+                            onclick="setTheme('gabriel')"
+                            title="GABRIEL — Архангел / Судья">
                         <div class="tp-swatch"></div>
-                        <div class="tp-info"><div class="tp-name">GABRIEL</div><div class="tp-sub">JUDGE // GOLD</div></div>
+                        <div class="tp-info">
+                            <div class="tp-name">GABRIEL</div>
+                            <div class="tp-sub">JUDGE // GOLD</div>
+                        </div>
                     </button>
                 </div>
                 <div class="tp-current" id="tpCurrent">АКТИВНА: DARK // ORIGINAL</div>
@@ -811,17 +641,26 @@
     <div class="ws-grid">
         <a href="weapons.html" class="ws-slot c-blue">
             <div class="slot-icon">⬡</div>
-            <div><div class="slot-name">Арсенал</div><div class="slot-sub">СРЕДСТВА // СЛОТ 1</div></div>
+            <div>
+                <div class="slot-name">Арсенал</div>
+                <div class="slot-sub">СРЕДСТВА // СЛОТ 1</div>
+            </div>
             <div class="slot-num">1</div>
         </a>
         <button class="ws-slot c-gold" onclick="navTo('layers')">
             <div class="slot-icon">▦</div>
-            <div><div class="slot-name">Секторы</div><div class="slot-sub">ЛОКАЦИИ // СЛОТ 2</div></div>
+            <div>
+                <div class="slot-name">Секторы</div>
+                <div class="slot-sub">ЛОКАЦИИ // СЛОТ 2</div>
+            </div>
             <div class="slot-num">2</div>
         </button>
         <button class="ws-slot c-pink" onclick="document.getElementById('statsBtn').click()">
             <div class="slot-icon">◎</div>
-            <div><div class="slot-name">База данных</div><div class="slot-sub">СТАТИСТИКА // СЛОТ 3</div></div>
+            <div>
+                <div class="slot-name">База данных</div>
+                <div class="slot-sub">СТАТИСТИКА // СЛОТ 3</div>
+            </div>
             <div class="slot-num">3</div>
         </button>
     </div>
@@ -900,16 +739,60 @@
                     <div class="ph-tag">SECTOR.MAP</div>
                 </div>
                 <div class="panel-body">
-                    <div class="sector"><div class="sec-id">0-X</div><div><div class="sec-name">ПРОЛОГ — ИНДУСТРИАЛЬНЫЕ КОМПЛЕКСЫ</div><div class="sec-desc">Секторы 0-1 — 0-5. Руины надземных структур. Первичная инициализация систем V1 и обучение управлению арсеналом.</div></div></div>
-                    <div class="sector"><div class="sec-id">1-X</div><div><div class="sec-name">ЛИМБ — ГОТИЧЕСКИЕ СООРУЖЕНИЯ</div><div class="sec-desc">Секторы 1-1 — 1-4. Архитектура нижнего уровня первого порядка. Первое взаимодействие с зеркальным модулем V2 в секторе 1-4.</div></div></div>
-                    <div class="sector"><div class="sec-id">2-X</div><div><div class="sec-name">ГНЕВ — МЕХАНИЧЕСКИЕ КОМПЛЕКСЫ</div><div class="sec-desc">Секторы 2-1 — 2-4. Гигантские вращающиеся механические структуры. Высокая динамика среды.</div></div></div>
-                    <div class="sector"><div class="sec-id">3-X</div><div><div class="sec-name">ЖАДНОСТЬ — ЗОЛОТАЯ ПУСТОШЬ</div><div class="sec-desc">Секторы 3-1 — 3-4. Территория металлических золотых структур. Ключевое взаимодействие: Minos Prime (сектор 3-2).</div></div></div>
-                    <div class="sector"><div class="sec-id">4-X</div><div><div class="sec-name">ЕРЕСЬ — ТЕРМИЧЕСКИЕ ЗОНЫ</div><div class="sec-desc">Секторы 4-1 — 4-4. Лавовые области. Повторные сессии с Gabriel и V2 в секторе 4-4.</div></div></div>
-                    <div class="sector"><div class="sec-id">5-X</div><div><div class="sec-name">ТРЕВОГА — ЗАТОПЛЕННЫЙ КОМПЛЕКС</div><div class="sec-desc">Секторы 5-1 — 5-4. Подводные и полузатопленные структуры. Ключевая сессия: Leviathan (сектор 5-4).</div></div></div>
-                    <div class="sector"><div class="sec-id">6-X</div><div><div class="sec-name">РАСКОЛ — ФИНАЛЬНЫЙ СЕКТОР</div><div class="sec-desc">Секторы 6-1 — 6-4. Завершающий акт. Взаимодействие с Gabriel (6-2). Финальная цель: Sisyphus Prime.</div></div></div>
+                    <div class="sector">
+                        <div class="sec-id">0-X</div>
+                        <div>
+                            <div class="sec-name">ПРОЛОГ — ИНДУСТРИАЛЬНЫЕ КОМПЛЕКСЫ</div>
+                            <div class="sec-desc">Секторы 0-1 — 0-5. Руины надземных структур. Первичная инициализация систем V1 и обучение управлению арсеналом.</div>
+                        </div>
+                    </div>
+                    <div class="sector">
+                        <div class="sec-id">1-X</div>
+                        <div>
+                            <div class="sec-name">ЛИМБ — ГОТИЧЕСКИЕ СООРУЖЕНИЯ</div>
+                            <div class="sec-desc">Секторы 1-1 — 1-4. Архитектура нижнего уровня первого порядка. Первое взаимодействие с зеркальным модулем V2 в секторе 1-4.</div>
+                        </div>
+                    </div>
+                    <div class="sector">
+                        <div class="sec-id">2-X</div>
+                        <div>
+                            <div class="sec-name">ГНЕВ — МЕХАНИЧЕСКИЕ КОМПЛЕКСЫ</div>
+                            <div class="sec-desc">Секторы 2-1 — 2-4. Гигантские вращающиеся механические структуры. Высокая динамика среды. Сложная геометрия маршрутов.</div>
+                        </div>
+                    </div>
+                    <div class="sector">
+                        <div class="sec-id">3-X</div>
+                        <div>
+                            <div class="sec-name">ЖАДНОСТЬ — ЗОЛОТАЯ ПУСТОШЬ</div>
+                            <div class="sec-desc">Секторы 3-1 — 3-4. Территория металлических золотых структур. Ключевое взаимодействие: Minos Prime (сектор 3-2).</div>
+                        </div>
+                    </div>
+                    <div class="sector">
+                        <div class="sec-id">4-X</div>
+                        <div>
+                            <div class="sec-name">ЕРЕСЬ — ТЕРМИЧЕСКИЕ ЗОНЫ</div>
+                            <div class="sec-desc">Секторы 4-1 — 4-4. Лавовые области. Повторные сессии с Gabriel и V2 в секторе 4-4.</div>
+                        </div>
+                    </div>
+                    <div class="sector">
+                        <div class="sec-id">5-X</div>
+                        <div>
+                            <div class="sec-name">ТРЕВОГА — ЗАТОПЛЕННЫЙ КОМПЛЕКС</div>
+                            <div class="sec-desc">Секторы 5-1 — 5-4. Подводные и полузатопленные структуры. Ключевая сессия: Leviathan (сектор 5-4).</div>
+                        </div>
+                    </div>
+                    <div class="sector">
+                        <div class="sec-id">6-X</div>
+                        <div>
+                            <div class="sec-name">РАСКОЛ — ФИНАЛЬНЫЙ СЕКТОР</div>
+                            <div class="sec-desc">Секторы 6-1 — 6-4. Завершающий акт. Взаимодействие с Gabriel (6-2). Финальная цель: Sisyphus Prime.</div>
+                        </div>
+                    </div>
                     <div class="readout">
-                        <span class="hl">// СКРЫТЫЕ ЗОНЫ:</span> <span class="vl">P-1, P-2, «0-S: The Witless»</span><br>
-                        <span class="hl">// ОСОБЫЙ РЕСУРС:</span> <span class="vl">Dual Wield — удвоенная длительность активации (до 120 сек)</span>
+                        <span class="hl">// СКРЫТЫЕ ЗОНЫ:</span>
+                        <span class="vl">P-1, P-2, «0-S: The Witless»</span><br>
+                        <span class="hl">// ОСОБЫЙ РЕСУРС:</span>
+                        <span class="vl">Dual Wield — удвоенная длительность активации (до 120 сек)</span>
                     </div>
                 </div>
             </div>
@@ -944,8 +827,9 @@
                     <div class="aslot"><span style="color:var(--c-green)">◼ СЛОТ 3</span><span>ГВОЗДЕВОЙ</span></div>
                     <div class="aslot"><span style="color:var(--c-gold)">◼ СЛОТ 4</span><span>РЕЛЬСОВЫЙ</span></div>
                     <div class="aslot"><span style="color:var(--c-pink)">◼ СЛОТ 5</span><span>РАКЕТНЫЙ</span></div>
-                    <div class="readout" style="margin-top:.5rem;font-size:.58rem;">
-                        <span class="hl">// ВАРИАЦИИ:</span> <span class="vl">СИНИЙ (base) / КРАСНЫЙ (alt)</span>
+                    <div class="readout" style="margin-top:0.5rem; font-size:0.58rem;">
+                        <span class="hl">// ВАРИАЦИИ:</span>
+                        <span class="vl">СИНИЙ (base) / КРАСНЫЙ (alt)</span>
                     </div>
                 </div>
             </div>
@@ -982,18 +866,614 @@
 </div>
 
 <script>
-var THEME_LABELS = { dark:'DARK // ORIGINAL', v1:'V1 // MACHINE // BLUE', v2:'V2 // MIRROR // RED', gabriel:'GABRIEL // JUDGE // GOLD' };
+/* ══════════════════════════════════════
+   THEME SWITCHER
+══════════════════════════════════════ */
+var THEME_LABELS = {
+    dark:    'DARK // ORIGINAL',
+    v1:      'V1 // MACHINE // BLUE',
+    v2:      'V2 // MIRROR // RED',
+    gabriel: 'GABRIEL // JUDGE // GOLD'
+};
+
 function setTheme(t) {
     document.body.setAttribute('data-theme', t);
-    document.querySelectorAll('.tp-btn').forEach(function(b){ b.classList.toggle('active', b.dataset.tv===t); });
+    document.querySelectorAll('.tp-btn').forEach(function(btn) {
+        btn.classList.toggle('active', btn.dataset.tv === t);
+    });
     var lbl = document.getElementById('tpCurrent');
     if (lbl) lbl.textContent = 'АКТИВНА: ' + THEME_LABELS[t];
-    try { localStorage.setItem('uk_theme', t); } catch(e){}
+    try { localStorage.setItem('uk_theme', t); } catch(e) {}
 }
-(function(){ try { var s=localStorage.getItem('uk_theme'); if(s&&THEME_LABELS[s]) setTheme(s); } catch(e){} })();
-function navTo(id){ var el=document.getElementById(id); if(!el)return; el.scrollIntoView({behavior:'smooth',block:'start'}); el.style.transition='border-color .1s,box-shadow .1s'; el.style.borderColor='var(--acc)'; el.style.boxShadow='0 0 24px var(--acc-glow)'; setTimeout(function(){el.style.borderColor='';el.style.boxShadow='';},900); }
-document.querySelectorAll('.ws-slot').forEach(function(s){ s.addEventListener('click',function(){document.querySelectorAll('.ws-slot').forEach(function(x){x.classList.remove('active');}); this.classList.add('active');}); });
-document.getElementById('statsBtn').addEventListener('click',function(){ alert('// SYSTEM DATABASE //\n\nULTRAKILL — Fandom Wiki\nСоздана : 12 ноября 2020\nСтатей  : 219\nФайлов  : 2 830\nПравок  : 50 498\n\n[STATUS: ACTIVE]'); });
+
+(function () {
+    try {
+        var saved = localStorage.getItem('uk_theme');
+        if (saved && THEME_LABELS[saved]) setTheme(saved);
+    } catch(e) {}
+})();
+
+function navTo(id) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    el.style.transition = 'border-color 0.1s, box-shadow 0.1s';
+    el.style.borderColor = 'var(--acc)';
+    el.style.boxShadow   = '0 0 24px var(--acc-glow)';
+    setTimeout(function() {
+        el.style.borderColor = '';
+        el.style.boxShadow   = '';
+    }, 900);
+}
+
+document.querySelectorAll('.ws-slot').forEach(function(slot) {
+    slot.addEventListener('click', function () {
+        document.querySelectorAll('.ws-slot').forEach(function(s) { s.classList.remove('active'); });
+        this.classList.add('active');
+    });
+});
+
+document.getElementById('statsBtn').addEventListener('click', function() {
+    alert(
+        '// SYSTEM DATABASE //\n\n' +
+        'ULTRAKILL — Fandom Wiki\n' +
+        'Создана : 12 ноября 2020\n' +
+        'Статей  : 219\n' +
+        'Файлов  : 2 830\n' +
+        'Правок  : 50 498\n\n' +
+        '[STATUS: ACTIVE]'
+    );
+});
+
+/* ══════════════════════════════════════════════════════════════════
+   CANVAS ENGINE
+   DARK / V1  → canvas пуст (CSS-фон делает всё сам)
+   V2         → Зеркальные осколки + глитч + трещины + RGB + шум
+   GABRIEL    → Перья + лучи + нимбы + крылья + мандала + частицы
+══════════════════════════════════════════════════════════════════ */
+(function () {
+    var CV  = document.getElementById('theme-bg-canvas');
+    var CTX = CV.getContext('2d');
+    var AT  = 'dark';
+    var S   = {};
+
+    function r(a, b)     { return a + Math.random() * (b - a); }
+    function ri(a, b)    { return Math.floor(r(a, b + 1)); }
+    function cl(v,mn,mx) { return Math.max(mn, Math.min(mx, v)); }
+
+    function resize() {
+        CV.width  = window.innerWidth;
+        CV.height = window.innerHeight;
+    }
+    window.addEventListener('resize', function () { resize(); init(AT); });
+    resize();
+
+    /* ════════════════════════════════════════════════════════
+       V2 — ЗЕРКАЛЬНЫЙ МОДУЛЬ
+       Лор: точная копия V1, зеркальный агрессор, тёмное отражение.
+       Визуал: красный, расколотое зеркало, глитч, RGB-помехи,
+               статический шум, ударные волны, осколки, трещины.
+    ════════════════════════════════════════════════════════ */
+    function initV2() {
+        S = {
+            shards:[], glitchBars:[], glitchT:ri(10,40),
+            staticPts:[], cracks:[], crackT:ri(80,200),
+            rgbLife:0, shocks:[], swT:ri(50,180),
+            vigPh:0, noiseF:0,
+            textFrag:[], textT:ri(60,180)
+        };
+        for (var i = 0; i < 28; i++) S.shards.push(mkShard());
+        for (var j = 0; j < 220; j++) {
+            S.staticPts.push({
+                x:r(0,CV.width), y:r(0,CV.height), rr:r(.4,1.8),
+                al:r(.01,.055), bl:r(0,Math.PI*2), spd:r(.04,.15)
+            });
+        }
+        for (var c = 0; c < 6; c++) S.cracks.push(mkCrack());
+        for (var tf = 0; tf < 8; tf++) S.textFrag.push(mkTextFrag());
+    }
+
+    function mkShard() {
+        var cx=r(15,CV.width/2-10), cy=r(15,CV.height-15), sz=r(14,68), pts=[], n=ri(3,7);
+        for (var i=0;i<n;i++) {
+            var ang=(i/n)*Math.PI*2+r(-.55,.55);
+            pts.push({x:cx+Math.cos(ang)*sz*r(.4,1.1), y:cy+Math.sin(ang)*sz*r(.4,1.1)});
+        }
+        return { pts:pts, cx:cx, cy:cy,
+            vy:r(-.12,.12), vx:r(-.06,.06),
+            rot:r(0,Math.PI*2), rotV:r(-.007,.007),
+            al:r(.04,.16), ph:r(0,Math.PI*2), spd:r(.012,.03),
+            life:r(.7,1), decay:r(.0004,.0018), gleam:Math.random()>.5 };
+    }
+
+    function mkCrack() {
+        var sx=CV.width/2+r(-100,100), sy=r(40,CV.height-40),
+            pts=[{x:sx,y:sy}], cx=sx, cy=sy;
+        for (var i=0;i<ri(4,11);i++) {
+            cx+=r(-100,100); cy+=r(-70,90);
+            cx=cl(cx,8,CV.width-8); cy=cl(cy,8,CV.height-8);
+            pts.push({x:cx,y:cy});
+        }
+        return { pts:pts, al:r(.02,.07), ph:r(0,Math.PI*2),
+                 phs:r(.007,.024), life:r(.7,1.5), decay:r(.0007,.0028) };
+    }
+
+    function mkTextFrag() {
+        var FR=['NULL','ERR','V2','MIRROR','0xDEAD','CORRUPT','REFLECT','DUAL'];
+        return { x:r(20,CV.width/2-20), y:r(20,CV.height-20),
+            txt:FR[ri(0,FR.length-1)], al:r(.02,.08),
+            ph:r(0,Math.PI*2), phs:r(.006,.02),
+            life:r(.8,1.6), decay:r(.0006,.002) };
+    }
+
+    function drawV2() {
+        CTX.clearRect(0,0,CV.width,CV.height);
+        var W=CV.width, H=CV.height;
+        S.noiseF++; S.vigPh+=.009;
+
+        /* виньетка */
+        var va=.04+.02*Math.sin(S.vigPh);
+        var vg=CTX.createRadialGradient(W/2,H/2,0,W/2,H/2,Math.max(W,H)*.74);
+        vg.addColorStop(0,'rgba(255,0,0,0)');
+        vg.addColorStop(.65,'rgba(130,0,0,'+(va*.4)+')');
+        vg.addColorStop(1,'rgba(80,0,0,'+va+')');
+        CTX.fillStyle=vg; CTX.fillRect(0,0,W,H);
+
+        /* статический шум */
+        if (S.noiseF%3===0) {
+            S.staticPts.forEach(function(pt) {
+                pt.bl+=pt.spd;
+                var a=pt.al*(.3+.7*Math.abs(Math.sin(pt.bl)));
+                CTX.beginPath(); CTX.arc(pt.x,pt.y,pt.rr,0,Math.PI*2);
+                CTX.fillStyle='rgba(255,24,24,'+a+')'; CTX.fill();
+                CTX.beginPath(); CTX.arc(W-pt.x,pt.y,pt.rr*.65,0,Math.PI*2);
+                CTX.fillStyle='rgba(255,24,24,'+(a*.45)+')'; CTX.fill();
+            });
+        }
+
+        /* трещины */
+        S.crackT--;
+        if (S.crackT<=0) { S.crackT=ri(100,240); if(S.cracks.length<12) S.cracks.push(mkCrack()); }
+        S.cracks=S.cracks.filter(function(c){return c.life>0;});
+        S.cracks.forEach(function(cr) {
+            cr.life-=cr.decay; cr.ph+=cr.phs;
+            var a=cr.al*cr.life*(.55+.45*Math.sin(cr.ph));
+            function dCrack(flip) {
+                CTX.save();
+                if(flip){CTX.translate(W,0);CTX.scale(-1,1);}
+                CTX.strokeStyle='rgba(255,24,24,'+(a*(flip?.45:1))+')';
+                CTX.lineWidth=flip?.55:.88;
+                CTX.beginPath();
+                cr.pts.forEach(function(pt,i){i?CTX.lineTo(pt.x,pt.y):CTX.moveTo(pt.x,pt.y);});
+                CTX.shadowBlur=6; CTX.shadowColor='rgba(255,0,0,'+a+')';
+                CTX.stroke(); CTX.shadowBlur=0;
+                CTX.restore();
+            }
+            dCrack(false); dCrack(true);
+        });
+
+        /* глитч-полосы */
+        S.glitchT--;
+        if (S.glitchT<=0) {
+            S.glitchT=ri(6,44);
+            var nb=ri(1,6);
+            for (var nb2=0; nb2<nb&&S.glitchBars.length<14; nb2++) {
+                S.glitchBars.push({y:r(0,H),h:r(1,15),life:r(.2,.9),shift:r(-65,65),al:r(.03,.12),type:ri(0,3)});
+            }
+            if (Math.random()<.3) S.rgbLife=r(.3,.9);
+        }
+
+        /* RGB-смещение */
+        if (S.rgbLife>0) {
+            S.rgbLife-=.05;
+            var rA=.022*S.rgbLife;
+            CTX.fillStyle='rgba(255,0,0,'+rA+')';          CTX.fillRect(r(-12,12),0,W,H);
+            CTX.fillStyle='rgba(0,180,255,'+(rA*.36)+')';  CTX.fillRect(r(-8,8),0,W,H);
+        }
+
+        S.glitchBars=S.glitchBars.filter(function(b){return b.life>0;});
+        S.glitchBars.forEach(function(b) {
+            b.life-=.05;
+            var a=b.al*b.life;
+            CTX.fillStyle='rgba(255,24,24,'+a+')'; CTX.fillRect(0,b.y,W,b.h);
+            if (b.type===1) {
+                CTX.fillStyle='rgba(255,100,60,'+(a*.5)+')'; CTX.fillRect(b.shift,b.y,W*.55,b.h*.6);
+                CTX.fillStyle='rgba(150,0,0,'+(a*.35)+')';  CTX.fillRect(-b.shift*.5,b.y-b.h*.2,W*.44,b.h*.45);
+            } else if (b.type===2) {
+                for (var p=0;p<20;p++) {
+                    CTX.fillStyle='rgba(255,24,24,'+(a*r(.4,1.9))+')';
+                    CTX.fillRect(r(0,W),b.y+r(-b.h,b.h),r(2,24),r(1,5));
+                }
+            } else if (b.type===3) {
+                CTX.fillStyle='rgba(200,0,0,'+(a*.18)+')'; CTX.fillRect(0,b.y-4,W,b.h+8);
+            }
+        });
+
+        /* осколки */
+        S.shards.forEach(function(sh,idx) {
+            sh.ph+=sh.spd; sh.life-=sh.decay; sh.rot+=sh.rotV; sh.cx+=sh.vx; sh.cy+=sh.vy;
+            if (sh.life<=0) { S.shards[idx]=mkShard(); return; }
+            var a=sh.al*sh.life*(.46+.54*Math.sin(sh.ph));
+            var cr=Math.cos(sh.rot), sr=Math.sin(sh.rot);
+            var ox=sh.pts[0].x, oy=sh.pts[0].y;
+            var tp=sh.pts.map(function(pt){
+                var dx=pt.x-ox,dy=pt.y-oy;
+                return {x:sh.cx+cr*dx-sr*dy,y:sh.cy+sr*dx+cr*dy};
+            });
+            function dShard(flip) {
+                CTX.save();
+                if(flip){CTX.translate(W,0);CTX.scale(-1,1);}
+                CTX.beginPath(); CTX.moveTo(tp[0].x,tp[0].y);
+                for (var p=1;p<tp.length;p++) CTX.lineTo(tp[p].x,tp[p].y);
+                CTX.closePath();
+                CTX.strokeStyle='rgba(255,24,24,'+(a*(flip?.6:1))+')';
+                CTX.lineWidth=flip?.5:.92; CTX.stroke();
+                if (sh.gleam&&!flip) {
+                    var gg=CTX.createLinearGradient(tp[0].x,tp[0].y,
+                        tp[Math.min(2,tp.length-1)].x,tp[Math.min(2,tp.length-1)].y);
+                    gg.addColorStop(0,'rgba(255,120,120,'+(a*.3)+')');
+                    gg.addColorStop(.5,'rgba(255,255,255,'+(a*.1)+')');
+                    gg.addColorStop(1,'rgba(255,24,24,0)');
+                    CTX.fillStyle=gg;
+                } else {
+                    CTX.fillStyle='rgba(255,24,24,'+(a*(flip?.04:.1))+')';
+                }
+                CTX.fill(); CTX.restore();
+            }
+            dShard(false); dShard(true);
+        });
+
+        /* ударные волны */
+        S.swT--;
+        if (S.swT<=0) {
+            S.swT=ri(50,200);
+            S.shocks.push({x:W/2+r(-80,80),y:r(H*.1,H*.9),rr:0,maxR:r(50,200),spd:r(1.4,3.8),al:r(.05,.14)});
+        }
+        S.shocks=S.shocks.filter(function(sw){return sw.rr<sw.maxR;});
+        S.shocks.forEach(function(sw) {
+            sw.rr+=sw.spd;
+            var a=sw.al*(1-sw.rr/sw.maxR);
+            CTX.beginPath(); CTX.arc(sw.x,sw.y,sw.rr,0,Math.PI*2);
+            CTX.strokeStyle='rgba(255,24,24,'+a+')'; CTX.lineWidth=1.4; CTX.stroke();
+            CTX.beginPath(); CTX.arc(W-sw.x,sw.y,sw.rr,0,Math.PI*2);
+            CTX.strokeStyle='rgba(255,24,24,'+(a*.48)+')'; CTX.lineWidth=.8; CTX.stroke();
+        });
+
+        /* текстовые коды-ошибок */
+        S.textT--;
+        if (S.textT<=0) { S.textT=ri(50,160); if(S.textFrag.length<14) S.textFrag.push(mkTextFrag()); }
+        S.textFrag=S.textFrag.filter(function(tf){return tf.life>0;});
+        S.textFrag.forEach(function(tf) {
+            tf.life-=tf.decay; tf.ph+=tf.phs;
+            var a=tf.al*tf.life*(.5+.5*Math.sin(tf.ph));
+            if (a<.003) return;
+            CTX.font='11px "Share Tech Mono",monospace';
+            CTX.fillStyle='rgba(255,24,24,'+a+')'; CTX.fillText(tf.txt,tf.x,tf.y);
+            CTX.save(); CTX.translate(CV.width,0); CTX.scale(-1,1);
+            CTX.fillStyle='rgba(255,24,24,'+(a*.4)+')'; CTX.fillText(tf.txt,tf.x,tf.y);
+            CTX.restore();
+        });
+
+        /* редкая вспышка */
+        if (Math.random()<.0015) { CTX.fillStyle='rgba(255,0,0,.02)'; CTX.fillRect(0,0,W,H); }
+
+        /* ось зеркала */
+        CTX.save(); CTX.setLineDash([5,14]);
+        CTX.strokeStyle='rgba(255,24,24,.028)'; CTX.lineWidth=1;
+        CTX.beginPath(); CTX.moveTo(W/2,0); CTX.lineTo(W/2,H); CTX.stroke();
+        CTX.setLineDash([]); CTX.restore();
+
+        /* горизонтальный артефакт */
+        if (S.noiseF%7===0) {
+            var ly=ri(0,H);
+            CTX.strokeStyle='rgba(255,24,24,.04)'; CTX.lineWidth=.5;
+            CTX.beginPath(); CTX.moveTo(0,ly); CTX.lineTo(W,ly); CTX.stroke();
+        }
+    }
+
+    /* ════════════════════════════════════════════════════════
+       GABRIEL — АРХАНГЕЛ / СУДЬЯ
+       Лор: послан судить нижний уровень. В первой встрече —
+            самоуверен, высокомерен. Во второй — вера сломлена,
+            называет себя «светом утренней звезды» (аллюзия на
+            Люцифера). Золото и свет, переходящие в падение.
+       Визуал: лучи, нимбы, крылья, перья, мандала, частицы,
+               священные надписи, большие концентрические кольца.
+    ════════════════════════════════════════════════════════ */
+    function initGabriel() {
+        S = {
+            feathers:[], halos:[], rays:[], wings:[
+                {side:-1, ph:0,         phs:.0062, al:.025, beatA:.052},
+                {side: 1, ph:Math.PI,   phs:.0062, al:.025, beatA:.052}
+            ],
+            motes:[], mandPh:0, mandSpd:.0036,
+            divFlash:0, ambPh:0,
+            inscriptions:[], inscT:ri(80,200),
+            outerRings:[]
+        };
+        for (var i=0; i<50; i++) S.feathers.push(newFeather(true));
+        for (var h=0; h<9; h++) {
+            S.halos.push({
+                x:r(60,CV.width-60), y:r(60,CV.height-60),
+                rr:r(25,100), al:r(.03,.08),
+                ph:r(0,Math.PI*2), phs:r(.007,.022),
+                rot:r(0,Math.PI*2), rotV:r(-.005,.005),
+                spokes:ri(8,20), inner:Math.random()>.4, innerR:r(.55,.75),
+                gems:ri(0,6)
+            });
+        }
+        for (var rr=0; rr<14; rr++) {
+            S.rays.push({
+                angle:r(-.82,.82), hw:r(12,80),
+                len:r(CV.height*.3,CV.height),
+                al:r(.015,.055), ph:r(0,Math.PI*2), phs:r(.004,.015)
+            });
+        }
+        for (var m=0; m<85; m++) S.motes.push(newMote(true));
+        for (var or=0; or<3; or++) {
+            S.outerRings.push({
+                x:CV.width/2, y:CV.height/2,
+                rr:r(CV.height*.25,CV.height*.45), al:r(.015,.04),
+                ph:r(0,Math.PI*2), phs:r(.003,.01),
+                rot:r(0,Math.PI*2), rotV:r(-.002,.002)*(or%2===0?1:-1)
+            });
+        }
+        for (var ins=0; ins<6; ins++) S.inscriptions.push(newInscription());
+    }
+
+    function newFeather(rY) {
+        return {
+            x:r(-90,CV.width+90), y:rY?r(-300,CV.height):r(-240,-10),
+            vy:r(.15,.65), vx:r(-.12,.12), len:r(16,56),
+            sw:r(0,Math.PI*2), sws:r(.009,.028), rot:0,
+            al:r(.052,.18), golden:Math.random()>.32
+        };
+    }
+
+    function newMote(rY) {
+        return {
+            x:r(0,CV.width), y:rY?r(0,CV.height):CV.height+20,
+            rr:r(.7,3.2), vy:r(-.38,-.07), vx:r(-.07,.07),
+            al:r(.05,.2), ph:r(0,Math.PI*2), phs:r(.02,.065)
+        };
+    }
+
+    function newInscription() {
+        var TX=['JUDICIUM','LUX AETERNA','CAELUM','SANCTUS','VIRTUS','IUSTITIA'];
+        return {
+            x:r(30,CV.width*.45), y:r(30,CV.height*.8),
+            txt:TX[ri(0,TX.length-1)], al:r(.015,.055),
+            ph:r(0,Math.PI*2), phs:r(.005,.016),
+            life:r(.8,1.8), decay:r(.0004,.0015), size:ri(9,13)
+        };
+    }
+
+    function drawGabriel() {
+        CTX.clearRect(0,0,CV.width,CV.height);
+        var W=CV.width, H=CV.height, cx=W/2, cy=H/2;
+        S.ambPh+=.008; S.mandPh+=S.mandSpd;
+
+        /* золотое свечение сверху */
+        var ambA=.022+.01*Math.sin(S.ambPh);
+        var ag=CTX.createRadialGradient(cx,-H*.1,0,cx,-H*.1,H*1.3);
+        ag.addColorStop(0,'rgba(200,152,30,'+ambA+')');
+        ag.addColorStop(.45,'rgba(200,152,30,'+(ambA*.35)+')');
+        ag.addColorStop(1,'rgba(200,152,30,0)');
+        CTX.fillStyle=ag; CTX.fillRect(0,0,W,H);
+
+        /* лучи света */
+        S.rays.forEach(function(rr) {
+            rr.ph+=rr.phs;
+            var a=rr.al*(.4+.6*Math.sin(rr.ph));
+            CTX.save(); CTX.translate(cx,-50); CTX.rotate(rr.angle);
+            var g=CTX.createLinearGradient(0,0,0,rr.len);
+            g.addColorStop(0,'rgba(200,152,30,'+a+')');
+            g.addColorStop(.38,'rgba(245,205,100,'+(a*.44)+')');
+            g.addColorStop(.72,'rgba(200,152,30,'+(a*.1)+')');
+            g.addColorStop(1,'rgba(200,152,30,0)');
+            CTX.beginPath();
+            CTX.moveTo(-rr.hw*.14,0); CTX.lineTo(rr.hw*.14,0);
+            CTX.lineTo(rr.hw*1.88,rr.len); CTX.lineTo(-rr.hw*1.88,rr.len);
+            CTX.closePath(); CTX.fillStyle=g; CTX.fill(); CTX.restore();
+        });
+
+        /* внешние большие кольца */
+        S.outerRings.forEach(function(or) {
+            or.ph+=or.phs; or.rot+=or.rotV;
+            var a=or.al*(.44+.56*Math.sin(or.ph));
+            CTX.save(); CTX.translate(cx,cy); CTX.rotate(or.rot);
+            CTX.beginPath(); CTX.arc(0,0,or.rr,0,Math.PI*2);
+            CTX.strokeStyle='rgba(200,152,30,'+a+')'; CTX.lineWidth=.55; CTX.stroke();
+            for (var k=0;k<32;k++) {
+                var ang=(k/32)*Math.PI*2;
+                CTX.beginPath();
+                CTX.moveTo(Math.cos(ang)*or.rr,Math.sin(ang)*or.rr);
+                CTX.lineTo(Math.cos(ang)*(or.rr+6),Math.sin(ang)*(or.rr+6));
+                CTX.strokeStyle='rgba(200,152,30,'+(a*.6)+')'; CTX.lineWidth=.4; CTX.stroke();
+            }
+            CTX.restore();
+        });
+
+        /* мандала */
+        var mA=.022+.01*Math.sin(S.mandPh*1.7);
+        var mR=Math.min(cx,cy)*.56;
+        CTX.save(); CTX.translate(cx,cy);
+        for (var ring=1;ring<=5;ring++) {
+            CTX.beginPath(); CTX.arc(0,0,mR*(ring/5),0,Math.PI*2);
+            CTX.strokeStyle='rgba(200,152,30,'+(mA*(.4+.6*(ring/5)))+')';
+            CTX.lineWidth=.5; CTX.stroke();
+        }
+        CTX.rotate(S.mandPh*.26);
+        for (var kk=0;kk<18;kk++) {
+            var mang=(kk/18)*Math.PI*2;
+            CTX.beginPath(); CTX.moveTo(0,0);
+            CTX.lineTo(Math.cos(mang)*mR,Math.sin(mang)*mR);
+            CTX.strokeStyle='rgba(200,152,30,'+mA+')'; CTX.lineWidth=.45; CTX.stroke();
+            CTX.beginPath(); CTX.arc(Math.cos(mang)*mR*.94,Math.sin(mang)*mR*.94,1.4,0,Math.PI*2);
+            CTX.fillStyle='rgba(220,178,60,'+(mA*2.2)+')'; CTX.fill();
+        }
+        CTX.restore();
+
+        /* крылья */
+        S.wings.forEach(function(w) {
+            w.ph+=w.phs;
+            var a=w.al*(.5+.5*Math.sin(w.ph));
+            var span=Math.min(cx*.96,265);
+            var beat=Math.sin(w.ph*.46)*w.beatA;
+            CTX.save();
+            CTX.strokeStyle='rgba(175,138,18,'+a+')'; CTX.lineWidth=.75;
+            for (var f=0;f<8;f++) {
+                var t=(f+1)/9;
+                var arcY=cy-58*(1-t)-f*7+beat*span*t;
+                CTX.beginPath(); CTX.moveTo(cx,cy);
+                CTX.quadraticCurveTo(cx+w.side*span*t*.44,arcY,cx+w.side*span*t,cy+18+f*13+beat*span*.26);
+                CTX.stroke();
+            }
+            CTX.beginPath(); CTX.moveTo(cx,cy+82);
+            CTX.quadraticCurveTo(cx+w.side*span*.56,cy-95+beat*span*.5,cx+w.side*span,cy+36);
+            CTX.strokeStyle='rgba(200,152,30,'+(a*.56)+')'; CTX.lineWidth=1.1; CTX.stroke();
+            CTX.beginPath(); CTX.moveTo(cx,cy+82);
+            CTX.quadraticCurveTo(cx+w.side*span*.7,cy+120,cx+w.side*span,cy+36);
+            CTX.strokeStyle='rgba(200,152,30,'+(a*.28)+')'; CTX.lineWidth=.7; CTX.stroke();
+            CTX.restore();
+        });
+
+        /* нимбы */
+        S.halos.forEach(function(hh) {
+            hh.ph+=hh.phs; hh.rot+=hh.rotV;
+            var a=hh.al*(.44+.56*Math.sin(hh.ph));
+            var rr=hh.rr*(.93+.07*Math.sin(hh.ph*1.22));
+            CTX.shadowBlur=8; CTX.shadowColor='rgba(200,152,30,'+(a*.4)+')';
+            CTX.beginPath(); CTX.arc(hh.x,hh.y,rr,0,Math.PI*2);
+            CTX.strokeStyle='rgba(200,152,30,'+a+')'; CTX.lineWidth=1.5; CTX.stroke();
+            CTX.shadowBlur=0;
+            if (hh.inner) {
+                CTX.beginPath(); CTX.arc(hh.x,hh.y,rr*hh.innerR,0,Math.PI*2);
+                CTX.strokeStyle='rgba(225,182,62,'+(a*.38)+')'; CTX.lineWidth=.5; CTX.stroke();
+            }
+            CTX.save(); CTX.translate(hh.x,hh.y); CTX.rotate(hh.rot);
+            for (var s=0;s<hh.spokes;s++) {
+                var sang=(s/hh.spokes)*Math.PI*2;
+                var sx1=Math.cos(sang)*rr, sy1=Math.sin(sang)*rr;
+                CTX.beginPath(); CTX.moveTo(sx1,sy1);
+                CTX.lineTo(Math.cos(sang)*(rr+9),Math.sin(sang)*(rr+9));
+                CTX.strokeStyle='rgba(200,152,30,'+a+')'; CTX.lineWidth=.65; CTX.stroke();
+                CTX.beginPath(); CTX.arc(sx1,sy1,1.4,0,Math.PI*2);
+                CTX.fillStyle='rgba(240,190,70,'+(a*2.4)+')'; CTX.fill();
+            }
+            for (var gm=0;gm<hh.gems;gm++) {
+                var gang=(gm/hh.gems)*Math.PI*2+hh.rot;
+                var gx=Math.cos(gang)*rr, gy=Math.sin(gang)*rr;
+                CTX.beginPath(); CTX.arc(gx,gy,2.8,0,Math.PI*2);
+                CTX.fillStyle='rgba(255,220,80,'+(a*2.8)+')'; CTX.fill();
+            }
+            CTX.restore();
+            var hg=CTX.createRadialGradient(hh.x,hh.y,rr*.84,hh.x,hh.y,rr*1.35);
+            hg.addColorStop(0,'rgba(200,152,30,'+(a*.24)+')');
+            hg.addColorStop(1,'rgba(200,152,30,0)');
+            CTX.beginPath(); CTX.arc(hh.x,hh.y,rr*1.35,0,Math.PI*2);
+            CTX.fillStyle=hg; CTX.fill();
+        });
+
+        /* световые частицы */
+        S.motes.forEach(function(m,idx) {
+            m.ph+=m.phs; m.y+=m.vy; m.x+=m.vx+Math.sin(m.ph*.64)*.09;
+            if (m.y<-28) { S.motes[idx]=newMote(false); return; }
+            var a=m.al*(.36+.64*Math.abs(Math.sin(m.ph)));
+            CTX.beginPath(); CTX.arc(m.x,m.y,m.rr,0,Math.PI*2);
+            CTX.fillStyle='rgba(225,182,62,'+a+')'; CTX.fill();
+            CTX.beginPath(); CTX.arc(m.x,m.y,m.rr*2.9,0,Math.PI*2);
+            CTX.fillStyle='rgba(200,152,30,'+(a*.18)+')'; CTX.fill();
+        });
+
+        /* священные надписи */
+        S.inscT--;
+        if (S.inscT<=0) { S.inscT=ri(70,180); if(S.inscriptions.length<10) S.inscriptions.push(newInscription()); }
+        S.inscriptions=S.inscriptions.filter(function(ins){return ins.life>0;});
+        S.inscriptions.forEach(function(ins) {
+            ins.life-=ins.decay; ins.ph+=ins.phs;
+            var a=ins.al*ins.life*(.48+.52*Math.sin(ins.ph));
+            if (a<.003) return;
+            CTX.font=ins.size+'px "Share Tech Mono",monospace';
+            CTX.fillStyle='rgba(200,152,30,'+a+')'; CTX.fillText(ins.txt,ins.x,ins.y);
+            CTX.fillStyle='rgba(255,220,100,'+(a*.28)+')'; CTX.fillText(ins.txt,ins.x+1,ins.y-1);
+        });
+
+        /* падающие перья */
+        S.feathers.forEach(function(f,idx) {
+            f.sw+=f.sws; f.y+=f.vy; f.x+=f.vx+Math.sin(f.sw)*.13;
+            f.rot=Math.sin(f.sw*.5)*.3;
+            if (f.y>H+110) { S.feathers[idx]=newFeather(false); return; }
+            drawFeather(f.x,f.y,f.len,f.rot,f.al,f.golden);
+        });
+
+        /* редкая вспышка */
+        if (Math.random()<.0022) S.divFlash=r(.55,1.3);
+        if (S.divFlash>0) {
+            CTX.fillStyle='rgba(255,232,130,'+(S.divFlash*.025)+')'; CTX.fillRect(0,0,W,H);
+            S.divFlash-=.055;
+        }
+    }
+
+    function drawFeather(x,y,len,rot,al,golden) {
+        var shaft=golden?'200,152,30':'172,142,72';
+        var barb =golden?'222,180,58':'195,165,95';
+        CTX.save(); CTX.translate(x,y); CTX.rotate(rot);
+        CTX.beginPath(); CTX.moveTo(0,-len*.5); CTX.lineTo(0,len*.5);
+        CTX.strokeStyle='rgba('+shaft+','+al+')'; CTX.lineWidth=.9; CTX.stroke();
+        var steps=Math.floor(len/3.4);
+        for (var i=0;i<steps;i++) {
+            var t=i/steps, by=-len*.5+t*len,
+                bw=Math.sin(t*Math.PI)*len*.38,
+                ba=al*Math.sin(t*Math.PI);
+            if (ba<.003) continue;
+            CTX.strokeStyle='rgba('+barb+','+ba+')'; CTX.lineWidth=.4;
+            CTX.beginPath(); CTX.moveTo(0,by);
+            CTX.quadraticCurveTo(bw*.44,by+len*.05,bw,by+len*.044); CTX.stroke();
+            CTX.beginPath(); CTX.moveTo(0,by);
+            CTX.quadraticCurveTo(-bw*.44,by+len*.05,-bw,by+len*.044); CTX.stroke();
+        }
+        CTX.restore();
+    }
+
+    /* ════════════════════════════════════════════
+       ГЛАВНЫЙ ЦИКЛ
+    ════════════════════════════════════════════ */
+    function loop() {
+        switch (AT) {
+            case 'v2':      drawV2();      break;
+            case 'gabriel': drawGabriel(); break;
+            default:
+                /* dark / v1: canvas пуст, CSS-фон работает сам */
+                CTX.clearRect(0, 0, CV.width, CV.height);
+                break;
+        }
+        requestAnimationFrame(loop);
+    }
+
+    function init(t) {
+        AT = t; S = {};
+        switch (t) {
+            case 'v2':      initV2();      break;
+            case 'gabriel': initGabriel(); break;
+            /* dark / v1: инициализация не нужна */
+        }
+    }
+
+    /* перехват setTheme — координируем CSS и Canvas */
+    var _orig = window.setTheme;
+    window.setTheme = function (t) {
+        _orig(t);
+        init(t);
+    };
+
+    /* первый запуск */
+    var boot = 'dark';
+    try { boot = localStorage.getItem('uk_theme') || 'dark'; } catch(e) {}
+    init(boot);
+    loop();
+
+})();
 </script>
 </body>
 </html>
