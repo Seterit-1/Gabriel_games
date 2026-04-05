@@ -3,904 +3,988 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>ULTRAKILL // СЕКТОРЫ — SYSTEM DATABASE</title>
+    <title>ULTRAKILL // СЕКТОРЫ — КАРТА НИЖНЕГО УРОВНЯ</title>
     <link href="https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-        :root {
-            --acc:       #ff2020;
-            --acc-dim:   #8a0000;
-            --acc-glow:  rgba(255,32,32,0.35);
-            --body-bg:   #060606;
-            --panel-bg:  #0b0b0b;
-            --panel-hd:  #0f0f0f;
-            --panel-bd:  #222222;
-            --text-p:    #e8e8e8;
-            --text-1:    #555555;
-            --text-2:    #333333;
-            --text-3:    #282828;
-            --text-4:    #1e1e1e;
-            --ticker-bg: #000000;
-            --read-bg:   #050505;
-            --c-gold:    #ffd166;
-            --c-blue:    #5599ff;
-            --c-green:   #22ff88;
-            --c-pink:    #ff44aa;
-            --c-orange:  #ff8833;
-        }
-        body[data-theme="v1"] {
-            --acc:#3a99ff;--acc-dim:#003399;--acc-glow:rgba(58,153,255,0.42);
-            --body-bg:#030912;--panel-bg:#060d1c;--panel-hd:#080f22;--panel-bd:#102244;
-            --text-p:#b8d0ff;--text-1:#3a5580;--text-2:#253858;--text-3:#162240;--text-4:#0f1830;
-            --ticker-bg:#020509;--read-bg:#040810;
-            --c-gold:#44aaff;--c-blue:#77ccff;--c-green:#33bbff;--c-pink:#6688ff;--c-orange:#4499ee;
-        }
-        body[data-theme="v2"] {
-            --acc:#ff1818;--acc-dim:#aa0000;--acc-glow:rgba(255,24,24,0.52);
-            --body-bg:#070202;--panel-bg:#0d0404;--panel-hd:#110505;--panel-bd:#2a0606;
-            --text-p:#ffc8c8;--text-1:#883333;--text-2:#661818;--text-3:#3a0d0d;--text-4:#280808;
-            --ticker-bg:#040101;--read-bg:#060202;
-            --c-gold:#ff8855;--c-blue:#ff5544;--c-green:#ff4422;--c-pink:#ff2266;--c-orange:#ff7722;
-        }
-        body[data-theme="gabriel"] {
-            --acc:#c8981e;--acc-dim:#6a5000;--acc-glow:rgba(200,152,30,0.32);
-            --body-bg:#f0ebe0;--panel-bg:#fafaf4;--panel-hd:#edead8;--panel-bd:#c8b880;
-            --text-p:#1a1508;--text-1:#7a6a40;--text-2:#a09060;--text-3:#bfb080;--text-4:#d0c898;
-            --ticker-bg:#e5dfc8;--read-bg:#f5f0e0;
-            --c-gold:#c8981e;--c-blue:#3366aa;--c-green:#227744;--c-pink:#aa3366;--c-orange:#bb5522;
+        body {
+            background: #080808;
+            color: #cccccc;
+            font-family: 'Share Tech Mono', 'Fira Code', monospace;
+            min-height: 100vh;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 1.5rem;
+            overflow-x: hidden;
         }
 
-        .theme-bg-wrap{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden;}
-        .bg-dark{position:absolute;inset:0;display:none;}
-        [data-theme="dark"] .bg-dark,[data-theme="v1"] .bg-dark{display:block;}
-        .bg-dark-grid{position:absolute;inset:0;background-image:linear-gradient(60deg,transparent 49.5%,rgba(255,32,32,.025) 50%,transparent 50.5%),linear-gradient(120deg,transparent 49.5%,rgba(255,32,32,.018) 50%,transparent 50.5%),linear-gradient(0deg,transparent 49.5%,rgba(255,32,32,.015) 50%,transparent 50.5%);background-size:52px 90px;}
-        [data-theme="v1"] .bg-dark-grid{background-image:linear-gradient(60deg,transparent 49.5%,rgba(58,153,255,.03) 50%,transparent 50.5%),linear-gradient(120deg,transparent 49.5%,rgba(58,153,255,.022) 50%,transparent 50.5%),linear-gradient(0deg,transparent 49.5%,rgba(58,153,255,.018) 50%,transparent 50.5%);}
-        .bg-dark-scan{position:absolute;left:0;right:0;height:110px;top:-110px;background:linear-gradient(to bottom,transparent,rgba(255,32,32,.012) 42%,rgba(255,32,32,.028) 50%,rgba(255,32,32,.012) 58%,transparent);animation:darkScan 6s linear infinite;}
-        @keyframes darkScan{from{transform:translateY(0);}to{transform:translateY(calc(100vh + 110px));}}
-        #theme-bg-canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:2;}
-        body::after{content:'';position:fixed;top:0;left:0;width:100%;height:100%;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.12) 2px,rgba(0,0,0,0.12) 4px);pointer-events:none;z-index:9999;}
-        body[data-theme="gabriel"]::after{background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px);}
+        body::before {
+            content: '';
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: repeating-linear-gradient(0deg, transparent, transparent 2px,
+                rgba(0,0,0,0.1) 2px, rgba(0,0,0,0.1) 4px);
+            pointer-events: none; z-index: 9998;
+        }
 
-        body{background:var(--body-bg);color:var(--text-p);font-family:'Share Tech Mono','Fira Code',monospace;min-height:100vh;overflow-x:hidden;transition:background 0.35s,color 0.35s;}
-        .page{max-width:1380px;margin:0 auto;padding:0 1rem 2rem;position:relative;z-index:10;}
+        /* ── ОБЁРТКА ТЕРМИНАЛА ── */
+        .terminal {
+            max-width: 1440px; width: 100%;
+            background: #0a0a0a;
+            border: 1px solid #333;
+            position: relative; z-index: 10;
+        }
 
-        /* ── ШАПКА ── */
-        .site-header{border-bottom:2px solid var(--acc);padding:1.4rem 0 1rem;}
-        .header-top{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1rem;}
-        .logo-eyebrow{font-size:0.6rem;color:var(--acc);letter-spacing:0.35em;text-transform:uppercase;margin-bottom:0.25rem;}
-        .logo-main{font-family:'VT323',monospace;font-size:4rem;line-height:1;color:var(--text-p);letter-spacing:3px;text-shadow:0 0 24px var(--acc-glow),2px 2px 0 var(--acc-dim);}
-        .logo-main .v1{color:var(--acc);text-shadow:0 0 40px var(--acc),0 0 80px var(--acc-glow);}
-        @keyframes glitch{0%,100%{transform:translate(0);}15%{transform:translate(-2px,1px);clip-path:inset(30% 0 30% 0);}30%{transform:translate(2px,-1px);}50%{transform:translate(0);}65%{transform:translate(-1px,2px);clip-path:inset(60% 0 5% 0);}}
-        .logo-main:hover{animation:glitch 0.25s steps(1) infinite;cursor:default;}
-        .logo-tagline{font-size:0.65rem;color:var(--text-2);letter-spacing:0.2em;text-transform:uppercase;margin-top:0.4rem;}
-
-        /* ── ТЕМА ── */
-        .theme-panel{background:var(--panel-bg);border:1px solid var(--panel-bd);border-top:2px solid var(--acc);padding:0.75rem 0.95rem;min-width:230px;}
-        .tp-head{font-size:0.52rem;color:var(--text-2);letter-spacing:0.25em;text-transform:uppercase;margin-bottom:0.55rem;display:flex;align-items:center;gap:0.4rem;}
-        .tp-head::before{content:'';width:5px;height:5px;flex-shrink:0;background:var(--acc);box-shadow:0 0 5px var(--acc);}
-        .tp-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px;}
-        .tp-btn{background:transparent;border:1px solid var(--text-4);padding:0.45rem 0.6rem;cursor:pointer;display:flex;align-items:center;gap:7px;font-family:'Share Tech Mono',monospace;color:var(--text-p);transition:0.16s;text-align:left;position:relative;overflow:hidden;}
-        .tp-btn::after{content:'';position:absolute;bottom:0;left:0;width:0;height:2px;transition:width 0.18s;}
-        .tp-btn:hover::after,.tp-btn.active::after{width:100%;}
-        .tp-swatch{width:9px;height:9px;flex-shrink:0;}
-        .t-dark .tp-swatch{background:#aaaaaa;}.t-v1 .tp-swatch{background:#3a99ff;box-shadow:0 0 6px #3a99ff;}.t-v2 .tp-swatch{background:#ff1818;box-shadow:0 0 6px #ff1818;}.t-gabriel .tp-swatch{background:#c8981e;box-shadow:0 0 6px #c8981e;}
-        .t-dark::after{background:#aaaaaa;}.t-v1::after{background:#3a99ff;}.t-v2::after{background:#ff1818;}.t-gabriel::after{background:#c8981e;}
-        .tp-btn.t-dark:hover,.tp-btn.t-dark.active{border-color:#aaaaaa;background:rgba(180,180,180,0.07);}
-        .tp-btn.t-v1:hover,.tp-btn.t-v1.active{border-color:#3a99ff;background:rgba(58,153,255,0.09);}
-        .tp-btn.t-v2:hover,.tp-btn.t-v2.active{border-color:#ff1818;background:rgba(255,24,24,0.09);}
-        .tp-btn.t-gabriel:hover,.tp-btn.t-gabriel.active{border-color:#c8981e;background:rgba(200,152,30,0.09);}
-        .tp-info{display:flex;flex-direction:column;gap:1px;}
-        .tp-name{font-size:0.72rem;letter-spacing:0.06em;text-transform:uppercase;}
-        .tp-sub{font-size:0.48rem;color:var(--text-1);letter-spacing:0.1em;text-transform:uppercase;}
-        .tp-current{font-size:0.47rem;color:var(--text-3);letter-spacing:0.15em;text-transform:uppercase;text-align:right;margin-top:0.45rem;}
+        /* ── ВЕРХНЯЯ ПАНЕЛЬ ── */
+        .terminal-bar {
+            background: #050505;
+            padding: 0.7rem 1.2rem;
+            border-bottom: 1px solid #333;
+            display: flex; justify-content: space-between; align-items: center;
+            flex-wrap: wrap; gap: 0.5rem;
+        }
+        .terminal-title { display: flex; align-items: center; gap: 12px; }
+        .terminal-dots  { display: flex; gap: 6px; }
+        .dot { width: 11px; height: 11px; border-radius: 50%; background: #333; }
+        .terminal-path {
+            font-size: 0.76rem; color: #666; letter-spacing: 0.04em;
+        }
+        .back-link {
+            color: #888; text-decoration: none; font-size: 0.76rem;
+            border: 1px solid #333; padding: 0.3rem 0.8rem;
+            letter-spacing: 0.06em; transition: 0.15s;
+        }
+        .back-link:hover { color: #ccc; border-color: #666; }
 
         /* ── ТИКЕР ── */
-        .ticker-wrap{background:var(--ticker-bg);border-top:1px solid var(--text-4);border-bottom:1px solid var(--text-4);overflow:hidden;padding:0.28rem 0;margin-bottom:1.2rem;}
-        .ticker-inner{display:flex;gap:4rem;animation:tick 28s linear infinite;white-space:nowrap;}
-        @keyframes tick{from{transform:translateX(0);}to{transform:translateX(-50%);}}
-        .ti{font-size:0.58rem;color:var(--text-2);letter-spacing:0.2em;text-transform:uppercase;}
-        .ti .r{color:var(--acc);}
+        .ticker-wrap {
+            background: #030303; border-bottom: 1px solid #1a1a1a;
+            overflow: hidden; padding: 0.22rem 0;
+        }
+        .ticker-inner {
+            display: flex; gap: 5rem;
+            animation: tick 35s linear infinite; white-space: nowrap;
+        }
+        @keyframes tick { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+        .ti { font-size: 0.54rem; color: #2a2a2a; letter-spacing: 0.2em; text-transform: uppercase; }
+        .ti .r { color: #666; }
 
-        /* ── НАВИГАЦИЯ ── */
-        .nav-section{display:flex;align-items:stretch;gap:1rem;margin-bottom:1.4rem;flex-wrap:wrap;}
-        .nav-home-indicator{background:var(--panel-bg);border:1px solid var(--panel-bd);border-left:3px solid var(--acc);padding:1rem 1.2rem;display:flex;flex-direction:column;justify-content:center;min-width:180px;}
-        .nhi-label{font-size:0.5rem;color:var(--text-2);letter-spacing:0.3em;text-transform:uppercase;margin-bottom:0.2rem;}
-        .nhi-name{font-family:'VT323',monospace;font-size:2rem;color:var(--acc);text-shadow:0 0 12px var(--acc-glow);line-height:1;}
-        .nhi-sub{font-size:0.55rem;color:var(--text-1);letter-spacing:0.15em;text-transform:uppercase;margin-top:0.15rem;}
-        .nhi-dot{width:6px;height:6px;background:var(--acc);box-shadow:0 0 6px var(--acc);display:inline-block;margin-right:6px;}
-        .nav-buttons-right{flex:1;display:flex;gap:4px;flex-wrap:wrap;}
-        .nav-btn{flex:1;min-width:140px;background:var(--panel-bg);border:1px solid var(--text-4);border-bottom:3px solid var(--text-4);padding:1.1rem 1rem;cursor:pointer;display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;text-decoration:none;color:var(--text-p);font-family:'Share Tech Mono',monospace;transition:0.15s;position:relative;overflow:hidden;gap:0.5rem;}
-        .nav-btn::before{content:'';position:absolute;left:0;top:0;width:3px;height:100%;background:var(--text-4);transition:0.15s;}
-        .nav-btn::after{content:'';position:absolute;bottom:0;left:0;width:0;height:3px;transition:width 0.2s;}
-        .nav-btn:hover::after,.nav-btn.active::after{width:100%;}
-        .nb-blue{--nc:var(--c-blue);}.nb-gold{--nc:var(--c-gold);}.nb-red{--nc:var(--acc);}.nb-pink{--nc:var(--c-pink);}.nb-green{--nc:var(--c-green);}
-        .nav-btn::after{background:var(--nc);}.nav-btn::before{background:var(--text-4);}
-        .nav-btn:hover,.nav-btn.active{border-color:var(--nc);background:color-mix(in srgb,var(--nc) 6%,var(--panel-bg));}
-        .nav-btn:hover::before,.nav-btn.active::before{background:var(--nc);box-shadow:0 0 10px var(--nc);}
-        .nav-btn:hover .nb-num,.nav-btn.active .nb-num{color:var(--nc);}
-        .nav-btn:hover .nb-icon,.nav-btn.active .nb-icon{color:var(--nc);text-shadow:0 0 14px var(--nc);}
-        .nb-top{display:flex;justify-content:space-between;align-items:flex-start;width:100%;}
-        .nb-icon{font-size:1.6rem;line-height:1;color:var(--text-2);transition:0.15s;}
-        .nb-num{font-family:'VT323',monospace;font-size:2rem;color:var(--text-3);transition:0.15s;line-height:1;}
-        .nb-name{font-size:0.88rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-p);font-weight:600;}
-        .nb-sub{font-size:0.52rem;color:var(--text-1);letter-spacing:0.1em;text-transform:uppercase;margin-top:0.1rem;}
+        /* ── КОНТЕНТ ── */
+        .terminal-content { padding: 1.5rem; }
 
-        /* ── КРАСНАЯ ЛИНИЯ ── */
-        .redline{height:2px;background:linear-gradient(90deg,var(--acc) 0%,var(--text-p) 18%,var(--acc) 35%,transparent 100%);box-shadow:0 0 10px var(--acc-glow);margin-bottom:1.5rem;}
+        /* ── ЗАГОЛОВОК ── */
+        .page-header {
+            border-bottom: 1px solid #333;
+            padding-bottom: 1rem; margin-bottom: 1.2rem;
+        }
+        .page-eyebrow { font-size: 0.56rem; color: #555; letter-spacing: 0.3em; text-transform: uppercase; margin-bottom: 0.3rem; }
+        .page-title {
+            font-family: 'VT323', monospace;
+            font-size: 2.6rem; color: #cccccc; font-weight: 400;
+            letter-spacing: 3px; line-height: 1;
+        }
+        .page-sub { font-size: 0.64rem; color: #444; margin-top: 0.4rem; letter-spacing: 0.1em; }
 
-        /* ── ПАНЕЛИ ── */
-        .panel{background:var(--panel-bg);border:1px solid var(--panel-bd);margin-bottom:1.4rem;}
-        .panel-head{background:var(--panel-hd);border-bottom:1px solid var(--panel-bd);padding:0.55rem 1rem;display:flex;align-items:center;gap:0.7rem;flex-wrap:wrap;}
-        .ph-dot{width:10px;height:10px;flex-shrink:0;background:var(--acc);box-shadow:0 0 8px var(--acc);}
-        .ph-title{font-family:'VT323',monospace;font-size:1.3rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-p);}
-        .ph-tag{margin-left:auto;font-size:0.55rem;color:var(--text-3);letter-spacing:0.15em;}
-        .panel-body{padding:1rem 1.1rem;}
+        @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
+        .cur {
+            display: inline-block; width: 8px; height: 14px;
+            background: #666; animation: blink 1s step-end infinite;
+            vertical-align: middle; margin-left: 3px;
+        }
 
-        .art-lead{font-family:'VT323',monospace;font-size:1.1rem;color:var(--acc);letter-spacing:0.06em;line-height:1.4;margin-bottom:0.9rem;padding-bottom:0.7rem;border-bottom:1px solid var(--text-4);}
-        .art-para{font-size:0.74rem;color:var(--text-p);line-height:1.85;margin-bottom:0.8rem;}
-        .art-para:last-child{margin-bottom:0;}
-        .art-hl{color:var(--acc);}
-        .art-section-head{font-size:0.6rem;color:var(--text-2);letter-spacing:0.3em;text-transform:uppercase;margin:1rem 0 0.5rem;display:flex;align-items:center;gap:0.5rem;}
-        .art-section-head::before{content:'//';color:var(--acc);}
+        /* ── ВВОДНАЯ СВОДКА ── */
+        .intro-box {
+            background: #0d0d0d; border: 1px solid #2a2a2a;
+            border-left: 3px solid #444;
+            padding: 0.9rem 1.1rem; margin-bottom: 1.4rem;
+            font-size: 0.72rem; color: #888; line-height: 1.8;
+        }
+        .intro-box strong { color: #aaa; }
 
-        .fact-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin:0.8rem 0;}
-        .fact-item{background:var(--panel-hd);border:1px solid var(--text-4);border-left:2px solid var(--acc);padding:0.55rem 0.75rem;}
-        .fact-key{font-size:0.52rem;color:var(--text-2);letter-spacing:0.2em;text-transform:uppercase;margin-bottom:0.2rem;}
-        .fact-val{font-family:'VT323',monospace;font-size:1rem;color:var(--text-p);}
-        .fact-val.r{color:var(--acc);}.fact-val.g{color:var(--c-gold);}.fact-val.b{color:var(--c-blue);}.fact-val.n{color:var(--c-green);}
+        /* ══════════════════════════════
+           ГОРИЗОНТАЛЬНЫЕ ВКЛАДКИ
+        ══════════════════════════════ */
+        .tabs-nav {
+            display: flex; flex-wrap: wrap; gap: 2px;
+            border-bottom: 2px solid #2a2a2a;
+            margin-bottom: 1.4rem;
+            background: #060606;
+        }
+        .tab-btn {
+            background: transparent;
+            border: 1px solid #222; border-bottom: none;
+            padding: 0.55rem 1rem;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.62rem; cursor: pointer;
+            color: #444; letter-spacing: 0.08em; text-transform: uppercase;
+            transition: 0.15s; position: relative; top: 2px;
+            white-space: nowrap;
+        }
+        .tab-btn:hover { color: #888; border-color: #444; background: #0f0f0f; }
+        .tab-btn.active {
+            color: #cccccc; border-color: #555; border-bottom: 2px solid #0a0a0a;
+            background: #0a0a0a;
+        }
+        .tab-num { font-family: 'VT323', monospace; font-size: 1rem; margin-right: 4px; color: #555; }
+        .tab-btn.active .tab-num { color: #999; }
 
-        .readout{background:var(--read-bg);border:1px solid var(--text-4);padding:0.6rem 0.8rem;font-family:'Fira Code',monospace;font-size:0.62rem;color:var(--text-2);line-height:1.9;margin-top:0.8rem;}
-        .readout .hl{color:var(--acc);}.readout .vl{color:var(--text-1);}
+        /* ── ПАНЕЛИ СЛОЁВ ── */
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
 
-        .tags{display:flex;flex-wrap:wrap;gap:3px;margin-top:0.5rem;}
-        .tag{background:var(--panel-hd);border:1px solid var(--text-4);padding:0.08rem 0.45rem;font-size:0.57rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-2);}
-        .tag.r{border-color:var(--acc);color:var(--acc);}.tag.g{border-color:var(--c-gold);color:var(--c-gold);}.tag.b{border-color:var(--c-blue);color:var(--c-blue);}.tag.n{border-color:var(--c-green);color:var(--c-green);}
+        /* ── КАРТОЧКА СЛОЯ ── */
+        .layer-wrap {
+            background: #0d0d0d;
+            border: 1px solid #2e2e2e;
+            margin-bottom: 1.2rem;
+        }
+        .layer-head {
+            background: #111;
+            border-bottom: 1px solid #222;
+            padding: 1rem 1.2rem;
+            display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+        }
+        .layer-num {
+            font-family: 'VT323', monospace;
+            font-size: 3.5rem; color: #3a3a3a; line-height: 1;
+            min-width: 60px; text-align: center;
+        }
+        .layer-title-block { flex: 1; }
+        .layer-name-en {
+            font-family: 'VT323', monospace; font-size: 2rem;
+            color: #aaaaaa; letter-spacing: 0.12em; line-height: 1;
+        }
+        .layer-name-ru { font-size: 0.58rem; color: #444; letter-spacing: 0.22em; text-transform: uppercase; margin-top: 0.2rem; }
+        .layer-act { font-size: 0.5rem; color: #333; letter-spacing: 0.15em; text-transform: uppercase; margin-top: 0.15rem; }
+        .layer-status {
+            font-size: 0.5rem; padding: 0.2rem 0.6rem;
+            border: 1px solid #333; color: #555; letter-spacing: 0.12em; text-transform: uppercase;
+            margin-left: auto;
+        }
+        .ls-done { border-color: #3a3a3a; color: #666; }
+        .ls-partial { border-color: #3a3a3a; color: #777; }
+        .ls-wip { border-color: #222; color: #3a3a3a; }
 
-        @keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
-        .cur{display:inline-block;width:7px;height:13px;background:var(--acc);vertical-align:middle;animation:blink 1s step-end infinite;margin-left:2px;}
+        /* ── ТЕЛО КАРТОЧКИ ── */
+        .layer-body { padding: 1.2rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+        .layer-body.single-col { grid-template-columns: 1fr; }
 
-        /* ── СПЕЦИФИЧНЫЕ СТИЛИ ДЛЯ СТРАНИЦЫ СЕКТОРОВ ── */
+        /* Блок описания */
+        .section-label {
+            font-size: 0.52rem; color: #444; letter-spacing: 0.25em; text-transform: uppercase;
+            margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.4rem;
+        }
+        .section-label::before { content: '//'; color: #555; }
 
-        /* Быстрый переход по слоям */
-        .layer-index{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:1.4rem;}
-        .li-btn{background:var(--panel-bg);border:1px solid var(--text-4);padding:0.45rem 0.8rem;text-decoration:none;color:var(--text-1);font-family:'Share Tech Mono',monospace;font-size:0.62rem;letter-spacing:0.08em;text-transform:uppercase;transition:0.15s;display:flex;align-items:center;gap:0.4rem;}
-        .li-btn:hover{border-color:var(--acc);color:var(--text-p);background:color-mix(in srgb,var(--acc) 8%,var(--panel-bg));}
-        .li-btn.active-link{border-color:var(--acc);color:var(--acc);background:color-mix(in srgb,var(--acc) 5%,var(--panel-bg));}
-        .li-dot{width:7px;height:7px;flex-shrink:0;}
+        .layer-desc { font-size: 0.72rem; color: #888; line-height: 1.85; }
 
-        /* Заголовок акта */
-        .act-heading{display:flex;align-items:center;gap:1rem;margin:2rem 0 1rem;padding:0.6rem 0.9rem;background:var(--panel-hd);border:1px solid var(--panel-bd);border-left:4px solid var(--acc);}
-        .act-num{font-family:'VT323',monospace;font-size:2.4rem;color:var(--acc);text-shadow:0 0 14px var(--acc-glow);line-height:1;}
-        .act-info{display:flex;flex-direction:column;}
-        .act-name{font-family:'VT323',monospace;font-size:1.6rem;color:var(--text-p);letter-spacing:0.08em;}
-        .act-sub{font-size:0.55rem;color:var(--text-2);letter-spacing:0.2em;text-transform:uppercase;margin-top:0.15rem;}
-        .act-layers-count{margin-left:auto;font-size:0.55rem;color:var(--text-3);letter-spacing:0.15em;text-align:right;}
+        /* Список уровней */
+        .level-list { list-style: none; display: flex; flex-direction: column; gap: 2px; }
+        .level-item {
+            background: #0a0a0a; border: 1px solid #1e1e1e;
+            padding: 0.42rem 0.75rem;
+            display: flex; align-items: center; gap: 0.8rem;
+            font-size: 0.68rem;
+        }
+        .level-code {
+            font-family: 'VT323', monospace; font-size: 1rem; color: #555;
+            min-width: 36px;
+        }
+        .level-name { color: #888; flex: 1; }
+        .level-tag { font-size: 0.48rem; letter-spacing: 0.12em; text-transform: uppercase; color: #444; }
+        .level-tag.boss-tag { color: #666; }
+        .level-tag.secret-tag { color: #555; }
 
-        /* Сетка уровней — 2 колонки */
-        .layers-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;}
-        .layer-full{grid-column:1/-1;}
+        /* Блок сущностей (боссов) */
+        .boss-block {
+            background: #080808; border: 1px solid #252525;
+            border-left: 3px solid #3a3a3a;
+            padding: 0.75rem 0.9rem; margin-bottom: 6px;
+        }
+        .boss-class {
+            font-size: 0.48rem; color: #3a3a3a; letter-spacing: 0.22em;
+            text-transform: uppercase; margin-bottom: 0.3rem;
+        }
+        .boss-name {
+            font-family: 'VT323', monospace; font-size: 1.4rem; color: #888;
+            line-height: 1.2; letter-spacing: 0.06em;
+        }
+        .boss-desc {
+            font-size: 0.65rem; color: #555; line-height: 1.65; margin-top: 0.35rem;
+        }
 
-        /* Карточка слоя */
-        .layer-card{background:var(--panel-bg);border:1px solid var(--panel-bd);border-top:3px solid var(--lc, var(--acc));overflow:hidden;}
-        .layer-card-head{background:var(--panel-hd);border-bottom:1px solid var(--panel-bd);padding:0.7rem 1rem;display:flex;align-items:center;gap:0.8rem;}
-        .layer-badge{font-family:'VT323',monospace;font-size:2.2rem;line-height:1;color:var(--lc, var(--acc));text-shadow:0 0 14px color-mix(in srgb,var(--lc, var(--acc)) 60%,transparent);min-width:48px;text-align:center;}
-        .layer-title-block{flex:1;}
-        .layer-name-en{font-family:'VT323',monospace;font-size:1.4rem;color:var(--lc, var(--acc));letter-spacing:0.1em;text-transform:uppercase;line-height:1;}
-        .layer-name-ru{font-size:0.58rem;color:var(--text-2);letter-spacing:0.2em;text-transform:uppercase;margin-top:0.15rem;}
-        .layer-status{font-size:0.5rem;letter-spacing:0.15em;text-transform:uppercase;padding:0.18rem 0.55rem;border:1px solid;margin-left:auto;}
-        .ls-done{border-color:var(--c-green);color:var(--c-green);}
-        .ls-partial{border-color:var(--c-gold);color:var(--c-gold);}
-        .ls-wip{border-color:var(--text-2);color:var(--text-2);}
-        .layer-card-body{padding:0.9rem 1rem;}
+        /* Факты */
+        .facts-row {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 3px; margin-top: 0.6rem;
+        }
+        .fact {
+            background: #0a0a0a; border: 1px solid #1e1e1e; border-left: 2px solid #333;
+            padding: 0.4rem 0.65rem;
+        }
+        .fact-k { font-size: 0.48rem; color: #3a3a3a; letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 0.1rem; }
+        .fact-v { font-family: 'VT323', monospace; font-size: 0.9rem; color: #777; }
 
-        /* Описание слоя */
-        .layer-desc{font-size:0.72rem;color:var(--text-p);line-height:1.8;margin-bottom:0.9rem;}
+        /* Уведомление "в разработке" */
+        .wip-notice {
+            background: #080808; border: 1px solid #222;
+            padding: 1.5rem; text-align: center;
+        }
+        .wip-icon { font-family: 'VT323', monospace; font-size: 4rem; color: #2a2a2a; display: block; margin-bottom: 0.5rem; }
+        .wip-title { font-family: 'VT323', monospace; font-size: 1.8rem; color: #444; letter-spacing: 0.1em; }
+        .wip-sub { font-size: 0.65rem; color: #333; margin-top: 0.5rem; line-height: 1.7; }
 
-        /* Список уровней в слое */
-        .level-section-label{font-size:0.55rem;color:var(--text-2);letter-spacing:0.25em;text-transform:uppercase;margin-bottom:0.5rem;display:flex;align-items:center;gap:0.4rem;}
-        .level-section-label::before{content:'//';color:var(--lc, var(--acc));}
-        .levels-list{display:flex;flex-direction:column;gap:3px;margin-bottom:0.9rem;}
-        .level-item{background:var(--panel-hd);border:1px solid var(--text-4);padding:0.45rem 0.75rem;display:flex;align-items:center;gap:0.75rem;text-decoration:none;transition:0.14s;}
-        .level-item:hover{border-color:var(--lc, var(--acc));background:color-mix(in srgb,var(--lc, var(--acc)) 6%,var(--panel-hd));}
-        .level-num{font-family:'VT323',monospace;font-size:1.05rem;color:var(--lc, var(--acc));min-width:32px;line-height:1;}
-        .level-name{font-size:0.72rem;color:var(--text-p);flex:1;letter-spacing:0.04em;}
-        .level-type{font-size:0.5rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-2);}
-        .level-type.secret{color:var(--c-gold);}
-        .level-type.boss{color:var(--acc);}
+        /* ── ФУТЕР ── */
+        .footer-term {
+            margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid #1a1a1a;
+            font-size: 0.58rem; color: #2a2a2a;
+            display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;
+            letter-spacing: 0.08em; text-transform: uppercase;
+        }
+        .footer-logo { font-family: 'VT323', monospace; font-size: 1.1rem; color: #555; }
 
-        /* Карточка особо опасной сущности */
-        .encounter-box{background:var(--read-bg);border:1px solid var(--text-4);border-left:3px solid var(--lc, var(--acc));padding:0.65rem 0.85rem;margin-top:0.5rem;}
-        .eb-label{font-size:0.5rem;color:var(--text-2);letter-spacing:0.22em;text-transform:uppercase;margin-bottom:0.3rem;}
-        .eb-name{font-family:'VT323',monospace;font-size:1.2rem;color:var(--lc, var(--acc));text-shadow:0 0 10px color-mix(in srgb,var(--lc, var(--acc)) 50%,transparent);line-height:1.2;}
-        .eb-desc{font-size:0.66rem;color:var(--text-1);line-height:1.65;margin-top:0.3rem;}
-
-        /* Информационные факты слоя */
-        .layer-facts{display:grid;grid-template-columns:1fr 1fr;gap:3px;margin:0.7rem 0;}
-        .lf-item{background:var(--panel-hd);border:1px solid var(--text-4);border-left:2px solid var(--lc, var(--acc));padding:0.4rem 0.65rem;}
-        .lf-key{font-size:0.48rem;color:var(--text-2);letter-spacing:0.2em;text-transform:uppercase;margin-bottom:0.15rem;}
-        .lf-val{font-family:'VT323',monospace;font-size:0.92rem;color:var(--text-p);}
-
-        /* Прелюдия — особый вид */
-        .prelude-card{background:var(--panel-bg);border:1px solid var(--panel-bd);border-top:3px solid var(--text-1);}
-
-        /* Строка ACT III — заглушка */
-        .act3-teaser{background:var(--panel-hd);border:1px solid var(--text-4);border-left:4px solid var(--text-2);padding:1rem 1.2rem;display:flex;align-items:center;gap:1rem;margin-top:1rem;}
-        .a3t-icon{font-family:'VT323',monospace;font-size:3rem;color:var(--text-3);line-height:1;}
-        .a3t-text .a3t-title{font-family:'VT323',monospace;font-size:1.4rem;color:var(--text-2);letter-spacing:0.08em;}
-        .a3t-text .a3t-sub{font-size:0.6rem;color:var(--text-3);letter-spacing:0.18em;text-transform:uppercase;margin-top:0.2rem;}
-        .a3t-badge{margin-left:auto;font-size:0.55rem;color:var(--text-3);border:1px solid var(--text-4);padding:0.2rem 0.6rem;letter-spacing:0.12em;text-transform:uppercase;}
-
-        /* Футер */
-        .site-footer{border-top:1px solid var(--text-4);padding:0.9rem 0;margin-top:1rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.4rem;font-size:0.58rem;color:var(--text-3);letter-spacing:0.1em;text-transform:uppercase;}
-        .footer-logo{font-family:'VT323',monospace;font-size:1.2rem;color:var(--acc);text-shadow:0 0 6px var(--acc);}
-        .back-to-main{font-family:'Share Tech Mono',monospace;font-size:0.65rem;color:var(--acc);text-decoration:none;border:1px solid var(--acc);padding:0.3rem 0.8rem;letter-spacing:0.12em;text-transform:uppercase;transition:0.15s;}
-        .back-to-main:hover{background:color-mix(in srgb,var(--acc) 12%,transparent);}
-
-        /* Адаптив */
-        @media(max-width:900px){.layers-grid{grid-template-columns:1fr;}.layer-full{grid-column:auto;}.fact-grid{grid-template-columns:1fr 1fr;}}
-        @media(max-width:760px){.logo-main{font-size:2.8rem;}.fact-grid{grid-template-columns:1fr;}.layer-facts{grid-template-columns:1fr;}.act-heading{flex-wrap:wrap;}.act-layers-count{width:100%;text-align:left;}}
-        @media(max-width:520px){.nav-btn{min-width:100%;}.nav-section{flex-direction:column;}.tp-grid{grid-template-columns:1fr 1fr;}.fact-grid{grid-template-columns:1fr;}.layer-index{flex-direction:column;}}
+        @media (max-width: 800px) {
+            .terminal-content { padding: 1rem; }
+            .layer-body { grid-template-columns: 1fr; }
+            .tabs-nav { overflow-x: auto; flex-wrap: nowrap; }
+            .tab-btn { font-size: 0.54rem; padding: 0.45rem 0.7rem; }
+        }
     </style>
 </head>
-<body data-theme="dark">
+<body>
 
-<div class="theme-bg-wrap" aria-hidden="true">
-    <div class="bg-dark">
-        <div class="bg-dark-grid"></div>
-        <div class="bg-dark-scan"></div>
-    </div>
-</div>
-<canvas id="theme-bg-canvas"></canvas>
+<div class="terminal">
 
-<div class="page">
-
-    <!-- ═══ ШАПКА ═══ -->
-    <div class="site-header">
-        <div class="header-top">
-            <div>
-                <div class="logo-eyebrow">// SYSTEM DATABASE // СЕКТОРЫ // ACTIVE</div>
-                <div class="logo-main"><span class="v1">V1</span> — ULTRAKILL</div>
-                <div class="logo-tagline">
-                    LOWER SECTOR DEPTH MAP // LAYER CATALOGUE // ACCESS GRANTED<span class="cur"></span>
-                </div>
+    <!-- ВЕРХНЯЯ ПАНЕЛЬ -->
+    <div class="terminal-bar">
+        <div class="terminal-title">
+            <div class="terminal-dots">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
             </div>
-            <div class="theme-panel" id="themePanel">
-                <div class="tp-head">// ТЕМА ИНТЕРФЕЙСА</div>
-                <div class="tp-grid">
-                    <button class="tp-btn t-dark active" data-tv="dark" onclick="setTheme('dark')">
-                        <div class="tp-swatch"></div>
-                        <div class="tp-info"><div class="tp-name">DARK</div><div class="tp-sub">ORIGINAL</div></div>
-                    </button>
-                    <button class="tp-btn t-v1" data-tv="v1" onclick="setTheme('v1')">
-                        <div class="tp-swatch"></div>
-                        <div class="tp-info"><div class="tp-name">V1</div><div class="tp-sub">MACHINE // BLUE</div></div>
-                    </button>
-                    <button class="tp-btn t-v2" data-tv="v2" onclick="setTheme('v2')">
-                        <div class="tp-swatch"></div>
-                        <div class="tp-info"><div class="tp-name">V2</div><div class="tp-sub">MIRROR // RED</div></div>
-                    </button>
-                    <button class="tp-btn t-gabriel" data-tv="gabriel" onclick="setTheme('gabriel')">
-                        <div class="tp-swatch"></div>
-                        <div class="tp-info"><div class="tp-name">GABRIEL</div><div class="tp-sub">JUDGE // GOLD</div></div>
-                    </button>
-                </div>
-                <div class="tp-current" id="tpCurrent">АКТИВНА: DARK // ORIGINAL</div>
-            </div>
+            <div class="terminal-path">V1@LOWER-SECTOR:/sectors/layers — DATABASE v2.1</div>
         </div>
+        <a href="index.html" class="back-link">← ВЕРНУТЬСЯ К ИНДЕКСУ</a>
     </div>
 
-    <!-- ═══ ТИКЕР ═══ -->
+    <!-- ТИКЕР -->
     <div class="ticker-wrap">
         <div class="ticker-inner">
-            <span class="ti">// <span class="r">СЕКТОРЫ</span> // КАРТА НИЖНЕГО УРОВНЯ // СЛОИ 1–7 // ПРЕЛЮДИЯ + АКТ I + АКТ II // ДОСТУП: РАЗРЕШЁН // ГЛУБИНА: МАКСИМАЛЬНАЯ //</span>
-            <span class="ti">// <span class="r">СЕКТОРЫ</span> // КАРТА НИЖНЕГО УРОВНЯ // СЛОИ 1–7 // ПРЕЛЮДИЯ + АКТ I + АКТ II // ДОСТУП: РАЗРЕШЁН // ГЛУБИНА: МАКСИМАЛЬНАЯ //</span>
+            <span class="ti">// <span class="r">СЕКТОРЫ</span> // НИЖНИЙ УРОВЕНЬ // СЛОИ I–VII // АКТ I + АКТ II // СТАТУС: АКТИВЕН //</span>
+            <span class="ti">// <span class="r">СЕКТОРЫ</span> // НИЖНИЙ УРОВЕНЬ // СЛОИ I–VII // АКТ I + АКТ II // СТАТУС: АКТИВЕН //</span>
         </div>
     </div>
 
-    <!-- ═══ НАВИГАЦИЯ ═══ -->
-    <div class="nav-section">
-        <div class="nav-home-indicator">
-            <div class="nhi-label">// ТЕКУЩИЙ РАЗДЕЛ</div>
-            <div class="nhi-name">СЕКТОРЫ</div>
-            <div class="nhi-sub"><span class="nhi-dot"></span>LAYERS // ACTIVE</div>
-        </div>
-        <div class="nav-buttons-right">
-            <!-- КНОПКА НАЗАД НА ГЛАВНУЮ -->
-            <a href="index.html" class="nav-btn nb-red">
-                <div class="nb-top"><div class="nb-icon">⌂</div><div class="nb-num">←</div></div>
-                <div><div class="nb-name">Главная</div><div class="nb-sub">ВЕРНУТЬСЯ // INDEX</div></div>
-            </a>
-            <a href="weapons.html" class="nav-btn nb-blue">
-                <div class="nb-top"><div class="nb-icon">⬡</div><div class="nb-num">01</div></div>
-                <div><div class="nb-name">Арсенал</div><div class="nb-sub">СРЕДСТВА // ИНСТРУМЕНТЫ</div></div>
-            </a>
-            <a href="bosses.html" class="nav-btn nb-pink">
-                <div class="nb-top"><div class="nb-icon">★</div><div class="nb-num">03</div></div>
-                <div><div class="nb-name">Сущности</div><div class="nb-sub">ПРИОРИТЕТНЫЕ // ЦЕЛИ</div></div>
-            </a>
-            <a href="lore.html" class="nav-btn nb-gold">
-                <div class="nb-top"><div class="nb-icon">◈</div><div class="nb-num">04</div></div>
-                <div><div class="nb-name">Лор</div><div class="nb-sub">ИСТОРИЯ // ВСЕЛЕННАЯ</div></div>
-            </a>
-            <a href="features.html" class="nav-btn nb-green">
-                <div class="nb-top"><div class="nb-icon">◎</div><div class="nb-num">05</div></div>
-                <div><div class="nb-name">Механики</div><div class="nb-sub">ОСОБЕННОСТИ // ФИШКИ</div></div>
-            </a>
-        </div>
-    </div>
+    <div class="terminal-content">
 
-    <div class="redline"></div>
-
-    <!-- ═══ ВВОДНАЯ ПАНЕЛЬ ═══ -->
-    <div class="panel">
-        <div class="panel-head">
-            <div class="ph-dot"></div>
-            <div class="ph-title">КАРТА НИЖНЕГО УРОВНЯ — ОБЗОР СЕКТОРОВ</div>
-            <div class="ph-tag">LAYER.CATALOGUE // DEPTH MAP</div>
+        <!-- ЗАГОЛОВОК -->
+        <div class="page-header">
+            <div class="page-eyebrow">// СИСТЕМА БАЗ ДАННЫХ // КАРТА СЕКТОРОВ // НИЖНИЙ УРОВЕНЬ</div>
+            <div class="page-title">V1 — КАРТА СЕКТОРОВ<span class="cur"></span></div>
+            <div class="page-sub">> СЛОИ I–IX // ДАНТЕ: LA DIVINA COMMEDIA // ДОСТУП: РАЗРЕШЁН</div>
         </div>
-        <div class="panel-body">
-            <div class="art-lead">
-                Нижний уровень разделён на девять слоёв, соответствующих девяти кругам из «Божественной Комедии» Данте Алигьери. V1 проходит их сверху вниз, нейтрализуя сущности ради получения ресурса.
-            </div>
-            <div class="fact-grid">
-                <div class="fact-item"><div class="fact-key">АКТОВ ВСЕГО</div><div class="fact-val g">3 (III)</div></div>
-                <div class="fact-item"><div class="fact-key">СЛОЁВ ВСЕГО</div><div class="fact-val b">9 (I–IX)</div></div>
-                <div class="fact-item"><div class="fact-key">УРОВНЕЙ (ACT I+II)</div><div class="fact-val n">26+</div></div>
-                <div class="fact-item"><div class="fact-key">АКТ I СТАТУС</div><div class="fact-val n">ЗАВЕРШЁН</div></div>
-                <div class="fact-item"><div class="fact-key">АКТ II СТАТУС</div><div class="fact-val g">В РАЗРАБОТКЕ</div></div>
-                <div class="fact-item"><div class="fact-key">АКТ III СТАТУС</div><div class="fact-val r">НЕ ВЫПУЩЕН</div></div>
-            </div>
-            <div class="art-para">
-                Каждый слой имеет уникальную архитектуру, тип сущностей и особую цветовую палитру. В конце большинства слоёв V1 сталкивается с <span class="art-hl">приоритетной целью</span> — особо опасной сущностью повышенного класса угрозы.
-            </div>
-            <div class="readout">
-                <span class="hl">// НАВИГАЦИЯ:</span> <span class="vl">Используйте быстрые ссылки ниже для перехода к конкретному слою.</span><br>
-                <span class="hl">// ИНСПИРАЦИЯ:</span> <span class="vl">Dante Alighieri — «La Divina Commedia» // Inferno // IX Circles<span class="cur"></span></span>
-            </div>
+
+        <!-- ВВОДНАЯ СВОДКА -->
+        <div class="intro-box">
+            Нижний уровень разделён на девять слоёв, соответствующих кругам из «Божественной Комедии» Данте Алигьери.
+            <strong>V1</strong> перемещается сверху вниз, нейтрализуя сущности ради получения ресурса.
+            В конце большинства слоёв V1 сталкивается с <strong>приоритетной целью повышенного класса угрозы</strong>.
+            Слои VIII и IX находятся в стадии активной разработки — данных нет.
         </div>
-    </div>
 
-    <!-- ═══ БЫСТРЫЙ ПЕРЕХОД ПО СЛОЯМ ═══ -->
-    <div class="layer-index">
-        <a href="#prelude" class="li-btn"><span class="li-dot" style="background:#777;box-shadow:0 0 5px #777;"></span>ПРОЛОГ</a>
-        <a href="#layer1"  class="li-btn"><span class="li-dot" style="background:#5599ff;box-shadow:0 0 5px #5599ff;"></span>СЛОЙ I // ЛИМБ</a>
-        <a href="#layer2"  class="li-btn"><span class="li-dot" style="background:#ff44aa;box-shadow:0 0 5px #ff44aa;"></span>СЛОЙ II // СТРАСТЬ</a>
-        <a href="#layer3"  class="li-btn"><span class="li-dot" style="background:#22ff88;box-shadow:0 0 5px #22ff88;"></span>СЛОЙ III // ЧРЕВОУГОДИЕ</a>
-        <a href="#layer4"  class="li-btn"><span class="li-dot" style="background:#ffd166;box-shadow:0 0 5px #ffd166;"></span>СЛОЙ IV // ЖАДНОСТЬ</a>
-        <a href="#layer5"  class="li-btn"><span class="li-dot" style="background:#ff8833;box-shadow:0 0 5px #ff8833;"></span>СЛОЙ V // ГНЕВ</a>
-        <a href="#layer6"  class="li-btn"><span class="li-dot" style="background:#aa44ff;box-shadow:0 0 5px #aa44ff;"></span>СЛОЙ VI // ЕРЕСЬ</a>
-        <a href="#layer7"  class="li-btn"><span class="li-dot" style="background:#22ccaa;box-shadow:0 0 5px #22ccaa;"></span>СЛОЙ VII // РАЗДОР</a>
-        <a href="#layer8"  class="li-btn"><span class="li-dot" style="background:#333;box-shadow:0 0 4px #555;"></span>СЛОЙ VIII–IX</a>
-    </div>
-
-    <!-- ═══ ПРЕЛЮДИЯ ═══ -->
-    <div class="act-heading" id="prelude">
-        <div class="act-num">P</div>
-        <div class="act-info">
-            <div class="act-name">ПРЕЛЮДИЯ — PRELUDE</div>
-            <div class="act-sub">ВСТУПИТЕЛЬНАЯ ЗОНА // ВВОД В МЕХАНИКИ</div>
+        <!-- ГОРИЗОНТАЛЬНЫЕ ВКЛАДКИ -->
+        <div class="tabs-nav" id="tabsNav">
+            <button class="tab-btn active" onclick="showTab('prelude', this)">
+                <span class="tab-num">P</span>ПРОЛОГ
+            </button>
+            <button class="tab-btn" onclick="showTab('layer1', this)">
+                <span class="tab-num">1</span>ЛИМБ
+            </button>
+            <button class="tab-btn" onclick="showTab('layer2', this)">
+                <span class="tab-num">2</span>СТРАСТЬ
+            </button>
+            <button class="tab-btn" onclick="showTab('layer3', this)">
+                <span class="tab-num">3</span>ЧРЕВОУГОДИЕ
+            </button>
+            <button class="tab-btn" onclick="showTab('layer4', this)">
+                <span class="tab-num">4</span>ЖАДНОСТЬ
+            </button>
+            <button class="tab-btn" onclick="showTab('layer5', this)">
+                <span class="tab-num">5</span>ГНЕВ
+            </button>
+            <button class="tab-btn" onclick="showTab('layer6', this)">
+                <span class="tab-num">6</span>ЕРЕСЬ
+            </button>
+            <button class="tab-btn" onclick="showTab('layer7', this)">
+                <span class="tab-num">7</span>РАЗДОР
+            </button>
+            <button class="tab-btn" onclick="showTab('layer89', this)">
+                <span class="tab-num">8–9</span>РАЗРАБОТКА
+            </button>
         </div>
-        <div class="act-layers-count">УРОВНЕЙ: 4 // СТАТУС: ЗАВЕРШЕНА</div>
-    </div>
 
-    <div class="layers-grid">
-        <div class="layer-card layer-full prelude-card" style="--lc:#888888;">
-            <div class="layer-card-head">
-                <div class="layer-badge" style="color:#888;">0</div>
-                <div class="layer-title-block">
-                    <div class="layer-name-en" style="color:#888;">PRELUDE</div>
-                    <div class="layer-name-ru">ПРЕЛЮДИЯ — ВСТУПИТЕЛЬНЫЕ СЕКТОРА</div>
+        <!-- ══════════════════ ПРОЛОГ ══════════════════ -->
+        <div class="tab-panel active" id="tab-prelude">
+            <div class="layer-wrap">
+                <div class="layer-head">
+                    <div class="layer-num">P</div>
+                    <div class="layer-title-block">
+                        <div class="layer-name-en">PRELUDE</div>
+                        <div class="layer-name-ru">ПРЕЛЮДИЯ — ВСТУПИТЕЛЬНАЯ ЗОНА</div>
+                        <div class="layer-act">// ПРОЛОГ // ДО АКТ I //</div>
+                    </div>
+                    <div class="layer-status ls-done">ЗАВЕРШЁН</div>
                 </div>
-                <div class="layer-status ls-done">ЗАВЕРШЁН</div>
-            </div>
-            <div class="layer-card-body">
-                <div class="layer-desc">
-                    Вступительная зона нижнего уровня. V1 только прибыла: запасы ресурса критически малы, системы не прогреты. Прелюдия обучает базовым механикам перемещения и взаимодействия с оппонентами. Архитектура напоминает смешение промышленных конструкций и органических структур.
-                </div>
-                <div class="level-section-label">УРОВНИ ПРЕЛЮДИИ</div>
-                <div class="levels-list">
-                    <div class="level-item">
-                        <div class="level-num" style="color:#888;">0-1</div>
-                        <div class="level-name">INTO THE FIRE</div>
-                        <div class="level-type">ОСНОВНОЙ</div>
+                <div class="layer-body">
+                    <div>
+                        <div class="section-label">ОПИСАНИЕ</div>
+                        <div class="layer-desc">
+                            Вступительная зона нижнего уровня. V1 только прибыла: запасы ресурса критически малы, системы не прогреты.
+                            Прелюдия обучает базовым механикам перемещения и взаимодействия с оппонентами.
+                            Архитектура представляет собой смешение промышленных конструкций и органических структур.
+                            Именно здесь V1 впервые сталкивается с классом сущностей «страж» и получает первый импульсный инструмент.
+                        </div>
+                        <div class="facts-row" style="margin-top:0.9rem;">
+                            <div class="fact"><div class="fact-k">УРОВНЕЙ</div><div class="fact-v">4</div></div>
+                            <div class="fact"><div class="fact-k">АРХИТЕКТУРА</div><div class="fact-v">ПРОМЫШЛЕННАЯ</div></div>
+                            <div class="fact"><div class="fact-k">АКТ</div><div class="fact-v">ПРОЛОГ</div></div>
+                            <div class="fact"><div class="fact-k">ДАНТЕ</div><div class="fact-v">ВХОДНОЙ СЕКТОР</div></div>
+                            <div class="fact"><div class="fact-k">СТАТУС</div><div class="fact-v">ЗАВЕРШЁН</div></div>
+                            <div class="fact"><div class="fact-k">ЦВЕТ</div><div class="fact-v">СЕРЫЙ / БЕЛЫЙ</div></div>
+                        </div>
                     </div>
-                    <div class="level-item">
-                        <div class="level-num" style="color:#888;">0-2</div>
-                        <div class="level-name">THE MEATGRINDER</div>
-                        <div class="level-type">ОСНОВНОЙ</div>
-                    </div>
-                    <div class="level-item">
-                        <div class="level-num" style="color:#888;">0-3</div>
-                        <div class="level-name">DOUBLE DOWN</div>
-                        <div class="level-type secret">СЕКРЕТНЫЙ</div>
-                    </div>
-                    <div class="level-item">
-                        <div class="level-num" style="color:#888;">0-S</div>
-                        <div class="level-name">SOMETHING WICKED</div>
-                        <div class="level-type secret">СЕКРЕТНЫЙ</div>
+                    <div>
+                        <div class="section-label">УРОВНИ</div>
+                        <ul class="level-list">
+                            <li class="level-item">
+                                <span class="level-code">0-1</span>
+                                <span class="level-name">INTO THE FIRE</span>
+                                <span class="level-tag">ОСНОВНОЙ</span>
+                            </li>
+                            <li class="level-item">
+                                <span class="level-code">0-2</span>
+                                <span class="level-name">THE MEATGRINDER</span>
+                                <span class="level-tag boss-tag">СТОЛКНОВЕНИЕ</span>
+                            </li>
+                            <li class="level-item">
+                                <span class="level-code">0-3</span>
+                                <span class="level-name">DOUBLE DOWN</span>
+                                <span class="level-tag secret-tag">СЕКРЕТНЫЙ</span>
+                            </li>
+                            <li class="level-item">
+                                <span class="level-code">0-S</span>
+                                <span class="level-name">SOMETHING WICKED</span>
+                                <span class="level-tag secret-tag">СЕКРЕТНЫЙ</span>
+                            </li>
+                        </ul>
+
+                        <div class="section-label" style="margin-top:0.9rem;">ПРИОРИТЕТНЫЕ ЦЕЛИ</div>
+                        <div class="boss-block">
+                            <div class="boss-class">// ЦЕЛЬ // КЛАСС: СТРАЖ // УРОВЕНЬ 0-2</div>
+                            <div class="boss-name">CERBERUS — ЦЕРБЕР</div>
+                            <div class="boss-desc">
+                                Трёхголовая сущность класса «страж» — первая приоритетная цель V1 в нижнем уровне.
+                                Представлена в упрощённом виде как обучающий контакт.
+                                Координирует одновременные воздействия из трёх точек. Для нейтрализации необходимо
+                                перенаправить собственные импульсы обратно к каждой из голов последовательно.
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="layer-facts">
-                    <div class="lf-item" style="border-left-color:#888;"><div class="lf-key">АРХИТЕКТУРА</div><div class="lf-val">ПРОМЫШЛЕННАЯ</div></div>
-                    <div class="lf-item" style="border-left-color:#888;"><div class="lf-key">ФУНКЦИЯ</div><div class="lf-val">ОБУЧЕНИЕ</div></div>
-                </div>
-                <div class="readout">
-                    <span class="hl">// ОСОБЕННОСТЬ:</span> <span class="vl">В Прелюдии V1 использует ограниченный арсенал — полный доступ к инструментам открывается в следующих слоях.</span>
-                </div>
-                <div class="tags" style="margin-top:0.6rem;">
-                    <span class="tag">ПРОЛОГ</span><span class="tag">ОБУЧЕНИЕ</span><span class="tag">4 УРОВНЯ</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ═══ АКТ I ═══ -->
-    <div class="act-heading" id="act1">
-        <div class="act-num">I</div>
-        <div class="act-info">
-            <div class="act-name">АКТ I — INFINITE HYPERDEATH</div>
-            <div class="act-sub">СЛОИ 1–6 // ЛИМБ → ЕРЕСЬ</div>
-        </div>
-        <div class="act-layers-count">6 СЛОЁВ // СТАТУС: ЗАВЕРШЁН</div>
-    </div>
-
-    <div class="layers-grid">
-
-        <!-- СЛОЙ 1: ЛИМБ -->
-        <div class="layer-card" style="--lc:#5599ff;" id="layer1">
-            <div class="layer-card-head">
-                <div class="layer-badge">1</div>
-                <div class="layer-title-block">
-                    <div class="layer-name-en">LIMBO</div>
-                    <div class="layer-name-ru">СЛОЙ I — ЛИМБ</div>
-                </div>
-                <div class="layer-status ls-done">ЗАВЕРШЁН</div>
-            </div>
-            <div class="layer-card-body">
-                <div class="layer-desc">
-                    Первый слой нижнего уровня. Лимб — зона оцепенения, пограничное состояние. Архитектура монохромная: белые и серые структуры, кристаллические образования, плавающие острова. Здесь обитают самые первые оппоненты, с которыми встречается V1.
-                </div>
-                <div class="level-section-label">УРОВНИ</div>
-                <div class="levels-list">
-                    <div class="level-item"><div class="level-num">1-1</div><div class="level-name">HEART OF THE SUNRISE</div><div class="level-type">ОСНОВНОЙ</div></div>
-                    <div class="level-item"><div class="level-num">1-2</div><div class="level-name">THE DEATH OF THE PARTY</div><div class="level-type">ОСНОВНОЙ</div></div>
-                    <div class="level-item"><div class="level-num">1-3</div><div class="level-name">A ONE MACHINE ARMY</div><div class="level-type">ОСНОВНОЙ</div></div>
-                    <div class="level-item"><div class="level-num">1-S</div><div class="level-name">CASTLE VEIN</div><div class="level-type secret">СЕКРЕТНЫЙ</div></div>
-                </div>
-                <div class="level-section-label">ПРИОРИТЕТНАЯ ЦЕЛЬ</div>
-                <div class="encounter-box">
-                    <div class="eb-label">// КЛАСС УГРОЗЫ: ВЫСОКИЙ</div>
-                    <div class="eb-name">CERBERUS — ЦЕРБЕР</div>
-                    <div class="eb-desc">Трёхголовая сущность класса «страж». Координирует между тремя точками воздействия. Для нейтрализации требуется перенаправление собственных импульсов обратно к источнику.</div>
-                </div>
-                <div class="layer-facts">
-                    <div class="lf-item"><div class="lf-key">ЦВЕТ</div><div class="lf-val">СИНИЙ / БЕЛЫЙ</div></div>
-                    <div class="lf-item"><div class="lf-key">УРОВНЕЙ</div><div class="lf-val">4 (+1 СЕКРЕТ)</div></div>
-                </div>
-                <div class="tags" style="margin-top:0.6rem;">
-                    <span class="tag b">ЛИМБ</span><span class="tag">АКТ I</span><span class="tag">ДАНТЕ: КРУГ I</span>
-                </div>
             </div>
         </div>
 
-        <!-- СЛОЙ 2: СТРАСТЬ -->
-        <div class="layer-card" style="--lc:#ff44aa;" id="layer2">
-            <div class="layer-card-head">
-                <div class="layer-badge" style="color:#ff44aa;text-shadow:0 0 14px rgba(255,68,170,0.6);">2</div>
-                <div class="layer-title-block">
-                    <div class="layer-name-en" style="color:#ff44aa;">LUST</div>
-                    <div class="layer-name-ru">СЛОЙ II — СТРАСТЬ</div>
-                </div>
-                <div class="layer-status ls-done">ЗАВЕРШЁН</div>
-            </div>
-            <div class="layer-card-body">
-                <div class="layer-desc">
-                    Второй слой. Зона неистовства и неудержимого порыва. Архитектура органичная, тёмно-розовая, напоминающая живую ткань: пульсирующие стены, извивающиеся коридоры. Оппоненты здесь значительно быстрее, чем в Лимбе — они двигаются стремительно и непредсказуемо.
-                </div>
-                <div class="level-section-label">УРОВНИ</div>
-                <div class="levels-list">
-                    <div class="level-item"><div class="level-num" style="color:#ff44aa;">2-1</div><div class="level-name">BRIDGEBURNER</div><div class="level-type">ОСНОВНОЙ</div></div>
-                    <div class="level-item"><div class="level-num" style="color:#ff44aa;">2-2</div><div class="level-name">DEATH AT 20,000 VOLTS</div><div class="level-type">ОСНОВНОЙ</div></div>
-                    <div class="level-item"><div class="level-num" style="color:#ff44aa;">2-3</div><div class="level-name">SHEER HEART ATTACK</div><div class="level-type">ОСНОВНОЙ</div></div>
-                    <div class="level-item"><div class="level-num" style="color:#ff44aa;">2-S</div><div class="level-name">MUST DIE</div><div class="level-type secret">СЕКРЕТНЫЙ</div></div>
-                </div>
-                <div class="level-section-label">ПРИОРИТЕТНАЯ ЦЕЛЬ</div>
-                <div class="encounter-box" style="border-left-color:#ff44aa;">
-                    <div class="eb-label">// КЛАСС УГРОЗЫ: КРИТИЧЕСКИЙ</div>
-                    <div class="eb-name" style="color:#ff44aa;">HIDEOUS MASS</div>
-                    <div class="eb-desc">Аморфная сущность огромных размеров, сформированная из слитых воедино фрагментов. Способна изменять форму и траектории импульсов. Уязвима к сфокусированным воздействиям по сочленениям.</div>
-                </div>
-                <div class="layer-facts">
-                    <div class="lf-item" style="border-left-color:#ff44aa;"><div class="lf-key">ЦВЕТ</div><div class="lf-val">РОЗОВЫЙ / ТЁМНЫЙ</div></div>
-                    <div class="lf-item" style="border-left-color:#ff44aa;"><div class="lf-key">УРОВНЕЙ</div><div class="lf-val">4 (+1 СЕКРЕТ)</div></div>
-                </div>
-                <div class="tags" style="margin-top:0.6rem;">
-                    <span class="tag" style="border-color:#ff44aa;color:#ff44aa;">СТРАСТЬ</span><span class="tag">АКТ I</span><span class="tag">ДАНТЕ: КРУГ II</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- СЛОЙ 3: ЧРЕВОУГОДИЕ -->
-        <div class="layer-card" style="--lc:#22ff88;" id="layer3">
-            <div class="layer-card-head">
-                <div class="layer-badge" style="color:#22ff88;text-shadow:0 0 14px rgba(34,255,136,0.55);">3</div>
-                <div class="layer-title-block">
-                    <div class="layer-name-en" style="color:#22ff88;">GLUTTONY</div>
-                    <div class="layer-name-ru">СЛОЙ III — ЧРЕВОУГОДИЕ</div>
-                </div>
-                <div class="layer-status ls-done">ЗАВЕРШЁН</div>
-            </div>
-            <div class="layer-card-body">
-                <div class="layer-desc">
-                    Третий слой. Зона бесконечного поглощения. Огромные структуры из тёмно-зелёной плоти и гниющей архитектуры. V1 буквально движется внутри гигантского организма. Слой переходный — связывает первую половину Акта I со второй, готовя к встрече с Гавриилом.
-                </div>
-                <div class="level-section-label">УРОВНИ</div>
-                <div class="levels-list">
-                    <div class="level-item"><div class="level-num" style="color:#22ff88;">3-1</div><div class="level-name">BELLY OF THE BEAST</div><div class="level-type">ОСНОВНОЙ</div></div>
-                    <div class="level-item"><div class="level-num" style="color:#22ff88;">3-2</div><div class="level-name">INTERMISSION</div><div class="level-type">ОСНОВНОЙ</div></div>
-                </div>
-                <div class="level-section-label">ЗНАЧИМАЯ ВСТРЕЧА</div>
-                <div class="encounter-box" style="border-left-color:#22ff88;">
-                    <div class="eb-label">// КЛАСС УГРОЗЫ: ЧРЕЗВЫЧАЙНЫЙ</div>
-                    <div class="eb-name" style="color:#22ff88;">GABRIEL — ПЕРВЫЙ КОНТАКТ</div>
-                    <div class="eb-desc">В слое III происходит первый контакт с Гавриилом — самопровозглашённым судьёй нижнего уровня. Полного столкновения не происходит: сущность лишь демонстрирует своё присутствие. Это предвестник встречи в Ереси.</div>
-                </div>
-                <div class="layer-facts">
-                    <div class="lf-item" style="border-left-color:#22ff88;"><div class="lf-key">ЦВЕТ</div><div class="lf-val">ЗЕЛЁНЫЙ / ТЁМНЫЙ</div></div>
-                    <div class="lf-item" style="border-left-color:#22ff88;"><div class="lf-key">УРОВНЕЙ</div><div class="lf-val">2</div></div>
-                </div>
-                <div class="tags" style="margin-top:0.6rem;">
-                    <span class="tag n">ЧРЕВОУГОДИЕ</span><span class="tag">АКТ I</span><span class="tag">ДАНТЕ: КРУГ III</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- СЛОЙ 4: ЖАДНОСТЬ -->
-        <div class="layer-card" style="--lc:#ffd166;" id="layer4">
-            <div class="layer-card-head">
-                <div class="layer-badge" style="color:#ffd166;text-shadow:0 0 14px rgba(255,209,102,0.55);">4</div>
-                <div class="layer-title-block">
-                    <div class="layer-name-en" style="color:#ffd166;">GREED</div>
-                    <div class="layer-name-ru">СЛОЙ IV — ЖАДНОСТЬ</div>
-                </div>
-                <div class="layer-status ls-done">ЗАВЕРШЁН</div>
-            </div>
-            <div class="layer-card-body">
-                <div class="layer-desc">
-                    Четвёртый слой. Зона накопления и удержания. Архитектура вычурная, роскошная, но в состоянии упадка: золото и мрамор, покрытые трещинами. Именно здесь V1 впервые сталкивается с <span class="art-hl">V2</span> — зеркальной копией себя — и противостоит Миносу-Прайму, колоссу из Лимба.
-                </div>
-                <div class="level-section-label">УРОВНИ</div>
-                <div class="levels-list">
-                    <div class="level-item"><div class="level-num" style="color:#ffd166;">4-1</div><div class="level-name">CLAIR DE LUNE</div><div class="level-type">ОСНОВНОЙ</div></div>
-                    <div class="level-item"><div class="level-num" style="color:#ffd166;">4-2</div><div class="level-name">VIOLENCE</div><div class="level-type">ОСНОВНОЙ</div></div>
-                    <div class="level-item"><div class="level-num" style="color:#ffd166;">4-3</div><div class="level-name">A SHOT IN THE DARK</div><div class="level-type">ОСНОВНОЙ</div></div>
-                    <div class="level-item"><div class="level-num" style="color:#ffd166;">4-4</div><div class="level-name">CAIN</div><div class="level-type boss">СТОЛКНОВЕНИЕ</div></div>
-                    <div class="level-item"><div class="level-num" style="color:#ffd166;">4-S</div><div class="level-name">CLASH OF THE BRANDICOOT</div><div class="level-type secret">СЕКРЕТНЫЙ</div></div>
-                </div>
-                <div class="level-section-label">ПРИОРИТЕТНЫЕ ЦЕЛИ</div>
-                <div class="encounter-box" style="border-left-color:#ffd166;">
-                    <div class="eb-label">// ЦЕЛЬ 1 // КЛАСС: ЗЕРКАЛО</div>
-                    <div class="eb-name" style="color:#ffd166;">V2 — ЗЕРКАЛЬНЫЙ ПРОТОТИП</div>
-                    <div class="eb-desc">Модуль того же поколения, что и V1, но с альтернативной конфигурацией. Копирует тактику V1, адаптируется к применяемым инструментам. Первое столкновение происходит именно в слое IV.</div>
-                </div>
-                <div class="encounter-box" style="border-left-color:#ffd166;margin-top:4px;">
-                    <div class="eb-label">// ЦЕЛЬ 2 // КЛАСС: КОЛОСС</div>
-                    <div class="eb-name" style="color:#ffd166;">MINOS PRIME</div>
-                    <div class="eb-desc">Восставший исполин из Лимба. Огромная сущность, использующая дальнобойные волновые импульсы и стремительные наземные воздействия. Является одним из наиболее известных столкновений в игре.</div>
-                </div>
-                <div class="layer-facts">
-                    <div class="lf-item" style="border-left-color:#ffd166;"><div class="lf-key">ЦВЕТ</div><div class="lf-val">ЗОЛОТОЙ / МРАМОР</div></div>
-                    <div class="lf-item" style="border-left-color:#ffd166;"><div class="lf-key">УРОВНЕЙ</div><div class="lf-val">4 (+1 СЕКРЕТ)</div></div>
-                </div>
-                <div class="tags" style="margin-top:0.6rem;">
-                    <span class="tag g">ЖАДНОСТЬ</span><span class="tag">АКТ I</span><span class="tag">ДАНТЕ: КРУГ IV</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- СЛОЙ 5: ГНЕВ -->
-        <div class="layer-card" style="--lc:#ff8833;" id="layer5">
-            <div class="layer-card-head">
-                <div class="layer-badge" style="color:#ff8833;text-shadow:0 0 14px rgba(255,136,51,0.55);">5</div>
-                <div class="layer-title-block">
-                    <div class="layer-name-en" style="color:#ff8833;">WRATH</div>
-                    <div class="layer-name-ru">СЛОЙ V — ГНЕВ</div>
-                </div>
-                <div class="layer-status ls-done">ЗАВЕРШЁН</div>
-            </div>
-            <div class="layer-card-body">
-                <div class="layer-desc">
-                    Пятый слой. Океан бурь и неистовства. Большая часть слоя — это водные локации: штормовое море, корабли-развалины, затопленные платформы. V1 перемещается по кораблям и сражается с морскими и водными оппонентами. Финальное столкновение — с гигантским морским колоссом.
-                </div>
-                <div class="level-section-label">УРОВНИ</div>
-                <div class="levels-list">
-                    <div class="level-item"><div class="level-num" style="color:#ff8833;">5-1</div><div class="level-name">IN THE WAKE OF POSEIDON</div><div class="level-type">ОСНОВНОЙ</div></div>
-                    <div class="level-item"><div class="level-num" style="color:#ff8833;">5-2</div><div class="level-name">WAVES OF THE STARLESS SEA</div><div class="level-type">ОСНОВНОЙ</div></div>
-                    <div class="level-item"><div class="level-num" style="color:#ff8833;">5-3</div><div class="level-name">SHIP OF FOOLS</div><div class="level-type">ОСНОВНОЙ</div></div>
-                    <div class="level-item"><div class="level-num" style="color:#ff8833;">5-4</div><div class="level-name">LEVIATHAN</div><div class="level-type boss">СТОЛКНОВЕНИЕ</div></div>
-                </div>
-                <div class="level-section-label">ПРИОРИТЕТНАЯ ЦЕЛЬ</div>
-                <div class="encounter-box" style="border-left-color:#ff8833;">
-                    <div class="eb-label">// КЛАСС УГРОЗЫ: КОЛОСС</div>
-                    <div class="eb-name" style="color:#ff8833;">LEVIATHAN — ЛЕВИАФАН</div>
-                    <div class="eb-desc">Огромная морская сущность — самая крупная в игре. Полностью переосмысливает формат столкновения: V1 действует внутри и снаружи исполина, разрушая его уязвимые узлы изнутри. Нестандартный тип взаимодействия — не классическое противостояние, а навигационная задача.</div>
-                </div>
-                <div class="layer-facts">
-                    <div class="lf-item" style="border-left-color:#ff8833;"><div class="lf-key">СРЕДА</div><div class="lf-val">ВОДНАЯ</div></div>
-                    <div class="lf-item" style="border-left-color:#ff8833;"><div class="lf-key">УРОВНЕЙ</div><div class="lf-val">4</div></div>
-                </div>
-                <div class="tags" style="margin-top:0.6rem;">
-                    <span class="tag" style="border-color:#ff8833;color:#ff8833;">ГНЕВ</span><span class="tag">АКТ I</span><span class="tag">ДАНТЕ: КРУГ V</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- СЛОЙ 6: ЕРЕСЬ -->
-        <div class="layer-card" style="--lc:#aa44ff;" id="layer6">
-            <div class="layer-card-head">
-                <div class="layer-badge" style="color:#aa44ff;text-shadow:0 0 14px rgba(170,68,255,0.55);">6</div>
-                <div class="layer-title-block">
-                    <div class="layer-name-en" style="color:#aa44ff;">HERESY</div>
-                    <div class="layer-name-ru">СЛОЙ VI — ЕРЕСЬ</div>
-                </div>
-                <div class="layer-status ls-done">ЗАВЕРШЁН</div>
-            </div>
-            <div class="layer-card-body">
-                <div class="layer-desc">
-                    Шестой слой и финал Акта I. Зона разрушенных убеждений и падших созданий. Тёмная пурпурная архитектура, монументальные строения в руинах. Здесь V1 встречает <span class="art-hl">Гавриила</span> — самопровозглашённого судью нижнего уровня — в полноценном столкновении. Завершение первого акта.
-                </div>
-                <div class="level-section-label">УРОВНИ</div>
-                <div class="levels-list">
-                    <div class="level-item"><div class="level-num" style="color:#aa44ff;">6-1</div><div class="level-name">CRY FOR THE WEEPER</div><div class="level-type">ОСНОВНОЙ</div></div>
-                    <div class="level-item"><div class="level-num" style="color:#aa44ff;">6-2</div><div class="level-name">AESTHETICS OF HATE</div><div class="level-type boss">ФИНАЛ АКТ I</div></div>
-                </div>
-                <div class="level-section-label">ПРИОРИТЕТНАЯ ЦЕЛЬ</div>
-                <div class="encounter-box" style="border-left-color:#aa44ff;">
-                    <div class="eb-label">// КЛАСС УГРОЗЫ: АБСОЛЮТНЫЙ</div>
-                    <div class="eb-name" style="color:#aa44ff;">GABRIEL — СУДЬЯ НИЖНЕГО УРОВНЯ</div>
-                    <div class="eb-desc">Самопровозглашённый судья и карающая сущность нижнего уровня. Высочайшая скорость перемещения, разнообразие воздействий: парируемые и непарируемые. Считает себя единственным законным исполнителем приговора. Финальное столкновение Акта I — одно из наиболее технически насыщенных в игре.</div>
-                </div>
-                <div class="layer-facts">
-                    <div class="lf-item" style="border-left-color:#aa44ff;"><div class="lf-key">ЦВЕТ</div><div class="lf-val">ПУРПУРНЫЙ</div></div>
-                    <div class="lf-item" style="border-left-color:#aa44ff;"><div class="lf-key">УРОВНЕЙ</div><div class="lf-val">2</div></div>
-                </div>
-                <div class="readout">
-                    <span class="hl">// ФИНАЛ АКТ I:</span> <span class="vl">После нейтрализации Гавриила V1 продолжает спуск — начинается Акт II.</span>
-                </div>
-                <div class="tags" style="margin-top:0.6rem;">
-                    <span class="tag" style="border-color:#aa44ff;color:#aa44ff;">ЕРЕСЬ</span><span class="tag">ФИНАЛ АКТ I</span><span class="tag">ДАНТЕ: КРУГ VI</span>
-                </div>
-            </div>
-        </div>
-
-    </div><!-- /layers-grid act1 -->
-
-    <!-- ═══ АКТ II ═══ -->
-    <div class="act-heading" id="act2">
-        <div class="act-num">II</div>
-        <div class="act-info">
-            <div class="act-name">АКТ II — IMPERFECT HATRED</div>
-            <div class="act-sub">СЛОИ 7–9 // РАЗДОР → ПРЕДАТЕЛЬСТВО</div>
-        </div>
-        <div class="act-layers-count">3 СЛОЯ // СТАТУС: В РАЗРАБОТКЕ</div>
-    </div>
-
-    <div class="layers-grid">
-
-        <!-- СЛОЙ 7: РАЗДОР -->
-        <div class="layer-card layer-full" style="--lc:#22ccaa;" id="layer7">
-            <div class="layer-card-head">
-                <div class="layer-badge" style="color:#22ccaa;text-shadow:0 0 14px rgba(34,204,170,0.55);">7</div>
-                <div class="layer-title-block">
-                    <div class="layer-name-en" style="color:#22ccaa;">VIOLENCE</div>
-                    <div class="layer-name-ru">СЛОЙ VII — РАЗДОР</div>
-                </div>
-                <div class="layer-status ls-partial">ЧАСТИЧНО ВЫПУЩЕН</div>
-            </div>
-            <div class="layer-card-body">
-                <div class="layer-desc">
-                    Седьмой слой — открывает Акт II. Зона бесконечных столкновений. Архитектура контрастная: разрушенные городские конструкции и открытые пространства с резкими переходами. Слой значительно сложнее предыдущих: оппоненты агрессивнее, арены более запутанные. V1 сталкивается с V2 во второй раз, а также с Гавриилом в новом режиме.
-                </div>
-                <div class="level-section-label">УРОВНИ</div>
-                <div class="levels-list">
-                    <div class="level-item"><div class="level-num" style="color:#22ccaa;">7-1</div><div class="level-name">GARDEN OF FORKING PATHS</div><div class="level-type">ОСНОВНОЙ</div></div>
-                    <div class="level-item"><div class="level-num" style="color:#22ccaa;">7-2</div><div class="level-name">LIGHT UP THE NIGHT</div><div class="level-type">ОСНОВНОЙ</div></div>
-                    <div class="level-item"><div class="level-num" style="color:#22ccaa;">7-3</div><div class="level-name">NO SOUND, NO MEMORY</div><div class="level-type">ОСНОВНОЙ</div></div>
-                    <div class="level-item"><div class="level-num" style="color:#22ccaa;">7-4</div><div class="level-name">...AND HELL FOLLOWED</div><div class="level-type boss">СТОЛКНОВЕНИЕ</div></div>
-                    <div class="level-item"><div class="level-num" style="color:#22ccaa;">7-S</div><div class="level-name">ANOTHER CASTLE</div><div class="level-type secret">СЕКРЕТНЫЙ</div></div>
-                </div>
-                <div class="level-section-label">ПРИОРИТЕТНЫЕ ЦЕЛИ</div>
-                <div class="encounter-box" style="border-left-color:#22ccaa;">
-                    <div class="eb-label">// ЦЕЛЬ 1 // КЛАСС: ЗЕРКАЛО // ПОВТОРНОЕ СТОЛКНОВЕНИЕ</div>
-                    <div class="eb-name" style="color:#22ccaa;">V2 — ФИНАЛЬНОЕ СТОЛКНОВЕНИЕ</div>
-                    <div class="eb-desc">Второй и финальный контакт с зеркальным прототипом. V2 адаптировалась после первого столкновения — теперь использует полный арсенал и демонстрирует значительно более сложную тактику. Столкновение происходит в уровне 7-4.</div>
-                </div>
-                <div class="encounter-box" style="border-left-color:#22ccaa;margin-top:4px;">
-                    <div class="eb-label">// ЦЕЛЬ 2 // КЛАСС: АБСОЛЮТНЫЙ // ПОВТОРНОЕ СТОЛКНОВЕНИЕ</div>
-                    <div class="eb-name" style="color:#22ccaa;">GABRIEL — СУДЬЯ (НЕНАВИСТЬ)</div>
-                    <div class="eb-desc">Гавриил возвращается в изменённом состоянии. Потерпев поражение в Акте I, он переосмыслил свои методы. Вторая встреча значительно интенсивнее первой: новые паттерны воздействий, изменённая тактика. Является одной из самых технически сложных сущностей в игре.</div>
-                </div>
-                <div class="layer-facts">
-                    <div class="lf-item" style="border-left-color:#22ccaa;"><div class="lf-key">ЦВЕТ</div><div class="lf-val">БИРЮЗОВЫЙ</div></div>
-                    <div class="lf-item" style="border-left-color:#22ccaa;"><div class="lf-key">УРОВНЕЙ</div><div class="lf-val">5 (+1 СЕКРЕТ)</div></div>
-                    <div class="lf-item" style="border-left-color:#22ccaa;"><div class="lf-key">АКТ</div><div class="lf-val">II</div></div>
-                    <div class="lf-item" style="border-left-color:#22ccaa;"><div class="lf-key">ДАНТЕ</div><div class="lf-val">КРУГ VII</div></div>
-                </div>
-                <div class="tags" style="margin-top:0.6rem;">
-                    <span class="tag" style="border-color:#22ccaa;color:#22ccaa;">РАЗДОР</span>
-                    <span class="tag">АКТ II</span><span class="tag">ДАНТЕ: КРУГ VII</span>
-                    <span class="tag" style="border-color:var(--c-gold);color:var(--c-gold);">ЧАСТИЧНО ДОСТУПЕН</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- СЛОИ 8-9: В РАЗРАБОТКЕ -->
-        <div class="layer-card layer-full" style="--lc:#444444;" id="layer8">
-            <div class="layer-card-head">
-                <div class="layer-badge" style="color:#444;">8–9</div>
-                <div class="layer-title-block">
-                    <div class="layer-name-en" style="color:#444;">FRAUD & TREACHERY</div>
-                    <div class="layer-name-ru">СЛОИ VIII–IX — ОБМАН И ПРЕДАТЕЛЬСТВО</div>
-                </div>
-                <div class="layer-status ls-wip">В РАЗРАБОТКЕ</div>
-            </div>
-            <div class="layer-card-body">
-                <div class="layer-desc">
-                    Два нижних слоя нижнего уровня, соответствующие восьмому и девятому кругам Данте. Информация о конкретных уровнях и сущностях на момент обновления базы данных не раскрыта. По данным из «Божественной Комедии», Обман — зона многоуровневых переходов со сложной структурой, а Предательство — самый нижний и наиболее экстремальный сектор.
-                </div>
-                <div class="level-section-label">ИЗВЕСТНЫЕ ДАННЫЕ</div>
-                <div class="levels-list">
-                    <div class="level-item" style="opacity:0.5;">
-                        <div class="level-num" style="color:#444;">8-?</div>
-                        <div class="level-name">ДАННЫЕ ЗАСЕКРЕЧЕНЫ</div>
-                        <div class="level-type">НЕ ВЫПУЩЕН</div>
+        <!-- ══════════════════ СЛОЙ 1: ЛИМБ ══════════════════ -->
+        <div class="tab-panel" id="tab-layer1">
+            <div class="layer-wrap">
+                <div class="layer-head">
+                    <div class="layer-num">1</div>
+                    <div class="layer-title-block">
+                        <div class="layer-name-en">LIMBO</div>
+                        <div class="layer-name-ru">СЛОЙ I — ЛИМБ</div>
+                        <div class="layer-act">// АКТ I // INFINITE HYPERDEATH //</div>
                     </div>
-                    <div class="level-item" style="opacity:0.5;">
-                        <div class="level-num" style="color:#444;">9-?</div>
-                        <div class="level-name">ДАННЫЕ ЗАСЕКРЕЧЕНЫ</div>
-                        <div class="level-type">НЕ ВЫПУЩЕН</div>
+                    <div class="layer-status ls-done">ЗАВЕРШЁН</div>
+                </div>
+                <div class="layer-body">
+                    <div>
+                        <div class="section-label">ОПИСАНИЕ</div>
+                        <div class="layer-desc">
+                            Первый слой нижнего уровня. Лимб — зона оцепенения, пограничное состояние между существованием и исчезновением.
+                            Архитектура монохромная: белые и серые конструкции, кристаллические образования, плавающие острова с разрушенными зданиями.
+                            Здесь обитают первые оппоненты, с которыми сталкивается V1: базовые сущности классов «рядовой» и «боец».
+                            Полное столкновение с Цербером происходит в финале уровня 1-3.
+                        </div>
+                        <div class="facts-row" style="margin-top:0.9rem;">
+                            <div class="fact"><div class="fact-k">УРОВНЕЙ</div><div class="fact-v">3 + 1 СЕКРЕТ</div></div>
+                            <div class="fact"><div class="fact-k">ЦВЕТ</div><div class="fact-v">СИНИЙ / БЕЛЫЙ</div></div>
+                            <div class="fact"><div class="fact-k">АКТ</div><div class="fact-v">I</div></div>
+                            <div class="fact"><div class="fact-k">ДАНТЕ</div><div class="fact-v">КРУГ I</div></div>
+                            <div class="fact"><div class="fact-k">СРЕДА</div><div class="fact-v">КАМЕННАЯ</div></div>
+                            <div class="fact"><div class="fact-k">СТАТУС</div><div class="fact-v">ЗАВЕРШЁН</div></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="section-label">УРОВНИ</div>
+                        <ul class="level-list">
+                            <li class="level-item">
+                                <span class="level-code">1-1</span>
+                                <span class="level-name">HEART OF THE SUNRISE</span>
+                                <span class="level-tag">ОСНОВНОЙ</span>
+                            </li>
+                            <li class="level-item">
+                                <span class="level-code">1-2</span>
+                                <span class="level-name">THE DEATH OF THE PARTY</span>
+                                <span class="level-tag">ОСНОВНОЙ</span>
+                            </li>
+                            <li class="level-item">
+                                <span class="level-code">1-3</span>
+                                <span class="level-name">A ONE-MACHINE ARMY</span>
+                                <span class="level-tag boss-tag">СТОЛКНОВЕНИЕ</span>
+                            </li>
+                            <li class="level-item">
+                                <span class="level-code">1-S</span>
+                                <span class="level-name">CASTLE VEIN</span>
+                                <span class="level-tag secret-tag">СЕКРЕТНЫЙ</span>
+                            </li>
+                        </ul>
+
+                        <div class="section-label" style="margin-top:0.9rem;">ПРИОРИТЕТНЫЕ ЦЕЛИ</div>
+                        <div class="boss-block">
+                            <div class="boss-class">// ЦЕЛЬ // КЛАСС: СТРАЖ // УРОВЕНЬ 1-3</div>
+                            <div class="boss-name">CERBERUS — ЦЕРБЕР</div>
+                            <div class="boss-desc">
+                                Трёхголовая сущность класса «страж» — полноценное финальное столкновение слоя.
+                                Три независимые точки воздействия требуют одновременного контроля.
+                                Единственный надёжный метод нейтрализации — перенаправление собственных импульсов
+                                обратно к каждой голове через парирование. Устойчив к прямым импульсам извне.
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="readout">
-                    <span class="hl">// СТАТУС:</span> <span class="vl">Слои VIII и IX находятся в стадии активной разработки.</span><br>
-                    <span class="hl">// ИСТОЧНИК:</span> <span class="vl">Данте — Круги VIII (Злые Щели / Malebolge) и IX (Предательство / Treachery)<span class="cur"></span></span>
+            </div>
+        </div>
+
+        <!-- ══════════════════ СЛОЙ 2: СТРАСТЬ ══════════════════ -->
+        <div class="tab-panel" id="tab-layer2">
+            <div class="layer-wrap">
+                <div class="layer-head">
+                    <div class="layer-num">2</div>
+                    <div class="layer-title-block">
+                        <div class="layer-name-en">LUST</div>
+                        <div class="layer-name-ru">СЛОЙ II — СТРАСТЬ</div>
+                        <div class="layer-act">// АКТ I // INFINITE HYPERDEATH //</div>
+                    </div>
+                    <div class="layer-status ls-done">ЗАВЕРШЁН</div>
                 </div>
-                <div class="layer-facts">
-                    <div class="lf-item" style="border-left-color:#444;"><div class="lf-key">СЛОЙ VIII</div><div class="lf-val" style="color:#444;">ОБМАН</div></div>
-                    <div class="lf-item" style="border-left-color:#444;"><div class="lf-key">СЛОЙ IX</div><div class="lf-val" style="color:#444;">ПРЕДАТЕЛЬСТВО</div></div>
+                <div class="layer-body">
+                    <div>
+                        <div class="section-label">ОПИСАНИЕ</div>
+                        <div class="layer-desc">
+                            Второй слой. Зона неистовства и неудержимого порыва.
+                            Архитектура органичная, тёмно-розовая: пульсирующие стены, извивающиеся коридоры, конструкции из живой ткани.
+                            Оппоненты слоя значительно быстрее первого — они двигаются стремительно и непредсказуемо.
+                            В финале V1 сталкивается с аморфной сущностью огромных размеров — Hideous Mass.
+                        </div>
+                        <div class="facts-row" style="margin-top:0.9rem;">
+                            <div class="fact"><div class="fact-k">УРОВНЕЙ</div><div class="fact-v">3 + 1 СЕКРЕТ</div></div>
+                            <div class="fact"><div class="fact-k">ЦВЕТ</div><div class="fact-v">РОЗОВЫЙ / ТЁМНЫЙ</div></div>
+                            <div class="fact"><div class="fact-k">АКТ</div><div class="fact-v">I</div></div>
+                            <div class="fact"><div class="fact-k">ДАНТЕ</div><div class="fact-v">КРУГ II</div></div>
+                            <div class="fact"><div class="fact-k">СРЕДА</div><div class="fact-v">ОРГАНИЧЕСКАЯ</div></div>
+                            <div class="fact"><div class="fact-k">СТАТУС</div><div class="fact-v">ЗАВЕРШЁН</div></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="section-label">УРОВНИ</div>
+                        <ul class="level-list">
+                            <li class="level-item">
+                                <span class="level-code">2-1</span>
+                                <span class="level-name">BRIDGEBURNER</span>
+                                <span class="level-tag">ОСНОВНОЙ</span>
+                            </li>
+                            <li class="level-item">
+                                <span class="level-code">2-2</span>
+                                <span class="level-name">DEATH AT 20,000 VOLTS</span>
+                                <span class="level-tag">ОСНОВНОЙ</span>
+                            </li>
+                            <li class="level-item">
+                                <span class="level-code">2-3</span>
+                                <span class="level-name">SHEER HEART ATTACK</span>
+                                <span class="level-tag boss-tag">СТОЛКНОВЕНИЕ</span>
+                            </li>
+                            <li class="level-item">
+                                <span class="level-code">2-S</span>
+                                <span class="level-name">MUST DIE</span>
+                                <span class="level-tag secret-tag">СЕКРЕТНЫЙ</span>
+                            </li>
+                        </ul>
+
+                        <div class="section-label" style="margin-top:0.9rem;">ПРИОРИТЕТНЫЕ ЦЕЛИ</div>
+                        <div class="boss-block">
+                            <div class="boss-class">// ЦЕЛЬ // КЛАСС: АМОРФНЫЙ КОЛОСС // УРОВЕНЬ 2-3</div>
+                            <div class="boss-name">HIDEOUS MASS</div>
+                            <div class="boss-desc">
+                                Аморфная сущность огромных размеров, сформированная из слитых фрагментов.
+                                Способна изменять форму и перераспределять точки уязвимости в режиме реального времени.
+                                Генерирует волновые импульсы из множества источников одновременно.
+                                Эффективна только сфокусированная серия воздействий по активным сочленениям.
+                                Устойчива к разрозненным атакам.
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-    </div><!-- /layers-grid act2 -->
+        <!-- ══════════════════ СЛОЙ 3: ЧРЕВОУГОДИЕ ══════════════════ -->
+        <div class="tab-panel" id="tab-layer3">
+            <div class="layer-wrap">
+                <div class="layer-head">
+                    <div class="layer-num">3</div>
+                    <div class="layer-title-block">
+                        <div class="layer-name-en">GLUTTONY</div>
+                        <div class="layer-name-ru">СЛОЙ III — ЧРЕВОУГОДИЕ</div>
+                        <div class="layer-act">// АКТ I // INFINITE HYPERDEATH //</div>
+                    </div>
+                    <div class="layer-status ls-done">ЗАВЕРШЁН</div>
+                </div>
+                <div class="layer-body">
+                    <div>
+                        <div class="section-label">ОПИСАНИЕ</div>
+                        <div class="layer-desc">
+                            Третий слой. Зона бесконечного поглощения.
+                            Огромные структуры из тёмно-зелёной органической массы — V1 буквально движется внутри гигантского организма.
+                            Слой переходный: связывает первую половину Акта I со второй.
+                            Именно здесь происходит первый контакт с Гавриилом — самопровозглашённым судьёй нижнего уровня.
+                            Полного столкновения в этом слое нет: Гавриил лишь демонстрирует своё присутствие.
+                        </div>
+                        <div class="facts-row" style="margin-top:0.9rem;">
+                            <div class="fact"><div class="fact-k">УРОВНЕЙ</div><div class="fact-v">2</div></div>
+                            <div class="fact"><div class="fact-k">ЦВЕТ</div><div class="fact-v">ЗЕЛЁНЫЙ / ТЁМНЫЙ</div></div>
+                            <div class="fact"><div class="fact-k">АКТ</div><div class="fact-v">I</div></div>
+                            <div class="fact"><div class="fact-k">ДАНТЕ</div><div class="fact-v">КРУГ III</div></div>
+                            <div class="fact"><div class="fact-k">СРЕДА</div><div class="fact-v">ВНУТРЕННЯЯ / ОРГАНИКА</div></div>
+                            <div class="fact"><div class="fact-k">СТАТУС</div><div class="fact-v">ЗАВЕРШЁН</div></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="section-label">УРОВНИ</div>
+                        <ul class="level-list">
+                            <li class="level-item">
+                                <span class="level-code">3-1</span>
+                                <span class="level-name">BELLY OF THE BEAST</span>
+                                <span class="level-tag">ОСНОВНОЙ</span>
+                            </li>
+                            <li class="level-item">
+                                <span class="level-code">3-2</span>
+                                <span class="level-name">INTERMISSION</span>
+                                <span class="level-tag boss-tag">КОНТАКТ</span>
+                            </li>
+                        </ul>
 
-    <!-- ═══ АКТ III ТИЗЕР ═══ -->
-    <div class="act3-teaser">
-        <div class="a3t-icon">III</div>
-        <div class="a3t-text">
-            <div class="a3t-title">АКТ III — IN THE HEART OF THE STORM</div>
-            <div class="a3t-sub">// СТАТУС: НЕ АНОНСИРОВАН // ДАННЫХ НЕТ // ОЖИДАЕТСЯ</div>
+                        <div class="section-label" style="margin-top:0.9rem;">ПРИОРИТЕТНЫЕ ЦЕЛИ</div>
+                        <div class="boss-block">
+                            <div class="boss-class">// ПЕРВЫЙ КОНТАКТ // КЛАСС: АБСОЛЮТНЫЙ // УРОВЕНЬ 3-2</div>
+                            <div class="boss-name">GABRIEL — СУДЬЯ НИЖНЕГО УРОВНЯ</div>
+                            <div class="boss-desc">
+                                Первый контакт с Гавриилом происходит в виде сцены-столкновения.
+                                Самопровозглашённый судья объявляет V1 приговор и демонстрирует силу,
+                                но немедленного полного столкновения не происходит.
+                                Гавриил — посланник, считающий себя законным исполнителем воли нижнего уровня.
+                                Полное столкновение ожидает V1 в слое VI (Ересь).
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="a3t-badge">TBD</div>
-    </div>
 
-    <!-- ═══ НИЖНЯЯ ССЫЛКА НАЗАД ═══ -->
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--text-4);">
-        <a href="index.html" class="back-to-main">← ВЕРНУТЬСЯ НА ГЛАВНУЮ</a>
-        <div style="font-size:0.55rem;color:var(--text-3);letter-spacing:0.15em;text-transform:uppercase;">LAYER.HTML // SECTORS // DATABASE</div>
-    </div>
+        <!-- ══════════════════ СЛОЙ 4: ЖАДНОСТЬ ══════════════════ -->
+        <div class="tab-panel" id="tab-layer4">
+            <div class="layer-wrap">
+                <div class="layer-head">
+                    <div class="layer-num">4</div>
+                    <div class="layer-title-block">
+                        <div class="layer-name-en">GREED</div>
+                        <div class="layer-name-ru">СЛОЙ IV — ЖАДНОСТЬ</div>
+                        <div class="layer-act">// АКТ I // INFINITE HYPERDEATH //</div>
+                    </div>
+                    <div class="layer-status ls-done">ЗАВЕРШЁН</div>
+                </div>
+                <div class="layer-body">
+                    <div>
+                        <div class="section-label">ОПИСАНИЕ</div>
+                        <div class="layer-desc">
+                            Четвёртый слой. Зона накопления и удержания.
+                            Архитектура вычурная, роскошная, но в состоянии упадка: позолоченные конструкции и мрамор, покрытые трещинами.
+                            Именно здесь V1 впервые сталкивается с V2 — зеркальным прототипом того же поколения с альтернативной конфигурацией.
+                            Финал слоя — столкновение с Минос Прайм, восставшим исполином, одним из наиболее известных
+                            противостояний в игре.
+                        </div>
+                        <div class="facts-row" style="margin-top:0.9rem;">
+                            <div class="fact"><div class="fact-k">УРОВНЕЙ</div><div class="fact-v">4 + 1 СЕКРЕТ</div></div>
+                            <div class="fact"><div class="fact-k">ЦВЕТ</div><div class="fact-v">ЗОЛОТОЙ / МРАМОР</div></div>
+                            <div class="fact"><div class="fact-k">АКТ</div><div class="fact-v">I</div></div>
+                            <div class="fact"><div class="fact-k">ДАНТЕ</div><div class="fact-v">КРУГ IV</div></div>
+                            <div class="fact"><div class="fact-k">ПРИОРИТЕТНЫХ ЦЕЛЕЙ</div><div class="fact-v">2</div></div>
+                            <div class="fact"><div class="fact-k">СТАТУС</div><div class="fact-v">ЗАВЕРШЁН</div></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="section-label">УРОВНИ</div>
+                        <ul class="level-list">
+                            <li class="level-item">
+                                <span class="level-code">4-1</span>
+                                <span class="level-name">CLAIR DE LUNE</span>
+                                <span class="level-tag">ОСНОВНОЙ</span>
+                            </li>
+                            <li class="level-item">
+                                <span class="level-code">4-2</span>
+                                <span class="level-name">VIOLENCE</span>
+                                <span class="level-tag boss-tag">СТОЛКНОВЕНИЕ V2</span>
+                            </li>
+                            <li class="level-item">
+                                <span class="level-code">4-3</span>
+                                <span class="level-name">A SHOT IN THE DARK</span>
+                                <span class="level-tag">ОСНОВНОЙ</span>
+                            </li>
+                            <li class="level-item">
+                                <span class="level-code">4-4</span>
+                                <span class="level-name">CAIN</span>
+                                <span class="level-tag boss-tag">СТОЛКНОВЕНИЕ MINOS</span>
+                            </li>
+                            <li class="level-item">
+                                <span class="level-code">4-S</span>
+                                <span class="level-name">CLASH OF THE BRANDICOOT</span>
+                                <span class="level-tag secret-tag">СЕКРЕТНЫЙ</span>
+                            </li>
+                        </ul>
 
-    <!-- ═══ ФУТЕР ═══ -->
-    <div class="site-footer">
-        <div class="footer-logo">V1 // ULTRAKILL</div>
-        <div>// ENERGY IS FUEL // LOWER SECTOR IS FULL //</div>
-        <div>// ИСТОЧНИК: ULTRAKILL WIKI // FANDOM //</div>
-    </div>
+                        <div class="section-label" style="margin-top:0.9rem;">ПРИОРИТЕТНЫЕ ЦЕЛИ</div>
+                        <div class="boss-block">
+                            <div class="boss-class">// ЦЕЛЬ 1 // КЛАСС: ЗЕРКАЛО // УРОВЕНЬ 4-2 — ПЕРВОЕ СТОЛКНОВЕНИЕ</div>
+                            <div class="boss-name">V2 — ЗЕРКАЛЬНЫЙ ПРОТОТИП</div>
+                            <div class="boss-desc">
+                                Модуль того же поколения, что и V1, с альтернативной конфигурацией инструментов.
+                                Копирует и адаптирует тактику V1. Использует монеты как ретрансляторы и рельсовый инструмент.
+                                Первое столкновение — вводное: V2 сражается не на полную мощность.
+                                Повторная встреча произойдёт в слое VII с полным арсеналом.
+                            </div>
+                        </div>
+                        <div class="boss-block" style="margin-top:4px;">
+                            <div class="boss-class">// ЦЕЛЬ 2 // КЛАСС: ВОССТАВШИЙ ИСПОЛИН // УРОВЕНЬ 4-4</div>
+                            <div class="boss-name">MINOS PRIME — МИНОС ПРАЙМ</div>
+                            <div class="boss-desc">
+                                Восставший исполин из Лимба, принявший облик судьи.
+                                Использует дальнобойные волновые импульсы («EPIC MINOS MOMENT»), стремительные наземные удары и подъём из земли.
+                                Один из наиболее зрелищных и технически насыщенных противостояний Акта I.
+                                Финал уровня 4-4 «CAIN».
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-</div><!-- /page -->
+        <!-- ══════════════════ СЛОЙ 5: ГНЕВ ══════════════════ -->
+        <div class="tab-panel" id="tab-layer5">
+            <div class="layer-wrap">
+                <div class="layer-head">
+                    <div class="layer-num">5</div>
+                    <div class="layer-title-block">
+                        <div class="layer-name-en">WRATH</div>
+                        <div class="layer-name-ru">СЛОЙ V — ГНЕВ</div>
+                        <div class="layer-act">// АКТ I // INFINITE HYPERDEATH //</div>
+                    </div>
+                    <div class="layer-status ls-done">ЗАВЕРШЁН</div>
+                </div>
+                <div class="layer-body">
+                    <div>
+                        <div class="section-label">ОПИСАНИЕ</div>
+                        <div class="layer-desc">
+                            Пятый слой. Океан бурь и неистовства.
+                            Большая часть слоя — водные локации: штормовое море, корабли-развалины, затопленные платформы.
+                            V1 перемещается по кораблям, сражаясь с морскими оппонентами классов «матрос» и «канонир».
+                            Финальное столкновение слоя — нестандартный формат: V1 действует внутри и снаружи гигантской сущности,
+                            разрушая уязвимые узлы изнутри. Классическое противостояние здесь отсутствует — это навигационная задача.
+                        </div>
+                        <div class="facts-row" style="margin-top:0.9rem;">
+                            <div class="fact"><div class="fact-k">УРОВНЕЙ</div><div class="fact-v">4</div></div>
+                            <div class="fact"><div class="fact-k">СРЕДА</div><div class="fact-v">ВОДНАЯ / МОРСКАЯ</div></div>
+                            <div class="fact"><div class="fact-k">АКТ</div><div class="fact-v">I</div></div>
+                            <div class="fact"><div class="fact-k">ДАНТЕ</div><div class="fact-v">КРУГ V</div></div>
+                            <div class="fact"><div class="fact-k">ФОРМАТ ФИНАЛА</div><div class="fact-v">НЕСТАНДАРТНЫЙ</div></div>
+                            <div class="fact"><div class="fact-k">СТАТУС</div><div class="fact-v">ЗАВЕРШЁН</div></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="section-label">УРОВНИ</div>
+                        <ul class="level-list">
+                            <li class="level-item">
+                                <span class="level-code">5-1</span>
+                                <span class="level-name">IN THE WAKE OF POSEIDON</span>
+                                <span class="level-tag">ОСНОВНОЙ</span>
+                            </li>
+                            <li class="level-item">
+                                <span class="level-code">5-2</span>
+                                <span class="level-name">WAVES OF THE STARLESS SEA</span>
+                                <span class="level-tag">ОСНОВНОЙ</span>
+                            </li>
+                            <li class="level-item">
+                                <span class="level-code">5-3</span>
+                                <span class="level-name">SHIP OF FOOLS</span>
+                                <span class="level-tag">ОСНОВНОЙ</span>
+                            </li>
+                            <li class="level-item">
+                                <span class="level-code">5-4</span>
+                                <span class="level-name">LEVIATHAN</span>
+                                <span class="level-tag boss-tag">ФИНАЛЬНОЕ СТОЛКНОВЕНИЕ</span>
+                            </li>
+                        </ul>
+
+                        <div class="section-label" style="margin-top:0.9rem;">ПРИОРИТЕТНЫЕ ЦЕЛИ</div>
+                        <div class="boss-block">
+                            <div class="boss-class">// ЦЕЛЬ // КЛАСС: МОРСКОЙ КОЛОСС // УРОВЕНЬ 5-4</div>
+                            <div class="boss-name">LEVIATHAN — ЛЕВИАФАН</div>
+                            <div class="boss-desc">
+                                Крупнейшая сущность в игре — огромный морской исполин.
+                                Полностью переосмысливает формат финального противостояния:
+                                V1 перемещается внутри организма, уничтожая уязвимые узлы,
+                                затем действует снаружи, поражая критические точки оболочки.
+                                Не классическое противостояние — нелинейная навигационная задача под постоянным давлением.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══════════════════ СЛОЙ 6: ЕРЕСЬ ══════════════════ -->
+        <div class="tab-panel" id="tab-layer6">
+            <div class="layer-wrap">
+                <div class="layer-head">
+                    <div class="layer-num">6</div>
+                    <div class="layer-title-block">
+                        <div class="layer-name-en">HERESY</div>
+                        <div class="layer-name-ru">СЛОЙ VI — ЕРЕСЬ</div>
+                        <div class="layer-act">// АКТ I // INFINITE HYPERDEATH // ФИНАЛ //</div>
+                    </div>
+                    <div class="layer-status ls-done">ЗАВЕРШЁН</div>
+                </div>
+                <div class="layer-body">
+                    <div>
+                        <div class="section-label">ОПИСАНИЕ</div>
+                        <div class="layer-desc">
+                            Шестой слой и финал Акта I. Зона разрушенных убеждений и падших созданий.
+                            Тёмная пурпурная архитектура, монументальные строения в руинах, гигантские витражи.
+                            Именно здесь происходит полноценное столкновение с Гавриилом — судьёй нижнего уровня.
+                            После нейтрализации Гавриила V1 продолжает спуск — начинается Акт II.
+                            Один из наиболее технически насыщенных и скоростных финалов в игре.
+                        </div>
+                        <div class="facts-row" style="margin-top:0.9rem;">
+                            <div class="fact"><div class="fact-k">УРОВНЕЙ</div><div class="fact-v">2</div></div>
+                            <div class="fact"><div class="fact-k">ЦВЕТ</div><div class="fact-v">ПУРПУРНЫЙ</div></div>
+                            <div class="fact"><div class="fact-k">АКТ</div><div class="fact-v">I — ФИНАЛ</div></div>
+                            <div class="fact"><div class="fact-k">ДАНТЕ</div><div class="fact-v">КРУГ VI</div></div>
+                            <div class="fact"><div class="fact-k">ЗНАЧИМОСТЬ</div><div class="fact-v">КЛЮЧЕВАЯ</div></div>
+                            <div class="fact"><div class="fact-k">СТАТУС</div><div class="fact-v">ЗАВЕРШЁН</div></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="section-label">УРОВНИ</div>
+                        <ul class="level-list">
+                            <li class="level-item">
+                                <span class="level-code">6-1</span>
+                                <span class="level-name">CRY FOR THE WEEPER</span>
+                                <span class="level-tag">ОСНОВНОЙ</span>
+                            </li>
+                            <li class="level-item">
+                                <span class="level-code">6-2</span>
+                                <span class="level-name">AESTHETICS OF HATE</span>
+                                <span class="level-tag boss-tag">ФИНАЛ АКТ I</span>
+                            </li>
+                        </ul>
+
+                        <div class="section-label" style="margin-top:0.9rem;">ПРИОРИТЕТНЫЕ ЦЕЛИ</div>
+                        <div class="boss-block">
+                            <div class="boss-class">// ЦЕЛЬ // КЛАСС: АБСОЛЮТНЫЙ // УРОВЕНЬ 6-2 — ФИНАЛ АКТ I</div>
+                            <div class="boss-name">GABRIEL — СУДЬЯ НИЖНЕГО УРОВНЯ</div>
+                            <div class="boss-desc">
+                                Самопровозглашённый судья и карающая сущность нижнего уровня — первое полное столкновение.
+                                Высочайшая скорость перемещения. Арсенал воздействий: парируемые импульсы (белое свечение),
+                                непарируемые (красное свечение), серии клинков, телепортации.
+                                Убеждён, что именно он — законный исполнитель приговора.
+                                Поражение в этом слое заставит его пересмотреть методы и вернуться в Акте II с удвоенной интенсивностью.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══════════════════ СЛОЙ 7: РАЗДОР ══════════════════ -->
+        <div class="tab-panel" id="tab-layer7">
+            <div class="layer-wrap">
+                <div class="layer-head">
+                    <div class="layer-num">7</div>
+                    <div class="layer-title-block">
+                        <div class="layer-name-en">VIOLENCE</div>
+                        <div class="layer-name-ru">СЛОЙ VII — РАЗДОР</div>
+                        <div class="layer-act">// АКТ II // IMPERFECT HATRED //</div>
+                    </div>
+                    <div class="layer-status ls-partial">ЧАСТИЧНО ВЫПУЩЕН</div>
+                </div>
+                <div class="layer-body">
+                    <div>
+                        <div class="section-label">ОПИСАНИЕ</div>
+                        <div class="layer-desc">
+                            Седьмой слой открывает Акт II. Зона непрекращающихся столкновений.
+                            Архитектура контрастная: разрушенные городские конструкции и открытые пространства
+                            с резкими переходами от тесных арен к открытым зонам.
+                            Значительно сложнее предыдущих: оппоненты агрессивнее, арены запутаннее.
+                            V1 сталкивается с V2 повторно — прототип адаптировался и теперь использует полный арсенал.
+                            Гавриил также возвращается — в изменённом, более интенсивном состоянии.
+                        </div>
+                        <div class="facts-row" style="margin-top:0.9rem;">
+                            <div class="fact"><div class="fact-k">УРОВНЕЙ</div><div class="fact-v">4 + 1 СЕКРЕТ</div></div>
+                            <div class="fact"><div class="fact-k">ЦВЕТ</div><div class="fact-v">БИРЮЗОВЫЙ</div></div>
+                            <div class="fact"><div class="fact-k">АКТ</div><div class="fact-v">II</div></div>
+                            <div class="fact"><div class="fact-k">ДАНТЕ</div><div class="fact-v">КРУГ VII</div></div>
+                            <div class="fact"><div class="fact-k">ПРИОРИТЕТНЫХ ЦЕЛЕЙ</div><div class="fact-v">2</div></div>
+                            <div class="fact"><div class="fact-k">СТАТУС</div><div class="fact-v">ЧАСТИЧНО</div></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="section-label">УРОВНИ</div>
+                        <ul class="level-list">
+                            <li class="level-item">
+                                <span class="level-code">7-1</span>
+                                <span class="level-name">GARDEN OF FORKING PATHS</span>
+                                <span class="level-tag">ОСНОВНОЙ</span>
+                            </li>
+                            <li class="level-item">
+                                <span class="level-code">7-2</span>
+                                <span class="level-name">LIGHT UP THE NIGHT</span>
+                                <span class="level-tag boss-tag">СТОЛКНОВЕНИЕ V2</span>
+                            </li>
+                            <li class="level-item">
+                                <span class="level-code">7-3</span>
+                                <span class="level-name">NO SOUND, NO MEMORY</span>
+                                <span class="level-tag">ОСНОВНОЙ</span>
+                            </li>
+                            <li class="level-item">
+                                <span class="level-code">7-4</span>
+                                <span class="level-name">...AND HELL FOLLOWED</span>
+                                <span class="level-tag boss-tag">СТОЛКНОВЕНИЕ GABRIEL</span>
+                            </li>
+                            <li class="level-item">
+                                <span class="level-code">7-S</span>
+                                <span class="level-name">ANOTHER CASTLE</span>
+                                <span class="level-tag secret-tag">СЕКРЕТНЫЙ</span>
+                            </li>
+                        </ul>
+
+                        <div class="section-label" style="margin-top:0.9rem;">ПРИОРИТЕТНЫЕ ЦЕЛИ</div>
+                        <div class="boss-block">
+                            <div class="boss-class">// ЦЕЛЬ 1 // КЛАСС: ЗЕРКАЛО // УРОВЕНЬ 7-2 — ФИНАЛЬНОЕ СТОЛКНОВЕНИЕ</div>
+                            <div class="boss-name">V2 — ЗЕРКАЛЬНЫЙ ПРОТОТИП (ПОВТОРНО)</div>
+                            <div class="boss-desc">
+                                Второй и финальный контакт с V2. Прототип полностью адаптировался после первого поражения.
+                                Использует полный набор инструментов, включая рельсовый и ракетный модули.
+                                Тактика значительно более агрессивна и непредсказуема.
+                                После нейтрализации V2 выходит из строя окончательно.
+                            </div>
+                        </div>
+                        <div class="boss-block" style="margin-top:4px;">
+                            <div class="boss-class">// ЦЕЛЬ 2 // КЛАСС: АБСОЛЮТНЫЙ // УРОВЕНЬ 7-4 — ПОВТОРНОЕ СТОЛКНОВЕНИЕ</div>
+                            <div class="boss-name">GABRIEL — НЕНАВИСТЬ (IMPERFECT HATRED)</div>
+                            <div class="boss-desc">
+                                Гавриил возвращается в изменённом состоянии — потерпев поражение в Ереси, он переосмыслил подход.
+                                Новая фаза: расширенный арсенал, увеличенная скорость, новые паттерны воздействий.
+                                Считается одним из наиболее технически сложных противостояний во всей игре.
+                                Финал уровня 7-4 «...AND HELL FOLLOWED».
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══════════════════ СЛОИ 8–9: В РАЗРАБОТКЕ ══════════════════ -->
+        <div class="tab-panel" id="tab-layer89">
+            <div class="layer-wrap">
+                <div class="layer-head">
+                    <div class="layer-num">8–9</div>
+                    <div class="layer-title-block">
+                        <div class="layer-name-en">FRAUD &amp; TREACHERY</div>
+                        <div class="layer-name-ru">СЛОИ VIII–IX — ОБМАН И ПРЕДАТЕЛЬСТВО</div>
+                        <div class="layer-act">// АКТ II / АКТ III // СТАТУС: В РАЗРАБОТКЕ //</div>
+                    </div>
+                    <div class="layer-status ls-wip">В РАЗРАБОТКЕ</div>
+                </div>
+                <div class="layer-body single-col">
+                    <div class="wip-notice">
+                        <span class="wip-icon">?</span>
+                        <div class="wip-title">ДАННЫЕ НЕДОСТУПНЫ — В СТАДИИ РАЗРАБОТКИ</div>
+                        <div class="wip-sub">
+                            Слои VIII (Обман / Fraud) и IX (Предательство / Treachery) находятся в активной разработке.<br>
+                            Конкретные уровни, сущности и приоритетные цели не анонсированы.<br>
+                            По структуре «Божественной Комедии»: Круг VIII — многоуровневые «Злые Щели» (Malebolge),
+                            Круг IX — самый нижний и наиболее экстремальный сектор нижнего уровня.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layer-wrap" style="border-color:#1e1e1e; opacity:0.5; margin-top:0.8rem;">
+                <div class="layer-head">
+                    <div class="layer-num" style="font-size:2rem; color:#222;">III</div>
+                    <div class="layer-title-block">
+                        <div class="layer-name-en" style="color:#333; font-size:1.4rem;">ACT III — IN THE HEART OF THE STORM</div>
+                        <div class="layer-name-ru">АКТ III — НЕ АНОНСИРОВАН</div>
+                    </div>
+                    <div class="layer-status ls-wip">TBD</div>
+                </div>
+                <div style="padding:0.8rem 1.2rem; font-size:0.65rem; color:#2a2a2a;">
+                    Данных нет. Ожидается после завершения Акта II.
+                </div>
+            </div>
+        </div>
+
+        <!-- ФУТЕР -->
+        <div class="footer-term">
+            <div class="footer-logo">V1 // SECTORS DATABASE</div>
+            <div>// НИЖНИЙ УРОВЕНЬ // КАРТА СЛОЁВ //</div>
+            <div>// ИСТОЧНИК: ULTRAKILL WIKI // FANDOM //</div>
+        </div>
+
+    </div><!-- /terminal-content -->
+</div><!-- /terminal -->
 
 <script>
-var THEME_LABELS = {
-    dark:'DARK // ORIGINAL', v1:'V1 // MACHINE // BLUE',
-    v2:'V2 // MIRROR // RED', gabriel:'GABRIEL // JUDGE // GOLD'
-};
-function setTheme(t) {
-    document.body.setAttribute('data-theme', t);
-    document.querySelectorAll('.tp-btn').forEach(function(btn) {
-        btn.classList.toggle('active', btn.dataset.tv === t);
+function showTab(id, btn) {
+    // Скрыть все панели
+    document.querySelectorAll('.tab-panel').forEach(function(p) {
+        p.classList.remove('active');
     });
-    var lbl = document.getElementById('tpCurrent');
-    if (lbl) lbl.textContent = 'АКТИВНА: ' + THEME_LABELS[t];
-    try { localStorage.setItem('uk_theme', t); } catch(e) {}
+    // Убрать active у кнопок
+    document.querySelectorAll('.tab-btn').forEach(function(b) {
+        b.classList.remove('active');
+    });
+    // Показать нужную панель
+    var panel = document.getElementById('tab-' + id);
+    if (panel) panel.classList.add('active');
+    btn.classList.add('active');
 }
+
+// Тема из localStorage
 (function() {
-    try { var s = localStorage.getItem('uk_theme'); if (s && THEME_LABELS[s]) setTheme(s); } catch(e) {}
-})();
-
-/* Плавный скролл к якорю */
-document.querySelectorAll('a[href^="#"]').forEach(function(a) {
-    a.addEventListener('click', function(e) {
-        var target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-            e.preventDefault();
-            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-    });
-});
-
-/* Canvas фон */
-(function() {
-    var CV  = document.getElementById('theme-bg-canvas');
-    var CTX = CV.getContext('2d');
-    var AT  = 'dark', S = {};
-    function r(a,b){return a+Math.random()*(b-a);}
-    function ri(a,b){return Math.floor(r(a,b+1));}
-    function resize(){CV.width=window.innerWidth;CV.height=window.innerHeight;}
-    window.addEventListener('resize',function(){resize();init(AT);});
-    resize();
-
-    function initV2(){
-        S={shards:[],glitchBars:[],glitchT:ri(10,40),staticPts:[],cracks:[],crackT:ri(80,200),rgbLife:0,shocks:[],swT:ri(50,180),vigPh:0,noiseF:0,textFrag:[],textT:ri(60,180)};
-        for(var i=0;i<28;i++)S.shards.push(mkShard());
-        for(var j=0;j<220;j++)S.staticPts.push({x:r(0,CV.width),y:r(0,CV.height),rr:r(.4,1.8),al:r(.01,.055),bl:r(0,Math.PI*2),spd:r(.04,.15)});
-        for(var c=0;c<6;c++)S.cracks.push(mkCrack());
-        for(var tf=0;tf<8;tf++)S.textFrag.push(mkTextFrag());
-    }
-    function mkShard(){var cx=r(15,CV.width/2-10),cy=r(15,CV.height-15),sz=r(14,68),pts=[],n=ri(3,7);for(var i=0;i<n;i++){var ang=(i/n)*Math.PI*2+r(-.55,.55);pts.push({x:cx+Math.cos(ang)*sz*r(.4,1.1),y:cy+Math.sin(ang)*sz*r(.4,1.1)});}return{pts:pts,cx:cx,cy:cy,vy:r(-.12,.12),vx:r(-.06,.06),rot:r(0,Math.PI*2),rotV:r(-.007,.007),al:r(.04,.16),ph:r(0,Math.PI*2),spd:r(.012,.03),life:r(.7,1),decay:r(.0004,.0018)};}
-    function mkCrack(){var sx=CV.width/2+r(-100,100),sy=r(40,CV.height-40),pts=[{x:sx,y:sy}],cx=sx,cy=sy;for(var i=0;i<ri(4,11);i++){cx+=r(-100,100);cy+=r(-70,90);cx=Math.max(8,Math.min(CV.width-8,cx));cy=Math.max(8,Math.min(CV.height-8,cy));pts.push({x:cx,y:cy});}return{pts:pts,al:r(.02,.07),ph:r(0,Math.PI*2),phs:r(.007,.024),life:r(.7,1.5),decay:r(.0007,.0028)};}
-    function mkTextFrag(){var FR=['NULL','ERR','V2','MIRROR','0xDEAD','CORRUPT'];return{x:r(20,CV.width/2-20),y:r(20,CV.height-20),txt:FR[ri(0,FR.length-1)],al:r(.02,.08),ph:r(0,Math.PI*2),phs:r(.006,.02),life:r(.8,1.6),decay:r(.0006,.002)};}
-    function drawV2(){
-        CTX.clearRect(0,0,CV.width,CV.height);var W=CV.width,H=CV.height;
-        S.noiseF++;S.vigPh+=.009;var va=.04+.02*Math.sin(S.vigPh);
-        var vg=CTX.createRadialGradient(W/2,H/2,0,W/2,H/2,Math.max(W,H)*.74);
-        vg.addColorStop(0,'rgba(255,0,0,0)');vg.addColorStop(.65,'rgba(130,0,0,'+(va*.4)+')');vg.addColorStop(1,'rgba(80,0,0,'+va+')');
-        CTX.fillStyle=vg;CTX.fillRect(0,0,W,H);
-        if(S.noiseF%3===0){S.staticPts.forEach(function(pt){pt.bl+=pt.spd;var a=pt.al*(.3+.7*Math.abs(Math.sin(pt.bl)));CTX.beginPath();CTX.arc(pt.x,pt.y,pt.rr,0,Math.PI*2);CTX.fillStyle='rgba(255,24,24,'+a+')';CTX.fill();});}
-        S.crackT--;if(S.crackT<=0){S.crackT=ri(100,240);if(S.cracks.length<12)S.cracks.push(mkCrack());}
-        S.cracks=S.cracks.filter(function(c){return c.life>0;});
-        S.cracks.forEach(function(cr){cr.life-=cr.decay;cr.ph+=cr.phs;var a=cr.al*cr.life*(.55+.45*Math.sin(cr.ph));CTX.strokeStyle='rgba(255,24,24,'+a+')';CTX.lineWidth=.88;CTX.beginPath();cr.pts.forEach(function(pt,i){i?CTX.lineTo(pt.x,pt.y):CTX.moveTo(pt.x,pt.y);});CTX.stroke();});
-        S.glitchT--;if(S.glitchT<=0){S.glitchT=ri(6,44);var nb=ri(1,4);for(var nb2=0;nb2<nb&&S.glitchBars.length<12;nb2++){S.glitchBars.push({y:r(0,H),h:r(1,12),life:r(.2,.8),al:r(.03,.1)});}}
-        S.glitchBars=S.glitchBars.filter(function(b){return b.life>0;});
-        S.glitchBars.forEach(function(b){b.life-=.05;CTX.fillStyle='rgba(255,24,24,'+(b.al*b.life)+')';CTX.fillRect(0,b.y,W,b.h);});
-        S.shards.forEach(function(sh,idx){sh.ph+=sh.spd;sh.life-=sh.decay;if(sh.life<=0){S.shards[idx]=mkShard();return;}var a=sh.al*sh.life*(.46+.54*Math.sin(sh.ph));CTX.beginPath();CTX.moveTo(sh.pts[0].x,sh.pts[0].y);for(var p=1;p<sh.pts.length;p++)CTX.lineTo(sh.pts[p].x,sh.pts[p].y);CTX.closePath();CTX.strokeStyle='rgba(255,24,24,'+a+')';CTX.lineWidth=.92;CTX.stroke();});
-    }
-
-    function initGabriel(){
-        S={feathers:[],halos:[],rays:[],motes:[],mandPh:0,ambPh:0,inscriptions:[],inscT:ri(80,200)};
-        for(var i=0;i<50;i++)S.feathers.push(newFeather(true));
-        for(var h=0;h<9;h++)S.halos.push({x:r(60,CV.width-60),y:r(60,CV.height-60),rr:r(25,100),al:r(.03,.08),ph:r(0,Math.PI*2),phs:r(.007,.022)});
-        for(var rr=0;rr<14;rr++)S.rays.push({angle:r(-.82,.82),hw:r(12,80),len:r(CV.height*.3,CV.height),al:r(.015,.055),ph:r(0,Math.PI*2),phs:r(.004,.015)});
-        for(var m=0;m<85;m++)S.motes.push(newMote(true));
-        for(var ins=0;ins<6;ins++)S.inscriptions.push(newInscription());
-    }
-    function newFeather(rY){return{x:r(-90,CV.width+90),y:rY?r(-300,CV.height):r(-240,-10),vy:r(.15,.65),vx:r(-.12,.12),len:r(16,56),sw:r(0,Math.PI*2),sws:r(.009,.028),al:r(.052,.18)};}
-    function newMote(rY){return{x:r(0,CV.width),y:rY?r(0,CV.height):CV.height+20,rr:r(.7,3.2),vy:r(-.38,-.07),vx:r(-.07,.07),al:r(.05,.2),ph:r(0,Math.PI*2),phs:r(.02,.065)};}
-    function newInscription(){var TX=['JUDICIUM','LUX AETERNA','CAELUM','SANCTUS','VIRTUS'];return{x:r(30,CV.width*.45),y:r(30,CV.height*.8),txt:TX[ri(0,TX.length-1)],al:r(.015,.055),ph:r(0,Math.PI*2),phs:r(.005,.016),life:r(.8,1.8),decay:r(.0004,.0015),size:ri(9,13)};}
-    function drawGabriel(){
-        CTX.clearRect(0,0,CV.width,CV.height);var W=CV.width,H=CV.height,cx=W/2,cy=H/2;
-        S.ambPh+=.008;S.mandPh+=.0036;var ambA=.022+.01*Math.sin(S.ambPh);
-        var ag=CTX.createRadialGradient(cx,-H*.1,0,cx,-H*.1,H*1.3);
-        ag.addColorStop(0,'rgba(200,152,30,'+ambA+')');ag.addColorStop(1,'rgba(200,152,30,0)');
-        CTX.fillStyle=ag;CTX.fillRect(0,0,W,H);
-        S.rays.forEach(function(rr){rr.ph+=rr.phs;var a=rr.al*(.4+.6*Math.sin(rr.ph));CTX.save();CTX.translate(cx,-50);CTX.rotate(rr.angle);var g=CTX.createLinearGradient(0,0,0,rr.len);g.addColorStop(0,'rgba(200,152,30,'+a+')');g.addColorStop(1,'rgba(200,152,30,0)');CTX.beginPath();CTX.moveTo(-rr.hw*.14,0);CTX.lineTo(rr.hw*.14,0);CTX.lineTo(rr.hw*1.88,rr.len);CTX.lineTo(-rr.hw*1.88,rr.len);CTX.closePath();CTX.fillStyle=g;CTX.fill();CTX.restore();});
-        S.halos.forEach(function(hh){hh.ph+=hh.phs;var a=hh.al*(.44+.56*Math.sin(hh.ph));CTX.beginPath();CTX.arc(hh.x,hh.y,hh.rr,0,Math.PI*2);CTX.strokeStyle='rgba(200,152,30,'+a+')';CTX.lineWidth=1.5;CTX.stroke();});
-        S.motes.forEach(function(m,idx){m.ph+=m.phs;m.y+=m.vy;if(m.y<-28){S.motes[idx]=newMote(false);return;}var a=m.al*(.36+.64*Math.abs(Math.sin(m.ph)));CTX.beginPath();CTX.arc(m.x,m.y,m.rr,0,Math.PI*2);CTX.fillStyle='rgba(225,182,62,'+a+')';CTX.fill();});
-        S.inscT--;if(S.inscT<=0){S.inscT=ri(70,180);if(S.inscriptions.length<10)S.inscriptions.push(newInscription());}
-        S.inscriptions=S.inscriptions.filter(function(ins){return ins.life>0;});
-        S.inscriptions.forEach(function(ins){ins.life-=ins.decay;ins.ph+=ins.phs;var a=ins.al*ins.life*(.48+.52*Math.sin(ins.ph));if(a<.003)return;CTX.font=ins.size+'px "Share Tech Mono",monospace';CTX.fillStyle='rgba(200,152,30,'+a+')';CTX.fillText(ins.txt,ins.x,ins.y);});
-        S.feathers.forEach(function(f,idx){f.sw+=f.sws;f.y+=f.vy;f.x+=f.vx;if(f.y>CV.height+110){S.feathers[idx]=newFeather(false);return;}CTX.save();CTX.translate(f.x,f.y);CTX.beginPath();CTX.moveTo(0,-f.len*.5);CTX.lineTo(0,f.len*.5);CTX.strokeStyle='rgba(200,152,30,'+f.al+')';CTX.lineWidth=.9;CTX.stroke();CTX.restore();});
-    }
-
-    function loop(){
-        switch(AT){case 'v2':drawV2();break;case 'gabriel':drawGabriel();break;default:CTX.clearRect(0,0,CV.width,CV.height);break;}
-        requestAnimationFrame(loop);
-    }
-    function init(t){AT=t;S={};switch(t){case 'v2':initV2();break;case 'gabriel':initGabriel();break;}}
-    var _orig=window.setTheme;
-    window.setTheme=function(t){_orig(t);init(t);};
-    var boot='dark';try{boot=localStorage.getItem('uk_theme')||'dark';}catch(e){}
-    init(boot);loop();
+    try {
+        var t = localStorage.getItem('uk_theme');
+        // Применяем только если есть — страница минималистична, тема не обязательна
+    } catch(e) {}
 })();
 </script>
 </body>
