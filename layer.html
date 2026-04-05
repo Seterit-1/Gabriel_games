@@ -6,237 +6,388 @@
     <title>ULTRAKILL // СЕКТОРЫ — SYSTEM DATABASE</title>
     <link href="https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+        /* ═══════════════════════════════════════
+           TERMINAL BASE — CIRCUIT / MONOCHROME
+        ═══════════════════════════════════════ */
         :root {
-            --acc:#ff2020; --acc-dim:#8a0000; --acc-glow:rgba(255,32,32,0.35);
-            --body-bg:#060606; --panel-bg:#0b0b0b; --panel-hd:#0f0f0f; --panel-bd:#222222;
-            --text-p:#e8e8e8; --text-1:#555555; --text-2:#333333; --text-3:#282828; --text-4:#1e1e1e;
-            --ticker-bg:#000000; --read-bg:#050505;
-            --c-gold:#ffd166; --c-blue:#5599ff; --c-green:#22ff88; --c-pink:#ff44aa; --c-orange:#ff8833;
-            --grey-border:#444444; --grey-bg:#111111; --grey-head:#181818;
+            --bg:#000; --bg2:#080808; --bg3:#0f0f0f;
+            --border:#fff; --border-dim:#555; --border-faint:#2a2a2a;
+            --text:#fff; --text-dim:#aaa; --text-faint:#555; --text-ghost:#2a2a2a;
+            --red:#ff2020; --red-glow:rgba(255,32,32,.4);
         }
-        body[data-theme="dark"]{--acc:#ff2020;--acc-dim:#8a0000;--acc-glow:rgba(255,32,32,.35);--body-bg:#060606;--panel-bg:#0b0b0b;--panel-hd:#0f0f0f;--panel-bd:#222;--text-p:#e8e8e8;--text-1:#555;--text-2:#333;--text-3:#282828;--text-4:#1e1e1e;--ticker-bg:#000;--read-bg:#050505;--c-gold:#ffd166;--c-blue:#5599ff;--c-green:#22ff88;--c-pink:#ff44aa;--c-orange:#ff8833;--grey-border:#444;--grey-bg:#111;--grey-head:#181818;}
-        body[data-theme="v1"]{--acc:#3a99ff;--acc-dim:#003399;--acc-glow:rgba(58,153,255,.42);--body-bg:#030912;--panel-bg:#060d1c;--panel-hd:#080f22;--panel-bd:#102244;--text-p:#b8d0ff;--text-1:#3a5580;--text-2:#253858;--text-3:#162240;--text-4:#0f1830;--ticker-bg:#020509;--read-bg:#040810;--c-gold:#44aaff;--c-blue:#77ccff;--c-green:#33bbff;--c-pink:#6688ff;--c-orange:#4499ee;--grey-border:#224466;--grey-bg:#060d1c;--grey-head:#081222;}
-        body[data-theme="v2"]{--acc:#ff1818;--acc-dim:#aa0000;--acc-glow:rgba(255,24,24,.52);--body-bg:#070202;--panel-bg:#0d0404;--panel-hd:#110505;--panel-bd:#2a0606;--text-p:#ffc8c8;--text-1:#883333;--text-2:#661818;--text-3:#3a0d0d;--text-4:#280808;--ticker-bg:#040101;--read-bg:#060202;--c-gold:#ff8855;--c-blue:#ff5544;--c-green:#ff4422;--c-pink:#ff2266;--c-orange:#ff7722;--grey-border:#442222;--grey-bg:#0d0404;--grey-head:#150606;}
-        body[data-theme="gabriel"]{--acc:#c8981e;--acc-dim:#6a5000;--acc-glow:rgba(200,152,30,.32);--body-bg:#f0ebe0;--panel-bg:#fafaf4;--panel-hd:#edead8;--panel-bd:#c8b880;--text-p:#1a1508;--text-1:#7a6a40;--text-2:#a09060;--text-3:#bfb080;--text-4:#d0c898;--ticker-bg:#e5dfc8;--read-bg:#f5f0e0;--c-gold:#c8981e;--c-blue:#3366aa;--c-green:#227744;--c-pink:#aa3366;--c-orange:#bb5522;--grey-border:#c8b880;--grey-bg:#f5f0e0;--grey-head:#edead8;}
 
-        body[data-layer="prelude"]{--acc:#ff6600;--acc-dim:#7a2e00;--acc-glow:rgba(255,102,0,.38);--body-bg:#060402;--panel-bg:#0c0804;--panel-hd:#100b05;--panel-bd:#2a1400;--text-p:#e8d0b0;--text-1:#664422;--text-2:#3d2810;--text-3:#28180a;--text-4:#1c1008;--ticker-bg:#040301;--read-bg:#070502;--c-gold:#ff9900;--c-blue:#cc8833;--c-green:#88aa33;--c-pink:#ff6622;--c-orange:#ff6600;--grey-border:#3a1c08;--grey-bg:#0c0804;--grey-head:#140e06;}
-        body[data-layer="l1"]{--acc:#88aaff;--acc-dim:#1a3380;--acc-glow:rgba(136,170,255,.4);--body-bg:#020510;--panel-bg:#050c20;--panel-hd:#07102c;--panel-bd:#112244;--text-p:#c0d0ff;--text-1:#3a5588;--text-2:#263560;--text-3:#162040;--text-4:#101830;--ticker-bg:#020408;--read-bg:#040818;--c-gold:#aaccff;--c-blue:#88aaff;--c-green:#66ccff;--c-pink:#aaaaff;--c-orange:#88aacc;--grey-border:#1a2e60;--grey-bg:#050c20;--grey-head:#07102c;}
-        body[data-layer="l2"]{--acc:#ff44cc;--acc-dim:#7a0055;--acc-glow:rgba(255,68,204,.42);--body-bg:#080208;--panel-bg:#100210;--panel-hd:#140316;--panel-bd:#2a0428;--text-p:#f0c0e8;--text-1:#882266;--text-2:#5a1244;--text-3:#380a2c;--text-4:#26061e;--ticker-bg:#050105;--read-bg:#090209;--c-gold:#ffaacc;--c-blue:#cc44ff;--c-green:#ff22bb;--c-pink:#ff44cc;--c-orange:#ff88aa;--grey-border:#3c0a34;--grey-bg:#100210;--grey-head:#160316;}
-        /* ЧРЕВО (l3) перекрашен в красный */
-        body[data-layer="l3"]{--acc:#ff2020;--acc-dim:#8a0000;--acc-glow:rgba(255,32,32,.42);--body-bg:#080002;--panel-bg:#100002;--panel-hd:#160004;--panel-bd:#2a0008;--text-p:#f0c0c0;--text-1:#882222;--text-2:#5a1212;--text-3:#380808;--text-4:#260404;--ticker-bg:#050001;--read-bg:#090002;--c-gold:#ff8888;--c-blue:#cc2222;--c-green:#ff2244;--c-pink:#ff2020;--c-orange:#ff5522;--grey-border:#3c0a0a;--grey-bg:#100002;--grey-head:#160304;}
-        body[data-layer="l4"]{--acc:#ffc800;--acc-dim:#7a5a00;--acc-glow:rgba(255,200,0,.4);--body-bg:#090700;--panel-bg:#120e00;--panel-hd:#181200;--panel-bd:#2e2200;--text-p:#f8e8a0;--text-1:#806600;--text-2:#5a4800;--text-3:#382e00;--text-4:#261e00;--ticker-bg:#060500;--read-bg:#0a0800;--c-gold:#ffc800;--c-blue:#ddaa00;--c-green:#aacc00;--c-pink:#ffaa00;--c-orange:#ff9900;--grey-border:#3a2c00;--grey-bg:#120e00;--grey-head:#181200;}
-        body[data-layer="l5"]{--acc:#ff8800;--acc-dim:#7a3c00;--acc-glow:rgba(255,136,0,.4);--body-bg:#040308;--panel-bg:#08060e;--panel-hd:#0b0914;--panel-bd:#1e1530;--text-p:#ddc8a0;--text-1:#664422;--text-2:#3e2a18;--text-3:#28180e;--text-4:#1c1008;--ticker-bg:#020205;--read-bg:#050408;--c-gold:#ffaa44;--c-blue:#4466aa;--c-green:#aa8844;--c-pink:#ff6644;--c-orange:#ff8800;--grey-border:#2a1e44;--grey-bg:#08060e;--grey-head:#0c0a14;}
-        body[data-layer="l6"]{--acc:#cc44ff;--acc-dim:#5a0080;--acc-glow:rgba(204,68,255,.42);--body-bg:#050008;--panel-bg:#0a0012;--panel-hd:#0e0018;--panel-bd:#1e0030;--text-p:#e0b8ff;--text-1:#884499;--text-2:#5a1a6e;--text-3:#380a48;--text-4:#260635;--ticker-bg:#030006;--read-bg:#07000e;--c-gold:#ffc800;--c-blue:#aa66ff;--c-green:#dd88ff;--c-pink:#ff44dd;--c-orange:#cc88ff;--grey-border:#300048;--grey-bg:#0a0012;--grey-head:#0e0018;}
-        body[data-layer="l7"]{--acc:#00ccbb;--acc-dim:#006655;--acc-glow:rgba(0,204,187,.4);--body-bg:#020808;--panel-bg:#030f0e;--panel-hd:#041412;--panel-bd:#0a2a26;--text-p:#aaf0e8;--text-1:#226655;--text-2:#143e38;--text-3:#0c2824;--text-4:#081c1a;--ticker-bg:#020505;--read-bg:#030a09;--c-gold:#44ddcc;--c-blue:#00aacc;--c-green:#00ccbb;--c-pink:#00eedd;--c-orange:#44bbaa;--grey-border:#0e302c;--grey-bg:#030f0e;--grey-head:#041614;}
-        body[data-layer="l89"]{--acc:#cc0000;--acc-dim:#4a0000;--acc-glow:rgba(204,0,0,.38);--body-bg:#040000;--panel-bg:#080000;--panel-hd:#0c0000;--panel-bd:#1e0000;--text-p:#e0a0a0;--text-1:#662222;--text-2:#441010;--text-3:#2c0a0a;--text-4:#1e0606;--ticker-bg:#030000;--read-bg:#060000;--c-gold:#ff4444;--c-blue:#882222;--c-green:#aa2222;--c-pink:#ff2222;--c-orange:#dd2222;--grey-border:#2e0a0a;--grey-bg:#080000;--grey-head:#0c0000;}
+        body {
+            background:var(--bg);
+            color:var(--text);
+            font-family:'Share Tech Mono','Fira Code',monospace;
+            min-height:100vh;
+            overflow-x:hidden;
+            position:relative;
+        }
 
-        body{background:var(--body-bg);color:var(--text-p);font-family:'Share Tech Mono','Fira Code',monospace;min-height:100vh;overflow-x:hidden;transition:background .3s,color .3s;}
-        body::after{content:'';position:fixed;top:0;left:0;width:100%;height:100%;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.12) 2px,rgba(0,0,0,.12) 4px);pointer-events:none;z-index:9999;}
-        body[data-theme="gabriel"]::after{background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.03) 2px,rgba(0,0,0,.03) 4px);}
+        /* Blueprint circuit grid */
+        body::before {
+            content:'';
+            position:fixed; inset:0; z-index:0;
+            background-image:
+                linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),
+                linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px),
+                radial-gradient(circle,rgba(255,255,255,.055) 1px,transparent 1px);
+            background-size:60px 60px,60px 60px,60px 60px;
+            background-position:0 0,0 0,30px 30px;
+            pointer-events:none;
+        }
+        /* Circuit perimeter lines */
+        body::after {
+            content:'';
+            position:fixed; inset:0; z-index:0;
+            background-image:
+                repeating-linear-gradient(0deg,transparent,transparent 119px,rgba(255,255,255,.022) 119px,rgba(255,255,255,.022) 120px),
+                repeating-linear-gradient(90deg,transparent,transparent 179px,rgba(255,255,255,.018) 179px,rgba(255,255,255,.018) 180px);
+            pointer-events:none;
+        }
 
-        /* ── MODAL ── */
-        .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:99999;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(3px);}
-        .modal-overlay.hidden{display:none;}
-        .modal-box{background:var(--panel-bg);border:1px solid var(--panel-bd);border-top:3px solid var(--acc);max-width:500px;width:92%;padding:2rem;position:relative;}
-        .modal-eyebrow{font-size:.52rem;color:var(--acc);letter-spacing:.3em;text-transform:uppercase;margin-bottom:.5rem;}
-        .modal-title{font-family:'VT323',monospace;font-size:2.6rem;color:var(--text-p);margin-bottom:1rem;line-height:1.1;letter-spacing:2px;}
-        .modal-warn{border:1px solid var(--c-gold);background:rgba(255,209,102,.07);padding:.75rem 1rem;margin-bottom:1rem;display:flex;gap:.8rem;align-items:flex-start;}
-        .modal-warn-icon{font-size:1.4rem;flex-shrink:0;line-height:1.2;color:var(--c-gold);}
-        .modal-warn-text{font-size:.64rem;color:var(--c-gold);line-height:1.8;letter-spacing:.04em;}
-        .modal-desc{font-size:.68rem;color:var(--text-1);line-height:1.85;margin-bottom:1.4rem;}
-        .modal-btns{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;}
-        .modal-btn{background:transparent;border:1px solid var(--grey-border);padding:.95rem 1rem;cursor:pointer;font-family:'Share Tech Mono',monospace;font-size:.66rem;color:var(--text-p);letter-spacing:.08em;text-transform:uppercase;text-align:center;transition:.15s;line-height:1.6;}
-        .modal-btn:hover{border-color:var(--acc);background:rgba(255,32,32,.07);color:var(--acc);}
-        .modal-btn.primary{border-color:var(--acc);color:var(--acc);}
-        .modal-btn.primary:hover{background:rgba(255,32,32,.14);}
-        .modal-btn-sub{font-size:.5rem;color:var(--text-2);display:block;margin-top:.3rem;letter-spacing:.06em;}
-        .auto-badge{display:none;font-size:.48rem;color:var(--acc);letter-spacing:.18em;text-transform:uppercase;margin-top:.4rem;border:1px solid var(--acc);padding:.15rem .4rem;align-self:flex-start;}
-        .auto-badge.visible{display:inline-block;}
+        /* Scanlines overlay */
+        .scanlines {
+            position:fixed; inset:0; z-index:1;
+            background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,.16) 3px,rgba(0,0,0,.16) 4px);
+            pointer-events:none;
+        }
 
-        .theme-bg-wrap{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden;}
-        .bg-dark{position:absolute;inset:0;}
-        .bg-dark-grid{position:absolute;inset:0;background-image:linear-gradient(60deg,transparent 49.5%,rgba(255,32,32,.025) 50%,transparent 50.5%),linear-gradient(120deg,transparent 49.5%,rgba(255,32,32,.018) 50%,transparent 50.5%),linear-gradient(0deg,transparent 49.5%,rgba(255,32,32,.015) 50%,transparent 50.5%);background-size:52px 90px;}
-        .bg-dark-scan{position:absolute;left:0;right:0;height:110px;top:-110px;background:linear-gradient(to bottom,transparent,rgba(255,32,32,.028) 50%,transparent);animation:darkScan 6s linear infinite;}
-        @keyframes darkScan{from{transform:translateY(0);}to{transform:translateY(calc(100vh + 110px));}}
+        .page { max-width:1400px; margin:0 auto; padding:0 1.5rem 3rem; position:relative; z-index:10; }
 
-        .page{max-width:1380px;margin:0 auto;padding:0 1rem 2rem;position:relative;z-index:10;}
-        .site-header{border-bottom:2px solid var(--acc);padding:1.4rem 0 1rem;transition:border-color .3s;}
-        .header-top{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1rem;}
-        .logo-eyebrow{font-size:.6rem;color:var(--acc);letter-spacing:.35em;text-transform:uppercase;margin-bottom:.25rem;}
-        .logo-main{font-family:'VT323',monospace;font-size:4rem;line-height:1;color:var(--text-p);letter-spacing:3px;text-shadow:0 0 24px var(--acc-glow),2px 2px 0 var(--acc-dim);}
-        .logo-main .v1{color:var(--acc);text-shadow:0 0 40px var(--acc),0 0 80px var(--acc-glow);}
-        .logo-tagline{font-size:.65rem;color:var(--text-2);letter-spacing:.2em;text-transform:uppercase;margin-top:.4rem;}
-        @keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
-        .cur{display:inline-block;width:7px;height:13px;background:var(--acc);vertical-align:middle;animation:blink 1s step-end infinite;margin-left:2px;}
+        /* ═══════════════════════════════════════
+           MODAL
+        ═══════════════════════════════════════ */
+        .modal-overlay {
+            position:fixed; inset:0;
+            background:rgba(0,0,0,.93);
+            z-index:99999;
+            display:flex; align-items:center; justify-content:center;
+        }
+        .modal-overlay.hidden { display:none; }
+        .modal-box { background:#000; border:2px solid #fff; max-width:500px; width:92%; padding:0; }
+        .modal-header-bar {
+            background:#fff; padding:.55rem 1rem;
+            font-family:'VT323',monospace; font-size:1.15rem; color:#000;
+            letter-spacing:.15em; text-transform:uppercase;
+        }
+        .modal-body { padding:1.6rem; }
+        .modal-title { font-family:'VT323',monospace; font-size:2.8rem; color:#fff; margin-bottom:.8rem; letter-spacing:3px; line-height:1.1; }
+        .modal-warn { border:1px solid #fff; padding:.65rem .9rem; margin-bottom:.8rem; font-size:.62rem; color:#aaa; line-height:1.75; letter-spacing:.04em; }
+        .modal-desc { font-size:.66rem; color:#555; line-height:1.85; margin-bottom:1.2rem; }
+        .modal-btns { display:grid; grid-template-columns:1fr 1fr; gap:.5rem; }
+        .modal-btn {
+            background:#000; border:2px solid #fff; padding:1rem;
+            cursor:pointer; font-family:'Share Tech Mono',monospace; font-size:.65rem;
+            color:#fff; letter-spacing:.08em; text-transform:uppercase; transition:.12s; text-align:center;
+        }
+        .modal-btn:hover { background:#fff; color:#000; }
+        .modal-btn-sub { font-size:.48rem; color:#555; display:block; margin-top:.3rem; }
+        .modal-btn:hover .modal-btn-sub { color:#333; }
 
-        .theme-panel{background:var(--panel-bg);border:1px solid var(--panel-bd);border-top:2px solid var(--acc);padding:.75rem .95rem;min-width:230px;transition:border-color .3s,background .3s;}
-        .tp-head{font-size:.52rem;color:var(--text-2);letter-spacing:.25em;text-transform:uppercase;margin-bottom:.55rem;display:flex;align-items:center;gap:.4rem;}
-        .tp-head::before{content:'';width:5px;height:5px;flex-shrink:0;background:var(--acc);box-shadow:0 0 5px var(--acc);}
-        .tp-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px;}
-        .tp-btn{background:transparent;border:1px solid var(--text-4);padding:.45rem .6rem;cursor:pointer;display:flex;align-items:center;gap:7px;font-family:'Share Tech Mono',monospace;color:var(--text-p);transition:.16s;text-align:left;position:relative;overflow:hidden;}
-        .tp-btn::after{content:'';position:absolute;bottom:0;left:0;width:0;height:2px;transition:width .18s;}
-        .tp-btn:hover::after,.tp-btn.active::after{width:100%;}
-        .tp-swatch{width:9px;height:9px;flex-shrink:0;}
-        .t-dark .tp-swatch{background:#aaa;}.t-v1 .tp-swatch{background:#3a99ff;}.t-v2 .tp-swatch{background:#ff1818;}.t-gabriel .tp-swatch{background:#c8981e;}
-        .t-dark::after{background:#aaa;}.t-v1::after{background:#3a99ff;}.t-v2::after{background:#ff1818;}.t-gabriel::after{background:#c8981e;}
-        .tp-btn.t-dark:hover,.tp-btn.t-dark.active{border-color:#aaa;background:rgba(180,180,180,.07);}
-        .tp-btn.t-v1:hover,.tp-btn.t-v1.active{border-color:#3a99ff;background:rgba(58,153,255,.09);}
-        .tp-btn.t-v2:hover,.tp-btn.t-v2.active{border-color:#ff1818;background:rgba(255,24,24,.09);}
-        .tp-btn.t-gabriel:hover,.tp-btn.t-gabriel.active{border-color:#c8981e;background:rgba(200,152,30,.09);}
-        .tp-info{display:flex;flex-direction:column;gap:1px;}
-        .tp-name{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;}
-        .tp-sub{font-size:.48rem;color:var(--text-1);letter-spacing:.1em;text-transform:uppercase;}
-        .tp-current{font-size:.47rem;color:var(--text-3);letter-spacing:.15em;text-transform:uppercase;text-align:right;margin-top:.45rem;}
-        body.auto-mode .tp-btn{opacity:.45;pointer-events:none;}
-        body.auto-mode .tp-head::before{background:var(--c-green);box-shadow:0 0 5px var(--c-green);}
+        /* ═══════════════════════════════════════
+           HEADER — TERMINAL STYLE
+        ═══════════════════════════════════════ */
+        .site-header { border-bottom:2px solid #fff; padding:1.5rem 0 1rem; }
+        .header-inner { display:flex; justify-content:space-between; align-items:flex-start; gap:1.5rem; flex-wrap:wrap; }
+        .logo-block { flex:1; }
+        .logo-sys-line { font-size:.55rem; color:#444; letter-spacing:.25em; text-transform:uppercase; margin-bottom:.4rem; }
+        .logo-main {
+            font-family:'VT323',monospace; font-size:5rem; line-height:.9;
+            color:#fff; letter-spacing:4px;
+            text-shadow:3px 3px 0 #000,-1px -1px 0 #333,0 0 30px rgba(255,255,255,.08);
+        }
+        .logo-status-lines { margin-top:.6rem; display:flex; flex-direction:column; gap:.15rem; }
+        .lsl { font-size:.6rem; color:#555; letter-spacing:.12em; text-transform:uppercase; }
+        .lsl .ok { color:#fff; }
 
-        .ticker-wrap{background:var(--ticker-bg);border-top:1px solid var(--text-4);border-bottom:1px solid var(--text-4);overflow:hidden;padding:.28rem 0;margin-bottom:1.2rem;}
-        .ticker-inner{display:flex;gap:4rem;animation:tick 28s linear infinite;white-space:nowrap;}
-        @keyframes tick{from{transform:translateX(0);}to{transform:translateX(-50%);}}
-        .ti{font-size:.58rem;color:var(--text-2);letter-spacing:.2em;text-transform:uppercase;}
-        .ti .r{color:var(--acc);}
+        /* Vertical nav */
+        .menu-nav { display:flex; flex-direction:column; gap:4px; min-width:210px; }
+        .menu-nav-btn {
+            background:#000; border:2px solid #fff; padding:.75rem 1.1rem;
+            text-decoration:none; font-family:'VT323',monospace; font-size:1.35rem;
+            color:#fff; letter-spacing:.12em; text-transform:uppercase;
+            cursor:pointer; transition:.1s; display:block; text-align:center;
+        }
+        .menu-nav-btn:hover { background:#fff; color:#000; }
+        .menu-nav-btn.dim { border-color:#333; color:#333; }
+        .menu-nav-btn.dim:hover { background:#333; color:#000; }
 
-        .nav-section{display:flex;align-items:stretch;gap:1rem;margin-bottom:1.4rem;flex-wrap:wrap;}
-        .nav-home-indicator{background:var(--panel-bg);border:1px solid var(--panel-bd);border-left:3px solid var(--acc);padding:1rem 1.2rem;display:flex;flex-direction:column;justify-content:center;min-width:180px;}
-        .nhi-label{font-size:.5rem;color:var(--text-2);letter-spacing:.3em;text-transform:uppercase;margin-bottom:.2rem;}
-        .nhi-name{font-family:'VT323',monospace;font-size:2rem;color:var(--acc);text-shadow:0 0 12px var(--acc-glow);line-height:1;}
-        .nhi-sub{font-size:.55rem;color:var(--text-1);letter-spacing:.15em;text-transform:uppercase;margin-top:.15rem;}
-        .nhi-dot{width:6px;height:6px;background:var(--acc);box-shadow:0 0 6px var(--acc);display:inline-block;margin-right:6px;}
-        .nav-buttons-right{flex:1;display:flex;gap:4px;flex-wrap:wrap;}
-        .nav-btn{flex:1;min-width:140px;background:var(--panel-bg);border:1px solid var(--text-4);border-bottom:3px solid var(--text-4);padding:1.1rem 1rem;cursor:pointer;display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;text-decoration:none;color:var(--text-p);font-family:'Share Tech Mono',monospace;transition:.15s;position:relative;overflow:hidden;gap:.5rem;}
-        .nav-btn::before{content:'';position:absolute;left:0;top:0;width:3px;height:100%;background:var(--text-4);transition:.15s;}
-        .nav-btn::after{content:'';position:absolute;bottom:0;left:0;width:0;height:3px;transition:width .2s;}
-        .nav-btn:hover::after,.nav-btn.active::after{width:100%;}
-        .nb-blue{--nc:var(--c-blue);}.nb-gold{--nc:var(--c-gold);}.nb-red{--nc:var(--acc);}.nb-pink{--nc:var(--c-pink);}.nb-green{--nc:var(--c-green);}
-        .nav-btn::after{background:var(--nc);}.nav-btn::before{background:var(--text-4);}
-        .nav-btn:hover,.nav-btn.active{border-color:var(--nc);background:color-mix(in srgb,var(--nc) 6%,var(--panel-bg));}
-        .nav-btn:hover::before,.nav-btn.active::before{background:var(--nc);box-shadow:0 0 10px var(--nc);}
-        .nav-btn:hover .nb-num,.nav-btn.active .nb-num{color:var(--nc);}
-        .nav-btn:hover .nb-icon,.nav-btn.active .nb-icon{color:var(--nc);text-shadow:0 0 14px var(--nc);}
-        .nb-top{display:flex;justify-content:space-between;align-items:flex-start;width:100%;}
-        .nb-icon{font-size:1.6rem;line-height:1;color:var(--text-2);transition:.15s;}
-        .nb-num{font-family:'VT323',monospace;font-size:2rem;color:var(--text-3);transition:.15s;line-height:1;}
-        .nb-name{font-size:.88rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-p);font-weight:600;}
-        .nb-sub{font-size:.52rem;color:var(--text-1);letter-spacing:.1em;text-transform:uppercase;margin-top:.1rem;}
+        /* ═══════════════════════════════════════
+           TICKER
+        ═══════════════════════════════════════ */
+        .ticker-wrap { border-top:1px solid #1e1e1e; border-bottom:1px solid #1e1e1e; overflow:hidden; padding:.3rem 0; margin:.8rem 0 1rem; }
+        .ticker-inner { display:flex; gap:3rem; animation:tick 30s linear infinite; white-space:nowrap; }
+        @keyframes tick { from{transform:translateX(0);} to{transform:translateX(-50%);} }
+        .ti { font-size:.55rem; color:#333; letter-spacing:.2em; text-transform:uppercase; }
+        .ti .r { color:#fff; }
 
-        .redline{height:2px;background:linear-gradient(90deg,var(--acc) 0%,var(--text-p) 18%,var(--acc) 35%,transparent 100%);box-shadow:0 0 10px var(--acc-glow);margin-bottom:1.5rem;}
+        /* Divider */
+        .divider { height:2px; background:linear-gradient(90deg,#fff 0%,#444 30%,transparent 100%); margin:1rem 0; }
 
-        .intro-panel{border:1px solid var(--grey-border);background:var(--grey-bg);padding:1.2rem;margin-bottom:1.5rem;}
-        .intro-panel h2{font-family:'VT323',monospace;font-size:1.6rem;color:var(--text-p);letter-spacing:.1em;margin-bottom:.6rem;}
-        .intro-panel p{font-size:.74rem;color:var(--text-p);line-height:1.85;margin-bottom:.5rem;}
-        .intro-panel p:last-child{margin-bottom:0;}
-        .intro-stats{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin-top:.8rem;}
-        .istat{border:1px solid var(--grey-border);background:var(--grey-head);padding:.45rem .6rem;}
-        .istat-k{font-size:.48rem;color:var(--text-2);letter-spacing:.2em;text-transform:uppercase;margin-bottom:.2rem;}
-        .istat-v{font-family:'VT323',monospace;font-size:1rem;color:var(--text-p);}
+        /* ═══════════════════════════════════════
+           INTRO PANEL
+        ═══════════════════════════════════════ */
+        .intro-panel { border:2px solid #fff; background:#000; padding:1.2rem; margin-bottom:1.2rem; }
+        .intro-panel h2 { font-family:'VT323',monospace; font-size:1.8rem; color:#fff; letter-spacing:.12em; margin-bottom:.5rem; }
+        .intro-panel p { font-size:.72rem; color:#aaa; line-height:1.85; margin-bottom:.4rem; }
+        .intro-panel p:last-child { margin-bottom:0; }
+        .intro-stats { display:grid; grid-template-columns:repeat(6,1fr); gap:3px; margin-top:.8rem; }
+        .istat { border:1px solid #1e1e1e; background:#080808; padding:.4rem .6rem; }
+        .istat-k { font-size:.45rem; color:#333; letter-spacing:.2em; text-transform:uppercase; margin-bottom:.2rem; }
+        .istat-v { font-family:'VT323',monospace; font-size:1rem; color:#fff; }
 
-        .tab-bar{display:flex;gap:0;border:1px solid var(--grey-border);margin-bottom:0;overflow-x:auto;background:var(--grey-head);}
-        .tab-btn{background:transparent;border:none;border-right:1px solid var(--grey-border);padding:.7rem 1rem;cursor:pointer;font-family:'Share Tech Mono',monospace;font-size:.65rem;color:var(--text-1);letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;transition:.15s;position:relative;min-width:80px;text-align:center;}
-        .tab-btn:last-child{border-right:none;}
-        .tab-btn:hover{background:rgba(255,255,255,.04);color:var(--text-p);}
-        .tab-btn.active{background:var(--grey-bg);color:var(--text-p);border-bottom:2px solid var(--acc);}
-        .tab-btn .tb-num{font-family:'VT323',monospace;font-size:1.1rem;display:block;line-height:1;margin-bottom:2px;}
-        .tab-btn .tb-name{font-size:.52rem;display:block;}
+        /* ═══════════════════════════════════════
+           TAB BAR — TERMINAL + LAYER COLORS
+        ═══════════════════════════════════════ */
+        .tab-bar {
+            display:flex; gap:0;
+            border:2px solid #fff; border-bottom:none;
+            overflow-x:auto; background:#000;
+        }
+        .tab-btn {
+            background:#000; border:none; border-right:1px solid #222;
+            padding:.8rem 1rem; cursor:pointer;
+            font-family:'VT323',monospace; font-size:1rem;
+            color:#333; letter-spacing:.1em; text-transform:uppercase;
+            white-space:nowrap; transition:.12s; min-width:80px; text-align:center;
+            position:relative;
+        }
+        .tab-btn:last-child { border-right:none; }
+        .tab-btn .tb-num { font-size:1.3rem; display:block; line-height:1; margin-bottom:1px; }
+        .tab-btn .tb-name { font-size:.48rem; font-family:'Share Tech Mono',monospace; display:block; }
 
-        /* ── ЧРЕВО — КРАСНЫЙ ТАБ ── */
-        .tab-btn.gluttony-tab{color:#ff2020 !important;}
-        .tab-btn.gluttony-tab .tb-num{color:#ff2020;}
-        .tab-btn.gluttony-tab .tb-name{color:#cc0000;}
-        .tab-btn.gluttony-tab:hover{background:rgba(255,32,32,.08);color:#ff4444 !important;}
-        .tab-btn.gluttony-tab.active{border-bottom:2px solid #ff2020;color:#ff2020 !important;}
+        /* ── LAYER COLOR DEFINITIONS (tab buttons) ── */
+        .tab-btn[data-tab="prelude"]  { --lc:#ff6600; --lc-dim:rgba(255,102,0,.14); }
+        .tab-btn[data-tab="layer1"]   { --lc:#88aaff; --lc-dim:rgba(136,170,255,.14); }
+        .tab-btn[data-tab="layer2"]   { --lc:#ff44cc; --lc-dim:rgba(255,68,204,.14); }
+        .tab-btn[data-tab="layer3"]   { --lc:#ff2020; --lc-dim:rgba(255,32,32,.16); }
+        .tab-btn[data-tab="layer4"]   { --lc:#ffc800; --lc-dim:rgba(255,200,0,.14); }
+        .tab-btn[data-tab="layer5"]   { --lc:#ff8800; --lc-dim:rgba(255,136,0,.14); }
+        .tab-btn[data-tab="layer6"]   { --lc:#cc44ff; --lc-dim:rgba(204,68,255,.14); }
+        .tab-btn[data-tab="layer7"]   { --lc:#00ccbb; --lc-dim:rgba(0,204,187,.14); }
+        .tab-btn[data-tab="layer89"]  { --lc:#cc0000; --lc-dim:rgba(204,0,0,.14); }
 
-        .tab-content{display:none;border:1px solid var(--grey-border);border-top:none;background:var(--grey-bg);min-height:400px;}
-        .tab-content.active{display:block;}
+        /* Hover: show layer color */
+        .tab-btn:hover {
+            background:var(--lc-dim, #1a1a1a);
+            color:var(--lc, #fff);
+        }
+        /* Active: filled with layer color */
+        .tab-btn.active {
+            background:var(--lc, #fff);
+            color:#000;
+            border-bottom:none;
+        }
+        .tab-btn.active .tb-name { color:rgba(0,0,0,.55); }
 
-        .layer-wrap{padding:1.5rem;}
-        .layer-title-row{border-bottom:1px solid var(--grey-border);padding-bottom:1rem;margin-bottom:1.2rem;}
-        .layer-title-row h2{font-family:'VT323',monospace;font-size:2.2rem;color:var(--text-p);letter-spacing:.1em;}
-        .layer-title-row .ltr-sub{font-size:.6rem;color:var(--text-2);letter-spacing:.25em;text-transform:uppercase;margin-top:.3rem;}
+        /* ── LAYER COLOR DEFINITIONS (tab contents) ── */
+        #tab-prelude { --lc:#ff6600; --lc-bg:rgba(255,102,0,.05); --lc-bd:#3a1800; --lc-dim:rgba(255,102,0,.08); }
+        #tab-layer1  { --lc:#88aaff; --lc-bg:rgba(136,170,255,.05); --lc-bd:#1a2e60; --lc-dim:rgba(136,170,255,.07); }
+        #tab-layer2  { --lc:#ff44cc; --lc-bg:rgba(255,68,204,.05); --lc-bd:#3c0a34; --lc-dim:rgba(255,68,204,.07); }
+        #tab-layer3  { --lc:#ff2020; --lc-bg:rgba(255,32,32,.06); --lc-bd:#3c0a0a; --lc-dim:rgba(255,32,32,.08); }
+        #tab-layer4  { --lc:#ffc800; --lc-bg:rgba(255,200,0,.05); --lc-bd:#3a2c00; --lc-dim:rgba(255,200,0,.07); }
+        #tab-layer5  { --lc:#ff8800; --lc-bg:rgba(255,136,0,.05); --lc-bd:#3a1c00; --lc-dim:rgba(255,136,0,.07); }
+        #tab-layer6  { --lc:#cc44ff; --lc-bg:rgba(204,68,255,.05); --lc-bd:#300048; --lc-dim:rgba(204,68,255,.07); }
+        #tab-layer7  { --lc:#00ccbb; --lc-bg:rgba(0,204,187,.05); --lc-bd:#0e302c; --lc-dim:rgba(0,204,187,.07); }
+        #tab-layer89 { --lc:#cc0000; --lc-bg:rgba(204,0,0,.05); --lc-bd:#2e0a0a; --lc-dim:rgba(204,0,0,.07); }
 
-        .layer-body{display:grid;grid-template-columns:1fr;gap:1.2rem;}
-        .layer-section{border:1px solid var(--grey-border);background:var(--grey-head);margin-bottom:.8rem;}
-        .layer-section:last-child{margin-bottom:0;}
-        .layer-section-head{background:rgba(255,255,255,.03);border-bottom:1px solid var(--grey-border);padding:.5rem .8rem;font-size:.58rem;color:var(--text-2);letter-spacing:.25em;text-transform:uppercase;}
-        .layer-section-body{padding:.8rem;}
-        .layer-desc{font-size:.74rem;color:var(--text-p);line-height:1.85;}
+        /* ═══════════════════════════════════════
+           TAB CONTENT
+        ═══════════════════════════════════════ */
+        .tab-content { display:none; border:2px solid #fff; border-top:none; background:#000; min-height:400px; }
+        .tab-content.active { display:block; }
 
-        /* ── БЛОК ОПИСАНИЯ + ФОТО ── */
-        .desc-photo-grid{display:grid;grid-template-columns:1fr 220px;gap:1.2rem;align-items:start;}
-        .photo-frame{border:2px dashed var(--grey-border);background:var(--panel-bg);min-height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.6rem;padding:1rem;position:relative;}
-        .photo-frame::before{content:'// ИЗОБРАЖЕНИЕ //';position:absolute;top:.4rem;left:.6rem;font-size:.42rem;color:var(--text-3);letter-spacing:.2em;text-transform:uppercase;}
-        .photo-frame-icon{font-size:2.2rem;color:var(--text-3);line-height:1;}
-        .photo-frame-label{font-size:.5rem;color:var(--text-3);letter-spacing:.18em;text-transform:uppercase;text-align:center;line-height:1.6;}
-        .photo-frame img{width:100%;height:100%;object-fit:cover;display:block;}
-        @media(max-width:700px){.desc-photo-grid{grid-template-columns:1fr;}.photo-frame{min-height:120px;}}
+        .layer-wrap { padding:1.5rem; }
 
-        .level-row{display:flex;align-items:center;gap:.6rem;padding:.4rem .6rem;border-bottom:1px solid rgba(68,68,68,.3);font-size:.7rem;}
-        .level-row:last-child{border-bottom:none;}
-        .level-row .lr-num{font-family:'VT323',monospace;font-size:1.1rem;color:var(--text-2);min-width:36px;}
-        .level-row .lr-name{flex:1;color:var(--text-p);}
-        .level-row .lr-type{font-size:.5rem;color:var(--text-2);letter-spacing:.12em;text-transform:uppercase;}
-        .level-row .lr-type.secret{color:var(--c-gold);}
-        .level-row .lr-type.encounter{color:var(--acc);}
+        /* Title row — colored heading */
+        .layer-title-row { border-bottom:1px solid #222; padding-bottom:1rem; margin-bottom:1.2rem; }
+        .layer-title-row h2 {
+            font-family:'VT323',monospace; font-size:2.5rem; letter-spacing:.12em;
+            color:var(--lc, #fff);
+            text-shadow:0 0 20px var(--lc-bg, transparent);
+        }
+        .layer-title-row .ltr-sub {
+            font-size:.58rem; letter-spacing:.25em; text-transform:uppercase; margin-top:.3rem;
+            color:var(--lc, #444);
+            opacity:.7;
+        }
 
-        .dante-ref{border-left:3px solid var(--acc);padding:.5rem .8rem;background:rgba(255,32,32,.05);margin-top:.8rem;font-size:.66rem;color:var(--text-1);line-height:1.8;letter-spacing:.04em;}
-        .dante-ref strong{color:var(--c-gold);}
+        .layer-body { display:grid; grid-template-columns:1fr; gap:1rem; }
 
-        .wip-notice{border:1px solid var(--grey-border);background:var(--grey-head);padding:2rem;text-align:center;}
-        .wip-notice .wip-icon{font-family:'VT323',monospace;font-size:4rem;color:var(--text-3);display:block;margin-bottom:.5rem;}
-        .wip-notice .wip-title{font-family:'VT323',monospace;font-size:1.8rem;color:var(--text-2);margin-bottom:.5rem;}
-        .wip-notice .wip-text{font-size:.72rem;color:var(--text-3);line-height:1.7;}
+        /* Sections — subtle layer color on border */
+        .layer-section {
+            border:1px solid var(--lc-bd, #222);
+            background:#050505; margin-bottom:.6rem;
+        }
+        .layer-section:last-child { margin-bottom:0; }
+        .layer-section-head {
+            background:#0a0a0a; border-bottom:1px solid var(--lc-bd, #1e1e1e);
+            padding:.5rem .8rem; font-size:.55rem;
+            color:var(--lc, #444);
+            letter-spacing:.28em; text-transform:uppercase;
+        }
+        .layer-section-body { padding:.9rem; }
+        .layer-desc { font-size:.73rem; color:#aaa; line-height:1.9; }
+        .layer-desc strong { color:#fff; }
+        .layer-desc em { color:#777; font-style:normal; border-bottom:1px solid #2a2a2a; }
 
-        .site-footer{border-top:1px solid var(--text-4);padding:.9rem 0;margin-top:1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.4rem;font-size:.58rem;color:var(--text-3);letter-spacing:.1em;text-transform:uppercase;}
-        .footer-logo{font-family:'VT323',monospace;font-size:1.2rem;color:var(--acc);text-shadow:0 0 6px var(--acc);}
-        .back-link{font-size:.65rem;color:var(--acc);text-decoration:none;border:1px solid var(--acc);padding:.3rem .8rem;letter-spacing:.12em;text-transform:uppercase;transition:.15s;}
-        .back-link:hover{background:color-mix(in srgb,var(--acc) 12%,transparent);}
+        /* Dante reference box */
+        .dante-ref {
+            border-left:3px solid var(--lc, #fff);
+            padding:.5rem .8rem;
+            background:var(--lc-bg, rgba(255,255,255,.02));
+            margin-top:.8rem;
+            font-size:.64rem; color:#555; line-height:1.85;
+        }
+        .dante-ref strong { color:#aaa; }
 
-        @media(max-width:900px){.intro-stats{grid-template-columns:repeat(3,1fr);}}
-        @media(max-width:600px){.intro-stats{grid-template-columns:repeat(2,1fr);}.tab-btn{min-width:60px;padding:.6rem .5rem;}.tab-btn .tb-name{display:none;}.modal-btns{grid-template-columns:1fr;}}
+        /* Photo placeholder */
+        .desc-photo-grid { display:grid; grid-template-columns:1fr 220px; gap:1.2rem; align-items:start; }
+        .photo-frame {
+            border:2px dashed var(--lc-bd, #2a2a2a);
+            background:#080808; min-height:160px;
+            display:flex; flex-direction:column; align-items:center; justify-content:center;
+            gap:.6rem; padding:1rem; position:relative;
+        }
+        .photo-frame::before {
+            content:'// IMG //'; position:absolute; top:.4rem; left:.5rem;
+            font-size:.4rem; color:#222; letter-spacing:.2em;
+        }
+        .photo-frame-icon { font-size:2rem; color:var(--lc-bd, #1e1e1e); line-height:1; }
+        .photo-frame-label { font-size:.48rem; color:#2a2a2a; letter-spacing:.15em; text-transform:uppercase; text-align:center; line-height:1.7; }
+        .photo-frame img { width:100%; height:100%; object-fit:cover; display:block; }
+        @media(max-width:700px){ .desc-photo-grid{grid-template-columns:1fr;} .photo-frame{min-height:110px;} }
+
+        /* Level rows */
+        .level-row {
+            display:flex; align-items:center; gap:.6rem;
+            padding:.45rem .6rem; border-bottom:1px solid #0f0f0f;
+            font-size:.68rem; transition:.1s;
+        }
+        .level-row:last-child { border-bottom:none; }
+        .level-row:hover { background:var(--lc-dim, #0a0a0a); }
+        .lr-num { font-family:'VT323',monospace; font-size:1.2rem; color:#444; min-width:40px; }
+        .lr-name { flex:1; color:#ccc; }
+        .lr-type { font-size:.48rem; color:#444; letter-spacing:.12em; text-transform:uppercase; }
+        .lr-type.secret { color:var(--lc, #888); border:1px solid var(--lc-bd, #333); padding:.1rem .3rem; opacity:.8; }
+        .lr-type.encounter { color:var(--lc, #fff); border:1px solid var(--lc, #fff); padding:.1rem .3rem; }
+
+        /* Params */
+        .param-row { display:flex; gap:.5rem; flex-wrap:wrap; margin-bottom:.3rem; }
+        .param-key { font-size:.6rem; color:#333; letter-spacing:.12em; text-transform:uppercase; min-width:130px; }
+        .param-val { font-size:.6rem; color:#aaa; }
+        .param-val.hi { color:#fff; }
+        .param-val.colored { color:var(--lc, #fff); }
+
+        /* WIP */
+        .wip-notice { border:1px solid #1e1e1e; background:#050505; padding:2rem; text-align:center; }
+        .wip-icon { font-family:'VT323',monospace; font-size:4rem; color:#1e1e1e; display:block; margin-bottom:.4rem; }
+        .wip-title { font-family:'VT323',monospace; font-size:1.8rem; color:#333; margin-bottom:.4rem; }
+        .wip-text { font-size:.7rem; color:#2a2a2a; line-height:1.7; }
+
+        /* ═══════════════════════════════════════
+           FOOTER
+        ═══════════════════════════════════════ */
+        .site-footer {
+            border-top:2px solid #fff; padding:1rem 0; margin-top:1.5rem;
+            display:flex; justify-content:space-between; align-items:center;
+            flex-wrap:wrap; gap:.5rem;
+        }
+        .footer-logo { font-family:'VT323',monospace; font-size:1.5rem; color:#fff; letter-spacing:.15em; }
+        .footer-text { font-size:.52rem; color:#2a2a2a; letter-spacing:.15em; text-transform:uppercase; }
+        .back-link {
+            font-family:'VT323',monospace; font-size:1.1rem; color:#fff;
+            text-decoration:none; border:2px solid #fff; padding:.4rem 1rem;
+            letter-spacing:.1em; transition:.1s;
+        }
+        .back-link:hover { background:#fff; color:#000; }
+
+        /* ═══════════════════════════════════════
+           AUTO-MODE badge
+        ═══════════════════════════════════════ */
+        .auto-badge {
+            display:none; font-size:.42rem; font-family:'Share Tech Mono',monospace;
+            letter-spacing:.18em; text-transform:uppercase; padding:.1rem .35rem;
+            border:1px solid #fff; color:#fff; margin-left:.6rem; vertical-align:middle;
+        }
+        .auto-badge.visible { display:inline; }
+
+        /* ═══════════════════════════════════════
+           RESPONSIVE
+        ═══════════════════════════════════════ */
+        @media(max-width:900px){ .intro-stats{grid-template-columns:repeat(3,1fr);} }
+        @media(max-width:600px){
+            .intro-stats{grid-template-columns:repeat(2,1fr);}
+            .tab-btn{min-width:55px; padding:.6rem .4rem;}
+            .tab-btn .tb-name{display:none;}
+            .modal-btns{grid-template-columns:1fr;}
+            .header-inner{flex-direction:column;}
+            .menu-nav{flex-direction:row; flex-wrap:wrap;}
+            .menu-nav-btn{flex:1; min-width:100px; font-size:1rem; padding:.6rem;}
+        }
     </style>
 </head>
-<body data-theme="dark">
+<body>
 
-<!-- ── МОДАЛЬНОЕ ОКНО ── -->
+<div class="scanlines"></div>
+
+<!-- ═══════════════════════════════════════
+     МОДАЛЬНОЕ ОКНО ВЫБОРА РЕЖИМА
+═══════════════════════════════════════ -->
 <div class="modal-overlay" id="themeModal">
     <div class="modal-box">
-        <div class="modal-eyebrow">// ПАРАМЕТРЫ ИНТЕРФЕЙСА // ИНИЦИАЛИЗАЦИЯ</div>
-        <div class="modal-title">ВЫБОР РЕЖИМА<br>ЦВЕТОВОЙ ТЕМЫ</div>
-        <div class="modal-warn">
-            <span class="modal-warn-icon">▲</span>
-            <div class="modal-warn-text">ПРЕДУПРЕЖДЕНИЕ: Автоматический режим использует насыщенные цвета для каждого слоя. При чувствительности к яркому свету рекомендуется стандартный режим.</div>
-        </div>
-        <div class="modal-desc">Выберите режим отображения. В автоматическом режиме палитра меняется при переходе между слоями — каждый сектор имеет уникальное цветовое решение.</div>
-        <div class="modal-btns">
-            <button class="modal-btn" onclick="chooseMode('original')">СТАНДАРТНЫЙ РЕЖИМ<span class="modal-btn-sub">Тема фиксирована // ручной выбор</span></button>
-            <button class="modal-btn primary" onclick="chooseMode('auto')">АВТОМАТИЧЕСКИЕ ТЕМЫ<span class="modal-btn-sub">Тема по слою // яркие цвета</span></button>
+        <div class="modal-header-bar">// SYSTEM V1 — DISPLAY CONFIG // INIT</div>
+        <div class="modal-body">
+            <div class="modal-title">COLOUR<br>MODE SELECT</div>
+            <div class="modal-warn">
+                ВНИМАНИЕ: Режим AUTO активирует цветовую палитру каждого сектора на соответствующих вкладках. При чувствительности к насыщенным цветам рекомендуется стандартный режим.
+            </div>
+            <div class="modal-desc">
+                STANDARD — монохромный терминальный вид. AUTO — вкладки и описания секторов отображаются в назначенных им цветах (оранжевый / синий / розовый / красный / золотой и т.д.)
+            </div>
+            <div class="modal-btns">
+                <button class="modal-btn" onclick="chooseMode('original')">
+                    STANDARD
+                    <span class="modal-btn-sub">Монохромный // все вкладки белые</span>
+                </button>
+                <button class="modal-btn" onclick="chooseMode('auto')">
+                    AUTO MODE
+                    <span class="modal-btn-sub">Цвет по сектору // палитра слоёв</span>
+                </button>
+            </div>
         </div>
     </div>
 </div>
 
-<div class="theme-bg-wrap" aria-hidden="true">
-    <div class="bg-dark"><div class="bg-dark-grid"></div><div class="bg-dark-scan"></div></div>
-</div>
-
 <div class="page">
 
-    <!-- HEADER -->
+    <!-- ═══════════════════════════════════════
+         HEADER
+    ═══════════════════════════════════════ -->
     <div class="site-header">
-        <div class="header-top">
-            <div>
-                <div class="logo-eyebrow">// SYSTEM DATABASE // СЕКТОРЫ // ACTIVE</div>
-                <div class="logo-main"><span class="v1">V1</span> — ULTRAKILL</div>
-                <div class="logo-tagline">LOWER SECTOR DEPTH MAP // LAYER CATALOGUE // ACCESS GRANTED<span class="cur"></span></div>
-            </div>
-            <div class="theme-panel">
-                <div class="tp-head">// ТЕМА ИНТЕРФЕЙСА <span class="auto-badge" id="autoBadge">● AUTO</span></div>
-                <div class="tp-grid">
-                    <button class="tp-btn t-dark active" data-tv="dark" onclick="setTheme('dark')"><div class="tp-swatch"></div><div class="tp-info"><div class="tp-name">DARK</div><div class="tp-sub">ORIGINAL</div></div></button>
-                    <button class="tp-btn t-v1" data-tv="v1" onclick="setTheme('v1')"><div class="tp-swatch"></div><div class="tp-info"><div class="tp-name">V1</div><div class="tp-sub">MACHINE // BLUE</div></div></button>
-                    <button class="tp-btn t-v2" data-tv="v2" onclick="setTheme('v2')"><div class="tp-swatch"></div><div class="tp-info"><div class="tp-name">V2</div><div class="tp-sub">MIRROR // RED</div></div></button>
-                    <button class="tp-btn t-gabriel" data-tv="gabriel" onclick="setTheme('gabriel')"><div class="tp-swatch"></div><div class="tp-info"><div class="tp-name">GABRIEL</div><div class="tp-sub">JUDGE // GOLD</div></div></button>
+        <div class="header-inner">
+            <div class="logo-block">
+                <div class="logo-sys-line">// LOWER SECTOR DEPTH MAP // LAYER CATALOGUE // V1 SYSTEM //</div>
+                <div class="logo-main">ULTRAKILL</div>
+                <div class="logo-status-lines">
+                    <div class="lsl">SYSTEM <span class="ok">V1</span> INITIALIZED</div>
+                    <div class="lsl">LAYER MAP — <span class="ok">LOADED</span> // SECTORS I–IX</div>
+                    <div class="lsl">ACCESS STATUS — <span class="ok">GRANTED</span></div>
+                    <div class="lsl">COLOUR MODE — <span class="ok" id="modeLabel">STANDARD</span>
+                        <span class="auto-badge" id="autoBadge">● AUTO</span>
+                    </div>
                 </div>
-                <div class="tp-current" id="tpCurrent">АКТИВНА: DARK // ORIGINAL</div>
+            </div>
+            <div class="menu-nav">
+                <a href="index.html" class="menu-nav-btn">◄ ГЛАВНАЯ</a>
+                <a href="weapons.html" class="menu-nav-btn">АРСЕНАЛ</a>
+                <a href="bosses.html" class="menu-nav-btn">СУЩНОСТИ</a>
+                <a href="lore.html" class="menu-nav-btn">ЛОР</a>
+                <button class="menu-nav-btn dim" onclick="resetMode()" style="font-size:.85rem;padding:.5rem;">⚙ СМЕНА РЕЖИМА</button>
             </div>
         </div>
     </div>
@@ -244,58 +395,47 @@
     <!-- TICKER -->
     <div class="ticker-wrap">
         <div class="ticker-inner">
-            <span class="ti">// <span class="r">СЕКТОРЫ</span> // КАРТА НИЖНЕГО УРОВНЯ // СЛОИ 0–7 // ПРЕЛЮДИЯ + АКТ I + АКТ II // ДОСТУП: РАЗРЕШЁН //</span>
-            <span class="ti">// <span class="r">СЕКТОРЫ</span> // КАРТА НИЖНЕГО УРОВНЯ // СЛОИ 0–7 // ПРЕЛЮДИЯ + АКТ I + АКТ II // ДОСТУП: РАЗРЕШЁН //</span>
+            <span class="ti">// <span class="r">СЕКТОРЫ</span> // НИЖНИЙ УРОВЕНЬ // СЛОИ 0–IX // АКТ I ЗАВЕРШЁН // АКТ II В РАЗРАБОТКЕ // ДАНТЕ АЛИГЬЕРИ // ДОСТУП РАЗРЕШЁН //</span>
+            <span class="ti">// <span class="r">СЕКТОРЫ</span> // НИЖНИЙ УРОВЕНЬ // СЛОИ 0–IX // АКТ I ЗАВЕРШЁН // АКТ II В РАЗРАБОТКЕ // ДАНТЕ АЛИГЬЕРИ // ДОСТУП РАЗРЕШЁН //</span>
         </div>
     </div>
 
-    <!-- NAV -->
-    <div class="nav-section">
-        <div class="nav-home-indicator">
-            <div class="nhi-label">// ТЕКУЩИЙ РАЗДЕЛ</div>
-            <div class="nhi-name">СЕКТОРЫ</div>
-            <div class="nhi-sub"><span class="nhi-dot"></span>LAYERS // ACTIVE</div>
-        </div>
-        <div class="nav-buttons-right">
-            <a href="index.html" class="nav-btn nb-red"><div class="nb-top"><div class="nb-icon">⌂</div><div class="nb-num">←</div></div><div><div class="nb-name">Главная</div><div class="nb-sub">ВЕРНУТЬСЯ // INDEX</div></div></a>
-            <a href="weapons.html" class="nav-btn nb-blue"><div class="nb-top"><div class="nb-icon">⬡</div><div class="nb-num">01</div></div><div><div class="nb-name">Арсенал</div><div class="nb-sub">СРЕДСТВА // ИНСТРУМЕНТЫ</div></div></a>
-            <a href="bosses.html" class="nav-btn nb-pink"><div class="nb-top"><div class="nb-icon">★</div><div class="nb-num">03</div></div><div><div class="nb-name">Сущности</div><div class="nb-sub">ПРИОРИТЕТНЫЕ // ЦЕЛИ</div></div></a>
-            <a href="lore.html" class="nav-btn nb-gold"><div class="nb-top"><div class="nb-icon">◈</div><div class="nb-num">04</div></div><div><div class="nb-name">Лор</div><div class="nb-sub">ИСТОРИЯ // ВСЕЛЕННАЯ</div></div></a>
-        </div>
-    </div>
+    <div class="divider"></div>
 
-    <div class="redline"></div>
-
-    <!-- INTRO -->
+    <!-- ═══════════════════════════════════════
+         INTRO
+    ═══════════════════════════════════════ -->
     <div class="intro-panel">
         <h2>// КАРТА НИЖНЕГО УРОВНЯ</h2>
-        <p>Нижний уровень разделён на девять секторов, соответствующих кругам поэмы «Инферно» из «Божественной комедии» Данте Алигьери (ок. 1308–1321). V1 проходит их сверху вниз, нейтрализуя сущности ради ресурса. В конце большинства секторов — приоритетная цель повышенного класса угрозы. Архитектура и атмосфера каждого сектора отражает соответствующий грех из классификации Данте.</p>
+        <p>Нижний уровень разделён на девять секторов, соответствующих кругам поэмы «Инферно» из «Божественной комедии» Данте Алигьери (ок. 1308–1321). V1 проходит их сверху вниз, нейтрализуя сущности ради энергетического ресурса. В конце большинства секторов — приоритетная цель повышенного класса угрозы. Архитектура и атмосфера каждого сектора отражает соответствующий грех из классификации Данте.</p>
         <div class="intro-stats">
-            <div class="istat"><div class="istat-k">АКТОВ</div><div class="istat-v">3 (III)</div></div>
-            <div class="istat"><div class="istat-k">СЛОЁВ</div><div class="istat-v">9 (I–IX)</div></div>
-            <div class="istat"><div class="istat-k">АКТ I</div><div class="istat-v">ЗАВЕРШЁН</div></div>
-            <div class="istat"><div class="istat-k">АКТ II</div><div class="istat-v">В РАЗРАБОТКЕ</div></div>
-            <div class="istat"><div class="istat-k">АКТ III</div><div class="istat-v">НЕ ВЫПУЩЕН</div></div>
-            <div class="istat"><div class="istat-k">ИСТОЧНИК</div><div class="istat-v">DANTE</div></div>
+            <div class="istat"><div class="istat-k">АКТОВ</div><div class="istat-v">III</div></div>
+            <div class="istat"><div class="istat-k">СЛОЁВ</div><div class="istat-v">IX</div></div>
+            <div class="istat"><div class="istat-k">АКТ I</div><div class="istat-v">READY</div></div>
+            <div class="istat"><div class="istat-k">АКТ II</div><div class="istat-v">WIP</div></div>
+            <div class="istat"><div class="istat-k">АКТ III</div><div class="istat-v">N/A</div></div>
+            <div class="istat"><div class="istat-k">БАЗА</div><div class="istat-v">DANTE</div></div>
         </div>
     </div>
 
-    <!-- TAB BAR -->
+    <!-- ═══════════════════════════════════════
+         TAB BAR
+    ═══════════════════════════════════════ -->
     <div class="tab-bar" id="tabBar">
-        <button class="tab-btn active" data-tab="prelude" onclick="switchTab('prelude',this)"><span class="tb-num">P</span><span class="tb-name">ПРЕЛЮДИЯ</span></button>
-        <button class="tab-btn" data-tab="layer1" onclick="switchTab('layer1',this)"><span class="tb-num">I</span><span class="tb-name">ЛИМБ</span></button>
-        <button class="tab-btn" data-tab="layer2" onclick="switchTab('layer2',this)"><span class="tb-num">II</span><span class="tb-name">СТРАСТЬ</span></button>
-        <button class="tab-btn gluttony-tab" data-tab="layer3" onclick="switchTab('layer3',this)"><span class="tb-num">III</span><span class="tb-name">ЧРЕВО</span></button>
-        <button class="tab-btn" data-tab="layer4" onclick="switchTab('layer4',this)"><span class="tb-num">IV</span><span class="tb-name">ЖАДНОСТЬ</span></button>
-        <button class="tab-btn" data-tab="layer5" onclick="switchTab('layer5',this)"><span class="tb-num">V</span><span class="tb-name">ГНЕВ</span></button>
-        <button class="tab-btn" data-tab="layer6" onclick="switchTab('layer6',this)"><span class="tb-num">VI</span><span class="tb-name">ЕРЕСЬ</span></button>
-        <button class="tab-btn" data-tab="layer7" onclick="switchTab('layer7',this)"><span class="tb-num">VII</span><span class="tb-name">РАЗДОР</span></button>
-        <button class="tab-btn" data-tab="layer89" onclick="switchTab('layer89',this)"><span class="tb-num">VIII–IX</span><span class="tb-name">...</span></button>
+        <button class="tab-btn active" data-tab="prelude"  onclick="switchTab('prelude',this)"><span class="tb-num">P</span><span class="tb-name">ПРЕЛЮДИЯ</span></button>
+        <button class="tab-btn"        data-tab="layer1"   onclick="switchTab('layer1',this)"><span class="tb-num">I</span><span class="tb-name">ЛИМБ</span></button>
+        <button class="tab-btn"        data-tab="layer2"   onclick="switchTab('layer2',this)"><span class="tb-num">II</span><span class="tb-name">СТРАСТЬ</span></button>
+        <button class="tab-btn"        data-tab="layer3"   onclick="switchTab('layer3',this)"><span class="tb-num">III</span><span class="tb-name">ЧРЕВО</span></button>
+        <button class="tab-btn"        data-tab="layer4"   onclick="switchTab('layer4',this)"><span class="tb-num">IV</span><span class="tb-name">ЖАДНОСТЬ</span></button>
+        <button class="tab-btn"        data-tab="layer5"   onclick="switchTab('layer5',this)"><span class="tb-num">V</span><span class="tb-name">ГНЕВ</span></button>
+        <button class="tab-btn"        data-tab="layer6"   onclick="switchTab('layer6',this)"><span class="tb-num">VI</span><span class="tb-name">ЕРЕСЬ</span></button>
+        <button class="tab-btn"        data-tab="layer7"   onclick="switchTab('layer7',this)"><span class="tb-num">VII</span><span class="tb-name">РАЗДОР</span></button>
+        <button class="tab-btn"        data-tab="layer89"  onclick="switchTab('layer89',this)"><span class="tb-num">VIII–IX</span><span class="tb-name">...</span></button>
     </div>
 
-    <!-- ══════════════════════════════════════════
+    <!-- ═══════════════════════════════════════
          ПРЕЛЮДИЯ
-    ══════════════════════════════════════════ -->
+    ═══════════════════════════════════════ -->
     <div class="tab-content active" id="tab-prelude">
         <div class="layer-wrap">
             <div class="layer-title-row">
@@ -310,22 +450,22 @@
                             <div class="layer-desc">
                                 Прелюдия — вступительная зона нижнего уровня, не соответствующая ни одному конкретному кругу в классификации Данте, однако отражающая образ врат, описанных в «Инферно» (Песнь III): <em>«Оставь надежду всяк сюда входящий»</em>. V1, критически истощённая после коллапса человечества и израсходования наземных энергетических ресурсов, спускается в нижний уровень ради пополнения запасов.
                                 <br><br>
-                                Уровень 0-1 <strong>«INTO THE FIRE»</strong> представляет базовые механики перемещения: рывок, прыжок, взаимодействие с оппонентами. Архитектура смешанная — промышленные стальные конструкции переходят в органические структуры нижнего уровня, символизируя границу между миром и тем, что за ним. Уровень 0-2 <strong>«THE MEATGRINDER»</strong> значительно насыщеннее: вводит первый значимый масштаб столкновений. Секретный уровень 0-S <strong>«SOMETHING WICKED»</strong> содержит отсылку к опасности, превосходящей стандартную классификацию угроз.
+                                Уровень 0-1 <strong>«INTO THE FIRE»</strong> вводит базовые механики перемещения: рывок, прыжок, взаимодействие с оппонентами. Архитектура смешанная — промышленные стальные конструкции переходят в органические структуры нижнего уровня, символизируя границу между мирами. Уровень 0-2 <strong>«THE MEATGRINDER»</strong> значительно насыщеннее: вводит первый масштабный каскад взаимодействий. Секретный уровень 0-S <strong>«SOMETHING WICKED»</strong> содержит отсылку к угрозе, превосходящей стандартную классификацию.
                                 <div class="dante-ref">
                                     <strong>// ИСТОЧНИК — ДАНТЕ, «ИНФЕРНО», ПЕСНЬ III:</strong><br>
                                     Вход в нижний уровень — тёмный лес (Selva oscura), встреча с тремя зверями, символизирующими грехи. Вергилий становится проводником поэта — V1 проходит путь в одиночку.
                                 </div>
                             </div>
                             <div class="photo-frame">
-                                <div class="photo-frame-icon">🖼</div>
-                                <div class="photo-frame-label">ФОТО СЕКТОРА<br>ДОБАВИТЬ ИЗОБРАЖЕНИЕ</div>
+                                <div class="photo-frame-icon">□</div>
+                                <div class="photo-frame-label">ИЗОБРАЖЕНИЕ<br>СЕКТОРА</div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="layer-section">
                     <div class="layer-section-head">// УРОВНИ</div>
-                    <div class="layer-section-body" style="padding:.4rem 0;">
+                    <div class="layer-section-body" style="padding:.3rem 0;">
                         <div class="level-row"><span class="lr-num">0-1</span><span class="lr-name">INTO THE FIRE</span><span class="lr-type">ОСНОВНОЙ</span></div>
                         <div class="level-row"><span class="lr-num">0-2</span><span class="lr-name">THE MEATGRINDER</span><span class="lr-type">ОСНОВНОЙ</span></div>
                         <div class="level-row"><span class="lr-num">0-S</span><span class="lr-name">SOMETHING WICKED</span><span class="lr-type secret">СЕКРЕТНЫЙ</span></div>
@@ -334,23 +474,21 @@
                 <div class="layer-section">
                     <div class="layer-section-head">// ПАРАМЕТРЫ</div>
                     <div class="layer-section-body">
-                        <div class="layer-desc" style="font-size:.68rem;line-height:1.9;">
-                            <b>АКТ:</b> Прелюдия (Prologue)<br>
-                            <b>АРХИТЕКТУРА:</b> Промышленная + органическая, переходная<br>
-                            <b>ЦВЕТОВАЯ ПАЛИТРА:</b> Оранжевый / Коричневый / Тёмный<br>
-                            <b>СТАТУС:</b> Завершён<br>
-                            <b>УРОВНЕЙ:</b> 2 основных + 1 секретный<br>
-                            <b>ДАНТЕ:</b> Врата нижнего уровня (Песнь III)
-                        </div>
+                        <div class="param-row"><span class="param-key">АКТ</span><span class="param-val hi">Прелюдия (Prologue)</span></div>
+                        <div class="param-row"><span class="param-key">АРХИТЕКТУРА</span><span class="param-val">Промышленная + органическая, переходная</span></div>
+                        <div class="param-row"><span class="param-key">ЦВЕТОВАЯ ПАЛИТРА</span><span class="param-val colored">Оранжевый / Коричневый / Тёмный</span></div>
+                        <div class="param-row"><span class="param-key">СТАТУС</span><span class="param-val hi">Завершён</span></div>
+                        <div class="param-row"><span class="param-key">УРОВНЕЙ</span><span class="param-val">2 основных + 1 секретный</span></div>
+                        <div class="param-row"><span class="param-key">ДАНТЕ</span><span class="param-val">Врата нижнего уровня (Песнь III)</span></div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- ══════════════════════════════════════════
+    <!-- ═══════════════════════════════════════
          СЛОЙ I — ЛИМБ
-    ══════════════════════════════════════════ -->
+    ═══════════════════════════════════════ -->
     <div class="tab-content" id="tab-layer1">
         <div class="layer-wrap">
             <div class="layer-title-row">
@@ -363,24 +501,24 @@
                     <div class="layer-section-body">
                         <div class="desc-photo-grid">
                             <div class="layer-desc">
-                                Первый сектор нижнего уровня. Лимб — зона пограничного состояния, ни страдания, ни покоя. Архитектура монохромная: белые и холодно-серые кристаллические структуры, плавающие фрагменты пространства, угасший свет без источника. Слой сравнительно доступен по сложности — является точкой входа в нижний уровень. V1 встречает здесь первых механизированных оппонентов.
+                                Первый сектор нижнего уровня. Лимб — зона пограничного состояния: ни страдания, ни покоя. Архитектура монохромная: белые и холодно-серые кристаллические структуры, плавающие фрагменты пространства, угасший свет без источника. Слой сравнительно доступен по сложности — является точкой входа в нижний уровень. V1 встречает здесь первых механизированных оппонентов.
                                 <br><br>
-                                Завершается уровень 1-3 <strong>«A ONE MACHINE ARMY»</strong> — столкновение с механизированной версией Цербера (Cerberus Prime). В игровой интерпретации трёхглавый страж трансформирован в боевую платформу. Секретный уровень 1-S <strong>«CASTLE VEIN»</strong> расположен в изолированном архитектурном узле, доступном через скрытый проход.
+                                Завершает сектор уровень 1-3 <strong>«A ONE MACHINE ARMY»</strong> — столкновение с механизированной версией Цербера (Cerberus Prime). В игровой интерпретации трёхголовый страж трансформирован в боевую платформу. Секретный уровень 1-S <strong>«CASTLE VEIN»</strong> расположен в изолированном архитектурном узле, доступном через скрытый проход.
                                 <div class="dante-ref">
-                                    <strong>// ИСТОЧНИК — ДАНТЕ, «ИНФЕРНО», ПЕСНЬ IV:</strong><br>
-                                    Лимб — первый круг, обитель добродетельных нехристиан и некрещёных. Они не испытывают физических мучений, но лишены Божьего присутствия. Здесь пребывают Гомер, Аристотель, Платон, Сократ, Вергилий, Юлий Цезарь, Саладин. Вечная скорбь без надежды — таков их удел. Именно из Лимба Данте начинает путь под руководством Вергилия.
+                                    <strong>// ИСТОЧНИК — ДАНТЕ, «ИНФЕРНО», ПЕСНЬ IV — ПЕРВЫЙ КРУГ:</strong><br>
+                                    Лимб — обитель добродетельных нехристиан и некрещёных. Они не испытывают физических мучений, но лишены Божьего присутствия. Здесь пребывают Гомер, Аристотель, Платон, Сократ, Вергилий, Юлий Цезарь, Саладин. Вечная скорбь без надежды — таков их удел.
                                 </div>
                             </div>
                             <div class="photo-frame">
-                                <div class="photo-frame-icon">🖼</div>
-                                <div class="photo-frame-label">ФОТО СЕКТОРА<br>ДОБАВИТЬ ИЗОБРАЖЕНИЕ</div>
+                                <div class="photo-frame-icon">□</div>
+                                <div class="photo-frame-label">ИЗОБРАЖЕНИЕ<br>СЕКТОРА</div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="layer-section">
                     <div class="layer-section-head">// УРОВНИ</div>
-                    <div class="layer-section-body" style="padding:.4rem 0;">
+                    <div class="layer-section-body" style="padding:.3rem 0;">
                         <div class="level-row"><span class="lr-num">1-1</span><span class="lr-name">HEART OF THE SUNRISE</span><span class="lr-type">ОСНОВНОЙ</span></div>
                         <div class="level-row"><span class="lr-num">1-2</span><span class="lr-name">THE DEATH OF THE PARTY</span><span class="lr-type">ОСНОВНОЙ</span></div>
                         <div class="level-row"><span class="lr-num">1-3</span><span class="lr-name">A ONE MACHINE ARMY</span><span class="lr-type encounter">СТОЛКНОВЕНИЕ // Cerberus Prime</span></div>
@@ -390,22 +528,20 @@
                 <div class="layer-section">
                     <div class="layer-section-head">// ПАРАМЕТРЫ</div>
                     <div class="layer-section-body">
-                        <div class="layer-desc" style="font-size:.68rem;line-height:1.9;">
-                            <b>АКТ:</b> I — Infinite Hyperdeath<br>
-                            <b>АРХИТЕКТУРА:</b> Монохромная, кристаллическая, плавающие платформы<br>
-                            <b>ЦВЕТОВАЯ ПАЛИТРА:</b> Синий / Белый / Холодный серый<br>
-                            <b>ПРИОРИТЕТНАЯ ЦЕЛЬ:</b> Cerberus Prime<br>
-                            <b>ДАНТЕ:</b> «Инферно», Песнь IV — первый круг, Лимб
-                        </div>
+                        <div class="param-row"><span class="param-key">АКТ</span><span class="param-val hi">I — Infinite Hyperdeath</span></div>
+                        <div class="param-row"><span class="param-key">АРХИТЕКТУРА</span><span class="param-val">Монохромная, кристаллическая, плавающие платформы</span></div>
+                        <div class="param-row"><span class="param-key">ЦВЕТОВАЯ ПАЛИТРА</span><span class="param-val colored">Синий / Белый / Холодный серый</span></div>
+                        <div class="param-row"><span class="param-key">ПРИОРИТЕТНАЯ ЦЕЛЬ</span><span class="param-val hi">Cerberus Prime</span></div>
+                        <div class="param-row"><span class="param-key">ДАНТЕ</span><span class="param-val">«Инферно», Песнь IV — первый круг, Лимб</span></div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- ══════════════════════════════════════════
+    <!-- ═══════════════════════════════════════
          СЛОЙ II — СТРАСТЬ
-    ══════════════════════════════════════════ -->
+    ═══════════════════════════════════════ -->
     <div class="tab-content" id="tab-layer2">
         <div class="layer-wrap">
             <div class="layer-title-row">
@@ -420,22 +556,22 @@
                             <div class="layer-desc">
                                 Второй сектор нижнего уровня. Зона неистовства и неудержимого порыва. Архитектура органическая, тёмно-розовая: пульсирующие стены, извивающиеся коридоры, напоминающие живую ткань. Пространство ощущается нестабильным, подвижным. Оппоненты значительно быстрее и непредсказуемее, чем в Лимбе — слой делает акцент на мобильности V1.
                                 <br><br>
-                                Завершающее столкновение на уровне 2-3 <strong>«SHEER HEART ATTACK»</strong> — взаимодействие с Hideous Mass, аномальным биологическим конгломератом из фрагментов различных организмов. Секретный уровень 2-S <strong>«MUST DIE»</strong> предназначен для опытных операторов — отличается значительно повышенным уровнем сложности.
+                                Завершающее взаимодействие на уровне 2-3 <strong>«SHEER HEART ATTACK»</strong> — с Hideous Mass, аномальным биологическим конгломератом из фрагментов различных организмов. Секретный уровень 2-S <strong>«MUST DIE»</strong> предназначен для опытных операторов — отличается значительно повышенным уровнем сложности.
                                 <div class="dante-ref">
-                                    <strong>// ИСТОЧНИК — ДАНТЕ, «ИНФЕРНО», ПЕСНЬ V:</strong><br>
-                                    Второй круг охраняет Минос — судья, назначающий грешникам круг наказания, обвивая хвостом столько раз, сколько кругов нужно пройти вниз. Осуждённые влекомы вечным ураганом — символ того, как страсть управляла ими при жизни. Среди упомянутых Данте: Клеопатра, Елена Троянская, Ахилл, Парис, Тристан. Здесь Данте лишился чувств от сострадания.
+                                    <strong>// ИСТОЧНИК — ДАНТЕ, «ИНФЕРНО», ПЕСНЬ V — ВТОРОЙ КРУГ:</strong><br>
+                                    Судья Минос назначает наказания. Осуждённые несомы вечным ураганом — символ того, как страсть управляла ими при жизни. Среди упомянутых: Клеопатра, Елена Троянская, Ахилл, Парис, Тристан. Данте лишился сознания от сострадания, услышав историю Франчески и Паоло.
                                 </div>
                             </div>
                             <div class="photo-frame">
-                                <div class="photo-frame-icon">🖼</div>
-                                <div class="photo-frame-label">ФОТО СЕКТОРА<br>ДОБАВИТЬ ИЗОБРАЖЕНИЕ</div>
+                                <div class="photo-frame-icon">□</div>
+                                <div class="photo-frame-label">ИЗОБРАЖЕНИЕ<br>СЕКТОРА</div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="layer-section">
                     <div class="layer-section-head">// УРОВНИ</div>
-                    <div class="layer-section-body" style="padding:.4rem 0;">
+                    <div class="layer-section-body" style="padding:.3rem 0;">
                         <div class="level-row"><span class="lr-num">2-1</span><span class="lr-name">BRIDGEBURNER</span><span class="lr-type">ОСНОВНОЙ</span></div>
                         <div class="level-row"><span class="lr-num">2-2</span><span class="lr-name">DEATH AT 20,000 VOLTS</span><span class="lr-type">ОСНОВНОЙ</span></div>
                         <div class="level-row"><span class="lr-num">2-3</span><span class="lr-name">SHEER HEART ATTACK</span><span class="lr-type encounter">СТОЛКНОВЕНИЕ // Hideous Mass</span></div>
@@ -445,76 +581,72 @@
                 <div class="layer-section">
                     <div class="layer-section-head">// ПАРАМЕТРЫ</div>
                     <div class="layer-section-body">
-                        <div class="layer-desc" style="font-size:.68rem;line-height:1.9;">
-                            <b>АКТ:</b> I — Infinite Hyperdeath<br>
-                            <b>АРХИТЕКТУРА:</b> Органическая, биологическая, нестабильная<br>
-                            <b>ЦВЕТОВАЯ ПАЛИТРА:</b> Розовый / Тёмно-пурпурный<br>
-                            <b>ПРИОРИТЕТНАЯ ЦЕЛЬ:</b> Hideous Mass<br>
-                            <b>ДАНТЕ:</b> «Инферно», Песнь V — второй круг, Lussuria
-                        </div>
+                        <div class="param-row"><span class="param-key">АКТ</span><span class="param-val hi">I — Infinite Hyperdeath</span></div>
+                        <div class="param-row"><span class="param-key">АРХИТЕКТУРА</span><span class="param-val">Органическая, биологическая, нестабильная</span></div>
+                        <div class="param-row"><span class="param-key">ЦВЕТОВАЯ ПАЛИТРА</span><span class="param-val colored">Розовый / Тёмно-пурпурный</span></div>
+                        <div class="param-row"><span class="param-key">ПРИОРИТЕТНАЯ ЦЕЛЬ</span><span class="param-val hi">Hideous Mass</span></div>
+                        <div class="param-row"><span class="param-key">ДАНТЕ</span><span class="param-val">«Инферно», Песнь V — второй круг, Lussuria</span></div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- ══════════════════════════════════════════
-         СЛОЙ III — ЧРЕВО (КРАСНЫЙ)
-    ══════════════════════════════════════════ -->
+    <!-- ═══════════════════════════════════════
+         СЛОЙ III — ЧРЕВО (КРАСНЫЙ — ВСЕГДА)
+    ═══════════════════════════════════════ -->
     <div class="tab-content" id="tab-layer3">
         <div class="layer-wrap">
             <div class="layer-title-row">
-                <h2 style="color:#ff2020;text-shadow:0 0 18px rgba(255,32,32,.5);">СЛОЙ III — GLUTTONY // ЧРЕВОУГОДИЕ</h2>
-                <div class="ltr-sub" style="color:#cc0000;">// АКТ I: INFINITE HYPERDEATH // ДАНТЕ: КРУГ III // СТАТУС: ЗАВЕРШЁН</div>
+                <h2>СЛОЙ III — GLUTTONY // ЧРЕВОУГОДИЕ</h2>
+                <div class="ltr-sub">// АКТ I: INFINITE HYPERDEATH // ДАНТЕ: КРУГ III // СТАТУС: ЗАВЕРШЁН</div>
             </div>
             <div class="layer-body">
-                <div class="layer-section" style="border-color:#3c0a0a;">
-                    <div class="layer-section-head" style="color:#cc3333;">// ОПИСАНИЕ СЕКТОРА</div>
+                <div class="layer-section">
+                    <div class="layer-section-head">// ОПИСАНИЕ СЕКТОРА</div>
                     <div class="layer-section-body">
                         <div class="desc-photo-grid">
                             <div class="layer-desc">
-                                Третий сектор нижнего уровня. Зона бесконечного поглощения. Огромные структуры из тёмно-зелёной биомассы и разрушающейся архитектуры. Само пространство ведёт себя как живой организм: стены дышат, структуры пульсируют, движутся. Это переходный сектор — он связывает первую половину Акта I со второй и подготавливает к столкновению с Гавриилом.
+                                Третий сектор нижнего уровня. Зона бесконечного поглощения. Огромные структуры из тёмно-зелёной биомассы и разрушающейся архитектуры. Само пространство ведёт себя как живой организм: стены дышат, структуры пульсируют, движутся. Это переходный сектор — он связывает первую половину Акта I со второй и подготавливает к взаимодействию с Гавриилом.
                                 <br><br>
                                 Уровень 3-1 <strong>«BELLY OF THE BEAST»</strong> («Во чреве зверя») буквально помещает V1 внутрь колоссального биологического существа: тоннели — артерии, камеры — органы, пространство сужается и расширяется. Уровень 3-2 <strong>«INTERMISSION»</strong> является первым из двух столкновений с Гавриилом — существом ангельской природы, исполняющим функцию судьи нижнего уровня.
-                                <div class="dante-ref" style="border-left-color:#ff2020;background:rgba(255,32,32,.07);">
-                                    <strong>// ИСТОЧНИК — ДАНТЕ, «ИНФЕРНО», ПЕСНЬ VI:</strong><br>
-                                    Третий круг — место, где обжоры лежат в грязной жиже под непрекращающимся ливнем из нечистот, града и снега. Их стережёт Цербер — трёхголовый пёс, рычащий, с красными глазами, жирным и чёрным брюхом, когтистыми руками. Он терзает грешников, сдирая шкуру. Данте встречает здесь Чакко — флорентийца, предсказывающего судьбу города.
+                                <div class="dante-ref">
+                                    <strong>// ИСТОЧНИК — ДАНТЕ, «ИНФЕРНО», ПЕСНЬ VI — ТРЕТИЙ КРУГ:</strong><br>
+                                    Третий круг — место, где обжоры лежат в грязной жиже под непрекращающимся ливнем из нечистот, града и снега. Их стережёт Цербер — трёхголовый пёс с красными глазами, когтистыми руками. Данте встречает здесь Чакко — флорентийца, предсказывающего судьбу города.
                                 </div>
                             </div>
-                            <div class="photo-frame" style="border-color:#3c0a0a;">
-                                <div class="photo-frame-icon" style="color:#661111;">🖼</div>
-                                <div class="photo-frame-label" style="color:#661111;">ФОТО СЕКТОРА<br>ДОБАВИТЬ ИЗОБРАЖЕНИЕ</div>
+                            <div class="photo-frame">
+                                <div class="photo-frame-icon">□</div>
+                                <div class="photo-frame-label">ИЗОБРАЖЕНИЕ<br>СЕКТОРА</div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="layer-section" style="border-color:#3c0a0a;">
-                    <div class="layer-section-head" style="color:#cc3333;">// УРОВНИ</div>
-                    <div class="layer-section-body" style="padding:.4rem 0;">
+                <div class="layer-section">
+                    <div class="layer-section-head">// УРОВНИ</div>
+                    <div class="layer-section-body" style="padding:.3rem 0;">
                         <div class="level-row"><span class="lr-num">3-1</span><span class="lr-name">BELLY OF THE BEAST</span><span class="lr-type">ОСНОВНОЙ // ВНУТРИ СУЩЕСТВА</span></div>
                         <div class="level-row"><span class="lr-num">3-2</span><span class="lr-name">INTERMISSION</span><span class="lr-type encounter">СТОЛКНОВЕНИЕ // Gabriel (I)</span></div>
                     </div>
                 </div>
-                <div class="layer-section" style="border-color:#3c0a0a;">
-                    <div class="layer-section-head" style="color:#cc3333;">// ПАРАМЕТРЫ</div>
+                <div class="layer-section">
+                    <div class="layer-section-head">// ПАРАМЕТРЫ</div>
                     <div class="layer-section-body">
-                        <div class="layer-desc" style="font-size:.68rem;line-height:1.9;">
-                            <b>АКТ:</b> I — Infinite Hyperdeath<br>
-                            <b>АРХИТЕКТУРА:</b> Биологическая, внутриорганическая, биомасса<br>
-                            <b>ЦВЕТОВАЯ ПАЛИТРА:</b> <span style="color:#ff2020;font-weight:bold;">КРАСНЫЙ</span> / Тёмно-зелёный (оригинал)<br>
-                            <b>ПРИОРИТЕТНАЯ ЦЕЛЬ:</b> Gabriel (первое столкновение)<br>
-                            <b>УРОВНЕЙ:</b> 2 основных (переходный сектор)<br>
-                            <b>ДАНТЕ:</b> «Инферно», Песнь VI — третий круг, Gola
-                        </div>
+                        <div class="param-row"><span class="param-key">АКТ</span><span class="param-val hi">I — Infinite Hyperdeath</span></div>
+                        <div class="param-row"><span class="param-key">АРХИТЕКТУРА</span><span class="param-val">Биологическая, внутриорганическая, биомасса</span></div>
+                        <div class="param-row"><span class="param-key">ЦВЕТОВАЯ ПАЛИТРА</span><span class="param-val colored">КРАСНЫЙ // переопределён для этого сектора</span></div>
+                        <div class="param-row"><span class="param-key">ПРИОРИТЕТНАЯ ЦЕЛЬ</span><span class="param-val hi">Gabriel (первое столкновение)</span></div>
+                        <div class="param-row"><span class="param-key">УРОВНЕЙ</span><span class="param-val">2 основных (переходный сектор)</span></div>
+                        <div class="param-row"><span class="param-key">ДАНТЕ</span><span class="param-val">«Инферно», Песнь VI — третий круг, Gola</span></div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- ══════════════════════════════════════════
+    <!-- ═══════════════════════════════════════
          СЛОЙ IV — ЖАДНОСТЬ
-    ══════════════════════════════════════════ -->
+    ═══════════════════════════════════════ -->
     <div class="tab-content" id="tab-layer4">
         <div class="layer-wrap">
             <div class="layer-title-row">
@@ -529,22 +661,22 @@
                             <div class="layer-desc">
                                 Четвёртый сектор. Зона накопления и удержания. Архитектура вычурная, претенциозная, но в глубоком состоянии упадка: золото и мрамор, покрытые трещинами, рухнувшие своды, великолепие в руинах. Богатство, оказавшееся бессмысленным. Наиболее сложный и протяжённый сектор Акта I — содержит четыре основных уровня и один секретный.
                                 <br><br>
-                                На уровне 4-2 <strong>«VIOLENCE»</strong> происходит первое столкновение с V2 — зеркальным прототипом той же серии, что и V1. V2 использует идентичные механики, но является самостоятельной единицей с иной тактикой. Финал сектора — уровень 4-4 <strong>«CAIN»</strong> — содержит встречу с Миносом Прайм: механизированной интерпретацией Миноса, судьи нижнего уровня из произведения Данте.
+                                На уровне 4-2 <strong>«VIOLENCE»</strong> происходит первое взаимодействие с V2 — зеркальным прототипом той же серии, что и V1. V2 использует идентичные механики, но является самостоятельной единицей с иной тактикой. Финал сектора — уровень 4-4 <strong>«CAIN»</strong> — содержит взаимодействие с Minos Prime: механизированной интерпретацией судьи нижнего уровня из произведения Данте.
                                 <div class="dante-ref">
-                                    <strong>// ИСТОЧНИК — ДАНТЕ, «ИНФЕРНО», ПЕСНЬ VII:</strong><br>
-                                    Четвёртый круг охраняет Плутос — демон богатства. Скупцы и расточители разделены на два потока: они толкают навстречу друг другу огромные тяжести, сталкиваются, разворачиваются и толкают снова — в бесконечном цикле. Данте замечает, что многие из них — клирики, папы и кардиналы. Судьба у всех одна.
+                                    <strong>// ИСТОЧНИК — ДАНТЕ, «ИНФЕРНО», ПЕСНЬ VII — ЧЕТВЁРТЫЙ КРУГ:</strong><br>
+                                    Четвёртый круг охраняет Плутос — демон богатства. Скупцы и расточители разделены на два потока: они толкают навстречу друг другу огромные тяжести, сталкиваются, разворачиваются и толкают снова — в бесконечном цикле. Многие из них — клирики, папы и кардиналы.
                                 </div>
                             </div>
                             <div class="photo-frame">
-                                <div class="photo-frame-icon">🖼</div>
-                                <div class="photo-frame-label">ФОТО СЕКТОРА<br>ДОБАВИТЬ ИЗОБРАЖЕНИЕ</div>
+                                <div class="photo-frame-icon">□</div>
+                                <div class="photo-frame-label">ИЗОБРАЖЕНИЕ<br>СЕКТОРА</div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="layer-section">
                     <div class="layer-section-head">// УРОВНИ</div>
-                    <div class="layer-section-body" style="padding:.4rem 0;">
+                    <div class="layer-section-body" style="padding:.3rem 0;">
                         <div class="level-row"><span class="lr-num">4-1</span><span class="lr-name">CLAIR DE LUNE</span><span class="lr-type">ОСНОВНОЙ</span></div>
                         <div class="level-row"><span class="lr-num">4-2</span><span class="lr-name">VIOLENCE</span><span class="lr-type encounter">СТОЛКНОВЕНИЕ // V2 (I)</span></div>
                         <div class="level-row"><span class="lr-num">4-3</span><span class="lr-name">A SHOT IN THE DARK</span><span class="lr-type">ОСНОВНОЙ</span></div>
@@ -555,22 +687,20 @@
                 <div class="layer-section">
                     <div class="layer-section-head">// ПАРАМЕТРЫ</div>
                     <div class="layer-section-body">
-                        <div class="layer-desc" style="font-size:.68rem;line-height:1.9;">
-                            <b>АКТ:</b> I — Infinite Hyperdeath<br>
-                            <b>АРХИТЕКТУРА:</b> Золото, мрамор, упадок роскоши<br>
-                            <b>ЦВЕТОВАЯ ПАЛИТРА:</b> Золотой / Мраморный / Охра<br>
-                            <b>ПРИОРИТЕТНЫЕ ЦЕЛИ:</b> V2 (первое столкновение), Minos Prime<br>
-                            <b>ДАНТЕ:</b> «Инферно», Песнь VII — четвёртый круг, Avarizia
-                        </div>
+                        <div class="param-row"><span class="param-key">АКТ</span><span class="param-val hi">I — Infinite Hyperdeath</span></div>
+                        <div class="param-row"><span class="param-key">АРХИТЕКТУРА</span><span class="param-val">Золото, мрамор, упадок роскоши</span></div>
+                        <div class="param-row"><span class="param-key">ЦВЕТОВАЯ ПАЛИТРА</span><span class="param-val colored">Золотой / Мраморный / Охра</span></div>
+                        <div class="param-row"><span class="param-key">ПРИОРИТЕТНЫЕ ЦЕЛИ</span><span class="param-val hi">V2 (первое), Minos Prime</span></div>
+                        <div class="param-row"><span class="param-key">ДАНТЕ</span><span class="param-val">«Инферно», Песнь VII — четвёртый круг, Avarizia</span></div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- ══════════════════════════════════════════
+    <!-- ═══════════════════════════════════════
          СЛОЙ V — ГНЕВ
-    ══════════════════════════════════════════ -->
+    ═══════════════════════════════════════ -->
     <div class="tab-content" id="tab-layer5">
         <div class="layer-wrap">
             <div class="layer-title-row">
@@ -585,22 +715,22 @@
                             <div class="layer-desc">
                                 Пятый сектор. Океан бурь и неистовства. Большая часть локаций — водная среда: штормовое море, корабли-развалины, затопленные платформы, нависающие конструкции, рушащиеся под воздействием стихии. V1 перемещается по остовам разрушенных судов, нейтрализуя оппонентов, адаптированных к водной среде.
                                 <br><br>
-                                Слой примечателен финальным столкновением: уровень 5-4 <strong>«LEVIATHAN»</strong> содержит взаимодействие с колоссальным морским существом. Левиафан — не стандартная встреча: механика столкновения принципиально отличается от предыдущих. В библейской традиции (Книга Иова, 40:25–41:26) Левиафан — морское чудовище, символ первозданного хаоса, неподвластного человеку.
+                                Слой примечателен финальным взаимодействием: уровень 5-4 <strong>«LEVIATHAN»</strong> — с колоссальным морским существом. Механика этого столкновения принципиально отличается от предыдущих. В библейской традиции (Книга Иова, 40:25–41:26) Левиафан — морское чудовище, символ первозданного хаоса, неподвластного человеку.
                                 <div class="dante-ref">
-                                    <strong>// ИСТОЧНИК — ДАНТЕ, «ИНФЕРНО», ПЕСНИ VIII–IX:</strong><br>
-                                    Пятый круг — болото реки Стикс. Гневливые дерутся на поверхности воды: бьют друг друга кулаками, ногами, головой и зубами. Уныло-ленивые погружены в трясину, издавая булькающие звуки. За болотом — Город Дис, охраняемый падшими. Данте и Вергилий переправляются на лодке Флегия.
+                                    <strong>// ИСТОЧНИК — ДАНТЕ, «ИНФЕРНО», ПЕСНИ VIII–IX — ПЯТЫЙ КРУГ:</strong><br>
+                                    Болото реки Стикс. Гневливые дерутся на поверхности воды. Уныло-ленивые погружены в трясину, издавая булькающие звуки. За болотом — Город Дис, охраняемый падшими. Данте и Вергилий переправляются на лодке Флегия.
                                 </div>
                             </div>
                             <div class="photo-frame">
-                                <div class="photo-frame-icon">🖼</div>
-                                <div class="photo-frame-label">ФОТО СЕКТОРА<br>ДОБАВИТЬ ИЗОБРАЖЕНИЕ</div>
+                                <div class="photo-frame-icon">□</div>
+                                <div class="photo-frame-label">ИЗОБРАЖЕНИЕ<br>СЕКТОРА</div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="layer-section">
                     <div class="layer-section-head">// УРОВНИ</div>
-                    <div class="layer-section-body" style="padding:.4rem 0;">
+                    <div class="layer-section-body" style="padding:.3rem 0;">
                         <div class="level-row"><span class="lr-num">5-1</span><span class="lr-name">IN THE WAKE OF POSEIDON</span><span class="lr-type">ОСНОВНОЙ</span></div>
                         <div class="level-row"><span class="lr-num">5-2</span><span class="lr-name">WAVES OF THE STARLESS SEA</span><span class="lr-type">ОСНОВНОЙ</span></div>
                         <div class="level-row"><span class="lr-num">5-3</span><span class="lr-name">SHIP OF FOOLS</span><span class="lr-type">ОСНОВНОЙ</span></div>
@@ -610,22 +740,20 @@
                 <div class="layer-section">
                     <div class="layer-section-head">// ПАРАМЕТРЫ</div>
                     <div class="layer-section-body">
-                        <div class="layer-desc" style="font-size:.68rem;line-height:1.9;">
-                            <b>АКТ:</b> I — Infinite Hyperdeath<br>
-                            <b>СРЕДА:</b> Водная, морская, штормовая<br>
-                            <b>ЦВЕТОВАЯ ПАЛИТРА:</b> Оранжевый / Тёмно-синий / Морской<br>
-                            <b>ПРИОРИТЕТНАЯ ЦЕЛЬ:</b> Leviathan<br>
-                            <b>ДАНТЕ:</b> «Инферно», Песни VIII–IX — пятый круг, Ira
-                        </div>
+                        <div class="param-row"><span class="param-key">АКТ</span><span class="param-val hi">I — Infinite Hyperdeath</span></div>
+                        <div class="param-row"><span class="param-key">СРЕДА</span><span class="param-val">Водная, морская, штормовая</span></div>
+                        <div class="param-row"><span class="param-key">ЦВЕТОВАЯ ПАЛИТРА</span><span class="param-val colored">Оранжевый / Тёмно-синий / Морской</span></div>
+                        <div class="param-row"><span class="param-key">ПРИОРИТЕТНАЯ ЦЕЛЬ</span><span class="param-val hi">Leviathan</span></div>
+                        <div class="param-row"><span class="param-key">ДАНТЕ</span><span class="param-val">«Инферно», Песни VIII–IX — пятый круг, Ira</span></div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- ══════════════════════════════════════════
+    <!-- ═══════════════════════════════════════
          СЛОЙ VI — ЕРЕСЬ
-    ══════════════════════════════════════════ -->
+    ═══════════════════════════════════════ -->
     <div class="tab-content" id="tab-layer6">
         <div class="layer-wrap">
             <div class="layer-title-row">
@@ -642,20 +770,20 @@
                                 <br><br>
                                 Уровень 6-2 <strong>«AESTHETICS OF HATE»</strong> — второе и финальное взаимодействие с Гавриилом. Это полноценный многофазный противник, «Судья» нижнего уровня: архангел, утративший верность прежним принципам и ставший карателем. После нейтрализации Гавриила открывается переход в Акт II.
                                 <div class="dante-ref">
-                                    <strong>// ИСТОЧНИК — ДАНТЕ, «ИНФЕРНО», ПЕСНИ IX–XI:</strong><br>
-                                    Шестой круг — за стенами Города Дис. Еретики заключены в раскалённые каменные гробницы, которые будут запечатаны навечно в День Страшного суда. Среди упомянутых — эпикурейцы, отрицавшие бессмертие души. Данте беседует с Фаринатой дельи Уберти — непоколебимым флорентийским политиком, гордым даже в осуждении.
+                                    <strong>// ИСТОЧНИК — ДАНТЕ, «ИНФЕРНО», ПЕСНИ IX–XI — ШЕСТОЙ КРУГ:</strong><br>
+                                    Шестой круг — за стенами Города Дис. Еретики заключены в раскалённые каменные гробницы, которые будут запечатаны навечно. Среди упомянутых — эпикурейцы, отрицавшие бессмертие души. Данте беседует с Фаринатой дельи Уберти — непоколебимым флорентийским политиком, гордым даже в осуждении.
                                 </div>
                             </div>
                             <div class="photo-frame">
-                                <div class="photo-frame-icon">🖼</div>
-                                <div class="photo-frame-label">ФОТО СЕКТОРА<br>ДОБАВИТЬ ИЗОБРАЖЕНИЕ</div>
+                                <div class="photo-frame-icon">□</div>
+                                <div class="photo-frame-label">ИЗОБРАЖЕНИЕ<br>СЕКТОРА</div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="layer-section">
                     <div class="layer-section-head">// УРОВНИ</div>
-                    <div class="layer-section-body" style="padding:.4rem 0;">
+                    <div class="layer-section-body" style="padding:.3rem 0;">
                         <div class="level-row"><span class="lr-num">6-1</span><span class="lr-name">CRY FOR THE WEEPER</span><span class="lr-type">ОСНОВНОЙ</span></div>
                         <div class="level-row"><span class="lr-num">6-2</span><span class="lr-name">AESTHETICS OF HATE</span><span class="lr-type encounter">ФИНАЛ АКТ I // Gabriel (II)</span></div>
                     </div>
@@ -663,22 +791,20 @@
                 <div class="layer-section">
                     <div class="layer-section-head">// ПАРАМЕТРЫ</div>
                     <div class="layer-section-body">
-                        <div class="layer-desc" style="font-size:.68rem;line-height:1.9;">
-                            <b>АКТ:</b> I — Infinite Hyperdeath (финал)<br>
-                            <b>АРХИТЕКТУРА:</b> Пурпурная, монументальные руины<br>
-                            <b>ЦВЕТОВАЯ ПАЛИТРА:</b> Пурпурный + Золотой (Gabriel)<br>
-                            <b>ПРИОРИТЕТНАЯ ЦЕЛЬ:</b> Gabriel — финальное взаимодействие<br>
-                            <b>ДАНТЕ:</b> «Инферно», Песни IX–XI — шестой круг, Eresia
-                        </div>
+                        <div class="param-row"><span class="param-key">АКТ</span><span class="param-val hi">I — Infinite Hyperdeath (финал)</span></div>
+                        <div class="param-row"><span class="param-key">АРХИТЕКТУРА</span><span class="param-val">Пурпурная, монументальные руины</span></div>
+                        <div class="param-row"><span class="param-key">ЦВЕТОВАЯ ПАЛИТРА</span><span class="param-val colored">Пурпурный + Золотой (Gabriel)</span></div>
+                        <div class="param-row"><span class="param-key">ПРИОРИТЕТНАЯ ЦЕЛЬ</span><span class="param-val hi">Gabriel — финальное взаимодействие</span></div>
+                        <div class="param-row"><span class="param-key">ДАНТЕ</span><span class="param-val">«Инферно», Песни IX–XI — шестой круг, Eresia</span></div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- ══════════════════════════════════════════
+    <!-- ═══════════════════════════════════════
          СЛОЙ VII — РАЗДОР
-    ══════════════════════════════════════════ -->
+    ═══════════════════════════════════════ -->
     <div class="tab-content" id="tab-layer7">
         <div class="layer-wrap">
             <div class="layer-title-row">
@@ -691,24 +817,24 @@
                     <div class="layer-section-body">
                         <div class="desc-photo-grid">
                             <div class="layer-desc">
-                                Седьмой сектор открывает Акт II «Imperfect Hatred». Зона бесконечных столкновений и распада. Архитектура резко контрастная: разрушенные промышленные конструкции, выжженные пространства, открытые арены. Слой значительно превосходит предыдущие по интенсивности и сложности. Акт II разворачивает более глубокий нарратив об идентичности и цели V1.
+                                Седьмой сектор открывает Акт II «Imperfect Hatred». Зона бесконечных столкновений и распада. Архитектура резко контрастная: разрушенные промышленные конструкции, выжженные пространства, открытые арены. Слой значительно превосходит предыдущие по интенсивности и сложности. Акт II разворачивает нарратив об идентичности и цели V1.
                                 <br><br>
-                                На уровне 7-4 <strong>«...AND HELL FOLLOWED»</strong> происходит второе взаимодействие с V2. Секретный уровень 7-S <strong>«ANOTHER CASTLE»</strong> содержит встречу с Сизифом Прайм — ещё одной механизированной интерпретацией персонажа греческой мифологии, приговорённого к бесконечному бессмысленному труду.
+                                На уровне 7-4 <strong>«...AND HELL FOLLOWED»</strong> происходит второе взаимодействие с V2. Секретный уровень 7-S <strong>«ANOTHER CASTLE»</strong> содержит взаимодействие с Sisyphus Prime — механизированной интерпретацией персонажа греческой мифологии, обречённого на вечный бессмысленный труд.
                                 <div class="dante-ref">
-                                    <strong>// ИСТОЧНИК — ДАНТЕ, «ИНФЕРНО», ПЕСНИ XII–XVII:</strong><br>
-                                    Седьмой круг разделён на три кольца. Первое — река кипящей крови Флегетон, где в зависимости от степени вины погружены тираны и захватчики (охраняет кентавр Хирон). Второе — лес самоубийц: души превращены в деревья, гарпии терзают ветви. Третье — пустыня с огненным дождём, где лежат богохульники и насильники против природы. Охраняет весь круг Минотавр.
+                                    <strong>// ИСТОЧНИК — ДАНТЕ, «ИНФЕРНО», ПЕСНИ XII–XVII — СЕДЬМОЙ КРУГ:</strong><br>
+                                    Три кольца. Первое — река Флегетон (кипящая субстанция), где погружены тираны; охраняют кентавры во главе с Хироном. Второе — лес самоубийц: души в деревьях, гарпии терзают ветви. Третье — пустыня с огненным дождём. Охраняет всё кольцо Минотавр.
                                 </div>
                             </div>
                             <div class="photo-frame">
-                                <div class="photo-frame-icon">🖼</div>
-                                <div class="photo-frame-label">ФОТО СЕКТОРА<br>ДОБАВИТЬ ИЗОБРАЖЕНИЕ</div>
+                                <div class="photo-frame-icon">□</div>
+                                <div class="photo-frame-label">ИЗОБРАЖЕНИЕ<br>СЕКТОРА</div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="layer-section">
                     <div class="layer-section-head">// УРОВНИ</div>
-                    <div class="layer-section-body" style="padding:.4rem 0;">
+                    <div class="layer-section-body" style="padding:.3rem 0;">
                         <div class="level-row"><span class="lr-num">7-1</span><span class="lr-name">GARDEN OF FORKING PATHS</span><span class="lr-type">ОСНОВНОЙ</span></div>
                         <div class="level-row"><span class="lr-num">7-2</span><span class="lr-name">LIGHT UP THE NIGHT</span><span class="lr-type">ОСНОВНОЙ</span></div>
                         <div class="level-row"><span class="lr-num">7-3</span><span class="lr-name">NO SOUND, NO MEMORY</span><span class="lr-type">ОСНОВНОЙ</span></div>
@@ -719,22 +845,20 @@
                 <div class="layer-section">
                     <div class="layer-section-head">// ПАРАМЕТРЫ</div>
                     <div class="layer-section-body">
-                        <div class="layer-desc" style="font-size:.68rem;line-height:1.9;">
-                            <b>АКТ:</b> II — Imperfect Hatred<br>
-                            <b>АРХИТЕКТУРА:</b> Разрушенная, выжженная, контрастные пространства<br>
-                            <b>ЦВЕТОВАЯ ПАЛИТРА:</b> Бирюзовый / Тёмный<br>
-                            <b>ПРИОРИТЕТНЫЕ ЦЕЛИ:</b> V2 (второе столкновение), Sisyphus Prime<br>
-                            <b>ДАНТЕ:</b> «Инферно», Песни XII–XVII — седьмой круг, Violenza
-                        </div>
+                        <div class="param-row"><span class="param-key">АКТ</span><span class="param-val hi">II — Imperfect Hatred</span></div>
+                        <div class="param-row"><span class="param-key">АРХИТЕКТУРА</span><span class="param-val">Разрушенная, выжженная, контрастные пространства</span></div>
+                        <div class="param-row"><span class="param-key">ЦВЕТОВАЯ ПАЛИТРА</span><span class="param-val colored">Бирюзовый / Тёмный</span></div>
+                        <div class="param-row"><span class="param-key">ПРИОРИТЕТНЫЕ ЦЕЛИ</span><span class="param-val hi">V2 (второе), Sisyphus Prime</span></div>
+                        <div class="param-row"><span class="param-key">ДАНТЕ</span><span class="param-val">«Инферно», Песни XII–XVII — седьмой круг, Violenza</span></div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- ══════════════════════════════════════════
+    <!-- ═══════════════════════════════════════
          СЛОИ VIII–IX
-    ══════════════════════════════════════════ -->
+    ═══════════════════════════════════════ -->
     <div class="tab-content" id="tab-layer89">
         <div class="layer-wrap">
             <div class="layer-title-row">
@@ -743,76 +867,197 @@
             </div>
             <div class="layer-body">
                 <div class="layer-section">
-                    <div class="layer-section-head">// ОПИСАНИЕ // ПРЕДВАРИТЕЛЬНЫЕ ДАННЫЕ</div>
+                    <div class="layer-section-head">// ПРЕДВАРИТЕЛЬНЫЕ ДАННЫЕ</div>
                     <div class="layer-section-body">
                         <div class="desc-photo-grid">
                             <div class="layer-desc">
                                 Слои VIII и IX соответствуют наиболее глубоким секторам нижнего уровня по структуре «Инферно» Данте. На момент публикации данные недоступны — секторы находятся в стадии активной разработки.
                                 <br><br>
-                                По материалам «Инферно»: слой VIII (Malebolge — «злые щели») — структура из десяти концентрических рвов, каждый из которых содержит конкретную категорию обманщиков: соблазнители, льстецы, симониты, прорицатели, взяточники, лицемеры, воры, лжесоветники, сеятели раздора, фальсификаторы. Слой IX (Cocytus) — замёрзшее озеро в самом низу нижнего уровня, разделённое на четыре зоны по степени предательства. В центре — Люцифер, вмёрзший по пояс в лёд.
+                                По материалам «Инферно»: <strong>слой VIII (Malebolge — «злые щели»)</strong> — структура из десяти концентрических рвов, каждый содержит конкретную категорию обманщиков: соблазнители, льстецы, симониты, прорицатели, взяточники, лицемеры, воры, лжесоветники, сеятели раздора, фальсификаторы. <strong>Слой IX (Cocytus)</strong> — замёрзшее озеро в самом низу нижнего уровня, разделённое на четыре зоны по степени предательства. В центре — Люцифер, вмёрзший по пояс в лёд.
                                 <div class="dante-ref">
                                     <strong>// ИСТОЧНИК — ДАНТЕ, «ИНФЕРНО», ПЕСНИ XVIII–XXXIV:</strong><br>
-                                    Восьмой круг — Злые Щели (Malebolge). Девятый круг — озеро Коцит. Четыре зоны предательства: Каина (предавшие родных), Антенора (предавшие родину), Толомея (предавшие гостей), Джудекка (предавшие благодетелей). Сатана (Дит) — трёхликий, вмёрзший в центр озера, пережёвывает Иуду, Брута и Кассия.
+                                    Восьмой круг — Злые Щели (Malebolge). Девятый круг — озеро Коцит. Четыре зоны предательства: Каина, Антенора, Толомея, Джудекка. Сатана (Дит) — трёхликий, вмёрзший в центр озера, пережёвывает Иуду, Брута и Кассия. Данте и Вергилий выбираются через тело Люцифера к звёздам.
                                 </div>
                             </div>
                             <div class="photo-frame">
-                                <div class="photo-frame-icon">🖼</div>
-                                <div class="photo-frame-label">ФОТО СЕКТОРА<br>ДАННЫЕ ЗАКРЫТЫ</div>
+                                <div class="photo-frame-icon">□</div>
+                                <div class="photo-frame-label">ДАННЫЕ<br>ЗАКРЫТЫ</div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="wip-notice">
                     <span class="wip-icon">VIII — IX</span>
-                    <div class="wip-title">ДАННЫЕ НЕДОСТУПНЫ — В РАЗРАБОТКЕ</div>
-                    <div class="wip-text">Секторы VIII (Malebolge) и IX (Cocytus/Treachery) не выпущены.<br>Информация будет обновлена по мере выхода контента.</div>
+                    <div class="wip-title">DATA UNAVAILABLE // IN DEVELOPMENT</div>
+                    <div class="wip-text">Секторы VIII (Malebolge) и IX (Cocytus / Treachery) не выпущены.<br>Информация будет обновлена по мере выхода контента.</div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- FOOTER -->
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--text-4);">
-        <a href="index.html" class="back-link">← ВЕРНУТЬСЯ НА ГЛАВНУЮ</a>
-        <div style="font-size:.55rem;color:var(--text-3);letter-spacing:.15em;text-transform:uppercase;">LAYER.HTML // ВЕРСИЯ 1 // JS</div>
-    </div>
+    <!-- ═══════════════════════════════════════
+         FOOTER
+    ═══════════════════════════════════════ -->
+    <div class="divider" style="margin-top:1.5rem;"></div>
     <div class="site-footer">
-        <div class="footer-logo">V1 // ULTRAKILL</div>
-        <div>// ЭНЕРГИЯ — РЕСУРС // НИЖНИЙ УРОВЕНЬ — ПОЛОН //</div>
-        <div>// ИСТОЧНИК: ULTRAKILL WIKI // FANDOM // ДАНТЕ АЛИГЬЕРИ //</div>
+        <div class="footer-logo">ULTRAKILL // V1</div>
+        <div class="footer-text">// ЭНЕРГИЯ — РЕСУРС // НИЖНИЙ УРОВЕНЬ — ПОЛОН //</div>
+        <a href="index.html" class="back-link">◄ ГЛАВНАЯ</a>
+    </div>
+    <div style="text-align:center;padding:.6rem 0;font-size:.48rem;color:#1a1a1a;letter-spacing:.2em;text-transform:uppercase;">
+        ИСТОЧНИК: ULTRAKILL WIKI // ДАНТЕ АЛИГЬЕРИ «БОЖЕСТВЕННАЯ КОМЕДИЯ» // ВЕРСИЯ 2 // COMBINED
     </div>
 
-</div>
+</div><!-- /page -->
 
 <script>
-var THEME_LABELS = {dark:'DARK // ORIGINAL',v1:'V1 // MACHINE // BLUE',v2:'V2 // MIRROR // RED',gabriel:'GABRIEL // JUDGE // GOLD'};
-function setTheme(t){
-    document.body.setAttribute('data-theme',t);
-    document.querySelectorAll('.tp-btn').forEach(function(b){b.classList.toggle('active',b.dataset.tv===t);});
-    var l=document.getElementById('tpCurrent');if(l)l.textContent='АКТИВНА: '+THEME_LABELS[t];
-    try{localStorage.setItem('uk_theme',t);}catch(e){}
-}
-var autoMode=false,currentTab='prelude';
-var LAYER_MAP={prelude:'prelude',layer1:'l1',layer2:'l2',layer3:'l3',layer4:'l4',layer5:'l5',layer6:'l6',layer7:'l7',layer89:'l89'};
-function chooseMode(mode){
-    autoMode=(mode==='auto');
-    document.getElementById('themeModal').classList.add('hidden');
-    var badge=document.getElementById('autoBadge');
-    if(autoMode){document.body.classList.add('auto-mode');if(badge)badge.classList.add('visible');applyLayerTheme(currentTab);}
-    else{document.body.classList.remove('auto-mode');if(badge)badge.classList.remove('visible');document.body.removeAttribute('data-layer');}
-}
-function applyLayerTheme(tabId){if(!autoMode)return;var lt=LAYER_MAP[tabId];if(lt)document.body.setAttribute('data-layer',lt);}
-function switchTab(id,btn){
-    currentTab=id;
-    document.querySelectorAll('.tab-content').forEach(function(el){el.classList.remove('active');});
-    document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');});
-    var target=document.getElementById('tab-'+id);if(target)target.classList.add('active');
-    if(btn)btn.classList.add('active');
-    applyLayerTheme(id);
-}
-(function(){
-    try{var s=localStorage.getItem('uk_theme');if(s&&THEME_LABELS[s])setTheme(s);}catch(e){}
-})();
+    /* ═══════════════════════════════════════
+       ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК
+    ═══════════════════════════════════════ */
+    var currentTab = 'prelude';
+
+    function switchTab(id, btn) {
+        currentTab = id;
+        document.querySelectorAll('.tab-content').forEach(function(el){ el.classList.remove('active'); });
+        document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+        var target = document.getElementById('tab-' + id);
+        if (target) target.classList.add('active');
+        if (btn) btn.classList.add('active');
+    }
+
+    /* ═══════════════════════════════════════
+       ВЫБОР РЕЖИМА ЦВЕТА
+    ═══════════════════════════════════════ */
+    function chooseMode(mode) {
+        document.getElementById('themeModal').classList.add('hidden');
+        var badge = document.getElementById('autoBadge');
+        var label = document.getElementById('modeLabel');
+        if (mode === 'auto') {
+            document.body.classList.add('auto-mode');
+            if (badge) badge.classList.add('visible');
+            if (label) label.textContent = 'AUTO';
+        } else {
+            document.body.classList.remove('auto-mode');
+            if (badge) badge.classList.remove('visible');
+            if (label) label.textContent = 'STANDARD';
+        }
+        try { localStorage.setItem('uk_colourmode', mode); } catch(e) {}
+    }
+
+    function resetMode() {
+        document.getElementById('themeModal').classList.remove('hidden');
+    }
+
+    /* Восстановление выбора при загрузке */
+    (function(){
+        try {
+            var saved = localStorage.getItem('uk_colourmode');
+            if (saved === 'auto' || saved === 'original') {
+                chooseMode(saved);
+            }
+            /* Если нет сохранённого — показываем модальное окно (уже показано по умолчанию) */
+        } catch(e) {}
+    })();
 </script>
+
+<!-- ═══════════════════════════════════════
+     AUTO-MODE STYLES (injected via <style>)
+     В режиме AUTO — вкладки получают цвет слоя
+═══════════════════════════════════════ -->
+<style>
+    /* Standard mode: все вкладки монохромны */
+    .tab-btn { color:#333; }
+    .tab-btn:hover { background:#111; color:#fff; }
+    .tab-btn.active { background:#fff; color:#000; }
+
+    /* AUTO mode override: вкладки получают цвет своего слоя */
+    body.auto-mode .tab-btn { color:var(--lc, #444); }
+    body.auto-mode .tab-btn:hover {
+        background:var(--lc-dim, #1a1a1a);
+        color:var(--lc, #fff);
+    }
+    body.auto-mode .tab-btn.active {
+        background:var(--lc, #fff);
+        color:#000;
+    }
+    body.auto-mode .tab-btn.active .tb-name { color:rgba(0,0,0,.5); }
+
+    /* Standard mode: содержимое монохромно */
+    .tab-content { --lc:#fff; --lc-bg:rgba(255,255,255,.02); --lc-bd:#222; --lc-dim:#0a0a0a; }
+    .tab-content .layer-title-row h2 { color:#fff; text-shadow:none; }
+    .tab-content .layer-title-row .ltr-sub { color:#444; opacity:1; }
+    .tab-content .layer-section { border-color:#1e1e1e; }
+    .tab-content .layer-section-head { color:#444; }
+    .tab-content .dante-ref { border-left-color:#fff; background:rgba(255,255,255,.02); }
+    .tab-content .lr-type.secret { color:#666; border-color:#333; }
+    .tab-content .lr-type.encounter { color:#fff; border-color:#fff; }
+    .tab-content .param-val.colored { color:#aaa; }
+
+    /* AUTO mode override: содержимое использует цвет слоя */
+    body.auto-mode #tab-prelude { --lc:#ff6600; --lc-bg:rgba(255,102,0,.06); --lc-bd:#3a1800; --lc-dim:rgba(255,102,0,.08); }
+    body.auto-mode #tab-layer1  { --lc:#88aaff; --lc-bg:rgba(136,170,255,.06); --lc-bd:#1a2e60; --lc-dim:rgba(136,170,255,.07); }
+    body.auto-mode #tab-layer2  { --lc:#ff44cc; --lc-bg:rgba(255,68,204,.06); --lc-bd:#3c0a34; --lc-dim:rgba(255,68,204,.07); }
+    body.auto-mode #tab-layer3  { --lc:#ff2020; --lc-bg:rgba(255,32,32,.07); --lc-bd:#3c0a0a; --lc-dim:rgba(255,32,32,.08); }
+    body.auto-mode #tab-layer4  { --lc:#ffc800; --lc-bg:rgba(255,200,0,.06); --lc-bd:#3a2c00; --lc-dim:rgba(255,200,0,.07); }
+    body.auto-mode #tab-layer5  { --lc:#ff8800; --lc-bg:rgba(255,136,0,.06); --lc-bd:#3a1c00; --lc-dim:rgba(255,136,0,.07); }
+    body.auto-mode #tab-layer6  { --lc:#cc44ff; --lc-bg:rgba(204,68,255,.06); --lc-bd:#300048; --lc-dim:rgba(204,68,255,.07); }
+    body.auto-mode #tab-layer7  { --lc:#00ccbb; --lc-bg:rgba(0,204,187,.06); --lc-bd:#0e302c; --lc-dim:rgba(0,204,187,.07); }
+    body.auto-mode #tab-layer89 { --lc:#cc0000; --lc-bg:rgba(204,0,0,.06); --lc-bd:#2e0a0a; --lc-dim:rgba(204,0,0,.07); }
+
+    body.auto-mode .tab-content .layer-title-row h2 {
+        color:var(--lc);
+        text-shadow:0 0 18px var(--lc-bg);
+    }
+    body.auto-mode .tab-content .layer-title-row .ltr-sub {
+        color:var(--lc);
+        opacity:.65;
+    }
+    body.auto-mode .tab-content .layer-section {
+        border-color:var(--lc-bd);
+    }
+    body.auto-mode .tab-content .layer-section-head {
+        color:var(--lc);
+        border-bottom-color:var(--lc-bd);
+        background:#080808;
+    }
+    body.auto-mode .tab-content .dante-ref {
+        border-left-color:var(--lc);
+        background:var(--lc-bg);
+    }
+    body.auto-mode .tab-content .lr-type.secret {
+        color:var(--lc);
+        border-color:var(--lc-bd);
+    }
+    body.auto-mode .tab-content .lr-type.encounter {
+        color:var(--lc);
+        border-color:var(--lc);
+    }
+    body.auto-mode .tab-content .level-row:hover {
+        background:var(--lc-dim);
+    }
+    body.auto-mode .tab-content .param-val.colored {
+        color:var(--lc);
+    }
+    body.auto-mode .tab-content .photo-frame {
+        border-color:var(--lc-bd);
+    }
+    body.auto-mode .tab-content .photo-frame-icon {
+        color:var(--lc-bd);
+    }
+
+    /* Слой III (ЧРЕВО) — красный ВСЕГДА, в обоих режимах */
+    #tab-layer3 .layer-title-row h2 { color:#ff2020 !important; text-shadow:0 0 18px rgba(255,32,32,.3) !important; }
+    #tab-layer3 .layer-title-row .ltr-sub { color:#cc0000 !important; opacity:1 !important; }
+    #tab-layer3 .layer-section { border-color:#3c0a0a !important; }
+    #tab-layer3 .layer-section-head { color:#cc2222 !important; border-bottom-color:#3c0a0a !important; }
+    #tab-layer3 .dante-ref { border-left-color:#ff2020 !important; background:rgba(255,32,32,.05) !important; }
+    #tab-layer3 .lr-type.encounter { color:#ff2020 !important; border-color:#ff2020 !important; }
+    #tab-layer3 .param-val.colored { color:#ff2020 !important; }
+    /* Кнопка III тоже всегда красная */
+    .tab-btn[data-tab="layer3"] { color:#882222 !important; }
+    .tab-btn[data-tab="layer3"]:hover { background:rgba(255,32,32,.14) !important; color:#ff2020 !important; }
+    .tab-btn[data-tab="layer3"].active { background:#ff2020 !important; color:#fff !important; }
+</style>
+
 </body>
 </html>
