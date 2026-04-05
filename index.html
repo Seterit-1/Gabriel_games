@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>ULTRAKILL // V1 UNIT — SYSTEM DATABASE</title>
+    <title>ULTRAKILL // ГЛАВНАЯ — SYSTEM DATABASE</title>
     <link href="https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -93,18 +93,9 @@
             --c-orange:  #bb5522;
         }
 
-        /* ══════════════════════════════════════════════════
-           CSS-фон: DARK + V1 (hex-сетка + скан-полоса)
-        ══════════════════════════════════════════════════ */
-        .theme-bg-wrap {
-            position: fixed; inset: 0;
-            pointer-events: none; z-index: 1;
-            overflow: hidden;
-        }
+        .theme-bg-wrap { position: fixed; inset: 0; pointer-events: none; z-index: 1; overflow: hidden; }
         .bg-dark { position: absolute; inset: 0; display: none; }
-        [data-theme="dark"] .bg-dark,
-        [data-theme="v1"]   .bg-dark { display: block; }
-
+        [data-theme="dark"] .bg-dark, [data-theme="v1"] .bg-dark { display: block; }
         .bg-dark-grid {
             position: absolute; inset: 0;
             background-image:
@@ -136,160 +127,53 @@
                 rgba(58,153,255,.014) 58%, transparent);
             animation-duration: 5s;
         }
-        @keyframes darkScan {
-            from { transform: translateY(0); }
-            to   { transform: translateY(calc(100vh + 110px)); }
-        }
+        @keyframes darkScan { from { transform: translateY(0); } to { transform: translateY(calc(100vh + 110px)); } }
 
-        /* ══════════════════════════════════════════════════
-           Canvas: V2 + GABRIEL (JavaScript рисует поверх)
-        ══════════════════════════════════════════════════ */
-        #theme-bg-canvas {
-            position: fixed; top: 0; left: 0;
-            width: 100%; height: 100%;
-            pointer-events: none; z-index: 2; opacity: 1;
-        }
+        #theme-bg-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 2; }
 
-        /* ══════════════════════════════════════════════════
-           SCANLINES (общий оверлей поверх всего)
-        ══════════════════════════════════════════════════ */
         body::after {
             content: '';
-            position: fixed; top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: repeating-linear-gradient(0deg,
-                transparent, transparent 2px,
-                rgba(0,0,0,0.12) 2px, rgba(0,0,0,0.12) 4px);
-            pointer-events: none;
-            z-index: 9999;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.12) 2px, rgba(0,0,0,0.12) 4px);
+            pointer-events: none; z-index: 9999;
         }
         body[data-theme="gabriel"]::after {
-            background: repeating-linear-gradient(0deg,
-                transparent, transparent 2px,
-                rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
+            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
         }
 
-        /* ══════════════════════════════════════════════════
-           ОСНОВНЫЕ СТИЛИ СТРАНИЦЫ
-        ══════════════════════════════════════════════════ */
         body {
-            background: var(--body-bg);
-            color: var(--text-p);
+            background: var(--body-bg); color: var(--text-p);
             font-family: 'Share Tech Mono', 'Fira Code', monospace;
-            min-height: 100vh;
-            overflow-x: hidden;
+            min-height: 100vh; overflow-x: hidden;
             transition: background 0.35s, color 0.35s;
         }
-        .page {
-            max-width: 1380px;
-            margin: 0 auto;
-            padding: 0 1rem 2rem;
-            position: relative;
-            z-index: 10;
-        }
-        .site-header {
-            border-bottom: 2px solid var(--acc);
-            padding: 1.4rem 0 1rem;
-            margin-bottom: 0;
-            transition: border-color 0.35s;
-        }
-        .header-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-        .logo-eyebrow {
-            font-size: 0.6rem;
-            color: var(--acc);
-            letter-spacing: 0.35em;
-            text-transform: uppercase;
-            margin-bottom: 0.25rem;
-        }
-        .logo-main {
-            font-family: 'VT323', monospace;
-            font-size: 4rem;
-            line-height: 1;
-            color: var(--text-p);
-            letter-spacing: 3px;
-            text-shadow: 0 0 24px var(--acc-glow), 2px 2px 0 var(--acc-dim);
-        }
-        .logo-main .v1 {
-            color: var(--acc);
-            text-shadow: 0 0 40px var(--acc), 0 0 80px var(--acc-glow);
-        }
+        .page { max-width: 1380px; margin: 0 auto; padding: 0 1rem 2rem; position: relative; z-index: 10; }
+
+        /* ─── ШАПКА ─────────────────────────────────────── */
+        .site-header { border-bottom: 2px solid var(--acc); padding: 1.4rem 0 1rem; margin-bottom: 0; transition: border-color 0.35s; }
+        .header-top { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; }
+        .logo-eyebrow { font-size: 0.6rem; color: var(--acc); letter-spacing: 0.35em; text-transform: uppercase; margin-bottom: 0.25rem; }
+        .logo-main { font-family: 'VT323', monospace; font-size: 4rem; line-height: 1; color: var(--text-p); letter-spacing: 3px; text-shadow: 0 0 24px var(--acc-glow), 2px 2px 0 var(--acc-dim); }
+        .logo-main .v1 { color: var(--acc); text-shadow: 0 0 40px var(--acc), 0 0 80px var(--acc-glow); }
         @keyframes glitch {
             0%,100% { transform: translate(0); }
-            15%     { transform: translate(-2px,1px); clip-path: inset(30% 0 30% 0); }
-            30%     { transform: translate(2px,-1px); }
-            50%     { transform: translate(0); }
-            65%     { transform: translate(-1px,2px); clip-path: inset(60% 0 5% 0); }
+            15% { transform: translate(-2px,1px); clip-path: inset(30% 0 30% 0); }
+            30% { transform: translate(2px,-1px); }
+            50% { transform: translate(0); }
+            65% { transform: translate(-1px,2px); clip-path: inset(60% 0 5% 0); }
         }
         .logo-main:hover { animation: glitch 0.25s steps(1) infinite; cursor: default; }
-        .logo-tagline {
-            font-size: 0.65rem;
-            color: var(--text-2);
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-            margin-top: 0.4rem;
-        }
-        .theme-panel {
-            background: var(--panel-bg);
-            border: 1px solid var(--panel-bd);
-            border-top: 2px solid var(--acc);
-            padding: 0.75rem 0.95rem;
-            min-width: 230px;
-            transition: background 0.35s, border-color 0.35s;
-        }
-        .tp-head {
-            font-size: 0.52rem;
-            color: var(--text-2);
-            letter-spacing: 0.25em;
-            text-transform: uppercase;
-            margin-bottom: 0.55rem;
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
-        }
-        .tp-head::before {
-            content: '';
-            width: 5px; height: 5px; flex-shrink: 0;
-            background: var(--acc);
-            box-shadow: 0 0 5px var(--acc);
-        }
-        .tp-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4px;
-        }
-        .tp-btn {
-            background: transparent;
-            border: 1px solid var(--text-4);
-            padding: 0.45rem 0.6rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 7px;
-            font-family: 'Share Tech Mono', monospace;
-            color: var(--text-p);
-            transition: 0.16s;
-            text-align: left;
-            position: relative;
-            overflow: hidden;
-        }
-        .tp-btn::after {
-            content: '';
-            position: absolute; bottom: 0; left: 0;
-            width: 0; height: 2px;
-            transition: width 0.18s;
-        }
+        .logo-tagline { font-size: 0.65rem; color: var(--text-2); letter-spacing: 0.2em; text-transform: uppercase; margin-top: 0.4rem; }
+
+        /* ─── ТЕМА ───────────────────────────────────────── */
+        .theme-panel { background: var(--panel-bg); border: 1px solid var(--panel-bd); border-top: 2px solid var(--acc); padding: 0.75rem 0.95rem; min-width: 230px; transition: background 0.35s, border-color 0.35s; }
+        .tp-head { font-size: 0.52rem; color: var(--text-2); letter-spacing: 0.25em; text-transform: uppercase; margin-bottom: 0.55rem; display: flex; align-items: center; gap: 0.4rem; }
+        .tp-head::before { content: ''; width: 5px; height: 5px; flex-shrink: 0; background: var(--acc); box-shadow: 0 0 5px var(--acc); }
+        .tp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+        .tp-btn { background: transparent; border: 1px solid var(--text-4); padding: 0.45rem 0.6rem; cursor: pointer; display: flex; align-items: center; gap: 7px; font-family: 'Share Tech Mono', monospace; color: var(--text-p); transition: 0.16s; text-align: left; position: relative; overflow: hidden; }
+        .tp-btn::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 2px; transition: width 0.18s; }
         .tp-btn:hover::after, .tp-btn.active::after { width: 100%; }
-        .tp-swatch {
-            width: 9px; height: 9px;
-            flex-shrink: 0;
-            transition: box-shadow 0.2s;
-        }
+        .tp-swatch { width: 9px; height: 9px; flex-shrink: 0; transition: box-shadow 0.2s; }
         .t-dark    .tp-swatch { background: #aaaaaa; }
         .t-v1      .tp-swatch { background: #3a99ff; box-shadow: 0 0 6px #3a99ff; }
         .t-v2      .tp-swatch { background: #ff1818; box-shadow: 0 0 6px #ff1818; }
@@ -305,137 +189,193 @@
         .tp-info { display: flex; flex-direction: column; gap: 1px; }
         .tp-name { font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; }
         .tp-sub  { font-size: 0.48rem; color: var(--text-1); letter-spacing: 0.1em; text-transform: uppercase; }
-        .tp-current {
-            font-size: 0.47rem;
-            color: var(--text-3);
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            text-align: right;
-            margin-top: 0.45rem;
-        }
-        .ticker-wrap {
-            background: var(--ticker-bg);
-            border-top: 1px solid var(--text-4);
-            border-bottom: 1px solid var(--text-4);
-            overflow: hidden;
-            padding: 0.28rem 0;
-            margin-bottom: 1.2rem;
-        }
-        .ticker-inner {
-            display: flex; gap: 4rem;
-            animation: tick 22s linear infinite;
-            white-space: nowrap;
-        }
-        @keyframes tick {
-            from { transform: translateX(0); }
-            to   { transform: translateX(-50%); }
-        }
+        .tp-current { font-size: 0.47rem; color: var(--text-3); letter-spacing: 0.15em; text-transform: uppercase; text-align: right; margin-top: 0.45rem; }
+
+        /* ─── ТИКЕР ──────────────────────────────────────── */
+        .ticker-wrap { background: var(--ticker-bg); border-top: 1px solid var(--text-4); border-bottom: 1px solid var(--text-4); overflow: hidden; padding: 0.28rem 0; margin-bottom: 1.2rem; }
+        .ticker-inner { display: flex; gap: 4rem; animation: tick 22s linear infinite; white-space: nowrap; }
+        @keyframes tick { from { transform: translateX(0); } to { transform: translateX(-50%); } }
         .ti   { font-size: 0.58rem; color: var(--text-2); letter-spacing: 0.2em; text-transform: uppercase; }
         .ti .r{ color: var(--acc); }
-        .ws-label {
-            font-size: 0.58rem; color: var(--text-2);
-            letter-spacing: 0.3em; text-transform: uppercase;
-            margin-bottom: 0.4rem;
+
+        /* ─── НАВИГАЦИЯ (новый стиль) ────────────────────── */
+        .nav-section {
+            display: flex;
+            align-items: stretch;
+            gap: 1rem;
+            margin-bottom: 1.4rem;
+            flex-wrap: wrap;
         }
-        .ws-grid { display: flex; flex-wrap: wrap; gap: 3px; margin-bottom: 1.4rem; }
-        .ws-slot {
+        .nav-home-indicator {
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-bd);
+            border-left: 3px solid var(--acc);
+            padding: 1rem 1.2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-width: 180px;
+        }
+        .nhi-label { font-size: 0.5rem; color: var(--text-2); letter-spacing: 0.3em; text-transform: uppercase; margin-bottom: 0.2rem; }
+        .nhi-name  { font-family: 'VT323', monospace; font-size: 2rem; color: var(--acc); text-shadow: 0 0 12px var(--acc-glow); line-height: 1; }
+        .nhi-sub   { font-size: 0.55rem; color: var(--text-1); letter-spacing: 0.15em; text-transform: uppercase; margin-top: 0.15rem; }
+        .nhi-dot   { width: 6px; height: 6px; background: var(--acc); box-shadow: 0 0 6px var(--acc); display: inline-block; margin-right: 6px; }
+
+        .nav-buttons-right {
+            flex: 1;
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            flex: 1;
+            min-width: 140px;
             background: var(--panel-bg);
             border: 1px solid var(--text-4);
-            border-bottom: 2px solid var(--text-4);
-            padding: 0.55rem 1.1rem;
+            border-bottom: 3px solid var(--text-4);
+            padding: 1.1rem 1rem;
             cursor: pointer;
-            display: flex; align-items: center; gap: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: space-between;
             text-decoration: none;
             color: var(--text-p);
             font-family: 'Share Tech Mono', monospace;
-            font-size: 0.8rem;
-            transition: 0.14s;
+            transition: 0.15s;
             position: relative;
             overflow: hidden;
-            min-width: 150px;
-            user-select: none;
+            gap: 0.5rem;
         }
-        .ws-slot::before {
+        .nav-btn::before {
             content: '';
             position: absolute; left: 0; top: 0;
             width: 3px; height: 100%;
-            background: var(--text-4); transition: 0.14s;
+            background: var(--text-4); transition: 0.15s;
         }
-        .ws-slot::after {
+        .nav-btn::after {
             content: '';
             position: absolute; bottom: 0; left: 0;
-            width: 0; height: 2px;
-            transition: width 0.18s;
+            width: 0; height: 3px;
+            transition: width 0.2s;
         }
-        .ws-slot.c-red  { --c: var(--acc); }
-        .ws-slot.c-blue { --c: var(--c-blue); }
-        .ws-slot.c-gold { --c: var(--c-gold); }
-        .ws-slot.c-pink { --c: var(--c-pink); }
-        .ws-slot:hover, .ws-slot.active {
-            border-color: var(--c);
-            background: color-mix(in srgb, var(--c) 6%, var(--panel-bg));
+        .nav-btn:hover::after, .nav-btn.active::after { width: 100%; }
+
+        .nb-blue  { --nc: var(--c-blue); }
+        .nb-gold  { --nc: var(--c-gold); }
+        .nb-red   { --nc: var(--acc); }
+        .nb-pink  { --nc: var(--c-pink); }
+        .nb-green { --nc: var(--c-green); }
+
+        .nav-btn::after      { background: var(--nc); }
+        .nav-btn::before     { background: var(--text-4); }
+        .nav-btn:hover, .nav-btn.active {
+            border-color: var(--nc);
+            background: color-mix(in srgb, var(--nc) 6%, var(--panel-bg));
         }
-        .ws-slot:hover::before, .ws-slot.active::before { background: var(--c); box-shadow: 0 0 8px var(--c); }
-        .ws-slot::after { background: var(--c); }
-        .ws-slot:hover::after, .ws-slot.active::after { width: 100%; }
-        .slot-icon { font-size: 1rem; width: 22px; text-align: center; opacity: 0.7; }
-        .slot-name { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; }
-        .slot-sub  { font-size: 0.57rem; color: var(--text-1); letter-spacing: 0.08em; }
-        .slot-num  {
-            margin-left: auto;
-            font-family: 'VT323', monospace; font-size: 1.5rem;
-            color: var(--text-2); transition: 0.14s;
+        .nav-btn:hover::before, .nav-btn.active::before { background: var(--nc); box-shadow: 0 0 10px var(--nc); }
+        .nav-btn:hover .nb-num, .nav-btn.active .nb-num  { color: var(--nc); }
+        .nav-btn:hover .nb-icon, .nav-btn.active .nb-icon { color: var(--nc); text-shadow: 0 0 14px var(--nc); }
+
+        .nb-top   { display: flex; justify-content: space-between; align-items: flex-start; width: 100%; }
+        .nb-icon  { font-size: 1.6rem; line-height: 1; color: var(--text-2); transition: 0.15s; }
+        .nb-num   { font-family: 'VT323', monospace; font-size: 2rem; color: var(--text-3); transition: 0.15s; line-height: 1; }
+        .nb-name  { font-size: 0.88rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-p); font-weight: 600; }
+        .nb-sub   { font-size: 0.52rem; color: var(--text-1); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 0.1rem; }
+
+        /* ─── КРАСНАЯ ЛИНИЯ ──────────────────────────────── */
+        .redline { height: 2px; background: linear-gradient(90deg, var(--acc) 0%, var(--text-p) 18%, var(--acc) 35%, transparent 100%); box-shadow: 0 0 10px var(--acc-glow); margin-bottom: 1.5rem; }
+
+        /* ─── СТАТЬИ ГЛАВНОЙ СТРАНИЦЫ ────────────────────── */
+        .articles-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.4rem;
         }
-        .ws-slot:hover .slot-num, .ws-slot.active .slot-num { color: var(--c); }
-        .redline {
-            height: 2px;
-            background: linear-gradient(90deg, var(--acc) 0%, var(--text-p) 18%, var(--acc) 35%, transparent 100%);
-            box-shadow: 0 0 10px var(--acc-glow);
-            margin-bottom: 1.5rem;
-        }
-        .wiki-grid { display: flex; gap: 1.4rem; flex-wrap: wrap; }
-        .main-col  { flex: 3; min-width: 260px; }
-        .side-col  { flex: 1.1; min-width: 220px; }
-        .panel      { background: var(--panel-bg); border: 1px solid var(--panel-bd); margin-bottom: 1.4rem; }
+        .article-full { grid-column: 1 / -1; }
+
+        .panel { background: var(--panel-bg); border: 1px solid var(--panel-bd); margin-bottom: 1.4rem; }
         .panel-head {
-            background: var(--panel-hd);
-            border-bottom: 1px solid var(--panel-bd);
-            padding: 0.55rem 1rem;
-            display: flex; align-items: center; gap: 0.7rem;
+            background: var(--panel-hd); border-bottom: 1px solid var(--panel-bd);
+            padding: 0.55rem 1rem; display: flex; align-items: center; gap: 0.7rem;
         }
         .ph-dot      { width: 10px; height: 10px; flex-shrink: 0; background: var(--acc); box-shadow: 0 0 8px var(--acc); }
         .ph-dot.gold { background: var(--c-gold); box-shadow: 0 0 8px var(--c-gold); }
+        .ph-dot.blue { background: var(--c-blue); box-shadow: 0 0 8px var(--c-blue); }
+        .ph-dot.green{ background: var(--c-green);box-shadow: 0 0 8px var(--c-green); }
         .ph-title    { font-family: 'VT323', monospace; font-size: 1.3rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-p); }
-        .ph-title.gold { color: var(--c-gold); }
+        .ph-title.gold  { color: var(--c-gold); }
+        .ph-title.blue  { color: var(--c-blue); }
+        .ph-title.green { color: var(--c-green); }
         .ph-tag { margin-left: auto; font-size: 0.55rem; color: var(--text-3); letter-spacing: 0.15em; }
-        .panel-body { padding: 0.9rem 1rem; }
-        .boss {
+        .panel-body { padding: 1rem 1.1rem; }
+
+        .art-lead {
+            font-family: 'VT323', monospace;
+            font-size: 1.15rem;
+            color: var(--acc);
+            letter-spacing: 0.06em;
+            line-height: 1.4;
+            margin-bottom: 0.9rem;
+            padding-bottom: 0.7rem;
             border-bottom: 1px solid var(--text-4);
-            padding: 0.85rem 0;
-            display: grid;
-            grid-template-columns: 38px 1fr;
-            gap: 0 10px;
         }
-        .boss:last-child { border-bottom: none; }
-        .boss-sym  { font-family: 'VT323', monospace; font-size: 2rem; color: var(--c-gold); text-shadow: 0 0 10px var(--c-gold); line-height: 1; text-align: center; }
-        .boss-name { font-size: 0.82rem; color: var(--text-p); font-weight: 700; margin-bottom: 0.15rem; }
-        .boss-sub  { font-size: 0.6rem; color: var(--text-2); letter-spacing: 0.08em; }
-        .boss-desc { font-size: 0.7rem; color: var(--text-1); margin-top: 0.3rem; line-height: 1.5; }
-        .sector {
-            border-bottom: 1px solid var(--text-4);
-            padding: 0.7rem 0;
-            display: grid;
-            grid-template-columns: 58px 1fr;
-            gap: 0 10px;
-            align-items: start;
+        .art-para {
+            font-size: 0.74rem;
+            color: var(--text-p);
+            line-height: 1.85;
+            margin-bottom: 0.8rem;
         }
-        .sector:last-child { border-bottom: none; }
-        .sec-id   { font-family: 'VT323', monospace; font-size: 1.7rem; color: var(--acc); text-shadow: 0 0 8px var(--acc); line-height: 1; }
-        .sec-name { font-size: 0.78rem; color: var(--text-p); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.2rem; }
-        .sec-desc { font-size: 0.68rem; color: var(--text-1); line-height: 1.5; }
-        .readout {
-            background: var(--read-bg);
+        .art-para:last-child { margin-bottom: 0; }
+        .art-hl { color: var(--acc); }
+        .art-section-head {
+            font-size: 0.6rem;
+            color: var(--text-2);
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            margin: 1rem 0 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .art-section-head::before { content: '//'; color: var(--acc); }
+
+        .fact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4px;
+            margin: 0.8rem 0;
+        }
+        .fact-item {
+            background: var(--panel-hd);
             border: 1px solid var(--text-4);
+            border-left: 2px solid var(--acc);
+            padding: 0.55rem 0.75rem;
+        }
+        .fact-key { font-size: 0.52rem; color: var(--text-2); letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 0.2rem; }
+        .fact-val { font-family: 'VT323', monospace; font-size: 1rem; color: var(--text-p); }
+        .fact-val.r { color: var(--acc); }
+        .fact-val.g { color: var(--c-gold); }
+        .fact-val.b { color: var(--c-blue); }
+        .fact-val.n { color: var(--c-green); }
+
+        .feature-list { list-style: none; margin: 0.6rem 0; }
+        .feature-list li {
+            font-size: 0.72rem;
+            color: var(--text-p);
+            padding: 0.38rem 0;
+            border-bottom: 1px solid var(--text-4);
+            display: flex;
+            align-items: flex-start;
+            gap: 0.6rem;
+            line-height: 1.6;
+        }
+        .feature-list li:last-child { border-bottom: none; }
+        .fl-ico { color: var(--acc); flex-shrink: 0; font-size: 0.8rem; margin-top: 0.1rem; }
+
+        .readout {
+            background: var(--read-bg); border: 1px solid var(--text-4);
             padding: 0.6rem 0.8rem;
             font-family: 'Fira Code', monospace;
             font-size: 0.62rem; color: var(--text-2);
@@ -443,138 +383,84 @@
         }
         .readout .hl { color: var(--acc); }
         .readout .vl { color: var(--text-1); }
-        .side-panel { background: var(--panel-bg); border: 1px solid var(--panel-bd); margin-bottom: 0.9rem; }
-        .sp-head {
-            background: var(--panel-hd); border-bottom: 1px solid var(--panel-bd);
-            padding: 0.45rem 0.8rem;
-            font-size: 0.6rem; color: var(--text-1);
-            letter-spacing: 0.25em; text-transform: uppercase;
-            display: flex; align-items: center; gap: 0.5rem;
+
+        .author-card {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid var(--text-4);
         }
-        .sp-head::before {
-            content: '';
-            width: 5px; height: 5px; flex-shrink: 0;
-            background: var(--acc); box-shadow: 0 0 5px var(--acc);
+        .author-card:last-child { border-bottom: none; }
+        .author-glyph {
+            font-family: 'VT323', monospace;
+            font-size: 3rem;
+            color: var(--c-gold);
+            text-shadow: 0 0 12px var(--c-gold);
+            line-height: 1;
+            width: 52px;
+            flex-shrink: 0;
+            text-align: center;
         }
-        .sp-body { padding: 0.8rem; }
-        .v1-portrait {
-            width: 100%; aspect-ratio: 1;
-            background: var(--panel-hd); border-bottom: 1px solid var(--panel-bd);
-            display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
-            position: relative; overflow: hidden;
-        }
-        .v1-glyph { font-size: 5.5rem; color: var(--text-4); filter: drop-shadow(0 0 24px var(--acc)); line-height: 1; }
-        .v1-lbl   { font-family: 'VT323', monospace; font-size: 1rem; color: var(--text-3); letter-spacing: 0.4em; margin-top: 0.4rem; }
-        .v1-portrait::after {
-            content: '';
-            position: absolute; top: -40%; left: 0;
-            width: 100%; height: 35%;
-            background: linear-gradient(transparent, var(--acc-glow), transparent);
-            animation: scan 3s linear infinite;
-        }
-        @keyframes scan { to { top: 120%; } }
-        .mstat {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 0.38rem 0; border-bottom: 1px solid var(--text-4);
-            font-size: 0.7rem;
-        }
-        .mstat:last-child { border-bottom: none; }
-        .mstat-k { color: var(--text-1); }
-        .mstat-v { font-family: 'VT323', monospace; font-size: 1rem; color: var(--text-p); }
-        .mstat-v.r { color: var(--acc); }
-        .mstat-v.g { color: var(--c-gold); }
-        .mstat-v.n { color: var(--c-green); }
-        .aslot {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 0.35rem 0; border-bottom: 1px solid var(--text-4);
-            font-size: 0.68rem; color: var(--text-p);
-        }
-        .aslot:last-child { border-bottom: none; }
-        .tags { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 0.3rem; }
-        .tag {
-            background: var(--panel-hd); border: 1px solid var(--text-4);
-            padding: 0.08rem 0.45rem;
-            font-size: 0.57rem; letter-spacing: 0.08em; text-transform: uppercase;
-            color: var(--text-2);
-        }
+        .author-name { font-size: 0.88rem; color: var(--text-p); font-weight: 700; margin-bottom: 0.15rem; }
+        .author-role { font-size: 0.58rem; color: var(--c-gold); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.3rem; }
+        .author-bio  { font-size: 0.7rem; color: var(--text-1); line-height: 1.6; }
+
+        .tags { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 0.5rem; }
+        .tag { background: var(--panel-hd); border: 1px solid var(--text-4); padding: 0.08rem 0.45rem; font-size: 0.57rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-2); }
         .tag.r { border-color: var(--acc);    color: var(--acc); }
         .tag.g { border-color: var(--c-gold); color: var(--c-gold); }
         .tag.b { border-color: var(--c-blue); color: var(--c-blue); }
         .tag.n { border-color: var(--c-green);color: var(--c-green); }
-        .src {
-            display: flex; align-items: center; gap: 9px;
-            padding: 0.45rem 0; border-bottom: 1px solid var(--text-4);
-            font-size: 0.72rem; color: var(--text-1);
-            text-decoration: none; cursor: pointer; transition: 0.12s;
-        }
-        .src:hover { color: var(--text-p); }
-        .src:last-child { border-bottom: none; }
-        .src-ico { color: var(--acc); width: 18px; text-align: center; }
-        .term-btn {
-            width: 100%; background: var(--ticker-bg);
-            border: 1px solid var(--text-3); border-bottom: 2px solid var(--text-4);
-            color: var(--text-p);
-            padding: 0.55rem 1rem;
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase;
-            cursor: pointer; display: flex; align-items: center;
-            justify-content: center; gap: 8px;
-            margin-top: 0.7rem; transition: 0.13s;
-        }
-        .term-btn::before { content: '> '; color: var(--acc); }
-        .term-btn:hover   { border-color: var(--acc); background: var(--acc-glow); }
-        .divider { height: 1px; background: var(--text-4); margin: 0.5rem 0; }
-        @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
-        .cur {
-            display: inline-block; width: 7px; height: 13px;
-            background: var(--acc); vertical-align: middle;
-            animation: blink 1s step-end infinite; margin-left: 2px;
-        }
+
+        /* ─── ФУТЕР ──────────────────────────────────────── */
         .site-footer {
-            border-top: 1px solid var(--text-4);
-            padding: 0.9rem 0; margin-top: 1rem;
-            display: flex; justify-content: space-between;
-            align-items: center; flex-wrap: wrap; gap: 0.4rem;
+            border-top: 1px solid var(--text-4); padding: 0.9rem 0; margin-top: 1rem;
+            display: flex; justify-content: space-between; align-items: center;
+            flex-wrap: wrap; gap: 0.4rem;
             font-size: 0.58rem; color: var(--text-3);
             letter-spacing: 0.1em; text-transform: uppercase;
         }
-        .footer-logo {
-            font-family: 'VT323', monospace;
-            font-size: 1.2rem; color: var(--acc);
-            text-shadow: 0 0 6px var(--acc);
+        .footer-logo { font-family: 'VT323', monospace; font-size: 1.2rem; color: var(--acc); text-shadow: 0 0 6px var(--acc); }
+
+        @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
+        .cur { display: inline-block; width: 7px; height: 13px; background: var(--acc); vertical-align: middle; animation: blink 1s step-end infinite; margin-left: 2px; }
+
+        /* ─── АДАПТИВ ────────────────────────────────────── */
+        @media (max-width: 900px) {
+            .articles-grid { grid-template-columns: 1fr; }
+            .article-full  { grid-column: auto; }
         }
         @media (max-width: 760px) {
-            .logo-main   { font-size: 2.8rem; }
+            .logo-main { font-size: 2.8rem; }
             .theme-panel { min-width: 190px; }
-            .ws-slot     { min-width: calc(50% - 4px); }
+            .nav-btn { min-width: calc(50% - 4px); }
+            .fact-grid { grid-template-columns: 1fr; }
         }
         @media (max-width: 520px) {
-            .wiki-grid { flex-direction: column; }
-            .ws-slot   { min-width: 100%; }
-            .tp-grid   { grid-template-columns: 1fr 1fr; }
+            .nav-btn { min-width: 100%; }
+            .nav-section { flex-direction: column; }
+            .tp-grid { grid-template-columns: 1fr 1fr; }
         }
     </style>
 </head>
 <body data-theme="dark">
 
-<!-- ═══════ CSS-фон: DARK и V1 (hex-сетка + скан-полоса) ═══════ -->
 <div class="theme-bg-wrap" aria-hidden="true">
     <div class="bg-dark">
         <div class="bg-dark-grid"></div>
         <div class="bg-dark-scan"></div>
     </div>
 </div>
-
-<!-- ═══════ Canvas-фон: V2 и GABRIEL (JavaScript) ═══════ -->
 <canvas id="theme-bg-canvas"></canvas>
 
 <div class="page">
 
+    <!-- ═══ ШАПКА ═══ -->
     <div class="site-header">
         <div class="header-top">
             <div>
-                <div class="logo-eyebrow">// SYSTEM DATABASE // UNIT PROFILE // ACTIVE</div>
+                <div class="logo-eyebrow">// SYSTEM DATABASE // ГЛАВНАЯ // ACTIVE</div>
                 <div class="logo-main"><span class="v1">V1</span> — ULTRAKILL</div>
                 <div class="logo-tagline">
                     MANKIND IS INACTIVE. ENERGY IS FUEL. LOWER SECTOR IS FULL.<span class="cur"></span>
@@ -584,45 +470,21 @@
             <div class="theme-panel" id="themePanel">
                 <div class="tp-head">// ТЕМА ИНТЕРФЕЙСА</div>
                 <div class="tp-grid">
-                    <button class="tp-btn t-dark active"
-                            data-tv="dark"
-                            onclick="setTheme('dark')"
-                            title="Оригинальная тёмная тема">
+                    <button class="tp-btn t-dark active" data-tv="dark" onclick="setTheme('dark')" title="Тёмная тема">
                         <div class="tp-swatch"></div>
-                        <div class="tp-info">
-                            <div class="tp-name">DARK</div>
-                            <div class="tp-sub">ORIGINAL</div>
-                        </div>
+                        <div class="tp-info"><div class="tp-name">DARK</div><div class="tp-sub">ORIGINAL</div></div>
                     </button>
-                    <button class="tp-btn t-v1"
-                            data-tv="v1"
-                            onclick="setTheme('v1')"
-                            title="V1 — Машина / Синяя тема">
+                    <button class="tp-btn t-v1" data-tv="v1" onclick="setTheme('v1')" title="V1 — Синяя тема">
                         <div class="tp-swatch"></div>
-                        <div class="tp-info">
-                            <div class="tp-name">V1</div>
-                            <div class="tp-sub">MACHINE // BLUE</div>
-                        </div>
+                        <div class="tp-info"><div class="tp-name">V1</div><div class="tp-sub">MACHINE // BLUE</div></div>
                     </button>
-                    <button class="tp-btn t-v2"
-                            data-tv="v2"
-                            onclick="setTheme('v2')"
-                            title="V2 — Зеркальный модуль / Красная тема">
+                    <button class="tp-btn t-v2" data-tv="v2" onclick="setTheme('v2')" title="V2 — Красная тема">
                         <div class="tp-swatch"></div>
-                        <div class="tp-info">
-                            <div class="tp-name">V2</div>
-                            <div class="tp-sub">MIRROR // RED</div>
-                        </div>
+                        <div class="tp-info"><div class="tp-name">V2</div><div class="tp-sub">MIRROR // RED</div></div>
                     </button>
-                    <button class="tp-btn t-gabriel"
-                            data-tv="gabriel"
-                            onclick="setTheme('gabriel')"
-                            title="GABRIEL — Архангел / Судья">
+                    <button class="tp-btn t-gabriel" data-tv="gabriel" onclick="setTheme('gabriel')" title="GABRIEL — Золотая тема">
                         <div class="tp-swatch"></div>
-                        <div class="tp-info">
-                            <div class="tp-name">GABRIEL</div>
-                            <div class="tp-sub">JUDGE // GOLD</div>
-                        </div>
+                        <div class="tp-info"><div class="tp-name">GABRIEL</div><div class="tp-sub">JUDGE // GOLD</div></div>
                     </button>
                 </div>
                 <div class="tp-current" id="tpCurrent">АКТИВНА: DARK // ORIGINAL</div>
@@ -630,240 +492,262 @@
         </div>
     </div>
 
+    <!-- ═══ ТИКЕР ═══ -->
     <div class="ticker-wrap">
         <div class="ticker-inner">
-            <span class="ti">// <span class="r">АКТИВНА</span> // БЛОК ДАННЫХ V1 // НИЖНИЙ СЕКТОР: ДОСТУП РАЗРЕШЁН // АРСЕНАЛ: ЗАРЯЖЕН // ТОПЛИВО: КРИТИЧЕСКИ НИЗКОЕ //</span>
-            <span class="ti">// <span class="r">АКТИВНА</span> // БЛОК ДАННЫХ V1 // НИЖНИЙ СЕКТОР: ДОСТУП РАЗРЕШЁН // АРСЕНАЛ: ЗАРЯЖЕН // ТОПЛИВО: КРИТИЧЕСКИ НИЗКОЕ //</span>
+            <span class="ti">// <span class="r">АКТИВНА</span> // ГЛАВНАЯ СТРАНИЦА // БАЗА ДАННЫХ ULTRAKILL // НИЖНИЙ СЕКТОР: ДОСТУП РАЗРЕШЁН // V1: АКТИВЕН // РАНГ: SSS //</span>
+            <span class="ti">// <span class="r">АКТИВНА</span> // ГЛАВНАЯ СТРАНИЦА // БАЗА ДАННЫХ ULTRAKILL // НИЖНИЙ СЕКТОР: ДОСТУП РАЗРЕШЁН // V1: АКТИВЕН // РАНГ: SSS //</span>
         </div>
     </div>
 
-    <div class="ws-label">// НАВИГАЦИЯ — ВЫБОР РАЗДЕЛА БАЗЫ ДАННЫХ</div>
-    <div class="ws-grid">
-        <a href="weapons.html" class="ws-slot c-blue">
-            <div class="slot-icon">⬡</div>
-            <div>
-                <div class="slot-name">Арсенал</div>
-                <div class="slot-sub">СРЕДСТВА // СЛОТ 1</div>
-            </div>
-            <div class="slot-num">1</div>
-        </a>
-        <button class="ws-slot c-gold" onclick="navTo('layers')">
-            <div class="slot-icon">▦</div>
-            <div>
-                <div class="slot-name">Секторы</div>
-                <div class="slot-sub">ЛОКАЦИИ // СЛОТ 2</div>
-            </div>
-            <div class="slot-num">2</div>
-        </button>
-        <button class="ws-slot c-pink" onclick="document.getElementById('statsBtn').click()">
-            <div class="slot-icon">◎</div>
-            <div>
-                <div class="slot-name">База данных</div>
-                <div class="slot-sub">СТАТИСТИКА // СЛОТ 3</div>
-            </div>
-            <div class="slot-num">3</div>
-        </button>
+    <!-- ═══ НАВИГАЦИЯ ═══ -->
+    <div class="nav-section">
+        <div class="nav-home-indicator">
+            <div class="nhi-label">// ТЕКУЩИЙ РАЗДЕЛ</div>
+            <div class="nhi-name">ГЛАВНАЯ</div>
+            <div class="nhi-sub"><span class="nhi-dot"></span>INDEX // ACTIVE</div>
+        </div>
+
+        <div class="nav-buttons-right">
+            <a href="weapons.html" class="nav-btn nb-blue">
+                <div class="nb-top">
+                    <div class="nb-icon">⬡</div>
+                    <div class="nb-num">01</div>
+                </div>
+                <div>
+                    <div class="nb-name">Арсенал</div>
+                    <div class="nb-sub">СРЕДСТВА // ИНСТРУМЕНТЫ</div>
+                </div>
+            </a>
+            <a href="sectors.html" class="nav-btn nb-gold">
+                <div class="nb-top">
+                    <div class="nb-icon">▦</div>
+                    <div class="nb-num">02</div>
+                </div>
+                <div>
+                    <div class="nb-name">Секторы</div>
+                    <div class="nb-sub">ЛОКАЦИИ // УРОВНИ</div>
+                </div>
+            </a>
+            <a href="bosses.html" class="nav-btn nb-red">
+                <div class="nb-top">
+                    <div class="nb-icon">★</div>
+                    <div class="nb-num">03</div>
+                </div>
+                <div>
+                    <div class="nb-name">Сущности</div>
+                    <div class="nb-sub">ПРИОРИТЕТНЫЕ // ЦЕЛИ</div>
+                </div>
+            </a>
+            <a href="lore.html" class="nav-btn nb-pink">
+                <div class="nb-top">
+                    <div class="nb-icon">◈</div>
+                    <div class="nb-num">04</div>
+                </div>
+                <div>
+                    <div class="nb-name">Лор</div>
+                    <div class="nb-sub">ИСТОРИЯ // ВСЕЛЕННАЯ</div>
+                </div>
+            </a>
+            <a href="features.html" class="nav-btn nb-green">
+                <div class="nb-top">
+                    <div class="nb-icon">◎</div>
+                    <div class="nb-num">05</div>
+                </div>
+                <div>
+                    <div class="nb-name">Механики</div>
+                    <div class="nb-sub">ОСОБЕННОСТИ // ФИШКИ</div>
+                </div>
+            </a>
+        </div>
     </div>
 
     <div class="redline"></div>
 
-    <div class="wiki-grid">
-        <div class="main-col">
+    <!-- ═══ КОНТЕНТ ГЛАВНОЙ СТРАНИЦЫ ═══ -->
+    <div class="articles-grid">
 
-            <div id="bosses" class="panel">
-                <div class="panel-head">
-                    <div class="ph-dot gold"></div>
-                    <div class="ph-title gold">КЛЮЧЕВЫЕ СУЩНОСТИ — ЗНАЧИМЫЕ ОБЪЕКТЫ</div>
-                    <div class="ph-tag">PRIORITY.TARGETS</div>
+        <!-- СТАТЬЯ: ОБ ИГРЕ — полная ширина -->
+        <div class="panel article-full">
+            <div class="panel-head">
+                <div class="ph-dot"></div>
+                <div class="ph-title">ОБ ИГРЕ — ULTRAKILL: ОБЩИЙ ОБЗОР</div>
+                <div class="ph-tag">INDEX.ARTICLE // GAME OVERVIEW</div>
+            </div>
+            <div class="panel-body">
+                <div class="art-lead">
+                    ULTRAKILL — высокоскоростной шутер от первого лица в раннем доступе Steam. Разработан независимым автором Arsi «Hakita» Patala, издаётся компанией New Blood Interactive. Первый выход в ранний доступ — <span style="color:var(--c-gold)">3 сентября 2020 года</span>.
                 </div>
-                <div class="panel-body">
-                    <div class="boss">
-                        <div class="boss-sym">★</div>
-                        <div>
-                            <div class="boss-name">MINOS PRIME — Король Минос</div>
-                            <div class="boss-sub">СЕКТОР: ЖАДНОСТЬ // 3-2 // БЫВШИЙ УПРАВИТЕЛЬ</div>
-                            <div class="boss-desc">Сверхскоростное взаимодействие с фазовыми переходами. Один из наиболее интенсивных объектов в базе данных. Требует полного контроля пространства.</div>
-                        </div>
+
+                <div class="fact-grid">
+                    <div class="fact-item">
+                        <div class="fact-key">ЖАНР</div>
+                        <div class="fact-val b">ШУТЕР ОТ 1-ГО ЛИЦА</div>
                     </div>
-                    <div class="boss">
-                        <div class="boss-sym">✦</div>
-                        <div>
-                            <div class="boss-name">GABRIEL — Архангел / Судья</div>
-                            <div class="boss-sub">СЕКТОР: 4-4 → 6-2 // ДВУХЭТАПНОЕ ВЗАИМОДЕЙСТВИЕ</div>
-                            <div class="boss-desc">Поведенческий сценарий изменяется после первого столкновения. Интенсивность второго этапа значительно превышает первый.</div>
-                        </div>
+                    <div class="fact-item">
+                        <div class="fact-key">СТАТУС</div>
+                        <div class="fact-val n">РАННИЙ ДОСТУП</div>
                     </div>
-                    <div class="boss">
-                        <div class="boss-sym">◆</div>
-                        <div>
-                            <div class="boss-name">SISYPHUS PRIME — Сизиф Прайм</div>
-                            <div class="boss-sub">СЕКТОР: РАСКОЛ // ФИНАЛЬНЫЙ ОБЪЕКТ АКТА</div>
-                            <div class="boss-desc">Завершающий значимый объект сектора Раскол. Максимальный уровень интенсивности. Нейтрализация засчитывается как завершение акта.</div>
-                        </div>
+                    <div class="fact-item">
+                        <div class="fact-key">ПЛАТФОРМА</div>
+                        <div class="fact-val">WINDOWS (PC)</div>
                     </div>
-                    <div class="boss">
-                        <div class="boss-sym">▲</div>
-                        <div>
-                            <div class="boss-name">CORPSE OF KING MINOS — Тело Короля</div>
-                            <div class="boss-sub">МАССИВНАЯ КОНСТРУКЦИЯ // ПЛАТФОРМЕННОЕ ВЗАИМОДЕЙСТВИЕ</div>
-                            <div class="boss-desc">Гигантская структура. Сессия проходит на динамических платформах. Приоритет — поддержание высокой мобильности V1.</div>
-                        </div>
+                    <div class="fact-item">
+                        <div class="fact-key">ДАТА ВЫХОДА</div>
+                        <div class="fact-val g">3 СЕНТ. 2020</div>
                     </div>
-                    <div class="boss">
-                        <div class="boss-sym">≋</div>
-                        <div>
-                            <div class="boss-name">LEVIATHAN — Левиафан</div>
-                            <div class="boss-sub">СЕКТОР: ТРЕВОГА // 5-4 // КРУПНЕЙШИЙ ОБЪЕКТ</div>
-                            <div class="boss-desc">Наибольший объект по физическим параметрам. Воздействие хвостом и проекциями. Среда — затопленный комплекс нижнего уровня.</div>
-                        </div>
+                    <div class="fact-item">
+                        <div class="fact-key">РАЗРАБОТЧИК</div>
+                        <div class="fact-val r">HAKITA</div>
                     </div>
-                    <div class="boss">
-                        <div class="boss-sym">⬡</div>
-                        <div>
-                            <div class="boss-name">FLESH PRISON / PANOPTICON</div>
-                            <div class="boss-sub">ДОПОЛНИТЕЛЬНЫЕ ОБЪЕКТЫ // УСЛОВНАЯ АКТИВАЦИЯ</div>
-                            <div class="boss-desc">Нестандартные структуры с уникальными механиками взаимодействия. Доступны при выполнении скрытых условий в уровне.</div>
-                        </div>
+                    <div class="fact-item">
+                        <div class="fact-key">ИЗДАТЕЛЬ</div>
+                        <div class="fact-val">NEW BLOOD INTERACTIVE</div>
                     </div>
-                    <div class="readout">
-                        <span class="hl">// ОСОБЕННОСТЬ:</span>
-                        <span class="vl">Каждая значимая сущность имеет уникальные фазовые механики и поведенческие сценарии</span>
-                    </div>
+                </div>
+
+                <div class="art-section-head">КОНЦЕПЦИЯ И СЕТТИНГ</div>
+                <div class="art-para">
+                    Действие разворачивается в <span class="art-hl">нижнем уровне</span> — многоуровневой структуре, населённой разнообразными сущностями. Главный персонаж — машина-автомат <span class="art-hl">V1</span>, способная получать топливо (ресурс) непосредственно из среды в ближнем радиусе от нейтрализованных целей. Человечество прекратило активность — иных источников ресурса не осталось. V1 вынуждена спускаться всё глубже, нейтрализуя сущности ради выживания.
+                </div>
+                <div class="art-para">
+                    Нижний уровень разделён на слои: Лимб, Гнев, Жадность, Ересь, Тревога, Раскол — каждый со своей архитектурой, типами оппонентов и ключевыми значимыми объектами (особо опасными сущностями). Игра вдохновлена мифологией из литературного произведения Данте Алигьери «Божественная Комедия».
+                </div>
+
+                <div class="art-section-head">ИГРОВОЙ ПРОЦЕСС</div>
+                <div class="art-para">
+                    Ключевая особенность ULTRAKILL — <span class="art-hl">сверхвысокая скорость</span> передвижения и акцент на стиле взаимодействий. Система оценки стиля выдаёт ранги от <span class="art-hl">D</span> до <span class="art-hl">SSS</span> в зависимости от разнообразия применяемых инструментов, скорости нейтрализации целей и поддержания темпа сессии.
+                </div>
+
+                <ul class="feature-list">
+                    <li><span class="fl-ico">▶</span><span><strong>Рывок (Dash)</strong> — стремительное смещение в любом направлении. Основа мобильности.</span></li>
+                    <li><span class="fl-ico">▶</span><span><strong>Скольжение (Slide)</strong> — разгон по поверхности с сохранением инерции при переходе в прыжок.</span></li>
+                    <li><span class="fl-ico">▶</span><span><strong>Система топлива</strong> — ресурс восполняется вплотную к нейтрализованным целям. Нет движения — нет ресурса.</span></li>
+                    <li><span class="fl-ico">▶</span><span><strong>Арсенал (5 слотов)</strong> — дальнобойный, ударный, гвоздевой, рельсовый, ракетный модули. Каждый в двух вариациях.</span></li>
+                    <li><span class="fl-ico">▶</span><span><strong>Стиль-ранг</strong> — оценка от D до SSS строится в реальном времени. Однообразные действия — снижают ранг.</span></li>
+                    <li><span class="fl-ico">▶</span><span><strong>Парирование (Parry)</strong> — своевременное воздействие ударным модулем отражает импульсы оппонентов.</span></li>
+                </ul>
+
+                <div class="readout">
+                    <span class="hl">// КЛЮЧЕВАЯ ФРАЗА:</span> <span class="vl">MANKIND IS DEAD. BLOOD IS FUEL. HELL IS FULL.</span><br>
+                    <span class="hl">// В БАЗЕ ДАННЫХ:</span>  <span class="vl">Адаптировано: «Человечество неактивно. Энергия — топливо. Нижний уровень переполнен.»</span><br>
+                    <span class="hl">// ТЕКУЩИЙ АКТ:</span>    <span class="vl">ACT I — INFINITE HYPERDEATH // ACT II — IMPERFECT HATRED // ACT III — TBD<span class="cur"></span></span>
+                </div>
+
+                <div class="tags" style="margin-top:0.8rem;">
+                    <span class="tag r">ШУТЕР</span>
+                    <span class="tag b">РАННИЙ ДОСТУП</span>
+                    <span class="tag g">СТИЛЬ-СИСТЕМА</span>
+                    <span class="tag n">ВЫСОКАЯ СКОРОСТЬ</span>
+                    <span class="tag">INDIE</span>
+                    <span class="tag">DANTE INSPIRED</span>
+                    <span class="tag">NEW BLOOD</span>
                 </div>
             </div>
-
-            <div id="layers" class="panel">
-                <div class="panel-head">
-                    <div class="ph-dot gold"></div>
-                    <div class="ph-title">КАРТА СЕКТОРОВ — СТРУКТУРА НИЖНЕГО УРОВНЯ</div>
-                    <div class="ph-tag">SECTOR.MAP</div>
-                </div>
-                <div class="panel-body">
-                    <div class="sector">
-                        <div class="sec-id">0-X</div>
-                        <div>
-                            <div class="sec-name">ПРОЛОГ — ИНДУСТРИАЛЬНЫЕ КОМПЛЕКСЫ</div>
-                            <div class="sec-desc">Секторы 0-1 — 0-5. Руины надземных структур. Первичная инициализация систем V1 и обучение управлению арсеналом.</div>
-                        </div>
-                    </div>
-                    <div class="sector">
-                        <div class="sec-id">1-X</div>
-                        <div>
-                            <div class="sec-name">ЛИМБ — ГОТИЧЕСКИЕ СООРУЖЕНИЯ</div>
-                            <div class="sec-desc">Секторы 1-1 — 1-4. Архитектура нижнего уровня первого порядка. Первое взаимодействие с зеркальным модулем V2 в секторе 1-4.</div>
-                        </div>
-                    </div>
-                    <div class="sector">
-                        <div class="sec-id">2-X</div>
-                        <div>
-                            <div class="sec-name">ГНЕВ — МЕХАНИЧЕСКИЕ КОМПЛЕКСЫ</div>
-                            <div class="sec-desc">Секторы 2-1 — 2-4. Гигантские вращающиеся механические структуры. Высокая динамика среды. Сложная геометрия маршрутов.</div>
-                        </div>
-                    </div>
-                    <div class="sector">
-                        <div class="sec-id">3-X</div>
-                        <div>
-                            <div class="sec-name">ЖАДНОСТЬ — ЗОЛОТАЯ ПУСТОШЬ</div>
-                            <div class="sec-desc">Секторы 3-1 — 3-4. Территория металлических золотых структур. Ключевое взаимодействие: Minos Prime (сектор 3-2).</div>
-                        </div>
-                    </div>
-                    <div class="sector">
-                        <div class="sec-id">4-X</div>
-                        <div>
-                            <div class="sec-name">ЕРЕСЬ — ТЕРМИЧЕСКИЕ ЗОНЫ</div>
-                            <div class="sec-desc">Секторы 4-1 — 4-4. Лавовые области. Повторные сессии с Gabriel и V2 в секторе 4-4.</div>
-                        </div>
-                    </div>
-                    <div class="sector">
-                        <div class="sec-id">5-X</div>
-                        <div>
-                            <div class="sec-name">ТРЕВОГА — ЗАТОПЛЕННЫЙ КОМПЛЕКС</div>
-                            <div class="sec-desc">Секторы 5-1 — 5-4. Подводные и полузатопленные структуры. Ключевая сессия: Leviathan (сектор 5-4).</div>
-                        </div>
-                    </div>
-                    <div class="sector">
-                        <div class="sec-id">6-X</div>
-                        <div>
-                            <div class="sec-name">РАСКОЛ — ФИНАЛЬНЫЙ СЕКТОР</div>
-                            <div class="sec-desc">Секторы 6-1 — 6-4. Завершающий акт. Взаимодействие с Gabriel (6-2). Финальная цель: Sisyphus Prime.</div>
-                        </div>
-                    </div>
-                    <div class="readout">
-                        <span class="hl">// СКРЫТЫЕ ЗОНЫ:</span>
-                        <span class="vl">P-1, P-2, «0-S: The Witless»</span><br>
-                        <span class="hl">// ОСОБЫЙ РЕСУРС:</span>
-                        <span class="vl">Dual Wield — удвоенная длительность активации (до 120 сек)</span>
-                    </div>
-                </div>
-            </div>
-
         </div>
 
-        <div class="side-col">
-            <div class="side-panel">
-                <div class="sp-head">// UNIT PROFILE // V1</div>
-                <div class="v1-portrait">
-                    <div class="v1-glyph">⚙</div>
-                    <div class="v1-lbl">V1 // MACHINE</div>
-                </div>
+        <!-- СТАТЬЯ: ОБ АВТОРЕ -->
+        <div class="panel">
+            <div class="panel-head">
+                <div class="ph-dot gold"></div>
+                <div class="ph-title gold">ОБ АВТОРЕ — HAKITA</div>
+                <div class="ph-tag">CREATOR.PROFILE</div>
             </div>
-            <div class="side-panel">
-                <div class="sp-head">// ПАРАМЕТРЫ СИСТЕМЫ</div>
-                <div class="sp-body">
-                    <div class="mstat"><span class="mstat-k">КЛАСС</span>     <span class="mstat-v r">MACHINE</span></div>
-                    <div class="mstat"><span class="mstat-k">ТОПЛИВО</span>    <span class="mstat-v r">ЭНЕРГИЯ</span></div>
-                    <div class="mstat"><span class="mstat-k">ИСТОЧНИК</span>   <span class="mstat-v">РЕСУРС СРЕДЫ</span></div>
-                    <div class="mstat"><span class="mstat-k">СЛОТЫ АРС.</span> <span class="mstat-v g">5 СЛОТОВ</span></div>
-                    <div class="mstat"><span class="mstat-k">ВАРИАЦИЙ</span>   <span class="mstat-v n">2 / СЛОТ</span></div>
-                    <div class="mstat"><span class="mstat-k">МАКС. РАНГ</span> <span class="mstat-v g">SSS</span></div>
-                    <div class="mstat"><span class="mstat-k">СТАТУС</span>     <span class="mstat-v r">АКТИВЕН</span></div>
-                </div>
-            </div>
-            <div class="side-panel">
-                <div class="sp-head">// АРСЕНАЛ // СЛОТЫ</div>
-                <div class="sp-body">
-                    <div class="aslot"><span style="color:var(--c-blue)">◼ СЛОТ 1</span><span>ДАЛЬНОБОЙНЫЙ</span></div>
-                    <div class="aslot"><span style="color:var(--c-orange)">◼ СЛОТ 2</span><span>УДАРНЫЙ</span></div>
-                    <div class="aslot"><span style="color:var(--c-green)">◼ СЛОТ 3</span><span>ГВОЗДЕВОЙ</span></div>
-                    <div class="aslot"><span style="color:var(--c-gold)">◼ СЛОТ 4</span><span>РЕЛЬСОВЫЙ</span></div>
-                    <div class="aslot"><span style="color:var(--c-pink)">◼ СЛОТ 5</span><span>РАКЕТНЫЙ</span></div>
-                    <div class="readout" style="margin-top:0.5rem; font-size:0.58rem;">
-                        <span class="hl">// ВАРИАЦИИ:</span>
-                        <span class="vl">СИНИЙ (base) / КРАСНЫЙ (alt)</span>
+            <div class="panel-body">
+                <div class="author-card">
+                    <div class="author-glyph">✦</div>
+                    <div>
+                        <div class="author-name">Arsi Patala — «Hakita»</div>
+                        <div class="author-role">Независимый разработчик // Финляндия</div>
+                        <div class="author-bio">
+                            Финский инди-разработчик, создавший ULTRAKILL практически в одиночку. Отвечает за программирование, игровой дизайн, большую часть визуального стиля и общую концепцию проекта. Известен активным взаимодействием с сообществом через Discord и социальные сети.
+                        </div>
+                        <div class="tags" style="margin-top:0.5rem;">
+                            <span class="tag g">ГЕЙМДИЗАЙН</span>
+                            <span class="tag b">ПРОГРАММИРОВАНИЕ</span>
+                            <span class="tag">INDIE</span>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="side-panel">
-                <div class="sp-head">// ИСТОЧНИКИ ДАННЫХ</div>
-                <div class="sp-body">
-                    <a href="#" class="src"><span class="src-ico">⬡</span> ULTRAKILL — Steam (демо-доступ)</a>
-                    <a href="#" class="src"><span class="src-ico">◈</span> Справочная база (Fandom Wiki)</a>
-                    <a href="#" class="src"><span class="src-ico">◎</span> Сообщество New Blood Interactive</a>
-                    <button id="statsBtn" class="term-btn">СТАТИСТИКА БАЗЫ ДАННЫХ</button>
+
+                <div class="art-section-head">ИСТОРИЯ РАЗРАБОТКИ</div>
+                <div class="art-para">
+                    Разработка ULTRAKILL началась как личный проект Hakita, вдохновлённый классическими шутерами 1990-х годов — Doom, Quake и Heretic. Автор стремился создать игру, где темп и стиль важнее осторожности: концепция «нейтрализуй — получи топливо — продолжай» стала центральной механикой.
+                </div>
+                <div class="art-para">
+                    Демо-версия была выпущена в <span class="art-hl">2019 году</span> и получила высокую оценку сообщества, что привлекло внимание издателя New Blood Interactive. Игра вышла в ранний доступ Steam в 2020 году и продолжает активно обновляться.
+                </div>
+
+                <div class="readout">
+                    <span class="hl">[HAKITA]</span>  <span class="vl">«Я хотел сделать игру, которая ощущается быстрее, чем что-либо ещё.»</span><br>
+                    <span class="hl">[STATUS]</span>  <span class="vl">Разработка продолжается // Ранний доступ<span class="cur"></span></span>
                 </div>
             </div>
-            <div class="side-panel">
-                <div class="sp-head">// SYSTEM LOG // TERMINAL</div>
-                <div class="sp-body">
-                    <div class="readout">
-                        <span class="hl">[SYS]</span>  <span class="vl">Загрузка блока... OK</span><br>
-                        <span class="hl">[V1]</span>   <span class="vl">Арсенал активирован</span><br>
-                        <span class="hl">[FUEL]</span> <span class="vl">Уровень: КРИТИЧЕСКИЙ</span><br>
-                        <span class="hl">[SCAN]</span> <span class="vl">Объектов: 20+</span><br>
-                        <span class="hl">[STL]</span>  <span class="vl">Ранг: SSS<span class="cur"></span></span>
+        </div>
+
+        <!-- СТАТЬЯ: ОБ ИЗДАТЕЛЕ -->
+        <div class="panel">
+            <div class="panel-head">
+                <div class="ph-dot blue"></div>
+                <div class="ph-title blue">ОБ ИЗДАТЕЛЕ — NEW BLOOD INTERACTIVE</div>
+                <div class="ph-tag">PUBLISHER.PROFILE</div>
+            </div>
+            <div class="panel-body">
+                <div class="author-card">
+                    <div class="author-glyph" style="color:var(--c-blue);text-shadow:0 0 12px var(--c-blue);">◆</div>
+                    <div>
+                        <div class="author-name">New Blood Interactive</div>
+                        <div class="author-role" style="color:var(--c-blue);">Издатель инди-игр // США</div>
+                        <div class="author-bio">
+                            Независимый издатель, специализирующийся на инди-шутерах в стилистике ретро. Основан Дейвом Ошри (Dave Oshry). В портфолио — Dusk, Amid Evil, Gloomwood и другие проекты. Компания известна тем, что предоставляет разработчикам полный творческий контроль над проектами.
+                        </div>
+                        <div class="tags" style="margin-top:0.5rem;">
+                            <span class="tag b">ИЗДАТЕЛЬ</span>
+                            <span class="tag">INDIE PUBLISHER</span>
+                            <span class="tag n">ТВОРЧЕСКАЯ СВОБОДА</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="art-section-head">ФИЛОСОФИЯ ИЗДАТЕЛЯ</div>
+                <div class="art-para">
+                    New Blood Interactive специализируется на играх, вдохновлённых шутерами 1990-х, делая ставку на скорость, интенсивность и художественный стиль. Подход компании: минимум вмешательства в творческий процесс разработчика при максимальной поддержке с точки зрения дистрибуции и продвижения.
+                </div>
+                <div class="art-para">
+                    ULTRAKILL является флагманским проектом издателя в своём сегменте и удерживает статус одной из наиболее высоко оценённых игр в раннем доступе Steam на протяжении нескольких лет.
+                </div>
+
+                <div class="fact-grid">
+                    <div class="fact-item" style="border-left-color:var(--c-blue);">
+                        <div class="fact-key">ОСНОВАТЕЛЬ</div>
+                        <div class="fact-val b">DAVE OSHRY</div>
+                    </div>
+                    <div class="fact-item" style="border-left-color:var(--c-blue);">
+                        <div class="fact-key">ОСНОВАНИЕ</div>
+                        <div class="fact-val">2016 ГОД</div>
+                    </div>
+                    <div class="fact-item" style="border-left-color:var(--c-blue);">
+                        <div class="fact-key">ШТАБ-КВ.</div>
+                        <div class="fact-val">США</div>
+                    </div>
+                    <div class="fact-item" style="border-left-color:var(--c-blue);">
+                        <div class="fact-key">ПРОЕКТОВ</div>
+                        <div class="fact-val n">10+</div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
+    </div><!-- /articles-grid -->
+
+    <!-- ═══ ФУТЕР ═══ -->
     <div class="site-footer">
         <div class="footer-logo">V1 // ULTRAKILL</div>
         <div>// ENERGY IS FUEL // LOWER SECTOR IS FULL //</div>
-        <div>// ДАННЫЕ: СПРАВОЧНАЯ БАЗА ULTRAKILL FANDOM //</div>
+        <div>// ДАННЫЕ: ULTRAKILL FANDOM WIKI // STEAM //</div>
     </div>
 
-</div>
+</div><!-- /page -->
 
 <script>
 /* ══════════════════════════════════════
@@ -893,43 +777,8 @@ function setTheme(t) {
     } catch(e) {}
 })();
 
-function navTo(id) {
-    var el = document.getElementById(id);
-    if (!el) return;
-    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    el.style.transition = 'border-color 0.1s, box-shadow 0.1s';
-    el.style.borderColor = 'var(--acc)';
-    el.style.boxShadow   = '0 0 24px var(--acc-glow)';
-    setTimeout(function() {
-        el.style.borderColor = '';
-        el.style.boxShadow   = '';
-    }, 900);
-}
-
-document.querySelectorAll('.ws-slot').forEach(function(slot) {
-    slot.addEventListener('click', function () {
-        document.querySelectorAll('.ws-slot').forEach(function(s) { s.classList.remove('active'); });
-        this.classList.add('active');
-    });
-});
-
-document.getElementById('statsBtn').addEventListener('click', function() {
-    alert(
-        '// SYSTEM DATABASE //\n\n' +
-        'ULTRAKILL — Fandom Wiki\n' +
-        'Создана : 12 ноября 2020\n' +
-        'Статей  : 219\n' +
-        'Файлов  : 2 830\n' +
-        'Правок  : 50 498\n\n' +
-        '[STATUS: ACTIVE]'
-    );
-});
-
 /* ══════════════════════════════════════════════════════════════════
    CANVAS ENGINE
-   DARK / V1  → canvas пуст (CSS-фон делает всё сам)
-   V2         → Зеркальные осколки + глитч + трещины + RGB + шум
-   GABRIEL    → Перья + лучи + нимбы + крылья + мандала + частицы
 ══════════════════════════════════════════════════════════════════ */
 (function () {
     var CV  = document.getElementById('theme-bg-canvas');
@@ -941,538 +790,124 @@ document.getElementById('statsBtn').addEventListener('click', function() {
     function ri(a, b)    { return Math.floor(r(a, b + 1)); }
     function cl(v,mn,mx) { return Math.max(mn, Math.min(mx, v)); }
 
-    function resize() {
-        CV.width  = window.innerWidth;
-        CV.height = window.innerHeight;
-    }
+    function resize() { CV.width = window.innerWidth; CV.height = window.innerHeight; }
     window.addEventListener('resize', function () { resize(); init(AT); });
     resize();
 
-    /* ════════════════════════════════════════════════════════
-       V2 — ЗЕРКАЛЬНЫЙ МОДУЛЬ
-       Лор: точная копия V1, зеркальный агрессор, тёмное отражение.
-       Визуал: красный, расколотое зеркало, глитч, RGB-помехи,
-               статический шум, ударные волны, осколки, трещины.
-    ════════════════════════════════════════════════════════ */
+    /* ════ V2 ════ */
     function initV2() {
-        S = {
-            shards:[], glitchBars:[], glitchT:ri(10,40),
-            staticPts:[], cracks:[], crackT:ri(80,200),
-            rgbLife:0, shocks:[], swT:ri(50,180),
-            vigPh:0, noiseF:0,
-            textFrag:[], textT:ri(60,180)
-        };
-        for (var i = 0; i < 28; i++) S.shards.push(mkShard());
-        for (var j = 0; j < 220; j++) {
-            S.staticPts.push({
-                x:r(0,CV.width), y:r(0,CV.height), rr:r(.4,1.8),
-                al:r(.01,.055), bl:r(0,Math.PI*2), spd:r(.04,.15)
-            });
-        }
-        for (var c = 0; c < 6; c++) S.cracks.push(mkCrack());
-        for (var tf = 0; tf < 8; tf++) S.textFrag.push(mkTextFrag());
+        S = { shards:[], glitchBars:[], glitchT:ri(10,40), staticPts:[], cracks:[], crackT:ri(80,200), rgbLife:0, shocks:[], swT:ri(50,180), vigPh:0, noiseF:0, textFrag:[], textT:ri(60,180) };
+        for (var i=0;i<28;i++) S.shards.push(mkShard());
+        for (var j=0;j<220;j++) S.staticPts.push({x:r(0,CV.width),y:r(0,CV.height),rr:r(.4,1.8),al:r(.01,.055),bl:r(0,Math.PI*2),spd:r(.04,.15)});
+        for (var c=0;c<6;c++) S.cracks.push(mkCrack());
+        for (var tf=0;tf<8;tf++) S.textFrag.push(mkTextFrag());
     }
-
     function mkShard() {
-        var cx=r(15,CV.width/2-10), cy=r(15,CV.height-15), sz=r(14,68), pts=[], n=ri(3,7);
-        for (var i=0;i<n;i++) {
-            var ang=(i/n)*Math.PI*2+r(-.55,.55);
-            pts.push({x:cx+Math.cos(ang)*sz*r(.4,1.1), y:cy+Math.sin(ang)*sz*r(.4,1.1)});
-        }
-        return { pts:pts, cx:cx, cy:cy,
-            vy:r(-.12,.12), vx:r(-.06,.06),
-            rot:r(0,Math.PI*2), rotV:r(-.007,.007),
-            al:r(.04,.16), ph:r(0,Math.PI*2), spd:r(.012,.03),
-            life:r(.7,1), decay:r(.0004,.0018), gleam:Math.random()>.5 };
+        var cx=r(15,CV.width/2-10),cy=r(15,CV.height-15),sz=r(14,68),pts=[],n=ri(3,7);
+        for(var i=0;i<n;i++){var ang=(i/n)*Math.PI*2+r(-.55,.55);pts.push({x:cx+Math.cos(ang)*sz*r(.4,1.1),y:cy+Math.sin(ang)*sz*r(.4,1.1)});}
+        return{pts:pts,cx:cx,cy:cy,vy:r(-.12,.12),vx:r(-.06,.06),rot:r(0,Math.PI*2),rotV:r(-.007,.007),al:r(.04,.16),ph:r(0,Math.PI*2),spd:r(.012,.03),life:r(.7,1),decay:r(.0004,.0018),gleam:Math.random()>.5};
     }
-
     function mkCrack() {
-        var sx=CV.width/2+r(-100,100), sy=r(40,CV.height-40),
-            pts=[{x:sx,y:sy}], cx=sx, cy=sy;
-        for (var i=0;i<ri(4,11);i++) {
-            cx+=r(-100,100); cy+=r(-70,90);
-            cx=cl(cx,8,CV.width-8); cy=cl(cy,8,CV.height-8);
-            pts.push({x:cx,y:cy});
-        }
-        return { pts:pts, al:r(.02,.07), ph:r(0,Math.PI*2),
-                 phs:r(.007,.024), life:r(.7,1.5), decay:r(.0007,.0028) };
+        var sx=CV.width/2+r(-100,100),sy=r(40,CV.height-40),pts=[{x:sx,y:sy}],cx=sx,cy=sy;
+        for(var i=0;i<ri(4,11);i++){cx+=r(-100,100);cy+=r(-70,90);cx=cl(cx,8,CV.width-8);cy=cl(cy,8,CV.height-8);pts.push({x:cx,y:cy});}
+        return{pts:pts,al:r(.02,.07),ph:r(0,Math.PI*2),phs:r(.007,.024),life:r(.7,1.5),decay:r(.0007,.0028)};
     }
-
-    function mkTextFrag() {
-        var FR=['NULL','ERR','V2','MIRROR','0xDEAD','CORRUPT','REFLECT','DUAL'];
-        return { x:r(20,CV.width/2-20), y:r(20,CV.height-20),
-            txt:FR[ri(0,FR.length-1)], al:r(.02,.08),
-            ph:r(0,Math.PI*2), phs:r(.006,.02),
-            life:r(.8,1.6), decay:r(.0006,.002) };
-    }
+    function mkTextFrag(){var FR=['NULL','ERR','V2','MIRROR','0xDEAD','CORRUPT','REFLECT','DUAL'];return{x:r(20,CV.width/2-20),y:r(20,CV.height-20),txt:FR[ri(0,FR.length-1)],al:r(.02,.08),ph:r(0,Math.PI*2),phs:r(.006,.02),life:r(.8,1.6),decay:r(.0006,.002)};}
 
     function drawV2() {
         CTX.clearRect(0,0,CV.width,CV.height);
-        var W=CV.width, H=CV.height;
-        S.noiseF++; S.vigPh+=.009;
-
-        /* виньетка */
+        var W=CV.width,H=CV.height;
+        S.noiseF++;S.vigPh+=.009;
         var va=.04+.02*Math.sin(S.vigPh);
         var vg=CTX.createRadialGradient(W/2,H/2,0,W/2,H/2,Math.max(W,H)*.74);
-        vg.addColorStop(0,'rgba(255,0,0,0)');
-        vg.addColorStop(.65,'rgba(130,0,0,'+(va*.4)+')');
-        vg.addColorStop(1,'rgba(80,0,0,'+va+')');
-        CTX.fillStyle=vg; CTX.fillRect(0,0,W,H);
-
-        /* статический шум */
-        if (S.noiseF%3===0) {
-            S.staticPts.forEach(function(pt) {
-                pt.bl+=pt.spd;
-                var a=pt.al*(.3+.7*Math.abs(Math.sin(pt.bl)));
-                CTX.beginPath(); CTX.arc(pt.x,pt.y,pt.rr,0,Math.PI*2);
-                CTX.fillStyle='rgba(255,24,24,'+a+')'; CTX.fill();
-                CTX.beginPath(); CTX.arc(W-pt.x,pt.y,pt.rr*.65,0,Math.PI*2);
-                CTX.fillStyle='rgba(255,24,24,'+(a*.45)+')'; CTX.fill();
-            });
-        }
-
-        /* трещины */
-        S.crackT--;
-        if (S.crackT<=0) { S.crackT=ri(100,240); if(S.cracks.length<12) S.cracks.push(mkCrack()); }
+        vg.addColorStop(0,'rgba(255,0,0,0)');vg.addColorStop(.65,'rgba(130,0,0,'+(va*.4)+')');vg.addColorStop(1,'rgba(80,0,0,'+va+')');
+        CTX.fillStyle=vg;CTX.fillRect(0,0,W,H);
+        if(S.noiseF%3===0){S.staticPts.forEach(function(pt){pt.bl+=pt.spd;var a=pt.al*(.3+.7*Math.abs(Math.sin(pt.bl)));CTX.beginPath();CTX.arc(pt.x,pt.y,pt.rr,0,Math.PI*2);CTX.fillStyle='rgba(255,24,24,'+a+')';CTX.fill();CTX.beginPath();CTX.arc(W-pt.x,pt.y,pt.rr*.65,0,Math.PI*2);CTX.fillStyle='rgba(255,24,24,'+(a*.45)+')';CTX.fill();});}
+        S.crackT--;if(S.crackT<=0){S.crackT=ri(100,240);if(S.cracks.length<12)S.cracks.push(mkCrack());}
         S.cracks=S.cracks.filter(function(c){return c.life>0;});
-        S.cracks.forEach(function(cr) {
-            cr.life-=cr.decay; cr.ph+=cr.phs;
-            var a=cr.al*cr.life*(.55+.45*Math.sin(cr.ph));
-            function dCrack(flip) {
-                CTX.save();
-                if(flip){CTX.translate(W,0);CTX.scale(-1,1);}
-                CTX.strokeStyle='rgba(255,24,24,'+(a*(flip?.45:1))+')';
-                CTX.lineWidth=flip?.55:.88;
-                CTX.beginPath();
-                cr.pts.forEach(function(pt,i){i?CTX.lineTo(pt.x,pt.y):CTX.moveTo(pt.x,pt.y);});
-                CTX.shadowBlur=6; CTX.shadowColor='rgba(255,0,0,'+a+')';
-                CTX.stroke(); CTX.shadowBlur=0;
-                CTX.restore();
-            }
-            dCrack(false); dCrack(true);
-        });
-
-        /* глитч-полосы */
+        S.cracks.forEach(function(cr){cr.life-=cr.decay;cr.ph+=cr.phs;var a=cr.al*cr.life*(.55+.45*Math.sin(cr.ph));function dCrack(flip){CTX.save();if(flip){CTX.translate(W,0);CTX.scale(-1,1);}CTX.strokeStyle='rgba(255,24,24,'+(a*(flip?.45:1))+')';CTX.lineWidth=flip?.55:.88;CTX.beginPath();cr.pts.forEach(function(pt,i){i?CTX.lineTo(pt.x,pt.y):CTX.moveTo(pt.x,pt.y);});CTX.shadowBlur=6;CTX.shadowColor='rgba(255,0,0,'+a+')';CTX.stroke();CTX.shadowBlur=0;CTX.restore();}dCrack(false);dCrack(true);});
         S.glitchT--;
-        if (S.glitchT<=0) {
-            S.glitchT=ri(6,44);
-            var nb=ri(1,6);
-            for (var nb2=0; nb2<nb&&S.glitchBars.length<14; nb2++) {
-                S.glitchBars.push({y:r(0,H),h:r(1,15),life:r(.2,.9),shift:r(-65,65),al:r(.03,.12),type:ri(0,3)});
-            }
-            if (Math.random()<.3) S.rgbLife=r(.3,.9);
-        }
-
-        /* RGB-смещение */
-        if (S.rgbLife>0) {
-            S.rgbLife-=.05;
-            var rA=.022*S.rgbLife;
-            CTX.fillStyle='rgba(255,0,0,'+rA+')';          CTX.fillRect(r(-12,12),0,W,H);
-            CTX.fillStyle='rgba(0,180,255,'+(rA*.36)+')';  CTX.fillRect(r(-8,8),0,W,H);
-        }
-
+        if(S.glitchT<=0){S.glitchT=ri(6,44);var nb=ri(1,6);for(var nb2=0;nb2<nb&&S.glitchBars.length<14;nb2++){S.glitchBars.push({y:r(0,H),h:r(1,15),life:r(.2,.9),shift:r(-65,65),al:r(.03,.12),type:ri(0,3)});}if(Math.random()<.3)S.rgbLife=r(.3,.9);}
+        if(S.rgbLife>0){S.rgbLife-=.05;var rA=.022*S.rgbLife;CTX.fillStyle='rgba(255,0,0,'+rA+')';CTX.fillRect(r(-12,12),0,W,H);CTX.fillStyle='rgba(0,180,255,'+(rA*.36)+')';CTX.fillRect(r(-8,8),0,W,H);}
         S.glitchBars=S.glitchBars.filter(function(b){return b.life>0;});
-        S.glitchBars.forEach(function(b) {
-            b.life-=.05;
-            var a=b.al*b.life;
-            CTX.fillStyle='rgba(255,24,24,'+a+')'; CTX.fillRect(0,b.y,W,b.h);
-            if (b.type===1) {
-                CTX.fillStyle='rgba(255,100,60,'+(a*.5)+')'; CTX.fillRect(b.shift,b.y,W*.55,b.h*.6);
-                CTX.fillStyle='rgba(150,0,0,'+(a*.35)+')';  CTX.fillRect(-b.shift*.5,b.y-b.h*.2,W*.44,b.h*.45);
-            } else if (b.type===2) {
-                for (var p=0;p<20;p++) {
-                    CTX.fillStyle='rgba(255,24,24,'+(a*r(.4,1.9))+')';
-                    CTX.fillRect(r(0,W),b.y+r(-b.h,b.h),r(2,24),r(1,5));
-                }
-            } else if (b.type===3) {
-                CTX.fillStyle='rgba(200,0,0,'+(a*.18)+')'; CTX.fillRect(0,b.y-4,W,b.h+8);
-            }
-        });
-
-        /* осколки */
-        S.shards.forEach(function(sh,idx) {
-            sh.ph+=sh.spd; sh.life-=sh.decay; sh.rot+=sh.rotV; sh.cx+=sh.vx; sh.cy+=sh.vy;
-            if (sh.life<=0) { S.shards[idx]=mkShard(); return; }
-            var a=sh.al*sh.life*(.46+.54*Math.sin(sh.ph));
-            var cr=Math.cos(sh.rot), sr=Math.sin(sh.rot);
-            var ox=sh.pts[0].x, oy=sh.pts[0].y;
-            var tp=sh.pts.map(function(pt){
-                var dx=pt.x-ox,dy=pt.y-oy;
-                return {x:sh.cx+cr*dx-sr*dy,y:sh.cy+sr*dx+cr*dy};
-            });
-            function dShard(flip) {
-                CTX.save();
-                if(flip){CTX.translate(W,0);CTX.scale(-1,1);}
-                CTX.beginPath(); CTX.moveTo(tp[0].x,tp[0].y);
-                for (var p=1;p<tp.length;p++) CTX.lineTo(tp[p].x,tp[p].y);
-                CTX.closePath();
-                CTX.strokeStyle='rgba(255,24,24,'+(a*(flip?.6:1))+')';
-                CTX.lineWidth=flip?.5:.92; CTX.stroke();
-                if (sh.gleam&&!flip) {
-                    var gg=CTX.createLinearGradient(tp[0].x,tp[0].y,
-                        tp[Math.min(2,tp.length-1)].x,tp[Math.min(2,tp.length-1)].y);
-                    gg.addColorStop(0,'rgba(255,120,120,'+(a*.3)+')');
-                    gg.addColorStop(.5,'rgba(255,255,255,'+(a*.1)+')');
-                    gg.addColorStop(1,'rgba(255,24,24,0)');
-                    CTX.fillStyle=gg;
-                } else {
-                    CTX.fillStyle='rgba(255,24,24,'+(a*(flip?.04:.1))+')';
-                }
-                CTX.fill(); CTX.restore();
-            }
-            dShard(false); dShard(true);
-        });
-
-        /* ударные волны */
-        S.swT--;
-        if (S.swT<=0) {
-            S.swT=ri(50,200);
-            S.shocks.push({x:W/2+r(-80,80),y:r(H*.1,H*.9),rr:0,maxR:r(50,200),spd:r(1.4,3.8),al:r(.05,.14)});
-        }
+        S.glitchBars.forEach(function(b){b.life-=.05;var a=b.al*b.life;CTX.fillStyle='rgba(255,24,24,'+a+')';CTX.fillRect(0,b.y,W,b.h);if(b.type===1){CTX.fillStyle='rgba(255,100,60,'+(a*.5)+')';CTX.fillRect(b.shift,b.y,W*.55,b.h*.6);}else if(b.type===2){for(var p=0;p<20;p++){CTX.fillStyle='rgba(255,24,24,'+(a*r(.4,1.9))+')';CTX.fillRect(r(0,W),b.y+r(-b.h,b.h),r(2,24),r(1,5));}}});
+        S.shards.forEach(function(sh,idx){sh.ph+=sh.spd;sh.life-=sh.decay;sh.rot+=sh.rotV;sh.cx+=sh.vx;sh.cy+=sh.vy;if(sh.life<=0){S.shards[idx]=mkShard();return;}var a=sh.al*sh.life*(.46+.54*Math.sin(sh.ph));var cr2=Math.cos(sh.rot),sr=Math.sin(sh.rot);var ox=sh.pts[0].x,oy=sh.pts[0].y;var tp=sh.pts.map(function(pt){var dx=pt.x-ox,dy=pt.y-oy;return{x:sh.cx+cr2*dx-sr*dy,y:sh.cy+sr*dx+cr2*dy};});function dShard(flip){CTX.save();if(flip){CTX.translate(W,0);CTX.scale(-1,1);}CTX.beginPath();CTX.moveTo(tp[0].x,tp[0].y);for(var p=1;p<tp.length;p++)CTX.lineTo(tp[p].x,tp[p].y);CTX.closePath();CTX.strokeStyle='rgba(255,24,24,'+(a*(flip?.6:1))+')';CTX.lineWidth=flip?.5:.92;CTX.stroke();CTX.fillStyle='rgba(255,24,24,'+(a*(flip?.04:.1))+')';CTX.fill();CTX.restore();}dShard(false);dShard(true);});
+        S.swT--;if(S.swT<=0){S.swT=ri(50,200);S.shocks.push({x:W/2+r(-80,80),y:r(H*.1,H*.9),rr:0,maxR:r(50,200),spd:r(1.4,3.8),al:r(.05,.14)});}
         S.shocks=S.shocks.filter(function(sw){return sw.rr<sw.maxR;});
-        S.shocks.forEach(function(sw) {
-            sw.rr+=sw.spd;
-            var a=sw.al*(1-sw.rr/sw.maxR);
-            CTX.beginPath(); CTX.arc(sw.x,sw.y,sw.rr,0,Math.PI*2);
-            CTX.strokeStyle='rgba(255,24,24,'+a+')'; CTX.lineWidth=1.4; CTX.stroke();
-            CTX.beginPath(); CTX.arc(W-sw.x,sw.y,sw.rr,0,Math.PI*2);
-            CTX.strokeStyle='rgba(255,24,24,'+(a*.48)+')'; CTX.lineWidth=.8; CTX.stroke();
-        });
-
-        /* текстовые коды-ошибок */
-        S.textT--;
-        if (S.textT<=0) { S.textT=ri(50,160); if(S.textFrag.length<14) S.textFrag.push(mkTextFrag()); }
+        S.shocks.forEach(function(sw){sw.rr+=sw.spd;var a=sw.al*(1-sw.rr/sw.maxR);CTX.beginPath();CTX.arc(sw.x,sw.y,sw.rr,0,Math.PI*2);CTX.strokeStyle='rgba(255,24,24,'+a+')';CTX.lineWidth=1.4;CTX.stroke();});
+        S.textT--;if(S.textT<=0){S.textT=ri(50,160);if(S.textFrag.length<14)S.textFrag.push(mkTextFrag());}
         S.textFrag=S.textFrag.filter(function(tf){return tf.life>0;});
-        S.textFrag.forEach(function(tf) {
-            tf.life-=tf.decay; tf.ph+=tf.phs;
-            var a=tf.al*tf.life*(.5+.5*Math.sin(tf.ph));
-            if (a<.003) return;
-            CTX.font='11px "Share Tech Mono",monospace';
-            CTX.fillStyle='rgba(255,24,24,'+a+')'; CTX.fillText(tf.txt,tf.x,tf.y);
-            CTX.save(); CTX.translate(CV.width,0); CTX.scale(-1,1);
-            CTX.fillStyle='rgba(255,24,24,'+(a*.4)+')'; CTX.fillText(tf.txt,tf.x,tf.y);
-            CTX.restore();
-        });
-
-        /* редкая вспышка */
-        if (Math.random()<.0015) { CTX.fillStyle='rgba(255,0,0,.02)'; CTX.fillRect(0,0,W,H); }
-
-        /* ось зеркала */
-        CTX.save(); CTX.setLineDash([5,14]);
-        CTX.strokeStyle='rgba(255,24,24,.028)'; CTX.lineWidth=1;
-        CTX.beginPath(); CTX.moveTo(W/2,0); CTX.lineTo(W/2,H); CTX.stroke();
-        CTX.setLineDash([]); CTX.restore();
-
-        /* горизонтальный артефакт */
-        if (S.noiseF%7===0) {
-            var ly=ri(0,H);
-            CTX.strokeStyle='rgba(255,24,24,.04)'; CTX.lineWidth=.5;
-            CTX.beginPath(); CTX.moveTo(0,ly); CTX.lineTo(W,ly); CTX.stroke();
-        }
+        S.textFrag.forEach(function(tf){tf.life-=tf.decay;tf.ph+=tf.phs;var a=tf.al*tf.life*(.5+.5*Math.sin(tf.ph));if(a<.003)return;CTX.font='11px "Share Tech Mono",monospace';CTX.fillStyle='rgba(255,24,24,'+a+')';CTX.fillText(tf.txt,tf.x,tf.y);});
+        CTX.save();CTX.setLineDash([5,14]);CTX.strokeStyle='rgba(255,24,24,.028)';CTX.lineWidth=1;CTX.beginPath();CTX.moveTo(W/2,0);CTX.lineTo(W/2,H);CTX.stroke();CTX.setLineDash([]);CTX.restore();
     }
 
-    /* ════════════════════════════════════════════════════════
-       GABRIEL — АРХАНГЕЛ / СУДЬЯ
-       Лор: послан судить нижний уровень. В первой встрече —
-            самоуверен, высокомерен. Во второй — вера сломлена,
-            называет себя «светом утренней звезды» (аллюзия на
-            Люцифера). Золото и свет, переходящие в падение.
-       Визуал: лучи, нимбы, крылья, перья, мандала, частицы,
-               священные надписи, большие концентрические кольца.
-    ════════════════════════════════════════════════════════ */
+    /* ════ GABRIEL ════ */
     function initGabriel() {
-        S = {
-            feathers:[], halos:[], rays:[], wings:[
-                {side:-1, ph:0,         phs:.0062, al:.025, beatA:.052},
-                {side: 1, ph:Math.PI,   phs:.0062, al:.025, beatA:.052}
-            ],
-            motes:[], mandPh:0, mandSpd:.0036,
-            divFlash:0, ambPh:0,
-            inscriptions:[], inscT:ri(80,200),
-            outerRings:[]
-        };
-        for (var i=0; i<50; i++) S.feathers.push(newFeather(true));
-        for (var h=0; h<9; h++) {
-            S.halos.push({
-                x:r(60,CV.width-60), y:r(60,CV.height-60),
-                rr:r(25,100), al:r(.03,.08),
-                ph:r(0,Math.PI*2), phs:r(.007,.022),
-                rot:r(0,Math.PI*2), rotV:r(-.005,.005),
-                spokes:ri(8,20), inner:Math.random()>.4, innerR:r(.55,.75),
-                gems:ri(0,6)
-            });
-        }
-        for (var rr=0; rr<14; rr++) {
-            S.rays.push({
-                angle:r(-.82,.82), hw:r(12,80),
-                len:r(CV.height*.3,CV.height),
-                al:r(.015,.055), ph:r(0,Math.PI*2), phs:r(.004,.015)
-            });
-        }
-        for (var m=0; m<85; m++) S.motes.push(newMote(true));
-        for (var or=0; or<3; or++) {
-            S.outerRings.push({
-                x:CV.width/2, y:CV.height/2,
-                rr:r(CV.height*.25,CV.height*.45), al:r(.015,.04),
-                ph:r(0,Math.PI*2), phs:r(.003,.01),
-                rot:r(0,Math.PI*2), rotV:r(-.002,.002)*(or%2===0?1:-1)
-            });
-        }
-        for (var ins=0; ins<6; ins++) S.inscriptions.push(newInscription());
+        S={feathers:[],halos:[],rays:[],wings:[{side:-1,ph:0,phs:.0062,al:.025,beatA:.052},{side:1,ph:Math.PI,phs:.0062,al:.025,beatA:.052}],motes:[],mandPh:0,mandSpd:.0036,divFlash:0,ambPh:0,inscriptions:[],inscT:ri(80,200),outerRings:[]};
+        for(var i=0;i<50;i++)S.feathers.push(newFeather(true));
+        for(var h=0;h<9;h++)S.halos.push({x:r(60,CV.width-60),y:r(60,CV.height-60),rr:r(25,100),al:r(.03,.08),ph:r(0,Math.PI*2),phs:r(.007,.022),rot:r(0,Math.PI*2),rotV:r(-.005,.005),spokes:ri(8,20),inner:Math.random()>.4,innerR:r(.55,.75),gems:ri(0,6)});
+        for(var rr=0;rr<14;rr++)S.rays.push({angle:r(-.82,.82),hw:r(12,80),len:r(CV.height*.3,CV.height),al:r(.015,.055),ph:r(0,Math.PI*2),phs:r(.004,.015)});
+        for(var m=0;m<85;m++)S.motes.push(newMote(true));
+        for(var or=0;or<3;or++)S.outerRings.push({x:CV.width/2,y:CV.height/2,rr:r(CV.height*.25,CV.height*.45),al:r(.015,.04),ph:r(0,Math.PI*2),phs:r(.003,.01),rot:r(0,Math.PI*2),rotV:r(-.002,.002)*(or%2===0?1:-1)});
+        for(var ins=0;ins<6;ins++)S.inscriptions.push(newInscription());
     }
-
-    function newFeather(rY) {
-        return {
-            x:r(-90,CV.width+90), y:rY?r(-300,CV.height):r(-240,-10),
-            vy:r(.15,.65), vx:r(-.12,.12), len:r(16,56),
-            sw:r(0,Math.PI*2), sws:r(.009,.028), rot:0,
-            al:r(.052,.18), golden:Math.random()>.32
-        };
-    }
-
-    function newMote(rY) {
-        return {
-            x:r(0,CV.width), y:rY?r(0,CV.height):CV.height+20,
-            rr:r(.7,3.2), vy:r(-.38,-.07), vx:r(-.07,.07),
-            al:r(.05,.2), ph:r(0,Math.PI*2), phs:r(.02,.065)
-        };
-    }
-
-    function newInscription() {
-        var TX=['JUDICIUM','LUX AETERNA','CAELUM','SANCTUS','VIRTUS','IUSTITIA'];
-        return {
-            x:r(30,CV.width*.45), y:r(30,CV.height*.8),
-            txt:TX[ri(0,TX.length-1)], al:r(.015,.055),
-            ph:r(0,Math.PI*2), phs:r(.005,.016),
-            life:r(.8,1.8), decay:r(.0004,.0015), size:ri(9,13)
-        };
-    }
+    function newFeather(rY){return{x:r(-90,CV.width+90),y:rY?r(-300,CV.height):r(-240,-10),vy:r(.15,.65),vx:r(-.12,.12),len:r(16,56),sw:r(0,Math.PI*2),sws:r(.009,.028),rot:0,al:r(.052,.18),golden:Math.random()>.32};}
+    function newMote(rY){return{x:r(0,CV.width),y:rY?r(0,CV.height):CV.height+20,rr:r(.7,3.2),vy:r(-.38,-.07),vx:r(-.07,.07),al:r(.05,.2),ph:r(0,Math.PI*2),phs:r(.02,.065)};}
+    function newInscription(){var TX=['JUDICIUM','LUX AETERNA','CAELUM','SANCTUS','VIRTUS','IUSTITIA'];return{x:r(30,CV.width*.45),y:r(30,CV.height*.8),txt:TX[ri(0,TX.length-1)],al:r(.015,.055),ph:r(0,Math.PI*2),phs:r(.005,.016),life:r(.8,1.8),decay:r(.0004,.0015),size:ri(9,13)};}
 
     function drawGabriel() {
         CTX.clearRect(0,0,CV.width,CV.height);
-        var W=CV.width, H=CV.height, cx=W/2, cy=H/2;
-        S.ambPh+=.008; S.mandPh+=S.mandSpd;
-
-        /* золотое свечение сверху */
+        var W=CV.width,H=CV.height,cx=W/2,cy=H/2;
+        S.ambPh+=.008;S.mandPh+=S.mandSpd;
         var ambA=.022+.01*Math.sin(S.ambPh);
         var ag=CTX.createRadialGradient(cx,-H*.1,0,cx,-H*.1,H*1.3);
-        ag.addColorStop(0,'rgba(200,152,30,'+ambA+')');
-        ag.addColorStop(.45,'rgba(200,152,30,'+(ambA*.35)+')');
-        ag.addColorStop(1,'rgba(200,152,30,0)');
-        CTX.fillStyle=ag; CTX.fillRect(0,0,W,H);
-
-        /* лучи света */
-        S.rays.forEach(function(rr) {
-            rr.ph+=rr.phs;
-            var a=rr.al*(.4+.6*Math.sin(rr.ph));
-            CTX.save(); CTX.translate(cx,-50); CTX.rotate(rr.angle);
-            var g=CTX.createLinearGradient(0,0,0,rr.len);
-            g.addColorStop(0,'rgba(200,152,30,'+a+')');
-            g.addColorStop(.38,'rgba(245,205,100,'+(a*.44)+')');
-            g.addColorStop(.72,'rgba(200,152,30,'+(a*.1)+')');
-            g.addColorStop(1,'rgba(200,152,30,0)');
-            CTX.beginPath();
-            CTX.moveTo(-rr.hw*.14,0); CTX.lineTo(rr.hw*.14,0);
-            CTX.lineTo(rr.hw*1.88,rr.len); CTX.lineTo(-rr.hw*1.88,rr.len);
-            CTX.closePath(); CTX.fillStyle=g; CTX.fill(); CTX.restore();
-        });
-
-        /* внешние большие кольца */
-        S.outerRings.forEach(function(or) {
-            or.ph+=or.phs; or.rot+=or.rotV;
-            var a=or.al*(.44+.56*Math.sin(or.ph));
-            CTX.save(); CTX.translate(cx,cy); CTX.rotate(or.rot);
-            CTX.beginPath(); CTX.arc(0,0,or.rr,0,Math.PI*2);
-            CTX.strokeStyle='rgba(200,152,30,'+a+')'; CTX.lineWidth=.55; CTX.stroke();
-            for (var k=0;k<32;k++) {
-                var ang=(k/32)*Math.PI*2;
-                CTX.beginPath();
-                CTX.moveTo(Math.cos(ang)*or.rr,Math.sin(ang)*or.rr);
-                CTX.lineTo(Math.cos(ang)*(or.rr+6),Math.sin(ang)*(or.rr+6));
-                CTX.strokeStyle='rgba(200,152,30,'+(a*.6)+')'; CTX.lineWidth=.4; CTX.stroke();
-            }
-            CTX.restore();
-        });
-
-        /* мандала */
-        var mA=.022+.01*Math.sin(S.mandPh*1.7);
-        var mR=Math.min(cx,cy)*.56;
-        CTX.save(); CTX.translate(cx,cy);
-        for (var ring=1;ring<=5;ring++) {
-            CTX.beginPath(); CTX.arc(0,0,mR*(ring/5),0,Math.PI*2);
-            CTX.strokeStyle='rgba(200,152,30,'+(mA*(.4+.6*(ring/5)))+')';
-            CTX.lineWidth=.5; CTX.stroke();
-        }
+        ag.addColorStop(0,'rgba(200,152,30,'+ambA+')');ag.addColorStop(.45,'rgba(200,152,30,'+(ambA*.35)+')');ag.addColorStop(1,'rgba(200,152,30,0)');
+        CTX.fillStyle=ag;CTX.fillRect(0,0,W,H);
+        S.rays.forEach(function(rr){rr.ph+=rr.phs;var a=rr.al*(.4+.6*Math.sin(rr.ph));CTX.save();CTX.translate(cx,-50);CTX.rotate(rr.angle);var g=CTX.createLinearGradient(0,0,0,rr.len);g.addColorStop(0,'rgba(200,152,30,'+a+')');g.addColorStop(.38,'rgba(245,205,100,'+(a*.44)+')');g.addColorStop(1,'rgba(200,152,30,0)');CTX.beginPath();CTX.moveTo(-rr.hw*.14,0);CTX.lineTo(rr.hw*.14,0);CTX.lineTo(rr.hw*1.88,rr.len);CTX.lineTo(-rr.hw*1.88,rr.len);CTX.closePath();CTX.fillStyle=g;CTX.fill();CTX.restore();});
+        S.outerRings.forEach(function(or){or.ph+=or.phs;or.rot+=or.rotV;var a=or.al*(.44+.56*Math.sin(or.ph));CTX.save();CTX.translate(cx,cy);CTX.rotate(or.rot);CTX.beginPath();CTX.arc(0,0,or.rr,0,Math.PI*2);CTX.strokeStyle='rgba(200,152,30,'+a+')';CTX.lineWidth=.55;CTX.stroke();CTX.restore();});
+        var mA=.022+.01*Math.sin(S.mandPh*1.7),mR=Math.min(cx,cy)*.56;
+        CTX.save();CTX.translate(cx,cy);
+        for(var ring=1;ring<=5;ring++){CTX.beginPath();CTX.arc(0,0,mR*(ring/5),0,Math.PI*2);CTX.strokeStyle='rgba(200,152,30,'+(mA*(.4+.6*(ring/5)))+')';CTX.lineWidth=.5;CTX.stroke();}
         CTX.rotate(S.mandPh*.26);
-        for (var kk=0;kk<18;kk++) {
-            var mang=(kk/18)*Math.PI*2;
-            CTX.beginPath(); CTX.moveTo(0,0);
-            CTX.lineTo(Math.cos(mang)*mR,Math.sin(mang)*mR);
-            CTX.strokeStyle='rgba(200,152,30,'+mA+')'; CTX.lineWidth=.45; CTX.stroke();
-            CTX.beginPath(); CTX.arc(Math.cos(mang)*mR*.94,Math.sin(mang)*mR*.94,1.4,0,Math.PI*2);
-            CTX.fillStyle='rgba(220,178,60,'+(mA*2.2)+')'; CTX.fill();
-        }
+        for(var kk=0;kk<18;kk++){var mang=(kk/18)*Math.PI*2;CTX.beginPath();CTX.moveTo(0,0);CTX.lineTo(Math.cos(mang)*mR,Math.sin(mang)*mR);CTX.strokeStyle='rgba(200,152,30,'+mA+')';CTX.lineWidth=.45;CTX.stroke();}
         CTX.restore();
-
-        /* крылья */
-        S.wings.forEach(function(w) {
-            w.ph+=w.phs;
-            var a=w.al*(.5+.5*Math.sin(w.ph));
-            var span=Math.min(cx*.96,265);
-            var beat=Math.sin(w.ph*.46)*w.beatA;
-            CTX.save();
-            CTX.strokeStyle='rgba(175,138,18,'+a+')'; CTX.lineWidth=.75;
-            for (var f=0;f<8;f++) {
-                var t=(f+1)/9;
-                var arcY=cy-58*(1-t)-f*7+beat*span*t;
-                CTX.beginPath(); CTX.moveTo(cx,cy);
-                CTX.quadraticCurveTo(cx+w.side*span*t*.44,arcY,cx+w.side*span*t,cy+18+f*13+beat*span*.26);
-                CTX.stroke();
-            }
-            CTX.beginPath(); CTX.moveTo(cx,cy+82);
-            CTX.quadraticCurveTo(cx+w.side*span*.56,cy-95+beat*span*.5,cx+w.side*span,cy+36);
-            CTX.strokeStyle='rgba(200,152,30,'+(a*.56)+')'; CTX.lineWidth=1.1; CTX.stroke();
-            CTX.beginPath(); CTX.moveTo(cx,cy+82);
-            CTX.quadraticCurveTo(cx+w.side*span*.7,cy+120,cx+w.side*span,cy+36);
-            CTX.strokeStyle='rgba(200,152,30,'+(a*.28)+')'; CTX.lineWidth=.7; CTX.stroke();
-            CTX.restore();
-        });
-
-        /* нимбы */
-        S.halos.forEach(function(hh) {
-            hh.ph+=hh.phs; hh.rot+=hh.rotV;
-            var a=hh.al*(.44+.56*Math.sin(hh.ph));
-            var rr=hh.rr*(.93+.07*Math.sin(hh.ph*1.22));
-            CTX.shadowBlur=8; CTX.shadowColor='rgba(200,152,30,'+(a*.4)+')';
-            CTX.beginPath(); CTX.arc(hh.x,hh.y,rr,0,Math.PI*2);
-            CTX.strokeStyle='rgba(200,152,30,'+a+')'; CTX.lineWidth=1.5; CTX.stroke();
-            CTX.shadowBlur=0;
-            if (hh.inner) {
-                CTX.beginPath(); CTX.arc(hh.x,hh.y,rr*hh.innerR,0,Math.PI*2);
-                CTX.strokeStyle='rgba(225,182,62,'+(a*.38)+')'; CTX.lineWidth=.5; CTX.stroke();
-            }
-            CTX.save(); CTX.translate(hh.x,hh.y); CTX.rotate(hh.rot);
-            for (var s=0;s<hh.spokes;s++) {
-                var sang=(s/hh.spokes)*Math.PI*2;
-                var sx1=Math.cos(sang)*rr, sy1=Math.sin(sang)*rr;
-                CTX.beginPath(); CTX.moveTo(sx1,sy1);
-                CTX.lineTo(Math.cos(sang)*(rr+9),Math.sin(sang)*(rr+9));
-                CTX.strokeStyle='rgba(200,152,30,'+a+')'; CTX.lineWidth=.65; CTX.stroke();
-                CTX.beginPath(); CTX.arc(sx1,sy1,1.4,0,Math.PI*2);
-                CTX.fillStyle='rgba(240,190,70,'+(a*2.4)+')'; CTX.fill();
-            }
-            for (var gm=0;gm<hh.gems;gm++) {
-                var gang=(gm/hh.gems)*Math.PI*2+hh.rot;
-                var gx=Math.cos(gang)*rr, gy=Math.sin(gang)*rr;
-                CTX.beginPath(); CTX.arc(gx,gy,2.8,0,Math.PI*2);
-                CTX.fillStyle='rgba(255,220,80,'+(a*2.8)+')'; CTX.fill();
-            }
-            CTX.restore();
-            var hg=CTX.createRadialGradient(hh.x,hh.y,rr*.84,hh.x,hh.y,rr*1.35);
-            hg.addColorStop(0,'rgba(200,152,30,'+(a*.24)+')');
-            hg.addColorStop(1,'rgba(200,152,30,0)');
-            CTX.beginPath(); CTX.arc(hh.x,hh.y,rr*1.35,0,Math.PI*2);
-            CTX.fillStyle=hg; CTX.fill();
-        });
-
-        /* световые частицы */
-        S.motes.forEach(function(m,idx) {
-            m.ph+=m.phs; m.y+=m.vy; m.x+=m.vx+Math.sin(m.ph*.64)*.09;
-            if (m.y<-28) { S.motes[idx]=newMote(false); return; }
-            var a=m.al*(.36+.64*Math.abs(Math.sin(m.ph)));
-            CTX.beginPath(); CTX.arc(m.x,m.y,m.rr,0,Math.PI*2);
-            CTX.fillStyle='rgba(225,182,62,'+a+')'; CTX.fill();
-            CTX.beginPath(); CTX.arc(m.x,m.y,m.rr*2.9,0,Math.PI*2);
-            CTX.fillStyle='rgba(200,152,30,'+(a*.18)+')'; CTX.fill();
-        });
-
-        /* священные надписи */
-        S.inscT--;
-        if (S.inscT<=0) { S.inscT=ri(70,180); if(S.inscriptions.length<10) S.inscriptions.push(newInscription()); }
+        S.wings.forEach(function(w){w.ph+=w.phs;var a=w.al*(.5+.5*Math.sin(w.ph));var span=Math.min(cx*.96,265);var beat=Math.sin(w.ph*.46)*w.beatA;CTX.save();CTX.strokeStyle='rgba(175,138,18,'+a+')';CTX.lineWidth=.75;for(var f=0;f<8;f++){var t=(f+1)/9;var arcY=cy-58*(1-t)-f*7+beat*span*t;CTX.beginPath();CTX.moveTo(cx,cy);CTX.quadraticCurveTo(cx+w.side*span*t*.44,arcY,cx+w.side*span*t,cy+18+f*13+beat*span*.26);CTX.stroke();}CTX.restore();});
+        S.halos.forEach(function(hh){hh.ph+=hh.phs;hh.rot+=hh.rotV;var a=hh.al*(.44+.56*Math.sin(hh.ph));var rr=hh.rr*(.93+.07*Math.sin(hh.ph*1.22));CTX.beginPath();CTX.arc(hh.x,hh.y,rr,0,Math.PI*2);CTX.strokeStyle='rgba(200,152,30,'+a+')';CTX.lineWidth=1.5;CTX.stroke();});
+        S.motes.forEach(function(m,idx){m.ph+=m.phs;m.y+=m.vy;m.x+=m.vx+Math.sin(m.ph*.64)*.09;if(m.y<-28){S.motes[idx]=newMote(false);return;}var a=m.al*(.36+.64*Math.abs(Math.sin(m.ph)));CTX.beginPath();CTX.arc(m.x,m.y,m.rr,0,Math.PI*2);CTX.fillStyle='rgba(225,182,62,'+a+')';CTX.fill();});
+        S.inscT--;if(S.inscT<=0){S.inscT=ri(70,180);if(S.inscriptions.length<10)S.inscriptions.push(newInscription());}
         S.inscriptions=S.inscriptions.filter(function(ins){return ins.life>0;});
-        S.inscriptions.forEach(function(ins) {
-            ins.life-=ins.decay; ins.ph+=ins.phs;
-            var a=ins.al*ins.life*(.48+.52*Math.sin(ins.ph));
-            if (a<.003) return;
-            CTX.font=ins.size+'px "Share Tech Mono",monospace';
-            CTX.fillStyle='rgba(200,152,30,'+a+')'; CTX.fillText(ins.txt,ins.x,ins.y);
-            CTX.fillStyle='rgba(255,220,100,'+(a*.28)+')'; CTX.fillText(ins.txt,ins.x+1,ins.y-1);
-        });
-
-        /* падающие перья */
-        S.feathers.forEach(function(f,idx) {
-            f.sw+=f.sws; f.y+=f.vy; f.x+=f.vx+Math.sin(f.sw)*.13;
-            f.rot=Math.sin(f.sw*.5)*.3;
-            if (f.y>H+110) { S.feathers[idx]=newFeather(false); return; }
-            drawFeather(f.x,f.y,f.len,f.rot,f.al,f.golden);
-        });
-
-        /* редкая вспышка */
-        if (Math.random()<.0022) S.divFlash=r(.55,1.3);
-        if (S.divFlash>0) {
-            CTX.fillStyle='rgba(255,232,130,'+(S.divFlash*.025)+')'; CTX.fillRect(0,0,W,H);
-            S.divFlash-=.055;
-        }
+        S.inscriptions.forEach(function(ins){ins.life-=ins.decay;ins.ph+=ins.phs;var a=ins.al*ins.life*(.48+.52*Math.sin(ins.ph));if(a<.003)return;CTX.font=ins.size+'px "Share Tech Mono",monospace';CTX.fillStyle='rgba(200,152,30,'+a+')';CTX.fillText(ins.txt,ins.x,ins.y);});
+        S.feathers.forEach(function(f,idx){f.sw+=f.sws;f.y+=f.vy;f.x+=f.vx+Math.sin(f.sw)*.13;f.rot=Math.sin(f.sw*.5)*.3;if(f.y>H+110){S.feathers[idx]=newFeather(false);return;}drawFeather(f.x,f.y,f.len,f.rot,f.al,f.golden);});
+        if(Math.random()<.0022)S.divFlash=r(.55,1.3);
+        if(S.divFlash>0){CTX.fillStyle='rgba(255,232,130,'+(S.divFlash*.025)+')';CTX.fillRect(0,0,W,H);S.divFlash-=.055;}
     }
+    function drawFeather(x,y,len,rot,al,golden){var shaft=golden?'200,152,30':'172,142,72';CTX.save();CTX.translate(x,y);CTX.rotate(rot);CTX.beginPath();CTX.moveTo(0,-len*.5);CTX.lineTo(0,len*.5);CTX.strokeStyle='rgba('+shaft+','+al+')';CTX.lineWidth=.9;CTX.stroke();var steps=Math.floor(len/3.4);for(var i=0;i<steps;i++){var t=i/steps,by=-len*.5+t*len,bw=Math.sin(t*Math.PI)*len*.38,ba=al*Math.sin(t*Math.PI);if(ba<.003)continue;CTX.strokeStyle='rgba('+shaft+','+ba+')';CTX.lineWidth=.4;CTX.beginPath();CTX.moveTo(0,by);CTX.quadraticCurveTo(bw*.44,by+len*.05,bw,by+len*.044);CTX.stroke();CTX.beginPath();CTX.moveTo(0,by);CTX.quadraticCurveTo(-bw*.44,by+len*.05,-bw,by+len*.044);CTX.stroke();}CTX.restore();}
 
-    function drawFeather(x,y,len,rot,al,golden) {
-        var shaft=golden?'200,152,30':'172,142,72';
-        var barb =golden?'222,180,58':'195,165,95';
-        CTX.save(); CTX.translate(x,y); CTX.rotate(rot);
-        CTX.beginPath(); CTX.moveTo(0,-len*.5); CTX.lineTo(0,len*.5);
-        CTX.strokeStyle='rgba('+shaft+','+al+')'; CTX.lineWidth=.9; CTX.stroke();
-        var steps=Math.floor(len/3.4);
-        for (var i=0;i<steps;i++) {
-            var t=i/steps, by=-len*.5+t*len,
-                bw=Math.sin(t*Math.PI)*len*.38,
-                ba=al*Math.sin(t*Math.PI);
-            if (ba<.003) continue;
-            CTX.strokeStyle='rgba('+barb+','+ba+')'; CTX.lineWidth=.4;
-            CTX.beginPath(); CTX.moveTo(0,by);
-            CTX.quadraticCurveTo(bw*.44,by+len*.05,bw,by+len*.044); CTX.stroke();
-            CTX.beginPath(); CTX.moveTo(0,by);
-            CTX.quadraticCurveTo(-bw*.44,by+len*.05,-bw,by+len*.044); CTX.stroke();
-        }
-        CTX.restore();
-    }
-
-    /* ════════════════════════════════════════════
-       ГЛАВНЫЙ ЦИКЛ
-    ════════════════════════════════════════════ */
+    /* ════ ГЛАВНЫЙ ЦИКЛ ════ */
     function loop() {
-        switch (AT) {
+        switch(AT) {
             case 'v2':      drawV2();      break;
             case 'gabriel': drawGabriel(); break;
-            default:
-                /* dark / v1: canvas пуст, CSS-фон работает сам */
-                CTX.clearRect(0, 0, CV.width, CV.height);
-                break;
+            default: CTX.clearRect(0,0,CV.width,CV.height); break;
         }
         requestAnimationFrame(loop);
     }
 
     function init(t) {
-        AT = t; S = {};
-        switch (t) {
+        AT=t; S={};
+        switch(t) {
             case 'v2':      initV2();      break;
             case 'gabriel': initGabriel(); break;
-            /* dark / v1: инициализация не нужна */
         }
     }
 
-    /* перехват setTheme — координируем CSS и Canvas */
     var _orig = window.setTheme;
-    window.setTheme = function (t) {
-        _orig(t);
-        init(t);
-    };
+    window.setTheme = function(t) { _orig(t); init(t); };
 
-    /* первый запуск */
     var boot = 'dark';
     try { boot = localStorage.getItem('uk_theme') || 'dark'; } catch(e) {}
     init(boot);
     loop();
-
 })();
 </script>
 </body>
