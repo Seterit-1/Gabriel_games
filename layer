@@ -1,0 +1,1365 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>ULTRAKILL // СЕКТОРЫ — SYSTEM DATABASE</title>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --acc:       #ff2020;
+            --acc-dim:   #8a0000;
+            --acc-glow:  rgba(255,32,32,0.35);
+            --body-bg:   #060606;
+            --panel-bg:  #0b0b0b;
+            --panel-hd:  #0f0f0f;
+            --panel-bd:  #222222;
+            --text-p:    #e8e8e8;
+            --text-1:    #555555;
+            --text-2:    #333333;
+            --text-3:    #282828;
+            --text-4:    #1e1e1e;
+            --ticker-bg: #000000;
+            --read-bg:   #050505;
+            --c-gold:    #ffd166;
+            --c-blue:    #5599ff;
+            --c-green:   #22ff88;
+            --c-pink:    #ff44aa;
+            --c-orange:  #ff8833;
+        }
+        body[data-theme="v1"] {
+            --acc:       #3a99ff;
+            --acc-dim:   #003399;
+            --acc-glow:  rgba(58,153,255,0.42);
+            --body-bg:   #030912;
+            --panel-bg:  #060d1c;
+            --panel-hd:  #080f22;
+            --panel-bd:  #102244;
+            --text-p:    #b8d0ff;
+            --text-1:    #3a5580;
+            --text-2:    #253858;
+            --text-3:    #162240;
+            --text-4:    #0f1830;
+            --ticker-bg: #020509;
+            --read-bg:   #040810;
+            --c-gold:    #44aaff;
+            --c-blue:    #77ccff;
+            --c-green:   #33bbff;
+            --c-pink:    #6688ff;
+            --c-orange:  #4499ee;
+        }
+        body[data-theme="v2"] {
+            --acc:       #ff1818;
+            --acc-dim:   #aa0000;
+            --acc-glow:  rgba(255,24,24,0.52);
+            --body-bg:   #070202;
+            --panel-bg:  #0d0404;
+            --panel-hd:  #110505;
+            --panel-bd:  #2a0606;
+            --text-p:    #ffc8c8;
+            --text-1:    #883333;
+            --text-2:    #661818;
+            --text-3:    #3a0d0d;
+            --text-4:    #280808;
+            --ticker-bg: #040101;
+            --read-bg:   #060202;
+            --c-gold:    #ff8855;
+            --c-blue:    #ff5544;
+            --c-green:   #ff4422;
+            --c-pink:    #ff2266;
+            --c-orange:  #ff7722;
+        }
+        body[data-theme="gabriel"] {
+            --acc:       #c8981e;
+            --acc-dim:   #6a5000;
+            --acc-glow:  rgba(200,152,30,0.32);
+            --body-bg:   #f0ebe0;
+            --panel-bg:  #fafaf4;
+            --panel-hd:  #edead8;
+            --panel-bd:  #c8b880;
+            --text-p:    #1a1508;
+            --text-1:    #7a6a40;
+            --text-2:    #a09060;
+            --text-3:    #bfb080;
+            --text-4:    #d0c898;
+            --ticker-bg: #e5dfc8;
+            --read-bg:   #f5f0e0;
+            --c-gold:    #c8981e;
+            --c-blue:    #3366aa;
+            --c-green:   #227744;
+            --c-pink:    #aa3366;
+            --c-orange:  #bb5522;
+        }
+
+        .theme-bg-wrap { position: fixed; inset: 0; pointer-events: none; z-index: 1; overflow: hidden; }
+        .bg-dark { position: absolute; inset: 0; display: none; }
+        [data-theme="dark"] .bg-dark, [data-theme="v1"] .bg-dark { display: block; }
+        .bg-dark-grid {
+            position: absolute; inset: 0;
+            background-image:
+                linear-gradient(60deg,  transparent 49.5%, rgba(255,32,32,.025) 50%, transparent 50.5%),
+                linear-gradient(120deg, transparent 49.5%, rgba(255,32,32,.018) 50%, transparent 50.5%),
+                linear-gradient(0deg,   transparent 49.5%, rgba(255,32,32,.015) 50%, transparent 50.5%);
+            background-size: 52px 90px;
+        }
+        [data-theme="v1"] .bg-dark-grid {
+            background-image:
+                linear-gradient(60deg,  transparent 49.5%, rgba(58,153,255,.03)  50%, transparent 50.5%),
+                linear-gradient(120deg, transparent 49.5%, rgba(58,153,255,.022) 50%, transparent 50.5%),
+                linear-gradient(0deg,   transparent 49.5%, rgba(58,153,255,.018) 50%, transparent 50.5%);
+            background-size: 52px 90px;
+        }
+        .bg-dark-scan {
+            position: absolute; left: 0; right: 0;
+            height: 110px; top: -110px;
+            background: linear-gradient(to bottom,
+                transparent,
+                rgba(255,32,32,.012) 42%, rgba(255,32,32,.028) 50%,
+                rgba(255,32,32,.012) 58%, transparent);
+            animation: darkScan 6s linear infinite;
+        }
+        [data-theme="v1"] .bg-dark-scan {
+            background: linear-gradient(to bottom,
+                transparent,
+                rgba(58,153,255,.014) 42%, rgba(58,153,255,.032) 50%,
+                rgba(58,153,255,.014) 58%, transparent);
+            animation-duration: 5s;
+        }
+        @keyframes darkScan { from { transform: translateY(0); } to { transform: translateY(calc(100vh + 110px)); } }
+        #theme-bg-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 2; }
+
+        body::after {
+            content: '';
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.12) 2px, rgba(0,0,0,0.12) 4px);
+            pointer-events: none; z-index: 9999;
+        }
+        body[data-theme="gabriel"]::after {
+            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
+        }
+
+        body {
+            background: var(--body-bg); color: var(--text-p);
+            font-family: 'Share Tech Mono', 'Fira Code', monospace;
+            min-height: 100vh; overflow-x: hidden;
+            transition: background 0.35s, color 0.35s;
+        }
+        .page { max-width: 1380px; margin: 0 auto; padding: 0 1rem 2rem; position: relative; z-index: 10; }
+
+        /* ─── ШАПКА ─── */
+        .site-header { border-bottom: 2px solid var(--acc); padding: 1.4rem 0 1rem; margin-bottom: 0; transition: border-color 0.35s; }
+        .header-top { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; }
+        .logo-eyebrow { font-size: 0.6rem; color: var(--acc); letter-spacing: 0.35em; text-transform: uppercase; margin-bottom: 0.25rem; }
+        .logo-main { font-family: 'VT323', monospace; font-size: 4rem; line-height: 1; color: var(--text-p); letter-spacing: 3px; text-shadow: 0 0 24px var(--acc-glow), 2px 2px 0 var(--acc-dim); }
+        .logo-main .v1 { color: var(--acc); text-shadow: 0 0 40px var(--acc), 0 0 80px var(--acc-glow); }
+        @keyframes glitch {
+            0%,100% { transform: translate(0); }
+            15% { transform: translate(-2px,1px); clip-path: inset(30% 0 30% 0); }
+            30% { transform: translate(2px,-1px); }
+            50% { transform: translate(0); }
+            65% { transform: translate(-1px,2px); clip-path: inset(60% 0 5% 0); }
+        }
+        .logo-main:hover { animation: glitch 0.25s steps(1) infinite; cursor: default; }
+        .logo-tagline { font-size: 0.65rem; color: var(--text-2); letter-spacing: 0.2em; text-transform: uppercase; margin-top: 0.4rem; }
+
+        /* ─── ТЕМА ─── */
+        .theme-panel { background: var(--panel-bg); border: 1px solid var(--panel-bd); border-top: 2px solid var(--acc); padding: 0.75rem 0.95rem; min-width: 230px; transition: background 0.35s, border-color 0.35s; }
+        .tp-head { font-size: 0.52rem; color: var(--text-2); letter-spacing: 0.25em; text-transform: uppercase; margin-bottom: 0.55rem; display: flex; align-items: center; gap: 0.4rem; }
+        .tp-head::before { content: ''; width: 5px; height: 5px; flex-shrink: 0; background: var(--acc); box-shadow: 0 0 5px var(--acc); }
+        .tp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+        .tp-btn { background: transparent; border: 1px solid var(--text-4); padding: 0.45rem 0.6rem; cursor: pointer; display: flex; align-items: center; gap: 7px; font-family: 'Share Tech Mono', monospace; color: var(--text-p); transition: 0.16s; text-align: left; position: relative; overflow: hidden; }
+        .tp-btn::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 2px; transition: width 0.18s; }
+        .tp-btn:hover::after, .tp-btn.active::after { width: 100%; }
+        .tp-swatch { width: 9px; height: 9px; flex-shrink: 0; transition: box-shadow 0.2s; }
+        .t-dark    .tp-swatch { background: #aaaaaa; }
+        .t-v1      .tp-swatch { background: #3a99ff; box-shadow: 0 0 6px #3a99ff; }
+        .t-v2      .tp-swatch { background: #ff1818; box-shadow: 0 0 6px #ff1818; }
+        .t-gabriel .tp-swatch { background: #c8981e; box-shadow: 0 0 6px #c8981e; }
+        .t-dark::after    { background: #aaaaaa; }
+        .t-v1::after      { background: #3a99ff; }
+        .t-v2::after      { background: #ff1818; }
+        .t-gabriel::after { background: #c8981e; }
+        .tp-btn.t-dark:hover,    .tp-btn.t-dark.active    { border-color: #aaaaaa; background: rgba(180,180,180,0.07); }
+        .tp-btn.t-v1:hover,      .tp-btn.t-v1.active      { border-color: #3a99ff; background: rgba(58,153,255,0.09); }
+        .tp-btn.t-v2:hover,      .tp-btn.t-v2.active      { border-color: #ff1818; background: rgba(255,24,24,0.09); }
+        .tp-btn.t-gabriel:hover, .tp-btn.t-gabriel.active { border-color: #c8981e; background: rgba(200,152,30,0.09); }
+        .tp-info { display: flex; flex-direction: column; gap: 1px; }
+        .tp-name { font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; }
+        .tp-sub  { font-size: 0.48rem; color: var(--text-1); letter-spacing: 0.1em; text-transform: uppercase; }
+        .tp-current { font-size: 0.47rem; color: var(--text-3); letter-spacing: 0.15em; text-transform: uppercase; text-align: right; margin-top: 0.45rem; }
+
+        /* ─── ТИКЕР ─── */
+        .ticker-wrap { background: var(--ticker-bg); border-top: 1px solid var(--text-4); border-bottom: 1px solid var(--text-4); overflow: hidden; padding: 0.28rem 0; margin-bottom: 1.2rem; }
+        .ticker-inner { display: flex; gap: 4rem; animation: tick 28s linear infinite; white-space: nowrap; }
+        @keyframes tick { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+        .ti   { font-size: 0.58rem; color: var(--text-2); letter-spacing: 0.2em; text-transform: uppercase; }
+        .ti .r{ color: var(--acc); }
+
+        /* ─── НАВИГАЦИЯ ─── */
+        .nav-section { display: flex; align-items: stretch; gap: 1rem; margin-bottom: 1.4rem; flex-wrap: wrap; }
+        .nav-home-indicator { background: var(--panel-bg); border: 1px solid var(--panel-bd); border-left: 3px solid var(--acc); padding: 1rem 1.2rem; display: flex; flex-direction: column; justify-content: center; min-width: 180px; }
+        .nhi-label { font-size: 0.5rem; color: var(--text-2); letter-spacing: 0.3em; text-transform: uppercase; margin-bottom: 0.2rem; }
+        .nhi-name  { font-family: 'VT323', monospace; font-size: 2rem; color: var(--acc); text-shadow: 0 0 12px var(--acc-glow); line-height: 1; }
+        .nhi-sub   { font-size: 0.55rem; color: var(--text-1); letter-spacing: 0.15em; text-transform: uppercase; margin-top: 0.15rem; }
+        .nhi-dot   { width: 6px; height: 6px; background: var(--acc); box-shadow: 0 0 6px var(--acc); display: inline-block; margin-right: 6px; }
+        .nav-buttons-right { flex: 1; display: flex; gap: 4px; flex-wrap: wrap; }
+        .nav-btn { flex: 1; min-width: 140px; background: var(--panel-bg); border: 1px solid var(--text-4); border-bottom: 3px solid var(--text-4); padding: 1.1rem 1rem; cursor: pointer; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-between; text-decoration: none; color: var(--text-p); font-family: 'Share Tech Mono', monospace; transition: 0.15s; position: relative; overflow: hidden; gap: 0.5rem; }
+        .nav-btn::before { content: ''; position: absolute; left: 0; top: 0; width: 3px; height: 100%; background: var(--text-4); transition: 0.15s; }
+        .nav-btn::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 3px; transition: width 0.2s; }
+        .nav-btn:hover::after, .nav-btn.active::after { width: 100%; }
+        .nb-blue  { --nc: var(--c-blue); }
+        .nb-gold  { --nc: var(--c-gold); }
+        .nb-red   { --nc: var(--acc); }
+        .nb-pink  { --nc: var(--c-pink); }
+        .nb-green { --nc: var(--c-green); }
+        .nav-btn::after  { background: var(--nc); }
+        .nav-btn::before { background: var(--text-4); }
+        .nav-btn:hover, .nav-btn.active { border-color: var(--nc); background: color-mix(in srgb, var(--nc) 6%, var(--panel-bg)); }
+        .nav-btn:hover::before, .nav-btn.active::before { background: var(--nc); box-shadow: 0 0 10px var(--nc); }
+        .nav-btn:hover .nb-num, .nav-btn.active .nb-num  { color: var(--nc); }
+        .nav-btn:hover .nb-icon, .nav-btn.active .nb-icon { color: var(--nc); text-shadow: 0 0 14px var(--nc); }
+        .nb-top   { display: flex; justify-content: space-between; align-items: flex-start; width: 100%; }
+        .nb-icon  { font-size: 1.6rem; line-height: 1; color: var(--text-2); transition: 0.15s; }
+        .nb-num   { font-family: 'VT323', monospace; font-size: 2rem; color: var(--text-3); transition: 0.15s; line-height: 1; }
+        .nb-name  { font-size: 0.88rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-p); font-weight: 600; }
+        .nb-sub   { font-size: 0.52rem; color: var(--text-1); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 0.1rem; }
+
+        /* ─── КРАСНАЯ ЛИНИЯ ─── */
+        .redline { height: 2px; background: linear-gradient(90deg, var(--acc) 0%, var(--text-p) 18%, var(--acc) 35%, transparent 100%); box-shadow: 0 0 10px var(--acc-glow); margin-bottom: 1.5rem; }
+
+        /* ─── ОБЩИЕ ПАНЕЛИ ─── */
+        .panel { background: var(--panel-bg); border: 1px solid var(--panel-bd); margin-bottom: 1.4rem; }
+        .panel-head { background: var(--panel-hd); border-bottom: 1px solid var(--panel-bd); padding: 0.55rem 1rem; display: flex; align-items: center; gap: 0.7rem; }
+        .ph-dot      { width: 10px; height: 10px; flex-shrink: 0; background: var(--acc); box-shadow: 0 0 8px var(--acc); }
+        .ph-dot.gold { background: var(--c-gold); box-shadow: 0 0 8px var(--c-gold); }
+        .ph-dot.blue { background: var(--c-blue); box-shadow: 0 0 8px var(--c-blue); }
+        .ph-dot.green{ background: var(--c-green); box-shadow: 0 0 8px var(--c-green); }
+        .ph-title    { font-family: 'VT323', monospace; font-size: 1.3rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-p); }
+        .ph-title.gold  { color: var(--c-gold); }
+        .ph-title.blue  { color: var(--c-blue); }
+        .ph-title.green { color: var(--c-green); }
+        .ph-tag { margin-left: auto; font-size: 0.55rem; color: var(--text-3); letter-spacing: 0.15em; }
+        .panel-body { padding: 1rem 1.1rem; }
+
+        .art-lead { font-family: 'VT323', monospace; font-size: 1.15rem; color: var(--acc); letter-spacing: 0.06em; line-height: 1.4; margin-bottom: 0.9rem; padding-bottom: 0.7rem; border-bottom: 1px solid var(--text-4); }
+        .art-para { font-size: 0.74rem; color: var(--text-p); line-height: 1.85; margin-bottom: 0.8rem; }
+        .art-para:last-child { margin-bottom: 0; }
+        .art-hl { color: var(--acc); }
+        .art-section-head { font-size: 0.6rem; color: var(--text-2); letter-spacing: 0.3em; text-transform: uppercase; margin: 1rem 0 0.5rem; display: flex; align-items: center; gap: 0.5rem; }
+        .art-section-head::before { content: '//'; color: var(--acc); }
+
+        .fact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin: 0.8rem 0; }
+        .fact-item { background: var(--panel-hd); border: 1px solid var(--text-4); border-left: 2px solid var(--acc); padding: 0.55rem 0.75rem; }
+        .fact-key { font-size: 0.52rem; color: var(--text-2); letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 0.2rem; }
+        .fact-val { font-family: 'VT323', monospace; font-size: 1rem; color: var(--text-p); }
+        .fact-val.r { color: var(--acc); }
+        .fact-val.g { color: var(--c-gold); }
+        .fact-val.b { color: var(--c-blue); }
+        .fact-val.n { color: var(--c-green); }
+
+        .readout { background: var(--read-bg); border: 1px solid var(--text-4); padding: 0.6rem 0.8rem; font-family: 'Fira Code', monospace; font-size: 0.62rem; color: var(--text-2); line-height: 1.9; margin-top: 0.8rem; }
+        .readout .hl { color: var(--acc); }
+        .readout .vl { color: var(--text-1); }
+
+        .tags { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 0.5rem; }
+        .tag { background: var(--panel-hd); border: 1px solid var(--text-4); padding: 0.08rem 0.45rem; font-size: 0.57rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-2); }
+        .tag.r { border-color: var(--acc);    color: var(--acc); }
+        .tag.g { border-color: var(--c-gold); color: var(--c-gold); }
+        .tag.b { border-color: var(--c-blue); color: var(--c-blue); }
+        .tag.n { border-color: var(--c-green);color: var(--c-green); }
+
+        /* ─── СЕКТОРЫ — СПЕЦИФИЧЕСКИЕ СТИЛИ ─── */
+        .sectors-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.4rem; }
+        .layer-full  { grid-column: 1 / -1; }
+
+        .act-banner {
+            grid-column: 1 / -1;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.6rem 1rem;
+            background: var(--panel-hd);
+            border: 1px solid var(--panel-bd);
+            border-left: 4px solid var(--acc);
+            margin-bottom: 0;
+        }
+        .act-banner-num { font-family: 'VT323', monospace; font-size: 2.4rem; color: var(--acc); text-shadow: 0 0 14px var(--acc-glow); line-height: 1; min-width: 60px; }
+        .act-banner-title { font-family: 'VT323', monospace; font-size: 1.5rem; color: var(--text-p); letter-spacing: 0.12em; text-transform: uppercase; }
+        .act-banner-sub { font-size: 0.55rem; color: var(--text-2); letter-spacing: 0.2em; text-transform: uppercase; margin-top: 0.15rem; }
+        .act-banner-tag { margin-left: auto; font-size: 0.5rem; color: var(--text-3); letter-spacing: 0.15em; text-align: right; }
+
+        /* ─── КАРТОЧКА СЛОЯ ─── */
+        .layer-panel {
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-bd);
+            border-left: 3px solid var(--lc, var(--acc));
+            position: relative;
+            overflow: hidden;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .layer-panel:hover {
+            box-shadow: -4px 0 18px var(--lc-glow, var(--acc-glow));
+        }
+        .layer-panel-head {
+            background: var(--panel-hd);
+            border-bottom: 1px solid var(--panel-bd);
+            padding: 0.6rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            position: relative;
+        }
+        .lph-num {
+            font-family: 'VT323', monospace;
+            font-size: 2.2rem;
+            color: var(--lc, var(--acc));
+            text-shadow: 0 0 14px var(--lc-glow, var(--acc-glow));
+            line-height: 1;
+            min-width: 52px;
+            text-align: center;
+        }
+        .lph-info { flex: 1; }
+        .lph-layer-label { font-size: 0.48rem; color: var(--text-2); letter-spacing: 0.3em; text-transform: uppercase; margin-bottom: 0.1rem; }
+        .lph-name { font-family: 'VT323', monospace; font-size: 1.5rem; color: var(--text-p); letter-spacing: 0.1em; line-height: 1; }
+        .lph-name-en { font-size: 0.6rem; color: var(--lc, var(--acc)); letter-spacing: 0.2em; text-transform: uppercase; margin-top: 0.1rem; }
+        .lph-status {
+            font-size: 0.5rem;
+            padding: 0.18rem 0.5rem;
+            border: 1px solid var(--lc, var(--acc));
+            color: var(--lc, var(--acc));
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            background: transparent;
+        }
+        .lph-status.done { border-color: var(--c-green); color: var(--c-green); }
+        .lph-status.dev  { border-color: var(--c-gold);  color: var(--c-gold); }
+
+        /* BIG ghost number */
+        .layer-ghost-num {
+            position: absolute;
+            right: -0.1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-family: 'VT323', monospace;
+            font-size: 5.5rem;
+            color: var(--lc, var(--acc));
+            opacity: 0.045;
+            line-height: 1;
+            pointer-events: none;
+            letter-spacing: -4px;
+        }
+
+        .layer-body { padding: 0.9rem 1rem; }
+
+        .layer-desc { font-size: 0.71rem; color: var(--text-p); line-height: 1.8; margin-bottom: 0.8rem; }
+        .layer-desc .hl { color: var(--lc, var(--acc)); }
+
+        .section-label {
+            font-size: 0.52rem;
+            color: var(--text-2);
+            letter-spacing: 0.28em;
+            text-transform: uppercase;
+            margin: 0.75rem 0 0.4rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .section-label::before { content: '//'; color: var(--lc, var(--acc)); font-size: 0.6rem; }
+
+        /* Список уровней */
+        .level-list { list-style: none; }
+        .level-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.65rem;
+            padding: 0.32rem 0;
+            border-bottom: 1px solid var(--text-4);
+            font-size: 0.68rem;
+        }
+        .level-item:last-child { border-bottom: none; }
+        .level-id {
+            font-family: 'VT323', monospace;
+            font-size: 1rem;
+            color: var(--lc, var(--acc));
+            min-width: 38px;
+            flex-shrink: 0;
+            letter-spacing: 0.05em;
+        }
+        .level-name { color: var(--text-p); letter-spacing: 0.04em; line-height: 1.5; }
+        .level-name .secret { color: var(--c-gold); font-size: 0.62rem; }
+        .level-name .prime  { color: var(--c-pink);  font-size: 0.62rem; }
+
+        /* Теги обитателей */
+        .inhab-row { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 0.35rem; }
+        .inhab-tag {
+            background: var(--panel-hd);
+            border: 1px solid var(--text-4);
+            padding: 0.06rem 0.44rem;
+            font-size: 0.55rem;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--text-2);
+        }
+        .inhab-tag.key {
+            border-color: var(--lc, var(--acc));
+            color: var(--lc, var(--acc));
+            background: color-mix(in srgb, var(--lc, var(--acc)) 8%, var(--panel-hd));
+        }
+
+        /* Блок ключевой сущности */
+        .boss-block {
+            margin-top: 0.7rem;
+            padding: 0.55rem 0.8rem;
+            background: var(--read-bg);
+            border: 1px solid var(--text-4);
+            border-left: 2px solid var(--lc, var(--acc));
+            display: flex;
+            align-items: flex-start;
+            gap: 0.8rem;
+        }
+        .boss-glyph {
+            font-family: 'VT323', monospace;
+            font-size: 2.2rem;
+            color: var(--lc, var(--acc));
+            text-shadow: 0 0 10px var(--lc-glow, var(--acc-glow));
+            line-height: 1;
+            flex-shrink: 0;
+        }
+        .boss-info { flex: 1; }
+        .boss-label { font-size: 0.48rem; color: var(--text-2); letter-spacing: 0.25em; text-transform: uppercase; margin-bottom: 0.15rem; }
+        .boss-name  { font-family: 'VT323', monospace; font-size: 1.1rem; color: var(--text-p); letter-spacing: 0.08em; line-height: 1.2; }
+        .boss-desc  { font-size: 0.64rem; color: var(--text-1); line-height: 1.6; margin-top: 0.2rem; }
+
+        /* Таблица фактов для слоя */
+        .layer-facts { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; margin-top: 0.6rem; }
+        .lf-item { background: var(--panel-hd); border: 1px solid var(--text-4); padding: 0.4rem 0.6rem; }
+        .lf-key { font-size: 0.48rem; color: var(--text-2); letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 0.1rem; }
+        .lf-val { font-family: 'VT323', monospace; font-size: 0.9rem; color: var(--text-p); }
+
+        /* ─── ФУТЕР ─── */
+        .site-footer { border-top: 1px solid var(--text-4); padding: 0.9rem 0; margin-top: 1rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.4rem; font-size: 0.58rem; color: var(--text-3); letter-spacing: 0.1em; text-transform: uppercase; }
+        .footer-logo { font-family: 'VT323', monospace; font-size: 1.2rem; color: var(--acc); text-shadow: 0 0 6px var(--acc); }
+
+        @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
+        .cur { display: inline-block; width: 7px; height: 13px; background: var(--acc); vertical-align: middle; animation: blink 1s step-end infinite; margin-left: 2px; }
+
+        /* ─── АДАПТИВ ─── */
+        @media (max-width: 1000px) { .sectors-grid { grid-template-columns: 1fr; } .layer-full { grid-column: auto; } }
+        @media (max-width: 760px)  { .logo-main { font-size: 2.8rem; } .theme-panel { min-width: 190px; } .nav-btn { min-width: calc(50% - 4px); } .fact-grid { grid-template-columns: 1fr; } .layer-facts { grid-template-columns: 1fr; } }
+        @media (max-width: 520px)  { .nav-btn { min-width: 100%; } .nav-section { flex-direction: column; } .tp-grid { grid-template-columns: 1fr 1fr; } .act-banner { flex-wrap: wrap; } }
+    </style>
+</head>
+<body data-theme="dark">
+
+<div class="theme-bg-wrap" aria-hidden="true">
+    <div class="bg-dark">
+        <div class="bg-dark-grid"></div>
+        <div class="bg-dark-scan"></div>
+    </div>
+</div>
+<canvas id="theme-bg-canvas"></canvas>
+
+<div class="page">
+
+    <!-- ═══ ШАПКА ═══ -->
+    <div class="site-header">
+        <div class="header-top">
+            <div>
+                <div class="logo-eyebrow">// SYSTEM DATABASE // СЕКТОРЫ // КАРТА ЗОНЫ АКТИВНА</div>
+                <div class="logo-main"><span class="v1">V1</span> — ULTRAKILL</div>
+                <div class="logo-tagline">
+                    MANKIND IS INACTIVE. ENERGY IS FUEL. LOWER SECTOR IS FULL.<span class="cur"></span>
+                </div>
+            </div>
+
+            <div class="theme-panel" id="themePanel">
+                <div class="tp-head">// ТЕМА ИНТЕРФЕЙСА</div>
+                <div class="tp-grid">
+                    <button class="tp-btn t-dark active" data-tv="dark" onclick="setTheme('dark')" title="Тёмная тема">
+                        <div class="tp-swatch"></div>
+                        <div class="tp-info"><div class="tp-name">DARK</div><div class="tp-sub">ORIGINAL</div></div>
+                    </button>
+                    <button class="tp-btn t-v1" data-tv="v1" onclick="setTheme('v1')" title="V1 — Синяя тема">
+                        <div class="tp-swatch"></div>
+                        <div class="tp-info"><div class="tp-name">V1</div><div class="tp-sub">MACHINE // BLUE</div></div>
+                    </button>
+                    <button class="tp-btn t-v2" data-tv="v2" onclick="setTheme('v2')" title="V2 — Красная тема">
+                        <div class="tp-swatch"></div>
+                        <div class="tp-info"><div class="tp-name">V2</div><div class="tp-sub">MIRROR // RED</div></div>
+                    </button>
+                    <button class="tp-btn t-gabriel" data-tv="gabriel" onclick="setTheme('gabriel')" title="GABRIEL — Золотая тема">
+                        <div class="tp-swatch"></div>
+                        <div class="tp-info"><div class="tp-name">GABRIEL</div><div class="tp-sub">JUDGE // GOLD</div></div>
+                    </button>
+                </div>
+                <div class="tp-current" id="tpCurrent">АКТИВНА: DARK // ORIGINAL</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ ТИКЕР ═══ -->
+    <div class="ticker-wrap">
+        <div class="ticker-inner">
+            <span class="ti">// <span class="r">СЕКТОРЫ</span> // НИЖНИЙ УРОВЕНЬ — ПОЛНАЯ КАРТА // 9 СЛОЁВ // ACT I: INFINITE HYPERDEATH ✓ // ACT II: IMPERFECT HATRED ✓ // ACT III: В РАЗРАБОТКЕ // ГЛУБИНА: НЕИЗВЕСТНА //</span>
+            <span class="ti">// <span class="r">СЕКТОРЫ</span> // НИЖНИЙ УРОВЕНЬ — ПОЛНАЯ КАРТА // 9 СЛОЁВ // ACT I: INFINITE HYPERDEATH ✓ // ACT II: IMPERFECT HATRED ✓ // ACT III: В РАЗРАБОТКЕ // ГЛУБИНА: НЕИЗВЕСТНА //</span>
+        </div>
+    </div>
+
+    <!-- ═══ НАВИГАЦИЯ ═══ -->
+    <div class="nav-section">
+        <div class="nav-home-indicator">
+            <div class="nhi-label">// ТЕКУЩИЙ РАЗДЕЛ</div>
+            <div class="nhi-name">СЕКТОРЫ</div>
+            <div class="nhi-sub"><span class="nhi-dot"></span>LOCATIONS // ACTIVE</div>
+        </div>
+
+        <div class="nav-buttons-right">
+            <a href="index.html" class="nav-btn nb-red">
+                <div class="nb-top">
+                    <div class="nb-icon">⌂</div>
+                    <div class="nb-num">00</div>
+                </div>
+                <div>
+                    <div class="nb-name">Главная</div>
+                    <div class="nb-sub">INDEX // БАЗА ДАННЫХ</div>
+                </div>
+            </a>
+            <a href="weapons.html" class="nav-btn nb-blue">
+                <div class="nb-top">
+                    <div class="nb-icon">⬡</div>
+                    <div class="nb-num">01</div>
+                </div>
+                <div>
+                    <div class="nb-name">Арсенал</div>
+                    <div class="nb-sub">СРЕДСТВА // ИНСТРУМЕНТЫ</div>
+                </div>
+            </a>
+            <a href="bosses.html" class="nav-btn nb-gold">
+                <div class="nb-top">
+                    <div class="nb-icon">★</div>
+                    <div class="nb-num">03</div>
+                </div>
+                <div>
+                    <div class="nb-name">Сущности</div>
+                    <div class="nb-sub">ПРИОРИТЕТНЫЕ // ЦЕЛИ</div>
+                </div>
+            </a>
+            <a href="lore.html" class="nav-btn nb-pink">
+                <div class="nb-top">
+                    <div class="nb-icon">◈</div>
+                    <div class="nb-num">04</div>
+                </div>
+                <div>
+                    <div class="nb-name">Лор</div>
+                    <div class="nb-sub">ИСТОРИЯ // ВСЕЛЕННАЯ</div>
+                </div>
+            </a>
+            <a href="features.html" class="nav-btn nb-green">
+                <div class="nb-top">
+                    <div class="nb-icon">◎</div>
+                    <div class="nb-num">05</div>
+                </div>
+                <div>
+                    <div class="nb-name">Механики</div>
+                    <div class="nb-sub">ОСОБЕННОСТИ // ФИШКИ</div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <div class="redline"></div>
+
+    <!-- ═══ ОБЗОРНАЯ ПАНЕЛЬ ═══ -->
+    <div class="panel" style="margin-bottom:1.4rem;">
+        <div class="panel-head">
+            <div class="ph-dot"></div>
+            <div class="ph-title">НИЖНИЙ УРОВЕНЬ — СТРУКТУРА ЗОН</div>
+            <div class="ph-tag">SECTORS.OVERVIEW // FULL MAP</div>
+        </div>
+        <div class="panel-body">
+            <div class="art-lead">
+                Нижний уровень подразделяется на девять последовательных слоёв, каждый из которых соответствует одному из кругов из произведения Данте Алигьери «Божественная Комедия». V1 спускается сквозь них, нейтрализуя оппонентов ради получения энергоресурса.
+            </div>
+            <div class="art-para">
+                Структура нижнего уровня строго вертикальна: каждый слой расположен глубже предыдущего. Архитектура, типы населяющих сущностей, цветовая гамма и атмосфера кардинально меняются от зоны к зоне. Акт I охватывает слои 1–4, Акт II — слои 5–6, Акт III (в разработке) — слои 7–9.
+            </div>
+
+            <div class="fact-grid">
+                <div class="fact-item">
+                    <div class="fact-key">ВСЕГО СЛОЁВ</div>
+                    <div class="fact-val r">9</div>
+                </div>
+                <div class="fact-item">
+                    <div class="fact-key">ДОСТУПНО</div>
+                    <div class="fact-val n">7 СЛОЁВ</div>
+                </div>
+                <div class="fact-item">
+                    <div class="fact-key">АКТОВ ЗАВЕРШЕНО</div>
+                    <div class="fact-val g">ACT I + ACT II</div>
+                </div>
+                <div class="fact-item">
+                    <div class="fact-key">ИСТОЧНИК</div>
+                    <div class="fact-val b">DANTE ALIGHIERI</div>
+                </div>
+                <div class="fact-item">
+                    <div class="fact-key">ЗАСЕКРЕЧ. УРОВНЕЙ</div>
+                    <div class="fact-val g">P-1 // P-2</div>
+                </div>
+                <div class="fact-item">
+                    <div class="fact-key">СТАТУС ACT III</div>
+                    <div class="fact-val">В РАЗРАБОТКЕ</div>
+                </div>
+            </div>
+
+            <div class="readout">
+                <span class="hl">// НАВИГАЦИЯ:</span> <span class="vl">Слои пронумерованы от 0 (Вступление) до 9. Засекреченные уровни обозначены суффиксом -S.</span><br>
+                <span class="hl">// ОСОБЫЕ ЗОНЫ:</span> <span class="vl">P-1 SOUL SURVIVOR и P-2 WAIT OF THE WORLD — доступны через скрытые входы в основных слоях.</span><br>
+                <span class="hl">// КЛЮЧЕВЫЕ СУЩНОСТИ:</span> <span class="vl">В каждом слое присутствует приоритетная цель — значимый оппонент, охраняющий переход к следующему уровню.<span class="cur"></span></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ СЕТКА СЛОЁВ ═══ -->
+    <div class="sectors-grid">
+
+        <!-- ── БЕЗ АКТА: ВСТУПЛЕНИЕ ── -->
+        <div class="act-banner" style="--acc: #aaaaaa; border-left-color: #888888;">
+            <div class="act-banner-num" style="color:#888888; text-shadow: 0 0 14px rgba(136,136,136,0.4);">PRE</div>
+            <div>
+                <div class="act-banner-title" style="color: var(--text-p);">ВСТУПЛЕНИЕ — PRELUDE</div>
+                <div class="act-banner-sub">ВВОДНАЯ ЗОНА // ОБУЧЕНИЕ // ПЕРВЫЙ КОНТАКТ</div>
+            </div>
+            <div class="act-banner-tag">СТАТУС: ✓ ДОСТУПНО<br>УРОВНЕЙ: 2 + 1 СЕКРЕТ</div>
+        </div>
+
+        <!-- PRELUDE — полная ширина -->
+        <div class="layer-panel layer-full" style="--lc: #999999; --lc-glow: rgba(150,150,150,0.35);">
+            <div class="layer-panel-head">
+                <div class="lph-num">00</div>
+                <div class="lph-info">
+                    <div class="lph-layer-label">// СЛОЙ НУЛЕВОЙ — ВСТУПЛЕНИЕ</div>
+                    <div class="lph-name">ПРЕДИСЛОВИЕ</div>
+                    <div class="lph-name-en">PRELUDE</div>
+                </div>
+                <div class="lph-status done">ДОСТУПНО</div>
+                <div class="layer-ghost-num">00</div>
+            </div>
+            <div class="layer-body">
+                <div class="layer-desc">
+                    Промышленный комплекс на границе нижнего уровня — первая зона, в которую спускается <span class="hl">V1</span>. Человечество прекратило активность. Ресурс иссяк. Вступление служит вводным сектором: здесь V1 осваивает базовые возможности перемещения и получает первый опыт нейтрализации оппонентов. Архитектура — разрушенные промышленные конструкции, ржавый металл, тусклые огни.
+                </div>
+
+                <div class="section-label">УРОВНИ СЕКТОРА</div>
+                <ul class="level-list">
+                    <li class="level-item">
+                        <span class="level-id">0-1</span>
+                        <span class="level-name">INTO THE FIRE — «В ОГОНЬ»<br><span class="secret">// Стартовая точка. Знакомство с базовыми механиками.</span></span>
+                    </li>
+                    <li class="level-item">
+                        <span class="level-id">0-2</span>
+                        <span class="level-name">THE MEATGRINDER — «МЯСОРУБКА»<br><span class="secret">// Более сложная структура. Знакомство с ранговой системой.</span></span>
+                    </li>
+                    <li class="level-item">
+                        <span class="level-id">0-S</span>
+                        <span class="level-name">SOMETHING WICKED — «НЕЧТО ЗЛОВЕЩЕЕ»<br><span class="secret">⬡ СЕКРЕТНЫЙ УРОВЕНЬ // Встреча с особой скрытой сущностью.</span></span>
+                    </li>
+                </ul>
+
+                <div class="section-label">ОБИТАТЕЛИ ЗОНЫ</div>
+                <div class="inhab-row">
+                    <span class="inhab-tag">Schism</span>
+                    <span class="inhab-tag">Stray</span>
+                    <span class="inhab-tag">Filth</span>
+                    <span class="inhab-tag">Drone</span>
+                    <span class="inhab-tag">Malicious Face</span>
+                    <span class="inhab-tag key">Something Wicked</span>
+                </div>
+
+                <div class="layer-facts">
+                    <div class="lf-item"><div class="lf-key">ЦВЕТОВАЯ ГАММА</div><div class="lf-val">СЕРЫЙ // ПРОМЫШЛЕННЫЙ</div></div>
+                    <div class="lf-item"><div class="lf-key">АРХИТЕКТУРА</div><div class="lf-val">РУИНЫ ЗАВОДА</div></div>
+                    <div class="lf-item"><div class="lf-key">АКТ</div><div class="lf-val">ВСТУПЛЕНИЕ</div></div>
+                    <div class="lf-item"><div class="lf-key">КЛЮЧЕВАЯ СУЩНОСТЬ</div><div class="lf-val">ОТСУТСТВУЕТ</div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── АКТ I ── -->
+        <div class="act-banner" style="border-left-color: var(--acc);">
+            <div class="act-banner-num">I</div>
+            <div>
+                <div class="act-banner-title">АКТ I — INFINITE HYPERDEATH</div>
+                <div class="act-banner-sub">СЛОИ 1–4 // ЛИМБ → ЖАДНОСТЬ // ФИНАЛ: СУДЬЯ</div>
+            </div>
+            <div class="act-banner-tag">СТАТУС: ✓ ЗАВЕРШЁН<br>СЛОЁВ: 4</div>
+        </div>
+
+        <!-- LAYER 1 — LIMBO -->
+        <div class="layer-panel" style="--lc: #88bbdd; --lc-glow: rgba(136,187,221,0.35);">
+            <div class="layer-panel-head">
+                <div class="lph-num" style="color:#88bbdd; text-shadow: 0 0 14px rgba(136,187,221,0.5);">01</div>
+                <div class="lph-info">
+                    <div class="lph-layer-label">// СЛОЙ ПЕРВЫЙ</div>
+                    <div class="lph-name">ЛИМБ</div>
+                    <div class="lph-name-en" style="color:#88bbdd;">LIMBO</div>
+                </div>
+                <div class="lph-status done">ДОСТУПНО</div>
+                <div class="layer-ghost-num" style="color:#88bbdd;">01</div>
+            </div>
+            <div class="layer-body">
+                <div class="layer-desc" style="--lc:#88bbdd;">
+                    Первый истинный слой нижнего уровня. Парящие острова, древние руины некогда величественной цивилизации, бесконечная бледно-синяя пустота внизу. По Данте — место, где пребывают те, кто не совершал зла, но и не получил искупления. В контексте ULTRAKILL — <span class="hl" style="color:#88bbdd;">архив забытых эпох</span>, населённый сущностями различного уровня угрозы.
+                </div>
+
+                <div class="section-label" style="--lc:#88bbdd;">УРОВНИ СЕКТОРА</div>
+                <ul class="level-list">
+                    <li class="level-item">
+                        <span class="level-id" style="color:#88bbdd;">1-1</span>
+                        <span class="level-name">HEART OF THE SUNRISE — «РАССВЕТ»</span>
+                    </li>
+                    <li class="level-item">
+                        <span class="level-id" style="color:#88bbdd;">1-2</span>
+                        <span class="level-name">THE BURNING WORLD — «ПЫЛАЮЩИЙ МИР»</span>
+                    </li>
+                    <li class="level-item">
+                        <span class="level-id" style="color:#88bbdd;">1-3</span>
+                        <span class="level-name">HALLS OF SACRED REMAINS — «ЗАЛЫ СВЯЩЕННЫХ ОСТАНКОВ»</span>
+                    </li>
+                    <li class="level-item">
+                        <span class="level-id" style="color:#88bbdd;">1-S</span>
+                        <span class="level-name">SHOVELWARE BOSS FIGHT<br><span class="secret">⬡ СЕКРЕТ // Нестандартное столкновение.</span></span>
+                    </li>
+                    <li class="level-item">
+                        <span class="level-id" style="color:#ff44aa;">P-1</span>
+                        <span class="level-name"><span class="prime">★ СВЯТИЛИЩЕ:</span> SOUL SURVIVOR // Доступ через скрытый вход. Ключевая сущность — Минос Прайм.</span>
+                    </li>
+                </ul>
+
+                <div class="section-label" style="--lc:#88bbdd;">ОБИТАТЕЛИ</div>
+                <div class="inhab-row">
+                    <span class="inhab-tag">Schism</span>
+                    <span class="inhab-tag">Stray</span>
+                    <span class="inhab-tag">Filth</span>
+                    <span class="inhab-tag">Malicious Face</span>
+                    <span class="inhab-tag">Mindflayer</span>
+                    <span class="inhab-tag" style="border-color:#88bbdd; color:#88bbdd;">Swordsmachine</span>
+                </div>
+
+                <div class="boss-block" style="border-left-color:#88bbdd;">
+                    <div class="boss-glyph" style="color:#88bbdd; text-shadow: 0 0 10px rgba(136,187,221,0.5);">V2</div>
+                    <div class="boss-info">
+                        <div class="boss-label">// ПРИОРИТЕТНАЯ ЦЕЛЬ — ПЕРВОЕ СТОЛКНОВЕНИЕ</div>
+                        <div class="boss-name">V2 — ЗЕРКАЛЬНЫЙ АВТОМАТ</div>
+                        <div class="boss-desc">Машина, идентичная V1 по конструкции. Первое противостояние. V2 использует аналогичные инструменты и тактики. Нейтрализовать не удаётся — оппонент покидает зону столкновения.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- LAYER 2 — LUST -->
+        <div class="layer-panel" style="--lc: #dd5588; --lc-glow: rgba(221,85,136,0.35);">
+            <div class="layer-panel-head">
+                <div class="lph-num" style="color:#dd5588; text-shadow: 0 0 14px rgba(221,85,136,0.5);">02</div>
+                <div class="lph-info">
+                    <div class="lph-layer-label">// СЛОЙ ВТОРОЙ</div>
+                    <div class="lph-name">СТРАСТЬ</div>
+                    <div class="lph-name-en" style="color:#dd5588;">LUST</div>
+                </div>
+                <div class="lph-status done">ДОСТУПНО</div>
+                <div class="layer-ghost-num" style="color:#dd5588;">02</div>
+            </div>
+            <div class="layer-body">
+                <div class="layer-desc">
+                    Затопленные руины в багряно-розовых тонах, непрекращающийся шторм, зарницы. По Данте — круг, где неукротимые импульсы уносят за собой. В ULTRAKILL этот слой — <span class="hl" style="color:#dd5588;">утопающие дворцы</span> под бурным небом. Здесь происходит финальное столкновение с V2.
+                </div>
+
+                <div class="section-label" style="--lc:#dd5588;">УРОВНИ СЕКТОРА</div>
+                <ul class="level-list">
+                    <li class="level-item">
+                        <span class="level-id" style="color:#dd5588;">2-1</span>
+                        <span class="level-name">BRIDGEBURNER — «ПОДЖИГАТЕЛЬ МОСТОВ»</span>
+                    </li>
+                    <li class="level-item">
+                        <span class="level-id" style="color:#dd5588;">2-2</span>
+                        <span class="level-name">DEATH AT 20,000 VOLTS — «ГИБЕЛЬ ПРИ 20 000 ВОЛЬТ»</span>
+                    </li>
+                    <li class="level-item">
+                        <span class="level-id" style="color:#dd5588;">2-3</span>
+                        <span class="level-name">SHEER HEART ATTACK — «ЧИСТАЯ ОСТАНОВКА СЕРДЦА»</span>
+                    </li>
+                    <li class="level-item">
+                        <span class="level-id" style="color:#dd5588;">2-S</span>
+                        <span class="level-name">L'EMPIRE DE SOLEIL<br><span class="secret">⬡ СЕКРЕТ // «Империя Солнца» — скрытый уровень.</span></span>
+                    </li>
+                </ul>
+
+                <div class="section-label" style="--lc:#dd5588;">ОБИТАТЕЛИ</div>
+                <div class="inhab-row">
+                    <span class="inhab-tag">Soldier</span>
+                    <span class="inhab-tag">Mindflayer</span>
+                    <span class="inhab-tag">Virtue</span>
+                    <span class="inhab-tag">Cerberus</span>
+                    <span class="inhab-tag" style="border-color:#dd5588; color:#dd5588;">Swordsmachine</span>
+                </div>
+
+                <div class="boss-block" style="border-left-color:#dd5588;">
+                    <div class="boss-glyph" style="color:#dd5588; text-shadow: 0 0 10px rgba(221,85,136,0.5);">V2</div>
+                    <div class="boss-info">
+                        <div class="boss-label">// ПРИОРИТЕТНАЯ ЦЕЛЬ — ФИНАЛЬНОЕ СТОЛКНОВЕНИЕ</div>
+                        <div class="boss-name">V2 — ФИНАЛЬНАЯ КОНФРОНТАЦИЯ</div>
+                        <div class="boss-desc">Второе и последнее столкновение с зеркальным автоматом. V2 применяет расширенный арсенал. При нейтрализации оппонента V1 получает компонент — ударный модуль высшего класса.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- LAYER 3 — GLUTTONY -->
+        <div class="layer-panel" style="--lc: #44bb66; --lc-glow: rgba(68,187,102,0.35);">
+            <div class="layer-panel-head">
+                <div class="lph-num" style="color:#44bb66; text-shadow: 0 0 14px rgba(68,187,102,0.5);">03</div>
+                <div class="lph-info">
+                    <div class="lph-layer-label">// СЛОЙ ТРЕТИЙ</div>
+                    <div class="lph-name">ЧРЕВОУГОДИЕ</div>
+                    <div class="lph-name-en" style="color:#44bb66;">GLUTTONY</div>
+                </div>
+                <div class="lph-status done">ДОСТУПНО</div>
+                <div class="layer-ghost-num" style="color:#44bb66;">03</div>
+            </div>
+            <div class="layer-body">
+                <div class="layer-desc">
+                    Самый необычный слой по визуальному стилю — органический интерьер гигантского живого существа. Стены из плоти, биологические структуры, кислотно-зелёное освещение. По Данте — место неумеренности в поглощении. ULTRAKILL трактует это буквально: <span class="hl" style="color:#44bb66;">V1 проходит сквозь внутренности чудовищного организма</span>.
+                </div>
+
+                <div class="section-label" style="--lc:#44bb66;">УРОВНИ СЕКТОРА</div>
+                <ul class="level-list">
+                    <li class="level-item">
+                        <span class="level-id" style="color:#44bb66;">3-1</span>
+                        <span class="level-name">BELLY OF THE BEAST — «БРЮХО ЗВЕРЯ»<br><span class="secret">// Блуждание по внутренностям. Новый тип оппонентов.</span></span>
+                    </li>
+                    <li class="level-item">
+                        <span class="level-id" style="color:#44bb66;">3-2</span>
+                        <span class="level-name">CORE EJECT — «ВЫБРОС ЯДРА»<br><span class="secret">// Финальный уровень слоя. Столкновение с приоритетной целью.</span></span>
+                    </li>
+                </ul>
+
+                <div class="section-label" style="--lc:#44bb66;">ОБИТАТЕЛИ</div>
+                <div class="inhab-row">
+                    <span class="inhab-tag">Soldier (вариации)</span>
+                    <span class="inhab-tag">Mindflayer</span>
+                    <span class="inhab-tag">Schism</span>
+                    <span class="inhab-tag" style="border-color:#44bb66; color:#44bb66;">Hideous Mass</span>
+                </div>
+
+                <div class="boss-block" style="border-left-color:#44bb66;">
+                    <div class="boss-glyph" style="color:#44bb66; text-shadow: 0 0 10px rgba(68,187,102,0.5);">⊗</div>
+                    <div class="boss-info">
+                        <div class="boss-label">// ПРИОРИТЕТНАЯ ЦЕЛЬ</div>
+                        <div class="boss-name">HIDEOUS MASS — МАССА</div>
+                        <div class="boss-desc">Бесформенный конгломерат слившихся воедино органических структур. Огромная биологическая конструкция, способная генерировать высококонцентрированные импульсы. Уязвима к воздействию рельсового модуля.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- LAYER 4 — GREED -->
+        <div class="layer-panel" style="--lc: #ffcc44; --lc-glow: rgba(255,204,68,0.35);">
+            <div class="layer-panel-head">
+                <div class="lph-num" style="color:#ffcc44; text-shadow: 0 0 14px rgba(255,204,68,0.5);">04</div>
+                <div class="lph-info">
+                    <div class="lph-layer-label">// СЛОЙ ЧЕТВЁРТЫЙ</div>
+                    <div class="lph-name">ЖАДНОСТЬ</div>
+                    <div class="lph-name-en" style="color:#ffcc44;">GREED</div>
+                </div>
+                <div class="lph-status done">ДОСТУПНО</div>
+                <div class="layer-ghost-num" style="color:#ffcc44;">04</div>
+            </div>
+            <div class="layer-body">
+                <div class="layer-desc">
+                    Золотые дворцы, барочные залы, монументальная архитектура — слой роскоши и накопления. По Данте — место скопидомов и расточителей. В ULTRAKILL — <span class="hl" style="color:#ffcc44;">обитель Гавриила</span>, Судьи Господнего. Завершение Акта I. Наиболее масштабная архитектура первого акта.
+                </div>
+
+                <div class="section-label" style="--lc:#ffcc44;">УРОВНИ СЕКТОРА</div>
+                <ul class="level-list">
+                    <li class="level-item">
+                        <span class="level-id" style="color:#ffcc44;">4-1</span>
+                        <span class="level-name">SLAVES TO POWER — «РАБЫ СИЛЫ»</span>
+                    </li>
+                    <li class="level-item">
+                        <span class="level-id" style="color:#ffcc44;">4-2</span>
+                        <span class="level-name">GOD DAMN THE SUN — «ПРОКЛЯТОЕ СОЛНЦЕ»</span>
+                    </li>
+                    <li class="level-item">
+                        <span class="level-id" style="color:#ffcc44;">4-S</span>
+                        <span class="level-name">CLASH OF THE BRANDICOOT<br><span class="secret">⬡ СЕКРЕТ // Нестандартный уровень-испытание.</span></span>
+                    </li>
+                    <li class="level-item">
+                        <span class="level-id" style="color:#ff44aa;">P-2</span>
+                        <span class="level-name"><span class="prime">★ СВЯТИЛИЩЕ:</span> WAIT OF THE WORLD // Доступ через скрытый вход. Ключевая сущность — Сизиф Прайм.</span>
+                    </li>
+                </ul>
+
+                <div class="section-label" style="--lc:#ffcc44;">ОБИТАТЕЛИ</div>
+                <div class="inhab-row">
+                    <span class="inhab-tag">Soldier (все вариации)</span>
+                    <span class="inhab-tag">Virtue</span>
+                    <span class="inhab-tag">Mindflayer</span>
+                    <span class="inhab-tag">Cerberus</span>
+                    <span class="inhab-tag" style="border-color:#ffcc44; color:#ffcc44;">Gabriel</span>
+                </div>
+
+                <div class="boss-block" style="border-left-color:#ffcc44;">
+                    <div class="boss-glyph" style="color:#ffcc44; text-shadow: 0 0 10px rgba(255,204,68,0.5);">✦</div>
+                    <div class="boss-info">
+                        <div class="boss-label">// ПРИОРИТЕТНАЯ ЦЕЛЬ — ЗАВЕРШЕНИЕ АКТ I</div>
+                        <div class="boss-name">ГАВРИИЛ — СУДЬЯ ГОСПОДЕНЬ</div>
+                        <div class="boss-desc">Небесный судья, ставший стражем нижнего уровня. Первое столкновение. Гавриил считает V1 осквернителем — машина нарушает равновесие зоны. Высокоскоростной оппонент с разнообразным арсеналом световых импульсов.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── АКТ II ── -->
+        <div class="act-banner" style="border-left-color: var(--c-orange);">
+            <div class="act-banner-num" style="color:var(--c-orange); text-shadow: 0 0 14px rgba(255,136,51,0.5);">II</div>
+            <div>
+                <div class="act-banner-title">АКТ II — IMPERFECT HATRED</div>
+                <div class="act-banner-sub">СЛОИ 5–6 // ГНЕВ → ЕРЕСЬ // ФИНАЛ: ПАДШИЙ СУДЬЯ</div>
+            </div>
+            <div class="act-banner-tag">СТАТУС: ✓ ЗАВЕРШЁН<br>СЛОЁВ: 2</div>
+        </div>
+
+        <!-- LAYER 5 — WRATH -->
+        <div class="layer-panel" style="--lc: #5577ff; --lc-glow: rgba(85,119,255,0.35);">
+            <div class="layer-panel-head">
+                <div class="lph-num" style="color:#5577ff; text-shadow: 0 0 14px rgba(85,119,255,0.5);">05</div>
+                <div class="lph-info">
+                    <div class="lph-layer-label">// СЛОЙ ПЯТЫЙ</div>
+                    <div class="lph-name">ГНЕВ</div>
+                    <div class="lph-name-en" style="color:#5577ff;">WRATH</div>
+                </div>
+                <div class="lph-status done">ДОСТУПНО</div>
+                <div class="layer-ghost-num" style="color:#5577ff;">05</div>
+            </div>
+            <div class="layer-body">
+                <div class="layer-desc">
+                    Бескрайнее тёмное море под беззвёздным небом. Разбитые корабли, волны черноты, ощущение бесконечного падения. По Данте — болото реки Стикс, где гневливые борются между собой. В ULTRAKILL — <span class="hl" style="color:#5577ff;">океан первобытного мрака</span>, населённый морскими сущностями и охраняемый Левиафаном.
+                </div>
+
+                <div class="section-label" style="--lc:#5577ff;">УРОВНИ СЕКТОРА</div>
+                <ul class="level-list">
+                    <li class="level-item">
+                        <span class="level-id" style="color:#5577ff;">5-1</span>
+                        <span class="level-name">IN THE WAKE OF POSEIDON — «В КИЛЬВАТЕРЕ ПОСЕЙДОНА»</span>
+                    </li>
+                    <li class="level-item">
+                        <span class="level-id" style="color:#5577ff;">5-2</span>
+                        <span class="level-name">WAVES OF THE STARLESS SEA — «ВОЛНЫ БЕЗЗВЁЗДНОГО МОРЯ»</span>
+                    </li>
+                    <li class="level-item">
+                        <span class="level-id" style="color:#5577ff;">5-3</span>
+                        <span class="level-name">SHIP OF FOOLS — «КОРАБЛЬ ГЛУПЦОВ»</span>
+                    </li>
+                    <li class="level-item">
+                        <span class="level-id" style="color:#5577ff;">5-4</span>
+                        <span class="level-name">LEVIATHAN — «ЛЕВИАФАН»<br><span class="secret">// Финальный уровень. Столкновение с Левиафаном.</span></span>
+                    </li>
+                </ul>
+
+                <div class="section-label" style="--lc:#5577ff;">ОБИТАТЕЛИ</div>
+                <div class="inhab-row">
+                    <span class="inhab-tag">Soldier (вариации)</span>
+                    <span class="inhab-tag">Mindflayer</span>
+                    <span class="inhab-tag">Drone</span>
+                    <span class="inhab-tag">Virtue</span>
+                    <span class="inhab-tag" style="border-color:#5577ff; color:#5577ff;">Leviathan</span>
+                    <span class="inhab-tag" style="border-color:#5577ff; color:#5577ff;">Ferryman</span>
+                </div>
+
+                <div class="boss-block" style="border-left-color:#5577ff;">
+                    <div class="boss-glyph" style="color:#5577ff; text-shadow: 0 0 10px rgba(85,119,255,0.5);">〜</div>
+                    <div class="boss-info">
+                        <div class="boss-label">// ПРИОРИТЕТНАЯ ЦЕЛЬ</div>
+                        <div class="boss-name">ЛЕВИАФАН — ВЛАДЫКА ГЛУБИН</div>
+                        <div class="boss-desc">Исполинская морская сущность, тело которой занимает значительную часть слоя. Многофазовое столкновение: V1 нейтрализует ключевые точки организма. Один из наиболее масштабных оппонентов в игре.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- LAYER 6 — HERESY -->
+        <div class="layer-panel" style="--lc: #bb6622; --lc-glow: rgba(187,102,34,0.35);">
+            <div class="layer-panel-head">
+                <div class="lph-num" style="color:#bb6622; text-shadow: 0 0 14px rgba(187,102,34,0.5);">06</div>
+                <div class="lph-info">
+                    <div class="lph-layer-label">// СЛОЙ ШЕСТОЙ</div>
+                    <div class="lph-name">ЕРЕСЬ</div>
+                    <div class="lph-name-en" style="color:#bb6622;">HERESY</div>
+                </div>
+                <div class="lph-status done">ДОСТУПНО</div>
+                <div class="layer-ghost-num" style="color:#bb6622;">06</div>
+            </div>
+            <div class="layer-body">
+                <div class="layer-desc">
+                    Руины некогда великого города под огненным небом. Пылающие гробницы, разрушенные шпили, горящий горизонт. По Данте — место, где заключены еретики в раскалённых могилах. В ULTRAKILL это — <span class="hl" style="color:#bb6622;">осколки города Дис</span>, место второго столкновения с Гавриилом — теперь изменённым и павшим.
+                </div>
+
+                <div class="section-label" style="--lc:#bb6622;">УРОВНИ СЕКТОРА</div>
+                <ul class="level-list">
+                    <li class="level-item">
+                        <span class="level-id" style="color:#bb6622;">6-1</span>
+                        <span class="level-name">CRY FOR THE WEEPER — «ПЛАЧ ПО СКОРБЯЩЕМУ»</span>
+                    </li>
+                    <li class="level-item">
+                        <span class="level-id" style="color:#bb6622;">6-2</span>
+                        <span class="level-name">AESTHETICS OF HATE — «ЭСТЕТИКА НЕНАВИСТИ»<br><span class="secret">// Финальный уровень Акта II. Ключевое столкновение.</span></span>
+                    </li>
+                </ul>
+
+                <div class="section-label" style="--lc:#bb6622;">ОБИТАТЕЛИ</div>
+                <div class="inhab-row">
+                    <span class="inhab-tag">Sentry</span>
+                    <span class="inhab-tag">Flesh Prison</span>
+                    <span class="inhab-tag">Virtue</span>
+                    <span class="inhab-tag">Soldier (вариации)</span>
+                    <span class="inhab-tag" style="border-color:#bb6622; color:#bb6622;">Gabriel (изм.)</span>
+                </div>
+
+                <div class="boss-block" style="border-left-color:#bb6622;">
+                    <div class="boss-glyph" style="color:#bb6622; text-shadow: 0 0 10px rgba(187,102,34,0.5);">✦</div>
+                    <div class="boss-info">
+                        <div class="boss-label">// ПРИОРИТЕТНАЯ ЦЕЛЬ — ЗАВЕРШЕНИЕ АКТ II</div>
+                        <div class="boss-name">ГАВРИИЛ — ПАДШИЙ СУДЬЯ</div>
+                        <div class="boss-desc">Второе столкновение с Гавриилом. После поражения в слое Жадности он изменился — теперь движим личной яростью, а не долгом. Значительно превосходит версию из Акта I по скорости и интенсивности воздействия. Один из наиболее сложных оппонентов игры.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── АКТ III ── -->
+        <div class="act-banner" style="border-left-color: #555555;">
+            <div class="act-banner-num" style="color:#666666; text-shadow: none;">III</div>
+            <div>
+                <div class="act-banner-title" style="color: var(--text-2);">АКТ III — В РАЗРАБОТКЕ</div>
+                <div class="act-banner-sub">СЛОИ 7–9 // ДАННЫЕ ЧАСТИЧНЫ // ОБНОВЛЕНИЕ ОЖИДАЕТСЯ</div>
+            </div>
+            <div class="act-banner-tag" style="color:var(--text-3);">СТАТУС: В РАЗРАБОТКЕ<br>СЛОЁВ: 3 (частично)</div>
+        </div>
+
+        <!-- LAYER 7 — VIOLENCE -->
+        <div class="layer-panel" style="--lc: #448855; --lc-glow: rgba(68,136,85,0.35);">
+            <div class="layer-panel-head">
+                <div class="lph-num" style="color:#448855; text-shadow: 0 0 14px rgba(68,136,85,0.5);">07</div>
+                <div class="lph-info">
+                    <div class="lph-layer-label">// СЛОЙ СЕДЬМОЙ</div>
+                    <div class="lph-name">АГРЕССИЯ</div>
+                    <div class="lph-name-en" style="color:#448855;">VIOLENCE</div>
+                </div>
+                <div class="lph-status dev">ЧАСТИЧНО</div>
+                <div class="layer-ghost-num" style="color:#448855;">07</div>
+            </div>
+            <div class="layer-body">
+                <div class="layer-desc">
+                    Искажённая природа — тёмный лес с терновыми деревьями, реки тёмного ресурса, выжженные пустоши. По Данте — круг, где находятся те, кто причинял вред другим. В ULTRAKILL это <span class="hl" style="color:#448855;">зона первобытной силы</span>: природа нижнего уровня обнажена и враждебна. Первые уровни слоя доступны, финал Акта III ещё в разработке.
+                </div>
+
+                <div class="section-label" style="--lc:#448855;">УРОВНИ СЕКТОРА</div>
+                <ul class="level-list">
+                    <li class="level-item">
+                        <span class="level-id" style="color:#448855;">7-1</span>
+                        <span class="level-name">GARDEN OF FORKING PATHS — «САД РАСХОДЯЩИХСЯ ТРОП»</span>
+                    </li>
+                    <li class="level-item">
+                        <span class="level-id" style="color:#448855;">7-2</span>
+                        <span class="level-name">LIGHT UP THE NIGHT — «ОСВЕТИ НОЧЬ»</span>
+                    </li>
+                    <li class="level-item">
+                        <span class="level-id" style="color:#448855;">7-3</span>
+                        <span class="level-name">NO SOUND, NO MEMORY — «НИ ЗВУКА, НИ ПАМЯТИ»</span>
+                    </li>
+                    <li class="level-item">
+                        <span class="level-id" style="color:#448855;">7-S</span>
+                        <span class="level-name">IT'S ONLY MACHINE — «ЭТО ВСЕГО ЛИШЬ МАШИНА»<br><span class="secret">⬡ СЕКРЕТ // Скрытый уровень-испытание.</span></span>
+                    </li>
+                </ul>
+
+                <div class="section-label" style="--lc:#448855;">ОБИТАТЕЛИ</div>
+                <div class="inhab-row">
+                    <span class="inhab-tag">Cerberus</span>
+                    <span class="inhab-tag">Soldier (все)</span>
+                    <span class="inhab-tag">Mindflayer</span>
+                    <span class="inhab-tag">Virtue</span>
+                    <span class="inhab-tag" style="border-color:#448855; color:#448855;">Новые типы</span>
+                </div>
+
+                <div class="boss-block" style="border-left-color:#448855;">
+                    <div class="boss-glyph" style="color:#448855; text-shadow: 0 0 10px rgba(68,136,85,0.5);">?</div>
+                    <div class="boss-info">
+                        <div class="boss-label">// ПРИОРИТЕТНАЯ ЦЕЛЬ — В РАЗРАБОТКЕ</div>
+                        <div class="boss-name">КЛЮЧЕВАЯ СУЩНОСТЬ СЛОЯ 7</div>
+                        <div class="boss-desc">Данные по финальному оппоненту слоя засекречены или ещё не введены в систему. Акт III находится в активной разработке. Ожидается обновление базы данных при выходе новых версий.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- LAYERS 8–9 — ЗАГЛУШКА -->
+        <div class="layer-panel layer-full" style="--lc: #444444; --lc-glow: rgba(68,68,68,0.2);">
+            <div class="layer-panel-head">
+                <div class="lph-num" style="color:#444444;">08–09</div>
+                <div class="lph-info">
+                    <div class="lph-layer-label">// СЛОИ ВОСЬМОЙ И ДЕВЯТЫЙ</div>
+                    <div class="lph-name">ОБМАН // ПРЕДАТЕЛЬСТВО</div>
+                    <div class="lph-name-en" style="color:#444444;">FRAUD // TREACHERY</div>
+                </div>
+                <div class="lph-status dev">НЕ ДОСТУПНО</div>
+                <div class="layer-ghost-num" style="color:#333333;">09</div>
+            </div>
+            <div class="layer-body">
+                <div class="art-para" style="color:var(--text-2); font-size:0.7rem;">
+                    Данные по слоям 8 и 9 недоступны. Зоны ещё не введены в эксплуатацию — разработка Акта III продолжается. По структуре «Божественной Комедии» Данте:
+                    слой 8 соответствует <span class="art-hl">кругу обмана</span> (Малеболье — девять рвов), слой 9 — <span class="art-hl">самому нижнему кругу</span>, где согласно легенде, находится источник всего. Финальное противостояние V1 ожидается именно здесь.
+                </div>
+                <div class="readout">
+                    <span class="hl">[LAYER 8 — FRAUD]</span>   <span class="vl">СТАТУС: ЗОН НЕТ В СИСТЕМЕ // ДАННЫЕ ОТСУТСТВУЮТ</span><br>
+                    <span class="hl">[LAYER 9 — TREACHERY]</span> <span class="vl">СТАТУС: ЗАСЕКРЕЧЕНО // ДОСТУП ЗАКРЫТ // ГЛУБИНА: МАКСИМАЛЬНАЯ<span class="cur"></span></span>
+                </div>
+                <div class="tags" style="margin-top:0.7rem;">
+                    <span class="tag">ACT III</span>
+                    <span class="tag">В РАЗРАБОТКЕ</span>
+                    <span class="tag g">МАЛЕБОЛЖЕ</span>
+                    <span class="tag b">ДЖУДЕККА</span>
+                    <span class="tag r">ФИНАЛЬНАЯ ЗОНА</span>
+                </div>
+            </div>
+        </div>
+
+    </div><!-- /sectors-grid -->
+
+    <!-- ═══ СПРАВОЧНАЯ ПАНЕЛЬ: СПЕЦИАЛЬНЫЕ ЗОНЫ ═══ -->
+    <div class="panel" style="margin-top:0;">
+        <div class="panel-head">
+            <div class="ph-dot gold"></div>
+            <div class="ph-title gold">СПЕЦИАЛЬНЫЕ ЗОНЫ — СВЯТИЛИЩА ПРАЙМОВ</div>
+            <div class="ph-tag">PRIME.SANCTUMS // SECRET ACCESS</div>
+        </div>
+        <div class="panel-body">
+            <div class="art-lead">
+                Два засекреченных уровня нижнего уровня, доступные через скрытые порталы. Содержат наиболее сложных оппонентов игры — Праймов: сущностей, достигших абсолютного предела своих возможностей.
+            </div>
+
+            <div class="fact-grid">
+                <div class="fact-item" style="border-left-color: var(--c-pink);">
+                    <div class="fact-key">ЗОНА P-1</div>
+                    <div class="fact-val" style="color:var(--c-pink);">SOUL SURVIVOR</div>
+                </div>
+                <div class="fact-item" style="border-left-color: var(--c-pink);">
+                    <div class="fact-key">ДОСТУП ЧЕРЕЗ</div>
+                    <div class="fact-val">СЛОЙ 1 — ЛИМБ</div>
+                </div>
+                <div class="fact-item" style="border-left-color: var(--c-pink);">
+                    <div class="fact-key">КЛЮЧ. СУЩНОСТЬ</div>
+                    <div class="fact-val" style="color:var(--c-pink);">MINOS PRIME</div>
+                </div>
+                <div class="fact-item" style="border-left-color: var(--c-pink);">
+                    <div class="fact-key">ОПИСАНИЕ</div>
+                    <div class="fact-val" style="font-size:0.7rem; font-family:'Share Tech Mono',monospace; color:var(--text-1);">Король, достигший абсолюта</div>
+                </div>
+
+                <div class="fact-item" style="border-left-color: var(--c-gold); margin-top:2px;">
+                    <div class="fact-key">ЗОНА P-2</div>
+                    <div class="fact-val" style="color:var(--c-gold);">WAIT OF THE WORLD</div>
+                </div>
+                <div class="fact-item" style="border-left-color: var(--c-gold); margin-top:2px;">
+                    <div class="fact-key">ДОСТУП ЧЕРЕЗ</div>
+                    <div class="fact-val">СЛОЙ 4 — ЖАДНОСТЬ</div>
+                </div>
+                <div class="fact-item" style="border-left-color: var(--c-gold);">
+                    <div class="fact-key">КЛЮЧ. СУЩНОСТЬ</div>
+                    <div class="fact-val" style="color:var(--c-gold);">SISYPHUS PRIME</div>
+                </div>
+                <div class="fact-item" style="border-left-color: var(--c-gold);">
+                    <div class="fact-key">ОПИСАНИЕ</div>
+                    <div class="fact-val" style="font-size:0.7rem; font-family:'Share Tech Mono',monospace; color:var(--text-1);">Тот, кто нашёл иной путь</div>
+                </div>
+            </div>
+
+            <div class="readout" style="margin-top:0.9rem;">
+                <span class="hl">// MINOS PRIME:</span>   <span class="vl">Бывший правитель нижнего уровня. Воздействие его импульсов разрушительно для любой структуры. Размер значительно превышает стандартный. Требует активного использования всего арсенала.</span><br>
+                <span class="hl">// SISYPHUS PRIME:</span> <span class="vl">Оппонент, превзошедший собственные ограничения. Обладает абсолютным контролем над физическими параметрами. Финальная фаза столкновения — одна из наиболее интенсивных в игре.<span class="cur"></span></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ ФУТЕР ═══ -->
+    <div class="site-footer">
+        <div class="footer-logo">V1 // ULTRAKILL</div>
+        <div>// СЕКТОРЫ // НИЖНИЙ УРОВЕНЬ — КАРТА АКТИВНА //</div>
+        <div>// ДАННЫЕ: ULTRAKILL WIKI // ULTRAKILL.FANDOM.COM //</div>
+    </div>
+
+</div><!-- /page -->
+
+<script>
+/* ══════════════════════════════════════
+   THEME SWITCHER
+══════════════════════════════════════ */
+var THEME_LABELS = {
+    dark:    'DARK // ORIGINAL',
+    v1:      'V1 // MACHINE // BLUE',
+    v2:      'V2 // MIRROR // RED',
+    gabriel: 'GABRIEL // JUDGE // GOLD'
+};
+
+function setTheme(t) {
+    document.body.setAttribute('data-theme', t);
+    document.querySelectorAll('.tp-btn').forEach(function(btn) {
+        btn.classList.toggle('active', btn.dataset.tv === t);
+    });
+    var lbl = document.getElementById('tpCurrent');
+    if (lbl) lbl.textContent = 'АКТИВНА: ' + THEME_LABELS[t];
+    try { localStorage.setItem('uk_theme', t); } catch(e) {}
+}
+
+(function () {
+    try {
+        var saved = localStorage.getItem('uk_theme');
+        if (saved && THEME_LABELS[saved]) setTheme(saved);
+    } catch(e) {}
+})();
+
+/* ══════════════════════════════════════════════════════════════════
+   CANVAS ENGINE
+══════════════════════════════════════════════════════════════════ */
+(function () {
+    var CV  = document.getElementById('theme-bg-canvas');
+    var CTX = CV.getContext('2d');
+    var AT  = 'dark';
+    var S   = {};
+
+    function r(a, b)     { return a + Math.random() * (b - a); }
+    function ri(a, b)    { return Math.floor(r(a, b + 1)); }
+    function cl(v,mn,mx) { return Math.max(mn, Math.min(mx, v)); }
+
+    function resize() { CV.width = window.innerWidth; CV.height = window.innerHeight; }
+    window.addEventListener('resize', function () { resize(); init(AT); });
+    resize();
+
+    /* ════ V2 ════ */
+    function initV2() {
+        S = { shards:[], glitchBars:[], glitchT:ri(10,40), staticPts:[], cracks:[], crackT:ri(80,200), rgbLife:0, shocks:[], swT:ri(50,180), vigPh:0, noiseF:0, textFrag:[], textT:ri(60,180) };
+        for (var i=0;i<28;i++) S.shards.push(mkShard());
+        for (var j=0;j<220;j++) S.staticPts.push({x:r(0,CV.width),y:r(0,CV.height),rr:r(.4,1.8),al:r(.01,.055),bl:r(0,Math.PI*2),spd:r(.04,.15)});
+        for (var c=0;c<6;c++) S.cracks.push(mkCrack());
+        for (var tf=0;tf<8;tf++) S.textFrag.push(mkTextFrag());
+    }
+    function mkShard() {
+        var cx=r(15,CV.width/2-10),cy=r(15,CV.height-15),sz=r(14,68),pts=[],n=ri(3,7);
+        for(var i=0;i<n;i++){var ang=(i/n)*Math.PI*2+r(-.55,.55);pts.push({x:cx+Math.cos(ang)*sz*r(.4,1.1),y:cy+Math.sin(ang)*sz*r(.4,1.1)});}
+        return{pts:pts,cx:cx,cy:cy,vy:r(-.12,.12),vx:r(-.06,.06),rot:r(0,Math.PI*2),rotV:r(-.007,.007),al:r(.04,.16),ph:r(0,Math.PI*2),spd:r(.012,.03),life:r(.7,1),decay:r(.0004,.0018),gleam:Math.random()>.5};
+    }
+    function mkCrack() {
+        var sx=CV.width/2+r(-100,100),sy=r(40,CV.height-40),pts=[{x:sx,y:sy}],cx=sx,cy=sy;
+        for(var i=0;i<ri(4,11);i++){cx+=r(-100,100);cy+=r(-70,90);cx=cl(cx,8,CV.width-8);cy=cl(cy,8,CV.height-8);pts.push({x:cx,y:cy});}
+        return{pts:pts,al:r(.02,.07),ph:r(0,Math.PI*2),phs:r(.007,.024),life:r(.7,1.5),decay:r(.0007,.0028)};
+    }
+    function mkTextFrag(){var FR=['NULL','ERR','V2','MIRROR','0xDEAD','CORRUPT','REFLECT','DUAL'];return{x:r(20,CV.width/2-20),y:r(20,CV.height-20),txt:FR[ri(0,FR.length-1)],al:r(.02,.08),ph:r(0,Math.PI*2),phs:r(.006,.02),life:r(.8,1.6),decay:r(.0006,.002)};}
+
+    function drawV2() {
+        CTX.clearRect(0,0,CV.width,CV.height);
+        var W=CV.width,H=CV.height;
+        S.noiseF++;S.vigPh+=.009;
+        var va=.04+.02*Math.sin(S.vigPh);
+        var vg=CTX.createRadialGradient(W/2,H/2,0,W/2,H/2,Math.max(W,H)*.74);
+        vg.addColorStop(0,'rgba(255,0,0,0)');vg.addColorStop(.65,'rgba(130,0,0,'+(va*.4)+')');vg.addColorStop(1,'rgba(80,0,0,'+va+')');
+        CTX.fillStyle=vg;CTX.fillRect(0,0,W,H);
+        if(S.noiseF%3===0){S.staticPts.forEach(function(pt){pt.bl+=pt.spd;var a=pt.al*(.3+.7*Math.abs(Math.sin(pt.bl)));CTX.beginPath();CTX.arc(pt.x,pt.y,pt.rr,0,Math.PI*2);CTX.fillStyle='rgba(255,24,24,'+a+')';CTX.fill();CTX.beginPath();CTX.arc(W-pt.x,pt.y,pt.rr*.65,0,Math.PI*2);CTX.fillStyle='rgba(255,24,24,'+(a*.45)+')';CTX.fill();});}
+        S.crackT--;if(S.crackT<=0){S.crackT=ri(100,240);if(S.cracks.length<12)S.cracks.push(mkCrack());}
+        S.cracks=S.cracks.filter(function(c){return c.life>0;});
+        S.cracks.forEach(function(cr){cr.life-=cr.decay;cr.ph+=cr.phs;var a=cr.al*cr.life*(.55+.45*Math.sin(cr.ph));function dCrack(flip){CTX.save();if(flip){CTX.translate(W,0);CTX.scale(-1,1);}CTX.strokeStyle='rgba(255,24,24,'+(a*(flip?.45:1))+')';CTX.lineWidth=flip?.55:.88;CTX.beginPath();cr.pts.forEach(function(pt,i){i?CTX.lineTo(pt.x,pt.y):CTX.moveTo(pt.x,pt.y);});CTX.shadowBlur=6;CTX.shadowColor='rgba(255,0,0,'+a+')';CTX.stroke();CTX.shadowBlur=0;CTX.restore();}dCrack(false);dCrack(true);});
+        S.glitchT--;
+        if(S.glitchT<=0){S.glitchT=ri(6,44);var nb=ri(1,6);for(var nb2=0;nb2<nb&&S.glitchBars.length<14;nb2++){S.glitchBars.push({y:r(0,H),h:r(1,15),life:r(.2,.9),shift:r(-65,65),al:r(.03,.12),type:ri(0,3)});}if(Math.random()<.3)S.rgbLife=r(.3,.9);}
+        if(S.rgbLife>0){S.rgbLife-=.05;var rA=.022*S.rgbLife;CTX.fillStyle='rgba(255,0,0,'+rA+')';CTX.fillRect(r(-12,12),0,W,H);CTX.fillStyle='rgba(0,180,255,'+(rA*.36)+')';CTX.fillRect(r(-8,8),0,W,H);}
+        S.glitchBars=S.glitchBars.filter(function(b){return b.life>0;});
+        S.glitchBars.forEach(function(b){b.life-=.05;var a=b.al*b.life;CTX.fillStyle='rgba(255,24,24,'+a+')';CTX.fillRect(0,b.y,W,b.h);if(b.type===1){CTX.fillStyle='rgba(255,100,60,'+(a*.5)+')';CTX.fillRect(b.shift,b.y,W*.55,b.h*.6);}else if(b.type===2){for(var p=0;p<20;p++){CTX.fillStyle='rgba(255,24,24,'+(a*r(.4,1.9))+')';CTX.fillRect(r(0,W),b.y+r(-b.h,b.h),r(2,24),r(1,5));}}});
+        S.shards.forEach(function(sh,idx){sh.ph+=sh.spd;sh.life-=sh.decay;sh.rot+=sh.rotV;sh.cx+=sh.vx;sh.cy+=sh.vy;if(sh.life<=0){S.shards[idx]=mkShard();return;}var a=sh.al*sh.life*(.46+.54*Math.sin(sh.ph));var cr2=Math.cos(sh.rot),sr=Math.sin(sh.rot);var ox=sh.pts[0].x,oy=sh.pts[0].y;var tp=sh.pts.map(function(pt){var dx=pt.x-ox,dy=pt.y-oy;return{x:sh.cx+cr2*dx-sr*dy,y:sh.cy+sr*dx+cr2*dy};});function dShard(flip){CTX.save();if(flip){CTX.translate(W,0);CTX.scale(-1,1);}CTX.beginPath();CTX.moveTo(tp[0].x,tp[0].y);for(var p=1;p<tp.length;p++)CTX.lineTo(tp[p].x,tp[p].y);CTX.closePath();CTX.strokeStyle='rgba(255,24,24,'+(a*(flip?.6:1))+')';CTX.lineWidth=flip?.5:.92;CTX.stroke();CTX.fillStyle='rgba(255,24,24,'+(a*(flip?.04:.1))+')';CTX.fill();CTX.restore();}dShard(false);dShard(true);});
+        S.swT--;if(S.swT<=0){S.swT=ri(50,200);S.shocks.push({x:W/2+r(-80,80),y:r(H*.1,H*.9),rr:0,maxR:r(50,200),spd:r(1.4,3.8),al:r(.05,.14)});}
+        S.shocks=S.shocks.filter(function(sw){return sw.rr<sw.maxR;});
+        S.shocks.forEach(function(sw){sw.rr+=sw.spd;var a=sw.al*(1-sw.rr/sw.maxR);CTX.beginPath();CTX.arc(sw.x,sw.y,sw.rr,0,Math.PI*2);CTX.strokeStyle='rgba(255,24,24,'+a+')';CTX.lineWidth=1.4;CTX.stroke();});
+        S.textT--;if(S.textT<=0){S.textT=ri(50,160);if(S.textFrag.length<14)S.textFrag.push(mkTextFrag());}
+        S.textFrag=S.textFrag.filter(function(tf){return tf.life>0;});
+        S.textFrag.forEach(function(tf){tf.life-=tf.decay;tf.ph+=tf.phs;var a=tf.al*tf.life*(.5+.5*Math.sin(tf.ph));if(a<.003)return;CTX.font='11px "Share Tech Mono",monospace';CTX.fillStyle='rgba(255,24,24,'+a+')';CTX.fillText(tf.txt,tf.x,tf.y);});
+        CTX.save();CTX.setLineDash([5,14]);CTX.strokeStyle='rgba(255,24,24,.028)';CTX.lineWidth=1;CTX.beginPath();CTX.moveTo(W/2,0);CTX.lineTo(W/2,H);CTX.stroke();CTX.setLineDash([]);CTX.restore();
+    }
+
+    /* ════ GABRIEL ════ */
+    function initGabriel() {
+        S={feathers:[],halos:[],rays:[],wings:[{side:-1,ph:0,phs:.0062,al:.025,beatA:.052},{side:1,ph:Math.PI,phs:.0062,al:.025,beatA:.052}],motes:[],mandPh:0,mandSpd:.0036,divFlash:0,ambPh:0,inscriptions:[],inscT:ri(80,200),outerRings:[]};
+        for(var i=0;i<50;i++)S.feathers.push(newFeather(true));
+        for(var h=0;h<9;h++)S.halos.push({x:r(60,CV.width-60),y:r(60,CV.height-60),rr:r(25,100),al:r(.03,.08),ph:r(0,Math.PI*2),phs:r(.007,.022),rot:r(0,Math.PI*2),rotV:r(-.005,.005),spokes:ri(8,20),inner:Math.random()>.4,innerR:r(.55,.75),gems:ri(0,6)});
+        for(var rr=0;rr<14;rr++)S.rays.push({angle:r(-.82,.82),hw:r(12,80),len:r(CV.height*.3,CV.height),al:r(.015,.055),ph:r(0,Math.PI*2),phs:r(.004,.015)});
+        for(var m=0;m<85;m++)S.motes.push(newMote(true));
+        for(var or=0;or<3;or++)S.outerRings.push({x:CV.width/2,y:CV.height/2,rr:r(CV.height*.25,CV.height*.45),al:r(.015,.04),ph:r(0,Math.PI*2),phs:r(.003,.01),rot:r(0,Math.PI*2),rotV:r(-.002,.002)*(or%2===0?1:-1)});
+        for(var ins=0;ins<6;ins++)S.inscriptions.push(newInscription());
+    }
+    function newFeather(rY){return{x:r(-90,CV.width+90),y:rY?r(-300,CV.height):r(-240,-10),vy:r(.15,.65),vx:r(-.12,.12),len:r(16,56),sw:r(0,Math.PI*2),sws:r(.009,.028),rot:0,al:r(.052,.18),golden:Math.random()>.32};}
+    function newMote(rY){return{x:r(0,CV.width),y:rY?r(0,CV.height):CV.height+20,rr:r(.7,3.2),vy:r(-.38,-.07),vx:r(-.07,.07),al:r(.05,.2),ph:r(0,Math.PI*2),phs:r(.02,.065)};}
+    function newInscription(){var TX=['JUDICIUM','LUX AETERNA','CAELUM','SANCTUS','VIRTUS','IUSTITIA'];return{x:r(30,CV.width*.45),y:r(30,CV.height*.8),txt:TX[ri(0,TX.length-1)],al:r(.015,.055),ph:r(0,Math.PI*2),phs:r(.005,.016),life:r(.8,1.8),decay:r(.0004,.0015),size:ri(9,13)};}
+
+    function drawGabriel() {
+        CTX.clearRect(0,0,CV.width,CV.height);
+        var W=CV.width,H=CV.height,cx=W/2,cy=H/2;
+        S.ambPh+=.008;S.mandPh+=S.mandSpd;
+        var ambA=.022+.01*Math.sin(S.ambPh);
+        var ag=CTX.createRadialGradient(cx,-H*.1,0,cx,-H*.1,H*1.3);
+        ag.addColorStop(0,'rgba(200,152,30,'+ambA+')');ag.addColorStop(.45,'rgba(200,152,30,'+(ambA*.35)+')');ag.addColorStop(1,'rgba(200,152,30,0)');
+        CTX.fillStyle=ag;CTX.fillRect(0,0,W,H);
+        S.rays.forEach(function(rr){rr.ph+=rr.phs;var a=rr.al*(.4+.6*Math.sin(rr.ph));CTX.save();CTX.translate(cx,-50);CTX.rotate(rr.angle);var g=CTX.createLinearGradient(0,0,0,rr.len);g.addColorStop(0,'rgba(200,152,30,'+a+')');g.addColorStop(.38,'rgba(245,205,100,'+(a*.44)+')');g.addColorStop(1,'rgba(200,152,30,0)');CTX.beginPath();CTX.moveTo(-rr.hw*.14,0);CTX.lineTo(rr.hw*.14,0);CTX.lineTo(rr.hw*1.88,rr.len);CTX.lineTo(-rr.hw*1.88,rr.len);CTX.closePath();CTX.fillStyle=g;CTX.fill();CTX.restore();});
+        S.outerRings.forEach(function(or){or.ph+=or.phs;or.rot+=or.rotV;var a=or.al*(.44+.56*Math.sin(or.ph));CTX.save();CTX.translate(cx,cy);CTX.rotate(or.rot);CTX.beginPath();CTX.arc(0,0,or.rr,0,Math.PI*2);CTX.strokeStyle='rgba(200,152,30,'+a+')';CTX.lineWidth=.55;CTX.stroke();CTX.restore();});
+        var mA=.022+.01*Math.sin(S.mandPh*1.7),mR=Math.min(cx,cy)*.56;
+        CTX.save();CTX.translate(cx,cy);
+        for(var ring=1;ring<=5;ring++){CTX.beginPath();CTX.arc(0,0,mR*(ring/5),0,Math.PI*2);CTX.strokeStyle='rgba(200,152,30,'+(mA*(.4+.6*(ring/5)))+')';CTX.lineWidth=.5;CTX.stroke();}
+        CTX.rotate(S.mandPh*.26);
+        for(var kk=0;kk<18;kk++){var mang=(kk/18)*Math.PI*2;CTX.beginPath();CTX.moveTo(0,0);CTX.lineTo(Math.cos(mang)*mR,Math.sin(mang)*mR);CTX.strokeStyle='rgba(200,152,30,'+mA+')';CTX.lineWidth=.45;CTX.stroke();}
+        CTX.restore();
+        S.wings.forEach(function(w){w.ph+=w.phs;var a=w.al*(.5+.5*Math.sin(w.ph));var span=Math.min(cx*.96,265);var beat=Math.sin(w.ph*.46)*w.beatA;CTX.save();CTX.strokeStyle='rgba(175,138,18,'+a+')';CTX.lineWidth=.75;for(var f=0;f<8;f++){var t=(f+1)/9;var arcY=cy-58*(1-t)-f*7+beat*span*t;CTX.beginPath();CTX.moveTo(cx,cy);CTX.quadraticCurveTo(cx+w.side*span*t*.44,arcY,cx+w.side*span*t,cy+18+f*13+beat*span*.26);CTX.stroke();}CTX.restore();});
+        S.halos.forEach(function(hh){hh.ph+=hh.phs;hh.rot+=hh.rotV;var a=hh.al*(.44+.56*Math.sin(hh.ph));var rr=hh.rr*(.93+.07*Math.sin(hh.ph*1.22));CTX.beginPath();CTX.arc(hh.x,hh.y,rr,0,Math.PI*2);CTX.strokeStyle='rgba(200,152,30,'+a+')';CTX.lineWidth=1.5;CTX.stroke();});
+        S.motes.forEach(function(m,idx){m.ph+=m.phs;m.y+=m.vy;m.x+=m.vx+Math.sin(m.ph*.64)*.09;if(m.y<-28){S.motes[idx]=newMote(false);return;}var a=m.al*(.36+.64*Math.abs(Math.sin(m.ph)));CTX.beginPath();CTX.arc(m.x,m.y,m.rr,0,Math.PI*2);CTX.fillStyle='rgba(225,182,62,'+a+')';CTX.fill();});
+        S.inscT--;if(S.inscT<=0){S.inscT=ri(70,180);if(S.inscriptions.length<10)S.inscriptions.push(newInscription());}
+        S.inscriptions=S.inscriptions.filter(function(ins){return ins.life>0;});
+        S.inscriptions.forEach(function(ins){ins.life-=ins.decay;ins.ph+=ins.phs;var a=ins.al*ins.life*(.48+.52*Math.sin(ins.ph));if(a<.003)return;CTX.font=ins.size+'px "Share Tech Mono",monospace';CTX.fillStyle='rgba(200,152,30,'+a+')';CTX.fillText(ins.txt,ins.x,ins.y);});
+        S.feathers.forEach(function(f,idx){f.sw+=f.sws;f.y+=f.vy;f.x+=f.vx+Math.sin(f.sw)*.13;f.rot=Math.sin(f.sw*.5)*.3;if(f.y>H+110){S.feathers[idx]=newFeather(false);return;}drawFeather(f.x,f.y,f.len,f.rot,f.al,f.golden);});
+        if(Math.random()<.0022)S.divFlash=r(.55,1.3);
+        if(S.divFlash>0){CTX.fillStyle='rgba(255,232,130,'+(S.divFlash*.025)+')';CTX.fillRect(0,0,W,H);S.divFlash-=.055;}
+    }
+    function drawFeather(x,y,len,rot,al,golden){var shaft=golden?'200,152,30':'172,142,72';CTX.save();CTX.translate(x,y);CTX.rotate(rot);CTX.beginPath();CTX.moveTo(0,-len*.5);CTX.lineTo(0,len*.5);CTX.strokeStyle='rgba('+shaft+','+al+')';CTX.lineWidth=.9;CTX.stroke();var steps=Math.floor(len/3.4);for(var i=0;i<steps;i++){var t=i/steps,by=-len*.5+t*len,bw=Math.sin(t*Math.PI)*len*.38,ba=al*Math.sin(t*Math.PI);if(ba<.003)continue;CTX.strokeStyle='rgba('+shaft+','+ba+')';CTX.lineWidth=.4;CTX.beginPath();CTX.moveTo(0,by);CTX.quadraticCurveTo(bw*.44,by+len*.05,bw,by+len*.044);CTX.stroke();CTX.beginPath();CTX.moveTo(0,by);CTX.quadraticCurveTo(-bw*.44,by+len*.05,-bw,by+len*.044);CTX.stroke();}CTX.restore();}
+
+    function loop() {
+        switch(AT) {
+            case 'v2':      drawV2();      break;
+            case 'gabriel': drawGabriel(); break;
+            default: CTX.clearRect(0,0,CV.width,CV.height); break;
+        }
+        requestAnimationFrame(loop);
+    }
+
+    function init(t) {
+        AT=t; S={};
+        switch(t) {
+            case 'v2':      initV2();      break;
+            case 'gabriel': initGabriel(); break;
+        }
+    }
+
+    var _orig = window.setTheme;
+    window.setTheme = function(t) { _orig(t); init(t); };
+
+    var boot = 'dark';
+    try { boot = localStorage.getItem('uk_theme') || 'dark'; } catch(e) {}
+    init(boot);
+    loop();
+})();
+</script>
+</body>
+</html>
