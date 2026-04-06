@@ -4,483 +4,253 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>V1 АРСЕНАЛ // БАЗА ДАННЫХ МОДУЛЕЙ</title>
-    <link href="https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&family=Fira+Code:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=VT323&family=Share+Tech+Mono&family=Fira+Code:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 
         :root {
-            --red:    #ff2020;
-            --red-dim:#8a0000;
-            --white:  #f0f0f0;
-            --black:  #060606;
-            --gold:   #ffd166;
-            --blue:   #4af0ff;
-            --green:  #00ff88;
-            --pink:   #ff44cc;
-            --orange: #ff8833;
-            --purple: #bb55ff;
-            --glow-r: rgba(255,32,32,0.4);
-            --terminal-green: #00ff88;
-            --terminal-amber: #ffd166;
-            --terminal-gray:  #8a9ba8;
+            --red:#ff2020; --red-dim:#8a0000; --white:#f0f0f0; --black:#060606;
+            --gold:#ffd166; --blue:#4af0ff; --green:#00ff88; --pink:#ff44cc;
+            --orange:#ff8833; --purple:#bb55ff;
+            --glow-r:rgba(255,32,32,0.4);
+            --terminal-green:#00ff88; --terminal-amber:#ffd166; --terminal-gray:#8a9ba8;
         }
 
         body {
-            background: #040508;
-            color: var(--white);
-            font-family: 'Share Tech Mono', 'Fira Code', monospace;
-            min-height: 100vh;
-            display: flex;
-            align-items: flex-start;
-            justify-content: center;
-            padding: 1.5rem;
-            position: relative;
-            overflow-x: hidden;
+            background:#000; color:var(--white);
+            font-family:'Share Tech Mono','Fira Code',monospace;
+            min-height:100vh; overflow-x:hidden; position:relative;
         }
 
-        /* scanlines */
+        /* Circuit grid — from layer.html */
         body::before {
-            content: '';
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: repeating-linear-gradient(0deg, transparent, transparent 2px,
-                rgba(0,0,0,0.13) 2px, rgba(0,0,0,0.13) 4px);
-            pointer-events: none; z-index: 9998;
+            content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
+            background-image:
+                linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),
+                linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px),
+                radial-gradient(circle,rgba(255,255,255,.055) 1px,transparent 1px);
+            background-size:60px 60px,60px 60px,60px 60px;
+            background-position:0 0,0 0,30px 30px;
         }
-        /* vignette */
         body::after {
-            content: '';
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(ellipse at 50% 50%, transparent 50%, rgba(0,0,0,0.72) 100%);
-            pointer-events: none; z-index: 9997;
+            content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
+            background-image:
+                repeating-linear-gradient(0deg,transparent,transparent 119px,rgba(255,255,255,.022) 119px,rgba(255,255,255,.022) 120px),
+                repeating-linear-gradient(90deg,transparent,transparent 179px,rgba(255,255,255,.018) 179px,rgba(255,255,255,.018) 180px);
         }
 
-        #bg-canvas {
-            position: fixed; top: 0; left: 0;
-            width: 100%; height: 100%;
-            pointer-events: none; z-index: 1;
+        .scanlines {
+            position:fixed; inset:0; z-index:1; pointer-events:none;
+            background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,.16) 3px,rgba(0,0,0,.16) 4px);
         }
 
-        /* ── TERMINAL ── */
-        .terminal {
-            max-width: 1440px; width: 100%;
-            background: rgba(6, 8, 12, 0.93);
-            border: 1px solid var(--terminal-green);
-            border-radius: 4px;
-            box-shadow:
-                0 0 0 1px rgba(0,255,136,0.08),
-                0 0 40px rgba(0,255,136,0.12),
-                0 0 80px rgba(255,32,32,0.06),
-                inset 0 0 80px rgba(0,0,0,0.6);
-            position: relative; z-index: 10; overflow: hidden;
-        }
+        .page { max-width:1440px; margin:0 auto; padding:0 1.5rem 3rem; position:relative; z-index:10; }
 
-        /* ── TERMINAL BAR ── */
-        .terminal-bar {
-            background: #050709;
-            padding: 0.75rem 1.2rem;
-            border-bottom: 1px solid var(--terminal-green);
-            display: flex; justify-content: space-between; align-items: center;
-            flex-wrap: wrap; gap: 0.5rem; position: relative;
-        }
-        .terminal-bar::after {
-            content: '';
-            position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
-            background: linear-gradient(90deg, transparent, var(--terminal-green) 30%, var(--red) 70%, transparent);
-            opacity: 0.5;
-        }
-        .terminal-title { display: flex; align-items: center; gap: 12px; }
-        .terminal-dots  { display: flex; gap: 6px; }
-        .dot { width: 12px; height: 12px; border-radius: 50%; }
-        .dot-red    { background: #ff5f56; box-shadow: 0 0 7px #ff5f56; }
-        .dot-yellow { background: #ffbd2e; box-shadow: 0 0 7px #ffbd2e; }
-        .dot-green  { background: #27c93f; box-shadow: 0 0 7px #27c93f; }
+        /* ── HEADER ── */
+        .site-header { border-bottom:2px solid #fff; padding:1.5rem 0 1rem; }
+        .header-inner { display:flex; justify-content:space-between; align-items:flex-start; gap:1.5rem; flex-wrap:wrap; }
+        .logo-block { flex:1; }
+        .logo-sys-line { font-size:.55rem; color:#444; letter-spacing:.25em; text-transform:uppercase; margin-bottom:.4rem; }
+        .logo-sys-line .ok { color:var(--terminal-green); }
 
-        .terminal-path {
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 0.78rem; color: var(--terminal-green);
-            letter-spacing: 0.5px;
-            text-shadow: 0 0 8px var(--terminal-green);
+        .logo-main {
+            font-family:'Bebas Neue','VT323',monospace;
+            font-size:5.5rem; line-height:.88; color:#fff; letter-spacing:6px;
+            text-shadow:3px 3px 0 #000, 0 0 30px rgba(255,32,32,.25);
         }
+        .logo-main .v1 {
+            color:var(--red);
+            text-shadow:0 0 24px var(--red), 0 0 60px var(--glow-r);
+        }
+        @keyframes glitch{0%,100%{transform:translate(0);}15%{transform:translate(-2px,1px);}30%{transform:translate(2px,-1px);}65%{transform:translate(-1px,2px);}}
+        .logo-main:hover { animation:glitch .25s steps(1) infinite; cursor:default; }
 
-        .back-link {
-            color: var(--terminal-amber); text-decoration: none;
-            font-size: 0.78rem; transition: 0.2s; letter-spacing: 0.06em;
-            padding: 0.3rem 0.8rem;
-            border: 1px solid rgba(255,209,102,0.25);
-            font-family: 'Share Tech Mono', monospace;
+        .logo-status-lines { margin-top:.6rem; display:flex; flex-direction:column; gap:.15rem; }
+        .lsl { font-size:.6rem; color:#555; letter-spacing:.12em; text-transform:uppercase; }
+        .lsl .ok { color:var(--terminal-green); }
+        @keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
+        .cur { display:inline-block; width:7px; height:12px; background:var(--red); vertical-align:middle; animation:blink 1s step-end infinite; margin-left:2px; }
+
+        /* Nav buttons */
+        .menu-nav { display:flex; flex-direction:column; gap:4px; min-width:210px; }
+        .menu-nav-btn {
+            background:#000; border:2px solid #fff; padding:.75rem 1.1rem;
+            text-decoration:none; font-family:'Bebas Neue','VT323',monospace; font-size:1.35rem;
+            color:#fff; letter-spacing:.12em; text-transform:uppercase;
+            cursor:pointer; transition:.1s; display:block; text-align:center;
         }
-        .back-link:hover {
-            color: var(--terminal-green);
-            border-color: var(--terminal-green);
-            text-shadow: 0 0 8px var(--terminal-green);
-            background: rgba(0,255,136,0.05);
-        }
+        .menu-nav-btn:hover { background:#fff; color:#000; }
+        .menu-nav-btn.dim { border-color:#333; color:#333; }
+        .menu-nav-btn.dim:hover { background:#333; color:#000; }
 
         /* ── TICKER ── */
-        .ticker-wrap {
-            background: #000; border-bottom: 1px solid #111;
-            overflow: hidden; padding: 0.25rem 0;
-        }
-        .ticker-inner {
-            display: flex; gap: 4rem;
-            animation: tick 30s linear infinite; white-space: nowrap;
-        }
-        @keyframes tick { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-        .ti { font-size: 0.56rem; color: #252525; letter-spacing: 0.2em; text-transform: uppercase; }
-        .ti .r { color: var(--red); }
-        .ti .g { color: var(--terminal-green); }
+        .ticker-wrap { border-top:1px solid #1e1e1e; border-bottom:1px solid #1e1e1e; overflow:hidden; padding:.3rem 0; margin:.8rem 0 1rem; }
+        .ticker-inner { display:flex; gap:3rem; animation:tick 30s linear infinite; white-space:nowrap; }
+        @keyframes tick{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+        .ti { font-size:.55rem; color:#333; letter-spacing:.2em; text-transform:uppercase; }
+        .ti .r { color:var(--red); }
+        .ti .g { color:var(--terminal-green); }
 
-        /* ── TERMINAL CONTENT ── */
-        .terminal-content { padding: 2rem; }
+        .divider { height:2px; background:linear-gradient(90deg,#fff 0%,#555 30%,transparent 100%); margin:1rem 0; }
 
         /* ── BOOT HEADER ── */
-        .boot-header {
-            border-bottom: 1px solid rgba(0,255,136,0.15);
-            padding-bottom: 1.2rem; margin-bottom: 1.6rem; position: relative;
-        }
-        .boot-header::before {
-            content: ''; position: absolute; bottom: -1px; left: 0;
-            width: 25%; height: 1px;
-            background: var(--red); box-shadow: 0 0 8px var(--red);
-        }
-
-        .logo-eyebrow {
-            font-size: 0.58rem; color: var(--red);
-            letter-spacing: 0.35em; text-transform: uppercase; margin-bottom: 0.3rem;
-        }
+        .boot-header { border-bottom:1px solid rgba(0,255,136,.15); padding-bottom:1.2rem; margin-bottom:1.6rem; position:relative; }
+        .boot-header::before { content:''; position:absolute; bottom:-1px; left:0; width:25%; height:1px; background:var(--red); box-shadow:0 0 8px var(--red); }
+        .logo-eyebrow { font-size:.58rem; color:var(--red); letter-spacing:.35em; text-transform:uppercase; margin-bottom:.3rem; }
 
         .boot-header h1 {
-            font-family: 'VT323', monospace;
-            font-size: 3rem; color: var(--white); font-weight: 400;
-            letter-spacing: 3px; line-height: 1;
-            text-shadow: 0 0 20px var(--glow-r), 2px 2px 0 var(--red-dim);
+            font-family:'Bebas Neue','VT323',monospace;
+            font-size:3.5rem; color:var(--white); font-weight:400; letter-spacing:5px; line-height:1;
+            text-shadow:0 0 20px var(--glow-r), 2px 2px 0 var(--red-dim);
         }
-        .boot-header h1 .v1-accent {
-            color: var(--red);
-            text-shadow: 0 0 30px var(--red), 0 0 60px rgba(255,32,32,0.4);
-        }
-        .boot-header h1 i {
-            color: var(--terminal-green); font-size: 0.65em; margin-right: 10px;
-            animation: pulse 1.5s infinite;
-            filter: drop-shadow(0 0 6px var(--terminal-green));
-        }
-        @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.45; } }
+        .boot-header h1 .v1-accent { color:var(--red); text-shadow:0 0 30px var(--red), 0 0 60px rgba(255,32,32,.4); }
+        .boot-header h1 i { color:var(--terminal-green); font-size:.65em; margin-right:10px; animation:pulse 1.5s infinite; filter:drop-shadow(0 0 6px var(--terminal-green)); }
+        @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.45;}}
 
-        .boot-sub {
-            font-size: 0.68rem; color: #444; margin-top: 0.55rem;
-            letter-spacing: 0.14em; line-height: 1.6;
-        }
-        .boot-sub .hl  { color: var(--red); }
-        .boot-sub .hlg { color: var(--terminal-green); }
+        .boot-sub { font-size:.68rem; color:#444; margin-top:.55rem; letter-spacing:.14em; line-height:1.6; }
+        .boot-sub .hl  { color:var(--red); }
+        .boot-sub .hlg { color:var(--terminal-green); }
 
-        .blink-cursor {
-            display: inline-block; width: 10px; height: 18px;
-            background: var(--red); animation: blink 1s step-end infinite;
-            vertical-align: middle; margin-left: 4px;
-            box-shadow: 0 0 6px var(--red);
-        }
-        @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
+        .blink-cursor { display:inline-block; width:10px; height:18px; background:var(--red); animation:blink 1s step-end infinite; vertical-align:middle; margin-left:4px; box-shadow:0 0 6px var(--red); }
 
         /* ── STATS ROW ── */
-        .stats-row {
-            display: flex; gap: 1rem; flex-wrap: wrap;
-            padding: 0.7rem 1rem; margin-bottom: 1.5rem;
-            background: #040507; border: 1px solid #111;
-            border-left: 2px solid var(--red);
-        }
-        .stat-chip { font-size: 0.6rem; color: #3a3a3a; letter-spacing: 0.1em; }
-        .stat-chip .sv  { font-family: 'VT323', monospace; font-size: 1rem; color: var(--terminal-green); }
-        .stat-chip .sr  { color: var(--red); }
-        .stat-chip .sg  { color: var(--gold); }
-        .stat-chip .sb  { color: var(--blue); }
+        .stats-row { display:flex; gap:1rem; flex-wrap:wrap; padding:.7rem 1rem; margin-bottom:1.5rem; background:#040507; border:1px solid #111; border-left:2px solid var(--red); }
+        .stat-chip { font-size:.6rem; color:#3a3a3a; letter-spacing:.1em; }
+        .stat-chip .sv  { font-family:'Bebas Neue','VT323',monospace; font-size:1.1rem; color:var(--terminal-green); }
+        .stat-chip .sr  { color:var(--red); }
+        .stat-chip .sg  { color:var(--gold); }
+        .stat-chip .sb  { color:var(--blue); }
 
-        /* ── REDLINE ── */
-        .redline {
-            height: 1px;
-            background: linear-gradient(90deg, var(--red) 0%, #fff 12%, var(--red) 30%, transparent 100%);
-            box-shadow: 0 0 8px rgba(255,32,32,0.3);
-            margin: 0.5rem 0 1rem;
-        }
+        .redline { height:1px; background:linear-gradient(90deg,var(--red) 0%,#fff 12%,var(--red) 30%,transparent 100%); box-shadow:0 0 8px rgba(255,32,32,.3); margin:.5rem 0 1rem; }
 
         /* ── WEAPON GRID ── */
-        .weapon-grid { display: flex; flex-direction: column; gap: 1.5rem; }
+        .weapon-grid { display:flex; flex-direction:column; gap:1.5rem; }
 
-        /* ── WEAPON CATEGORY ── */
         .weapon-category {
-            background: rgba(8, 10, 14, 0.92);
-            border: 1px solid #1a1a1a;
-            border-left: 3px solid var(--wcat-c, var(--terminal-green));
-            padding: 1.2rem 1.4rem;
-            transition: 0.25s; position: relative; overflow: hidden;
+            background:rgba(8,10,14,.92); border:1px solid #1a1a1a;
+            border-left:3px solid var(--wcat-c,var(--terminal-green));
+            padding:1.2rem 1.4rem; transition:.25s; position:relative; overflow:hidden;
         }
-        .weapon-category::before {
-            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
-            background: linear-gradient(90deg, var(--wcat-c, var(--terminal-green)), transparent);
-            opacity: 0.35;
-        }
-        /* sheen */
-        .weapon-category::after {
-            content: ''; position: absolute; top: 0; left: -40%;
-            width: 20%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.018), transparent);
-            transform: skewX(-15deg); animation: sheen 9s linear infinite;
-            pointer-events: none;
-        }
-        @keyframes sheen { 0% { left: -40%; } 100% { left: 130%; } }
+        .weapon-category::before { content:''; position:absolute; top:0; left:0; right:0; height:1px; background:linear-gradient(90deg,var(--wcat-c,var(--terminal-green)),transparent); opacity:.35; }
+        .weapon-category::after { content:''; position:absolute; top:0; left:-40%; width:20%; height:100%; background:linear-gradient(90deg,transparent,rgba(255,255,255,.018),transparent); transform:skewX(-15deg); animation:sheen 9s linear infinite; pointer-events:none; }
+        @keyframes sheen{0%{left:-40%;}100%{left:130%;}}
+        .weapon-category:hover { border-color:var(--wcat-c,var(--red)); background:rgba(12,8,8,.97); }
 
-        .weapon-category:hover {
-            border-color: var(--wcat-c, var(--red));
-            background: rgba(12, 8, 8, 0.97);
-        }
+        .weapon-category[data-weapon="arms"]       { --wcat-c:var(--pink); }
+        .weapon-category[data-weapon="revolver"]   { --wcat-c:var(--terminal-green); }
+        .weapon-category[data-weapon="shotgun"]    { --wcat-c:var(--red); }
+        .weapon-category[data-weapon="nailgun"]    { --wcat-c:var(--blue); }
+        .weapon-category[data-weapon="railcannon"] { --wcat-c:var(--purple); }
+        .weapon-category[data-weapon="rocket"]     { --wcat-c:var(--terminal-amber); }
 
-        /* per-weapon color vars */
-        .weapon-category[data-weapon="arms"]       { --wcat-c: var(--pink); }
-        .weapon-category[data-weapon="revolver"]   { --wcat-c: var(--terminal-green); }
-        .weapon-category[data-weapon="shotgun"]    { --wcat-c: var(--red); }
-        .weapon-category[data-weapon="nailgun"]    { --wcat-c: var(--blue); }
-        .weapon-category[data-weapon="railcannon"] { --wcat-c: var(--purple); }
-        .weapon-category[data-weapon="rocket"]     { --wcat-c: var(--terminal-amber); }
+        .weapon-image-container { margin-bottom:1rem; display:flex; justify-content:center; }
+        .weapon-frame { background:linear-gradient(135deg,#0d1117,#060809); padding:.6rem 1.2rem; border:1px solid var(--wcat-c,var(--terminal-green)); box-shadow:0 0 18px rgba(0,0,0,.8); transition:.3s; display:inline-flex; align-items:center; justify-content:center; min-width:220px; min-height:100px; position:relative; }
+        .weapon-frame:hover { transform:scale(1.03); }
+        .weapon-img { max-width:300px; height:auto; max-height:130px; display:block; object-fit:contain; }
 
-        /* ── WEAPON IMAGE CONTAINER ── */
-        .weapon-image-container {
-            margin-bottom: 1rem;
-            display: flex; justify-content: center;
-        }
-
-        .weapon-frame {
-            background: linear-gradient(135deg, #0d1117, #060809);
-            padding: 0.6rem 1.2rem;
-            border: 1px solid var(--wcat-c, var(--terminal-green));
-            box-shadow: 0 0 18px rgba(0,0,0,0.8),
-                        0 0 20px rgba(var(--wcat-rgb, 0,255,136), 0.15);
-            transition: 0.3s;
-            display: inline-flex; align-items: center; justify-content: center;
-            min-width: 220px; min-height: 100px; position: relative;
-        }
-
-        /* GIF/PNG placeholder when no image loads */
-        .weapon-frame.empty::before,
-        .variant-img-frame.empty::before {
-            content: '[ GIF / PNG ]';
-            font-size: 0.55rem; color: #1e1e1e;
-            letter-spacing: 0.2em; position: absolute;
-        }
-
-        .weapon-frame:hover {
-            transform: scale(1.03);
-            box-shadow: 0 0 35px rgba(var(--wcat-rgb, 0,255,136), 0.3);
-        }
-
-        .weapon-img {
-            max-width: 300px; height: auto; max-height: 130px;
-            display: block; object-fit: contain;
-        }
-
-        /* ── WEAPON NAME ── */
         .weapon-name {
-            font-family: 'VT323', monospace;
-            font-size: 2.4rem; font-weight: 400;
-            color: var(--white); line-height: 1;
-            letter-spacing: 4px; margin-bottom: 0.3rem;
-            text-shadow: 0 0 18px rgba(255,255,255,0.15);
+            font-family:'Bebas Neue','VT323',monospace;
+            font-size:2.8rem; font-weight:400; color:var(--white);
+            line-height:1; letter-spacing:5px; margin-bottom:.3rem;
+            text-shadow:0 0 18px rgba(255,255,255,.15);
         }
-        .weapon-name i {
-            color: var(--wcat-c, var(--terminal-green));
-            font-size: 0.62em; margin-right: 10px;
-            filter: drop-shadow(0 0 8px currentColor);
-        }
-        .weapon-slot-badge {
-            display: inline-block; vertical-align: middle; margin-left: 10px;
-            font-family: 'Share Tech Mono', monospace; font-size: 0.52rem;
-            color: var(--wcat-c, var(--terminal-green));
-            border: 1px solid var(--wcat-c, var(--terminal-green));
-            padding: 2px 8px; letter-spacing: 0.2em; opacity: 0.65;
-        }
+        .weapon-name i { color:var(--wcat-c,var(--terminal-green)); font-size:.62em; margin-right:10px; filter:drop-shadow(0 0 8px currentColor); }
+        .weapon-slot-badge { display:inline-block; vertical-align:middle; margin-left:10px; font-family:'Share Tech Mono',monospace; font-size:.52rem; color:var(--wcat-c,var(--terminal-green)); border:1px solid var(--wcat-c,var(--terminal-green)); padding:2px 8px; letter-spacing:.2em; opacity:.65; }
 
         /* ── VARIANT TOGGLE ── */
-        .variant-toggle {
-            display: flex; gap: 3px; margin-bottom: 1rem;
-            padding: 3px; background: #040507; border: 1px solid #151515;
-            width: fit-content;
-        }
-        .toggle-btn {
-            background: transparent; border: 1px solid transparent;
-            padding: 0.28rem 0.9rem;
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 0.6rem; cursor: pointer; color: #333;
-            letter-spacing: 0.12em; text-transform: uppercase; transition: 0.18s;
-        }
-        .toggle-btn:hover { color: #666; border-color: #2a2a2a; }
-        .toggle-btn.active {
-            background: rgba(0,255,136,0.08);
-            color: var(--terminal-green);
-            border-color: var(--terminal-green);
-            text-shadow: 0 0 6px var(--terminal-green);
-        }
-        .toggle-btn:last-child.active {
-            background: rgba(255,209,102,0.08);
-            color: var(--terminal-amber);
-            border-color: var(--terminal-amber);
-            text-shadow: 0 0 6px var(--terminal-amber);
-        }
+        .variant-toggle { display:flex; gap:3px; margin-bottom:1rem; padding:3px; background:#040507; border:1px solid #151515; width:fit-content; }
+        .toggle-btn { background:transparent; border:1px solid transparent; padding:.28rem .9rem; font-family:'Share Tech Mono',monospace; font-size:.6rem; cursor:pointer; color:#333; letter-spacing:.12em; text-transform:uppercase; transition:.18s; }
+        .toggle-btn:hover { color:#666; border-color:#2a2a2a; }
+        .toggle-btn.active { background:rgba(0,255,136,.08); color:var(--terminal-green); border-color:var(--terminal-green); text-shadow:0 0 6px var(--terminal-green); }
+        .toggle-btn:last-child.active { background:rgba(255,209,102,.08); color:var(--terminal-amber); border-color:var(--terminal-amber); text-shadow:0 0 6px var(--terminal-amber); }
 
         /* ── VARIANTS GRID ── */
-        .variants {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(265px, 1fr));
-            gap: 0.8rem; margin-top: 0.8rem;
-        }
+        .variants { display:grid; grid-template-columns:repeat(auto-fill,minmax(265px,1fr)); gap:.8rem; margin-top:.8rem; }
 
         /* ── VARIANT CARD ── */
-        .variant-card {
-            background: #050709; border: 1px solid #141414;
-            padding: 0.9rem 1rem; transition: 0.2s;
-            position: relative; overflow: hidden;
-        }
-        .variant-card::before {
-            content: ''; position: absolute; left: 0; top: 0;
-            width: 2px; height: 100%;
-            background: var(--wcat-c, var(--terminal-green));
-            opacity: 0.4; transition: 0.2s;
-        }
-        .variant-card:hover { border-color: var(--wcat-c, var(--terminal-green)); transform: translateX(4px); }
-        .variant-card:hover::before { opacity: 1; box-shadow: 0 0 8px var(--wcat-c, var(--terminal-green)); }
+        .variant-card { background:#050709; border:1px solid #141414; padding:.9rem 1rem; transition:.2s; position:relative; overflow:hidden; }
+        .variant-card::before { content:''; position:absolute; left:0; top:0; width:2px; height:100%; background:var(--wcat-c,var(--terminal-green)); opacity:.4; transition:.2s; }
+        .variant-card:hover { border-color:var(--wcat-c,var(--terminal-green)); transform:translateX(4px); }
+        .variant-card:hover::before { opacity:1; box-shadow:0 0 8px var(--wcat-c,var(--terminal-green)); }
 
-        /* ── VARIANT IMAGE FRAME (GIF / PNG placeholder) ── */
-        .variant-image { margin-bottom: 0.8rem; text-align: center; }
+        .variant-image { margin-bottom:.8rem; text-align:center; }
+        .variant-img-frame { display:inline-flex; align-items:center; justify-content:center; min-width:180px; min-height:68px; border:1px dashed rgba(255,255,255,.07); background:#030405; position:relative; padding:4px; transition:.2s; }
+        .variant-img-frame::before { content:'[ GIF / PNG ]'; font-family:'Share Tech Mono',monospace; font-size:.48rem; color:#191919; letter-spacing:.18em; position:absolute; }
+        .variant-img-frame:hover { border-color:rgba(255,255,255,.14); }
+        .variant-img { max-width:100%; max-height:72px; object-fit:contain; position:relative; z-index:1; }
 
-        .variant-img-frame {
-            display: inline-flex; align-items: center; justify-content: center;
-            min-width: 180px; min-height: 68px;
-            border: 1px dashed rgba(255,255,255,0.07);
-            background: #030405; position: relative; padding: 4px; transition: 0.2s;
-        }
-        .variant-img-frame::before {
-            content: '[ GIF / PNG ]'; font-family: 'Share Tech Mono', monospace;
-            font-size: 0.48rem; color: #191919; letter-spacing: 0.18em; position: absolute;
-        }
-        .variant-img-frame:hover { border-color: rgba(255,255,255,0.14); }
+        .variant-title { font-family:'Bebas Neue','VT323',monospace; font-size:1.5rem; color:var(--terminal-amber); margin-bottom:.2rem; letter-spacing:2px; line-height:1.2; }
+        .variant-title code { background:rgba(0,0,0,.55); padding:1px 6px; font-family:'Share Tech Mono',monospace; font-size:.75rem; color:var(--terminal-green); border:1px solid #1a3a2a; letter-spacing:.04em; }
 
-        .variant-img {
-            max-width: 100%; max-height: 72px; object-fit: contain;
-            position: relative; z-index: 1;
-        }
+        .color-badge { display:inline-block; vertical-align:middle; margin-left:7px; font-family:'Share Tech Mono',monospace; font-size:.48rem; padding:1px 6px; border:1px solid currentColor; letter-spacing:.14em; text-transform:uppercase; }
+        .badge-blue   { color:var(--blue); }
+        .badge-red    { color:var(--red); }
+        .badge-green  { color:var(--terminal-green); }
+        .badge-gold   { color:var(--gold); }
+        .badge-purple { color:var(--purple); }
 
-        /* ── VARIANT TITLE ── */
-        .variant-title {
-            font-family: 'VT323', monospace; font-size: 1.35rem;
-            color: var(--terminal-amber); margin-bottom: 0.2rem;
-            letter-spacing: 1px; line-height: 1.2;
-        }
-        .variant-title code {
-            background: rgba(0,0,0,0.55); padding: 1px 6px;
-            font-family: 'Share Tech Mono', monospace; font-size: 0.75rem;
-            color: var(--terminal-green); border: 1px solid #1a3a2a;
-            letter-spacing: 0.04em;
-        }
+        .variant-desc { font-size:.67rem; color:#5a5a5a; line-height:1.55; margin-top:.3rem; font-family:'Share Tech Mono',monospace; }
 
-        .color-badge {
-            display: inline-block; vertical-align: middle; margin-left: 7px;
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 0.48rem; padding: 1px 6px;
-            border: 1px solid currentColor; letter-spacing: 0.14em; text-transform: uppercase;
-        }
-        .badge-blue   { color: var(--blue); }
-        .badge-red    { color: var(--red); }
-        .badge-green  { color: var(--terminal-green); }
-        .badge-gold   { color: var(--gold); }
-        .badge-purple { color: var(--purple); }
+        .mini-bars { margin-top:.55rem; display:flex; flex-direction:column; gap:4px; }
+        .mbar-row  { display:flex; align-items:center; gap:6px; }
+        .mbar-lbl  { font-size:.49rem; color:#2e2e2e; width:68px; flex-shrink:0; letter-spacing:.08em; text-transform:uppercase; }
+        .mbar-track { flex:1; height:3px; background:#111; overflow:hidden; }
+        .mbar-fill  { height:100%; width:0; transition:width 1s ease; background:var(--wcat-c,var(--terminal-green)); box-shadow:0 0 5px var(--wcat-c,var(--terminal-green)); }
+        .mbar-val   { font-family:'Bebas Neue','VT323',monospace; font-size:.95rem; color:#2a2a2a; width:26px; text-align:right; }
 
-        /* ── VARIANT DESC ── */
-        .variant-desc {
-            font-size: 0.67rem; color: #5a5a5a; line-height: 1.55;
-            margin-top: 0.3rem; font-family: 'Share Tech Mono', monospace;
-        }
-
-        /* ── MINI STAT BARS ── */
-        .mini-bars { margin-top: 0.55rem; display: flex; flex-direction: column; gap: 4px; }
-        .mbar-row  { display: flex; align-items: center; gap: 6px; }
-        .mbar-lbl  { font-size: 0.49rem; color: #2e2e2e; width: 68px; flex-shrink: 0;
-                     letter-spacing: 0.08em; text-transform: uppercase; }
-        .mbar-track { flex: 1; height: 3px; background: #111; overflow: hidden; }
-        .mbar-fill {
-            height: 100%; width: 0; transition: width 1s ease;
-            background: var(--wcat-c, var(--terminal-green));
-            box-shadow: 0 0 5px var(--wcat-c, var(--terminal-green));
-        }
-        .mbar-val { font-family: 'VT323', monospace; font-size: 0.88rem; color: #2a2a2a; width: 26px; text-align: right; }
-
-        /* ── STAT LINE ── */
-        .stat-line {
-            font-size: 0.62rem; color: var(--terminal-green);
-            margin-top: 0.6rem; border-top: 1px solid #0f0f0f;
-            padding-top: 0.45rem; line-height: 1.55; opacity: 0.82;
-        }
-        .stat-line .sl-r  { color: var(--red); }
-        .stat-line .sl-a  { color: var(--terminal-amber); }
-        .stat-line .sl-b  { color: var(--blue); }
+        .stat-line { font-size:.62rem; color:var(--terminal-green); margin-top:.6rem; border-top:1px solid #0f0f0f; padding-top:.45rem; line-height:1.55; opacity:.82; }
+        .stat-line .sl-r { color:var(--red); }
+        .stat-line .sl-a { color:var(--terminal-amber); }
+        .stat-line .sl-b { color:var(--blue); }
 
         /* ── FOOTER ── */
-        .footer-term {
-            margin-top: 2rem; padding-top: 1rem;
-            border-top: 1px solid #111;
-            font-size: 0.6rem; color: #2a2a2a;
-            display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;
-            letter-spacing: 0.1em;
-        }
-        .footer-logo { font-family: 'VT323', monospace; font-size: 1.15rem; color: var(--red); text-shadow: 0 0 8px var(--red); }
+        .site-footer { border-top:2px solid #fff; padding:1rem 0; margin-top:2rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:.5rem; }
+        .footer-logo { font-family:'Bebas Neue','VT323',monospace; font-size:1.6rem; color:var(--red); text-shadow:0 0 8px var(--red); letter-spacing:.15em; }
+        .footer-text { font-size:.52rem; color:#2a2a2a; letter-spacing:.15em; text-transform:uppercase; }
+        .back-link-footer { font-family:'Bebas Neue','VT323',monospace; font-size:1.2rem; color:#fff; text-decoration:none; border:2px solid #555; padding:.4rem 1rem; letter-spacing:.1em; transition:.1s; }
+        .back-link-footer:hover { background:#fff; color:#000; border-color:#fff; }
 
-        /* ── ASCII ── */
-        .ascii-art {
-            font-family: 'Fira Code', monospace; font-size: 0.55rem;
-            color: #181818; text-align: center; margin-top: 1.5rem;
-            white-space: pre; line-height: 1.5;
-        }
+        .ascii-art { font-family:'Fira Code',monospace; font-size:.55rem; color:#181818; text-align:center; margin-top:1.5rem; white-space:pre; line-height:1.5; }
 
-        /* ── IMAGE GUIDE ── */
-        .image-guide {
-            background: #040507; border: 1px solid rgba(255,209,102,0.15);
-            border-left: 2px solid var(--terminal-amber);
-            padding: 0.9rem 1rem; margin-top: 1.5rem; font-size: 0.66rem;
-        }
-        .image-guide h4 {
-            font-family: 'VT323', monospace; font-size: 1.1rem;
-            color: var(--terminal-amber); margin-bottom: 0.45rem; letter-spacing: 0.1em;
-        }
-        .image-guide p  { color: #444; line-height: 1.6; }
-        .image-guide code { background: rgba(0,0,0,0.55); padding: 1px 5px; color: var(--terminal-green); font-size: 0.63rem; }
-
-        @media (max-width: 780px) {
-            .terminal-content { padding: 1rem; }
-            .boot-header h1   { font-size: 2.2rem; }
-            .weapon-name      { font-size: 1.8rem; }
-            .variants         { grid-template-columns: 1fr; }
+        @media(max-width:780px){
+            .page { padding:0 1rem 2rem; }
+            .logo-main { font-size:3.5rem; }
+            .weapon-name { font-size:2rem; }
+            .variants { grid-template-columns:1fr; }
+            .menu-nav { flex-direction:row; flex-wrap:wrap; }
+            .menu-nav-btn { flex:1; min-width:100px; font-size:1rem; padding:.6rem; }
         }
     </style>
 </head>
 <body>
 
-<canvas id="bg-canvas"></canvas>
+<div class="scanlines"></div>
 
-<div class="terminal">
+<div class="page">
 
-    <!-- ═══ TERMINAL BAR ═══ -->
-    <div class="terminal-bar">
-        <div class="terminal-title">
-            <div class="terminal-dots">
-                <div class="dot dot-red"></div>
-                <div class="dot dot-yellow"></div>
-                <div class="dot dot-green"></div>
+    <!-- ═══ HEADER ═══ -->
+    <div class="site-header">
+        <div class="header-inner">
+            <div class="logo-block">
+                <div class="logo-sys-line">// ARSENAL DATABASE // MODULE CATALOGUE // <span class="ok">ACTIVE</span> // V1 INITIALIZED</div>
+                <div class="logo-main"><span class="v1">V1</span> — АРСЕНАЛ</div>
+                <div class="logo-status-lines">
+                    <div class="lsl">SYSTEM <span class="ok">V1</span> INITIALIZED</div>
+                    <div class="lsl">ARSENAL — <span class="ok">LOADED</span> // 6 PRIMARY SYSTEMS</div>
+                    <div class="lsl">ENERGY IS FUEL. LOWER SECTOR IS FULL.<span class="cur"></span></div>
+                </div>
             </div>
-            <div class="terminal-path">
-                <i class="fas fa-terminal"></i> V1@LOWER-SECTOR:/arsenal/modules — DATABASE v2.1
+            <div class="menu-nav">
+                <a href="index.html" class="menu-nav-btn">◄ ГЛАВНАЯ</a>
+                <a href="layer.html" class="menu-nav-btn">СЕКТОРЫ</a>
+                <a href="bosses.html" class="menu-nav-btn">СУЩНОСТИ</a>
+                <a href="lore.html" class="menu-nav-btn">ЛОР</a>
             </div>
         </div>
-        <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> ВЕРНУТЬСЯ К ИНДЕКСУ</a>
     </div>
 
-    <!-- ═══ TICKER ═══ -->
+    <!-- TICKER -->
     <div class="ticker-wrap">
         <div class="ticker-inner">
             <span class="ti">// <span class="r">АРСЕНАЛ</span> // СЛОТОВ: 6 // <span class="g">МАНИПУЛЯТОР × 3</span> // ДАЛЬНОБОЙНЫЙ × 6 // ИМПУЛЬСНЫЙ × 3 // ГВОЗДЕВОЙ × 4 // РЕЛЬСОВЫЙ × 3 // РАКЕТНЫЙ × 2 //</span>
@@ -488,652 +258,374 @@
         </div>
     </div>
 
-    <div class="terminal-content">
+    <div class="divider"></div>
 
-        <!-- ═══ BOOT HEADER ═══ -->
-        <div class="boot-header">
-            <div class="logo-eyebrow">// СИСТЕМА БАЗЫ ДАННЫХ // АРСЕНАЛ V1 // ПОЛНЫЙ КАТАЛОГ</div>
-            <h1><i class="fas fa-microchip"></i> <span class="v1-accent">V1</span> — КАТАЛОГ АРСЕНАЛА<span class="blink-cursor"></span></h1>
-            <div class="boot-sub">
-                &gt; ДОСТУП К БАЗЕ ДАННЫХ // ТОПЛИВО КАК РЕСУРС // <span class="hl">6 ПЕРВИЧНЫХ СИСТЕМ + ВАРИАНТЫ</span><br>
-                &gt; СТАТУС: <span class="hlg">АКТИВЕН</span> // НИЖНИЙ УРОВЕНЬ // REV 2.1.0
-            </div>
+    <!-- ═══ BOOT HEADER ═══ -->
+    <div class="boot-header">
+        <div class="logo-eyebrow">// СИСТЕМА БАЗЫ ДАННЫХ // АРСЕНАЛ V1 // ПОЛНЫЙ КАТАЛОГ</div>
+        <h1><i class="fas fa-microchip"></i> <span class="v1-accent">V1</span> — КАТАЛОГ АРСЕНАЛА<span class="blink-cursor"></span></h1>
+        <div class="boot-sub">
+            &gt; ДОСТУП К БАЗЕ ДАННЫХ // ЭНЕРГИЯ КАК РЕСУРС // <span class="hl">6 ПЕРВИЧНЫХ СИСТЕМ + ВАРИАНТЫ</span><br>
+            &gt; СТАТУС: <span class="hlg">АКТИВЕН</span> // НИЖНИЙ УРОВЕНЬ // REV 2.1.0
         </div>
+    </div>
 
-        <!-- ═══ STATS ROW ═══ -->
-        <div class="stats-row">
-            <div class="stat-chip">СИСТЕМ ВСЕГО: <span class="sv" id="sc-total">0</span></div>
-            <div class="stat-chip">МАНИПУЛЯТОРОВ: <span class="sv sb">3</span></div>
-            <div class="stat-chip">ДАЛЬНОБОЙНЫХ: <span class="sv">6</span></div>
-            <div class="stat-chip">РЕЛЬСОВЫХ: <span class="sv sg">3</span></div>
-            <div class="stat-chip">РАКЕТНЫХ: <span class="sv">2</span></div>
-            <div class="stat-chip">РАНГ СТИЛЯ: <span class="sv sr" id="sc-rank">SSS</span></div>
-        </div>
+    <!-- ═══ STATS ROW ═══ -->
+    <div class="stats-row">
+        <div class="stat-chip">СИСТЕМ ВСЕГО: <span class="sv" id="sc-total">0</span></div>
+        <div class="stat-chip">МАНИПУЛЯТОРОВ: <span class="sv sb">3</span></div>
+        <div class="stat-chip">ДАЛЬНОБОЙНЫХ: <span class="sv">6</span></div>
+        <div class="stat-chip">РЕЛЬСОВЫХ: <span class="sv sg">3</span></div>
+        <div class="stat-chip">РАКЕТНЫХ: <span class="sv">2</span></div>
+        <div class="stat-chip">РАНГ СТИЛЯ: <span class="sv sr" id="sc-rank">SSS</span></div>
+    </div>
 
-        <!-- ═══ WEAPON GRID ═══ -->
-        <div class="weapon-grid">
+    <!-- ═══ WEAPON GRID ═══ -->
+    <div class="weapon-grid">
 
-            <!-- ══════════════ ARM / МАНИПУЛЯТОР ══════════════ -->
-            <div class="weapon-category" data-weapon="arms">
-                <div class="weapon-image-container">
-                    <div class="weapon-frame" id="arms-frame">
-                        <!-- ▸ Место для GIF/PNG: arms_main.gif -->
-                        <img src="armc.jpg" alt="Манипулятор" class="weapon-img"
-                             onerror="this.style.display='none'; this.parentElement.classList.add('empty')">
-                    </div>
-                </div>
-
-                <div class="weapon-name">
-                    <i class="fas fa-fist-raised"></i> МАНИПУЛЯТОР
-                    <span class="weapon-slot-badge">СЛОТ 0</span>
-                </div>
-                <div class="redline"></div>
-
-                <div class="variant-toggle">
-                    <button class="toggle-btn active" data-variant="standard">СТАНДАРТ</button>
-                    <button class="toggle-btn" data-variant="alternate">АЛЬТЕРНАТИВА</button>
-                </div>
-
-                <!-- STANDARD -->
-                <div class="variants-container standard-variants">
-                    <div class="variants">
-
-                        <div class="variant-card">
-                            <div class="variant-image">
-                                <div class="variant-img-frame">
-                                    <!-- ▸ feedbacker.png -->
-                                    <img src="armp.jpg" alt="Feedbacker" class="variant-img" onerror="this.style.display='none'">
-                                </div>
-                            </div>
-                            <div class="variant-title"><code>Feedbacker</code><span class="color-badge badge-blue">СИНИЙ</span></div>
-                            <div class="variant-desc">Базовый манипулятор. Парирует входящие импульсы, отражая их обратно к источнику. При контакте с объектами восстанавливает топливный ресурс V1.</div>
-                            <div class="mini-bars">
-                                <div class="mbar-row"><span class="mbar-lbl">ВОЗДЕЙСТВИЕ</span><div class="mbar-track"><div class="mbar-fill" data-val="65"></div></div><span class="mbar-val">65</span></div>
-                                <div class="mbar-row"><span class="mbar-lbl">СКОРОСТЬ</span><div class="mbar-track"><div class="mbar-fill" data-val="95"></div></div><span class="mbar-val">95</span></div>
-                                <div class="mbar-row"><span class="mbar-lbl">УТИЛИТА</span><div class="mbar-track"><div class="mbar-fill" data-val="100"></div></div><span class="mbar-val">100</span></div>
-                            </div>
-                            <div class="stat-line">🛡️ Парирование: <span class="sl-a">6 кадров</span> | ✨ Восстановление ресурса | <span class="sl-b">Ключевой инструмент</span></div>
-                        </div>
-
-                        <div class="variant-card">
-                            <div class="variant-image">
-                                <div class="variant-img-frame">
-                                    <!-- ▸ knuckleblaster.png -->
-                                    <img src="armk.jpg" alt="Knuckleblaster" class="variant-img" onerror="this.style.display='none'">
-                                </div>
-                            </div>
-                            <div class="variant-title"><code>Knuckleblaster</code><span class="color-badge badge-red">КРАСНЫЙ</span></div>
-                            <div class="variant-desc">Детонирующий манипулятор. Генерирует ударную волну в конусе. Нейтрализует импульсы без отражения, не восстанавливает ресурс. Максимальное воздействие в ближней зоне.</div>
-                            <div class="mini-bars">
-                                <div class="mbar-row"><span class="mbar-lbl">ВОЗДЕЙСТВИЕ</span><div class="mbar-track"><div class="mbar-fill" data-val="100"></div></div><span class="mbar-val">100</span></div>
-                                <div class="mbar-row"><span class="mbar-lbl">СКОРОСТЬ</span><div class="mbar-track"><div class="mbar-fill" data-val="80"></div></div><span class="mbar-val">80</span></div>
-                                <div class="mbar-row"><span class="mbar-lbl">ДАЛЬНОСТЬ</span><div class="mbar-track"><div class="mbar-fill" data-val="35"></div></div><span class="mbar-val">35</span></div>
-                            </div>
-                            <div class="stat-line">💥 Ударная волна: <span class="sl-r">радиус 4м</span> | ⚠️ Ресурс не восстанавливает | <span class="sl-a">Разрушает щиты</span></div>
-                        </div>
-
-                    </div>
-                </div>
-
-                <!-- ALTERNATE -->
-                <div class="variants-container alternate-variants" style="display:none;">
-                    <div class="variants">
-
-                        <div class="variant-card">
-                            <div class="variant-image">
-                                <div class="variant-img-frame">
-                                    <!-- ▸ whiplash.png -->
-                                    <img src="armh.jpg" alt="Whiplash" class="variant-img" onerror="this.style.display='none'">
-                                </div>
-                            </div>
-                            <div class="variant-title"><code>Whiplash</code><span class="color-badge badge-green">ЗЕЛЁНЫЙ</span></div>
-                            <div class="variant-desc">Захватывающий манипулятор. Притягивает объекты к V1 или перебрасывает V1 к точке захвата. Ключевой инструмент воздушного маневрирования и комбинаций.</div>
-                            <div class="mini-bars">
-                                <div class="mbar-row"><span class="mbar-lbl">ВОЗДЕЙСТВИЕ</span><div class="mbar-track"><div class="mbar-fill" data-val="45"></div></div><span class="mbar-val">45</span></div>
-                                <div class="mbar-row"><span class="mbar-lbl">СКОРОСТЬ</span><div class="mbar-track"><div class="mbar-fill" data-val="100"></div></div><span class="mbar-val">100</span></div>
-                                <div class="mbar-row"><span class="mbar-lbl">ДАЛЬНОСТЬ</span><div class="mbar-track"><div class="mbar-fill" data-val="90"></div></div><span class="mbar-val">90</span></div>
-                            </div>
-                            <div class="stat-line">🪝 Захват: <span class="sl-b">притяжение / перемещение</span> | ✈️ Воздушные серии | <span class="sl-a">Подбрасывание целей</span></div>
-                        </div>
-
-                    </div>
+        <!-- ══ ARM / МАНИПУЛЯТОР ══ -->
+        <div class="weapon-category" data-weapon="arms">
+            <div class="weapon-image-container">
+                <div class="weapon-frame">
+                    <img src="armc.jpg" alt="Манипулятор" class="weapon-img" onerror="this.style.display='none';this.parentElement.classList.add('empty')">
                 </div>
             </div>
-
-            <!-- ══════════════ REVOLVER / ДАЛЬНОБОЙНЫЙ ══════════════ -->
-            <div class="weapon-category" data-weapon="revolver">
-                <div class="weapon-image-container">
-                    <div class="weapon-frame">
-                        <!-- ▸ Class_revolver.jpg / revolver_main.gif -->
-                        <img src="Class_revolver.jpg" alt="Дальнобойный" class="weapon-img"
-                             onerror="this.style.display='none'; this.parentElement.classList.add('empty')">
-                    </div>
-                </div>
-
-                <div class="weapon-name">
-                    <i class="fas fa-crosshairs"></i> ДАЛЬНОБОЙНЫЙ
-                    <span class="weapon-slot-badge">СЛОТ 1</span>
-                </div>
-                <div class="redline"></div>
-
-                <div class="variant-toggle">
-                    <button class="toggle-btn active" data-variant="standard">СТАНДАРТ</button>
-                    <button class="toggle-btn" data-variant="alternate">АЛЬТЕРНАТИВА (SLAB)</button>
-                </div>
-
-                <div class="variants-container standard-variants">
-                    <div class="variants">
-
-                        <div class="variant-card">
-                            <div class="variant-image">
-                                <div class="variant-img-frame">
-                                    <!-- ▸ piercer.png / SingleRevolver.jpg -->
-                                    <img src="SingleRevolver.jpg" alt="Piercer" class="variant-img" onerror="this.style.display='none'">
-                                </div>
-                            </div>
-                            <div class="variant-title"><code>Piercer</code><span class="color-badge badge-blue">СИНИЙ</span></div>
-                            <div class="variant-desc">Прокалывающий импульс сквозь несколько объектов по одной линии. Монеты используются как ретрансляторы — рикошет к ближайшей цели.</div>
-                            <div class="mini-bars">
-                                <div class="mbar-row"><span class="mbar-lbl">ВОЗДЕЙСТВИЕ</span><div class="mbar-track"><div class="mbar-fill" data-val="80"></div></div><span class="mbar-val">80</span></div>
-                                <div class="mbar-row"><span class="mbar-lbl">ДАЛЬНОСТЬ</span><div class="mbar-track"><div class="mbar-fill" data-val="100"></div></div><span class="mbar-val">100</span></div>
-                            </div>
-                            <div class="stat-line">🪙 Монета → <span class="sl-a">ближайшая цель</span> | 🔵 Прокалывание по линии</div>
-                        </div>
-
-                        <div class="variant-card">
-                            <div class="variant-image">
-                                <div class="variant-img-frame">
-                                    <!-- ▸ marksman.png / RevolverSpecial.jpg -->
-                                    <img src="RevolverSpecial.jpg" alt="Marksman" class="variant-img" onerror="this.style.display='none'">
-                                </div>
-                            </div>
-                            <div class="variant-title"><code>Marksman</code><span class="color-badge badge-green">ЗЕЛЁНЫЙ</span></div>
-                            <div class="variant-desc">Закрученный импульс рикошетит через все монеты в поле зрения подряд. Максимально эффективен при множественном размещении монет.</div>
-                            <div class="mini-bars">
-                                <div class="mbar-row"><span class="mbar-lbl">ВОЗДЕЙСТВИЕ</span><div class="mbar-track"><div class="mbar-fill" data-val="85"></div></div><span class="mbar-val">85</span></div>
-                                <div class="mbar-row"><span class="mbar-lbl">УТИЛИТА</span><div class="mbar-track"><div class="mbar-fill" data-val="90"></div></div><span class="mbar-val">90</span></div>
-                            </div>
-                            <div class="stat-line">🪙 Монета: <span class="sl-r">все монеты разом</span> | 🌀 Многоцелевое воздействие</div>
-                        </div>
-
-                        <div class="variant-card">
-                            <div class="variant-image">
-                                <div class="variant-img-frame">
-                                    <!-- ▸ sharpshooter.png -->
-                                    <img src="RevolverSharp.jpg" alt="Sharpshooter" class="variant-img" onerror="this.style.display='none'">
-                                </div>
-                            </div>
-                            <div class="variant-title"><code>Sharpshooter</code><span class="color-badge badge-red">КРАСНЫЙ</span></div>
-                            <div class="variant-desc">Система накопления заряда. Удержание концентрирует энергию — полный заряд выдаёт критическое воздействие. Для приоритетных целей.</div>
-                            <div class="mini-bars">
-                                <div class="mbar-row"><span class="mbar-lbl">ВОЗДЕЙСТВИЕ</span><div class="mbar-track"><div class="mbar-fill" data-val="100"></div></div><span class="mbar-val">100</span></div>
-                                <div class="mbar-row"><span class="mbar-lbl">СКОРОСТЬ</span><div class="mbar-track"><div class="mbar-fill" data-val="60"></div></div><span class="mbar-val">60</span></div>
-                            </div>
-                            <div class="stat-line">⚡ Накопитель: <span class="sl-a">3 уровня</span> | 💀 Полный заряд = <span class="sl-r">критическое воздействие</span></div>
-                        </div>
-
-                    </div>
-                </div>
-
-                <!-- ALTERNATE — SLAB -->
-                <div class="variants-container alternate-variants" style="display:none;">
-                    <div class="variants">
-
-                        <div class="variant-card">
-                            <div class="variant-image">
-                                <div class="variant-img-frame">
-                                    <!-- ▸ slab_piercer.png / RevolverAltSingle.jpg -->
-                                    <img src="RevolverAltSingle.jpg" alt="Slab Piercer" class="variant-img" onerror="this.style.display='none'">
-                                </div>
-                            </div>
-                            <div class="variant-title"><code>Slab Piercer</code><span class="color-badge badge-blue">АЛТ-СИНИЙ</span></div>
-                            <div class="variant-desc">Утяжелённая версия Piercer. Медленная перезарядка, но кратно повышенное воздействие. Пробивает несколько объектов по линии без ограничений.</div>
-                            <div class="stat-line">💥 Воздействие: <span class="sl-r">×4</span> | 🕒 Замедленная перезарядка | 🔵 Линейное пробивание</div>
-                        </div>
-
-                        <div class="variant-card">
-                            <div class="variant-image">
-                                <div class="variant-img-frame">
-                                    <!-- ▸ slab_marksman.png / RevolverAltSpecial.jpg -->
-                                    <img src="RevolverAltSpecial.jpg" alt="Slab Marksman" class="variant-img" onerror="this.style.display='none'">
-                                </div>
-                            </div>
-                            <div class="variant-title"><code>Slab Marksman</code><span class="color-badge badge-green">АЛТ-ЗЕЛЁНЫЙ</span></div>
-                            <div class="variant-desc">Утяжелённая монета. Медленнее, но рикошет наносит значительно большее воздействие. Каждый рикошет от монеты дополнительно усиливается.</div>
-                            <div class="stat-line">🪙 Критическое воздействие: <span class="sl-r">×3</span> | 💀 Монета-усилитель</div>
-                        </div>
-
-                        <div class="variant-card">
-                            <div class="variant-image">
-                                <div class="variant-img-frame">
-                                    <!-- ▸ slab_sharpshooter.png -->
-                                    <img src="RevolverAltSharp.jpg" alt="Slab Sharpshooter" class="variant-img" onerror="this.style.display='none'">
-                                </div>
-                            </div>
-                            <div class="variant-title"><code>Slab Sharpshooter</code><span class="color-badge badge-red">АЛТ-КРАСНЫЙ</span></div>
-                            <div class="variant-desc">Утяжелённый накопительный вариант. Максимальный заряд наносит разрушительное воздействие. Совместим с монетным рикошетом.</div>
-                            <div class="stat-line">⚡ Максимум: <span class="sl-r">наивысшее воздействие</span> | 🪙 Совместим с монетой</div>
-                        </div>
-
-                    </div>
-                </div>
+            <div class="weapon-name"><i class="fas fa-fist-raised"></i> МАНИПУЛЯТОР <span class="weapon-slot-badge">СЛОТ 0</span></div>
+            <div class="redline"></div>
+            <div class="variant-toggle">
+                <button class="toggle-btn active" data-variant="standard">СТАНДАРТ</button>
+                <button class="toggle-btn" data-variant="alternate">АЛЬТЕРНАТИВА</button>
             </div>
-
-            <!-- ══════════════ SHOTGUN / ИМПУЛЬСНЫЙ ══════════════ -->
-            <div class="weapon-category" data-weapon="shotgun">
-                <div class="weapon-image-container">
-                    <div class="weapon-frame">
-                        <!-- ▸ sg1.jpg / shotgun_main.gif -->
-                        <img src="sg1.jpg" alt="Импульсный" class="weapon-img"
-                             onerror="this.style.display='none'; this.parentElement.classList.add('empty')">
-                    </div>
-                </div>
-
-                <div class="weapon-name">
-                    <i class="fas fa-fire"></i> ИМПУЛЬСНЫЙ
-                    <span class="weapon-slot-badge">СЛОТ 2</span>
-                </div>
-                <div class="redline"></div>
-
-                <div class="variant-toggle">
-                    <button class="toggle-btn active" data-variant="standard">СТАНДАРТ</button>
-                    <button class="toggle-btn" data-variant="alternate">АЛЬТЕРНАТИВА</button>
-                </div>
-
-                <div class="variants-container standard-variants">
-                    <div class="variants">
-
-                        <div class="variant-card">
-                            <div class="variant-image">
-                                <div class="variant-img-frame">
-                                    <!-- ▸ sg2.jpg -->
-                                    <img src="sg2.jpg" alt="Core Eject" class="variant-img" onerror="this.style.display='none'">
-                                </div>
-                            </div>
-                            <div class="variant-title"><code>Core Eject</code><span class="color-badge badge-blue">СИНИЙ</span></div>
-                            <div class="variant-desc">Первичная активация — широкий конус. Вторичная — выброс теплового ядра, детонирующего при воздействии любого импульса. Основа большинства комбинаций.</div>
-                            <div class="mini-bars">
-                                <div class="mbar-row"><span class="mbar-lbl">ВОЗДЕЙСТВИЕ</span><div class="mbar-track"><div class="mbar-fill" data-val="85"></div></div><span class="mbar-val">85</span></div>
-                                <div class="mbar-row"><span class="mbar-lbl">УТИЛИТА</span><div class="mbar-track"><div class="mbar-fill" data-val="90"></div></div><span class="mbar-val">90</span></div>
-                            </div>
-                            <div class="stat-line">🔥 Тепловое ядро: <span class="sl-r">детонация от импульса</span> | 💣 Радиус: 8м | <span class="sl-b">Платформа для манёвра</span></div>
-                        </div>
-
-                        <div class="variant-card">
-                            <div class="variant-image">
-                                <div class="variant-img-frame">
-                                    <!-- ▸ sg3.jpg -->
-                                    <img src="sg3.jpg" alt="Pump Charge" class="variant-img" onerror="this.style.display='none'">
-                                </div>
-                            </div>
-                            <div class="variant-title"><code>Pump Charge</code><span class="color-badge badge-green">ЗЕЛЁНЫЙ</span></div>
-                            <div class="variant-desc">Система накачки мощности до 3 стадий. Накопление сохраняется при переключении модулей. Полная накачка — концентрированный критический залп.</div>
-                            <div class="mini-bars">
-                                <div class="mbar-row"><span class="mbar-lbl">ВОЗДЕЙСТВИЕ</span><div class="mbar-track"><div class="mbar-fill" data-val="95"></div></div><span class="mbar-val">95</span></div>
-                                <div class="mbar-row"><span class="mbar-lbl">КОНЦЕНТРАЦИЯ</span><div class="mbar-track"><div class="mbar-fill" data-val="88"></div></div><span class="mbar-val">88</span></div>
-                            </div>
-                            <div class="stat-line">⚡ Накачка: <span class="sl-a">3 стадии</span> | 💪 Макс. воздействие: <span class="sl-r">×10</span> | ⚠️ Перезаряд = воздействие на оператора</div>
-                        </div>
-
-                    </div>
-                </div>
-
-                <div class="variants-container alternate-variants" style="display:none;">
-                    <div class="variants">
-
-                        <div class="variant-card">
-                            <div class="variant-image">
-                                <div class="variant-img-frame">
-                                    <!-- ▸ jackhammer.png / sg4.jpg -->
-                                    <img src="sg4.jpg" alt="Jackhammer" class="variant-img" onerror="this.style.display='none'">
-                                </div>
-                            </div>
-                            <div class="variant-title"><code>Jackhammer</code><span class="color-badge badge-blue">АЛТ-СИНИЙ</span></div>
-                            <div class="variant-desc">Полностью автоматический импульсный модуль с высокой частотой активации. Отдача используется как ускоритель перемещения — уникальная мобильная механика.</div>
-                            <div class="mini-bars">
-                                <div class="mbar-row"><span class="mbar-lbl">СКОРОСТЬ</span><div class="mbar-track"><div class="mbar-fill" data-val="92"></div></div><span class="mbar-val">92</span></div>
-                                <div class="mbar-row"><span class="mbar-lbl">МОБИЛЬНОСТЬ</span><div class="mbar-track"><div class="mbar-fill" data-val="95"></div></div><span class="mbar-val">95</span></div>
-                            </div>
-                            <div class="stat-line">🏃 Мобильность: <span class="sl-b">отдача = ускорение</span> | 🔄 Высокая частота активации</div>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-
-            <!-- ══════════════ NAILGUN / ГВОЗДЕВОЙ ══════════════ -->
-            <div class="weapon-category" data-weapon="nailgun">
-                <div class="weapon-image-container">
-                    <div class="weapon-frame">
-                        <!-- ▸ nailgun_main.png / 1000045244.jpg -->
-                        <img src="NailC.jpg" alt="Гвоздевой" class="weapon-img"
-                             onerror="this.style.display='none'; this.parentElement.classList.add('empty')">
-                    </div>
-                </div>
-
-                <div class="weapon-name">
-                    <i class="fas fa-grip-lines-vertical"></i> ГВОЗДЕВОЙ
-                    <span class="weapon-slot-badge">СЛОТ 3</span>
-                </div>
-                <div class="redline"></div>
-
-                <div class="variant-toggle">
-                    <button class="toggle-btn active" data-variant="standard">СТАНДАРТ</button>
-                    <button class="toggle-btn" data-variant="alternate">АЛЬТЕРНАТИВА</button>
-                </div>
-
-                <div class="variants-container standard-variants">
-                    <div class="variants">
-
-                        <div class="variant-card">
-                            <div class="variant-image">
-                                <div class="variant-img-frame">
-                                    <!-- ▸ attractor.png -->
-                                    <img src="NailB.jpg" alt="Attractor" class="variant-img" onerror="this.style.display='none'">
-                                </div>
-                            </div>
-                            <div class="variant-title"><code>Attractor</code><span class="color-badge badge-blue">СИНИЙ</span></div>
-                            <div class="variant-desc">Базовый гвоздевой с магнитной системой. Магнитный гвоздь-ретранслятор концентрирует весь поток на маркированной цели. Высокая скорострельность.</div>
-                            <div class="mini-bars">
-                                <div class="mbar-row"><span class="mbar-lbl">СКОРОСТЬ</span><div class="mbar-track"><div class="mbar-fill" data-val="100"></div></div><span class="mbar-val">100</span></div>
-                                <div class="mbar-row"><span class="mbar-lbl">УТИЛИТА</span><div class="mbar-track"><div class="mbar-fill" data-val="95"></div></div><span class="mbar-val">95</span></div>
-                            </div>
-                            <div class="stat-line">🧲 Магнит: <span class="sl-b">радиус 6м</span> | 📍 Концентрация потока | <span class="sl-a">Два магнита = двойной поток</span></div>
-                        </div>
-
-                        <div class="variant-card">
-                            <div class="variant-image">
-                                <div class="variant-img-frame">
-                                    <!-- ▸ overheat.png -->
-                                    <img src="NailE.jpg" alt="Overheat" class="variant-img" onerror="this.style.display='none'">
-                                </div>
-                            </div>
-                            <div class="variant-title"><code>Overheat</code><span class="color-badge badge-red">КРАСНЫЙ</span></div>
-                            <div class="variant-desc">Термический гвоздевой. Перегрев системы автоматически запускает гвозди высокого воздействия. Принудительный выброс диска — вторичная активация.</div>
-                            <div class="mini-bars">
-                                <div class="mbar-row"><span class="mbar-lbl">ВОЗДЕЙСТВИЕ</span><div class="mbar-track"><div class="mbar-fill" data-val="88"></div></div><span class="mbar-val">88</span></div>
-                                <div class="mbar-row"><span class="mbar-lbl">СКОРОСТЬ</span><div class="mbar-track"><div class="mbar-fill" data-val="90"></div></div><span class="mbar-val">90</span></div>
-                            </div>
-                            <div class="stat-line">🔥 Перегрев → <span class="sl-r">взрывной диск</span> | 🔄 Диски отражаемы манипулятором</div>
-                        </div>
-
-                        <div class="variant-card">
-                            <div class="variant-image">
-                                <div class="variant-img-frame">
-                                    <!-- ▸ jumpstart.png -->
-                                    <img src="NailG.jpg" alt="Jumpstart" class="variant-img" onerror="this.style.display='none'">
-                                </div>
-                            </div>
-                            <div class="variant-title"><code>Jumpstart</code><span class="color-badge badge-green">ЗЕЛЁНЫЙ</span></div>
-                            <div class="variant-desc">Версия с ускоренным стартом. Первые секунды после начала активации дают пиковую скорострельность. Синергия с магнитным гвоздём Attractor.</div>
-                            <div class="mini-bars">
-                                <div class="mbar-row"><span class="mbar-lbl">ПИКОВАЯ СКОРОСТЬ</span><div class="mbar-track"><div class="mbar-fill" data-val="100"></div></div><span class="mbar-val">100</span></div>
-                                <div class="mbar-row"><span class="mbar-lbl">УТИЛИТА</span><div class="mbar-track"><div class="mbar-fill" data-val="85"></div></div><span class="mbar-val">85</span></div>
-                            </div>
-                            <div class="stat-line">⚡ Начальный пик: <span class="sl-a">максимальная скорострельность</span> | 🧲 Синергия с Attractor</div>
-                        </div>
-
-                    </div>
-                </div>
-
-                <div class="variants-container alternate-variants" style="display:none;">
-                    <div class="variants">
-
-                        <div class="variant-card">
-                            <div class="variant-image">
-                                <div class="variant-img-frame">
-                                    <!-- ▸ sawblade.png -->
-                                    <img src="NailAlter.jpg" alt="Sawblade Launcher" class="variant-img" onerror="this.style.display='none'">
-                                </div>
-                            </div>
-                            <div class="variant-title"><code>Sawblade Launcher</code><span class="color-badge badge-blue">АЛТ-СИНИЙ</span></div>
-                            <div class="variant-desc">Запускает циркулярные диски. Рикошетят от поверхностей до 5 раз, нанося многократное воздействие. Совместим с магнитным гвоздём для концентрации дисков.</div>
-                            <div class="stat-line">🔄 Рикошет: <span class="sl-b">до 5 раз</span> | ⚙️ Магнитное притяжение | <span class="sl-a">Многократное воздействие</span></div>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-
-            <!-- ══════════════ RAILCANNON / РЕЛЬСОВЫЙ ══════════════ -->
-            <div class="weapon-category" data-weapon="railcannon">
-                <div class="weapon-image-container">
-                    <div class="weapon-frame">
-                        <!-- ▸ railcannon_main.gif -->
-                        <img src="RelsaC.jpg" alt="Рельсовый" class="weapon-img"
-                             onerror="this.style.display='none'; this.parentElement.classList.add('empty')">
-                    </div>
-                </div>
-
-                <div class="weapon-name">
-                    <i class="fas fa-bolt"></i> РЕЛЬСОВЫЙ
-                    <span class="weapon-slot-badge">СЛОТ 4</span>
-                </div>
-                <div class="redline"></div>
-
-                <!-- Railcannon has 3 variants — no std/alt toggle, just show all -->
+            <div class="variants-container standard-variants">
                 <div class="variants">
-
                     <div class="variant-card">
-                        <div class="variant-image">
-                            <div class="variant-img-frame">
-                                <!-- ▸ electric_rail.png -->
-                                <img src="RelsaB.jpg" alt="Electric" class="variant-img" onerror="this.style.display='none'">
-                            </div>
+                        <div class="variant-image"><div class="variant-img-frame"><img src="armp.jpg" alt="Feedbacker" class="variant-img" onerror="this.style.display='none'"></div></div>
+                        <div class="variant-title"><code>Feedbacker</code><span class="color-badge badge-blue">СИНИЙ</span></div>
+                        <div class="variant-desc">Базовый манипулятор. Парирует входящие импульсы, отражая их обратно к источнику. При контакте с объектами восстанавливает энергетический ресурс V1.</div>
+                        <div class="mini-bars">
+                            <div class="mbar-row"><span class="mbar-lbl">ВОЗДЕЙСТВИЕ</span><div class="mbar-track"><div class="mbar-fill" data-val="65"></div></div><span class="mbar-val">65</span></div>
+                            <div class="mbar-row"><span class="mbar-lbl">СКОРОСТЬ</span><div class="mbar-track"><div class="mbar-fill" data-val="95"></div></div><span class="mbar-val">95</span></div>
+                            <div class="mbar-row"><span class="mbar-lbl">УТИЛИТА</span><div class="mbar-track"><div class="mbar-fill" data-val="100"></div></div><span class="mbar-val">100</span></div>
                         </div>
-                        <div class="variant-title"><code>Electric</code><span class="color-badge badge-blue">СИНИЙ</span></div>
-                        <div class="variant-desc">Мгновенный электрический импульс нейтрализует большинство объектов с одной активации. Цепная реакция перескакивает между целями.</div>
+                        <div class="stat-line">🛡️ Парирование: <span class="sl-a">6 кадров</span> | ✨ Восстановление ресурса | <span class="sl-b">Ключевой инструмент</span></div>
+                    </div>
+                    <div class="variant-card">
+                        <div class="variant-image"><div class="variant-img-frame"><img src="armk.jpg" alt="Knuckleblaster" class="variant-img" onerror="this.style.display='none'"></div></div>
+                        <div class="variant-title"><code>Knuckleblaster</code><span class="color-badge badge-red">КРАСНЫЙ</span></div>
+                        <div class="variant-desc">Детонирующий манипулятор. Генерирует ударную волну в конусе. Нейтрализует импульсы без отражения, ресурс не восстанавливает. Максимальное воздействие в ближней зоне.</div>
                         <div class="mini-bars">
                             <div class="mbar-row"><span class="mbar-lbl">ВОЗДЕЙСТВИЕ</span><div class="mbar-track"><div class="mbar-fill" data-val="100"></div></div><span class="mbar-val">100</span></div>
-                            <div class="mbar-row"><span class="mbar-lbl">ПЕРЕЗАРЯДКА</span><div class="mbar-track"><div class="mbar-fill" data-val="45"></div></div><span class="mbar-val">45</span></div>
+                            <div class="mbar-row"><span class="mbar-lbl">СКОРОСТЬ</span><div class="mbar-track"><div class="mbar-fill" data-val="80"></div></div><span class="mbar-val">80</span></div>
+                            <div class="mbar-row"><span class="mbar-lbl">ДАЛЬНОСТЬ</span><div class="mbar-track"><div class="mbar-fill" data-val="35"></div></div><span class="mbar-val">35</span></div>
                         </div>
-                        <div class="stat-line">⚡ Перескок: <span class="sl-b">до 5 целей</span> | 🕒 Медленная перезарядка | 💀 Нейтрализует большинство объектов</div>
+                        <div class="stat-line">💥 Ударная волна: <span class="sl-r">радиус 4м</span> | ⚠️ Ресурс не восстанавливает | <span class="sl-a">Разрушает щиты</span></div>
                     </div>
-
+                </div>
+            </div>
+            <div class="variants-container alternate-variants" style="display:none;">
+                <div class="variants">
                     <div class="variant-card">
-                        <div class="variant-image">
-                            <div class="variant-img-frame">
-                                <!-- ▸ screwdriver_rail.png -->
-                                <img src="RelsaD.jpg" alt="Screwdriver" class="variant-img" onerror="this.style.display='none'">
-                            </div>
+                        <div class="variant-image"><div class="variant-img-frame"><img src="armh.jpg" alt="Whiplash" class="variant-img" onerror="this.style.display='none'"></div></div>
+                        <div class="variant-title"><code>Whiplash</code><span class="color-badge badge-green">ЗЕЛЁНЫЙ</span></div>
+                        <div class="variant-desc">Захватывающий манипулятор. Притягивает объекты к V1 или перебрасывает V1 к точке захвата. Ключевой инструмент воздушного маневрирования и построения комбинаций.</div>
+                        <div class="mini-bars">
+                            <div class="mbar-row"><span class="mbar-lbl">ВОЗДЕЙСТВИЕ</span><div class="mbar-track"><div class="mbar-fill" data-val="45"></div></div><span class="mbar-val">45</span></div>
+                            <div class="mbar-row"><span class="mbar-lbl">СКОРОСТЬ</span><div class="mbar-track"><div class="mbar-fill" data-val="100"></div></div><span class="mbar-val">100</span></div>
+                            <div class="mbar-row"><span class="mbar-lbl">ДАЛЬНОСТЬ</span><div class="mbar-track"><div class="mbar-fill" data-val="90"></div></div><span class="mbar-val">90</span></div>
                         </div>
-                        <div class="variant-title"><code>Screwdriver</code><span class="color-badge badge-green">ЗЕЛЁНЫЙ</span></div>
-                        <div class="variant-desc">Вращающаяся проекция пронизывает несколько объектов по линии. Задерживается внутри цели, продолжая непрерывное воздействие. Парирование = мгновенный эффект.</div>
+                        <div class="stat-line">🪝 Захват: <span class="sl-b">притяжение / перемещение</span> | ✈️ Воздушные серии | <span class="sl-a">Подбрасывание целей</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══ REVOLVER / ДАЛЬНОБОЙНЫЙ ══ -->
+        <div class="weapon-category" data-weapon="revolver">
+            <div class="weapon-image-container">
+                <div class="weapon-frame">
+                    <img src="Class_revolver.jpg" alt="Дальнобойный" class="weapon-img" onerror="this.style.display='none';this.parentElement.classList.add('empty')">
+                </div>
+            </div>
+            <div class="weapon-name"><i class="fas fa-crosshairs"></i> ДАЛЬНОБОЙНЫЙ <span class="weapon-slot-badge">СЛОТ 1</span></div>
+            <div class="redline"></div>
+            <div class="variant-toggle">
+                <button class="toggle-btn active" data-variant="standard">СТАНДАРТ</button>
+                <button class="toggle-btn" data-variant="alternate">АЛЬТЕРНАТИВА (SLAB)</button>
+            </div>
+            <div class="variants-container standard-variants">
+                <div class="variants">
+                    <div class="variant-card">
+                        <div class="variant-image"><div class="variant-img-frame"><img src="SingleRevolver.jpg" alt="Piercer" class="variant-img" onerror="this.style.display='none'"></div></div>
+                        <div class="variant-title"><code>Piercer</code><span class="color-badge badge-blue">СИНИЙ</span></div>
+                        <div class="variant-desc">Прокалывающий импульс сквозь несколько объектов по одной линии. Монеты используются как ретрансляторы — рикошет к ближайшей цели.</div>
+                        <div class="mini-bars">
+                            <div class="mbar-row"><span class="mbar-lbl">ВОЗДЕЙСТВИЕ</span><div class="mbar-track"><div class="mbar-fill" data-val="80"></div></div><span class="mbar-val">80</span></div>
+                            <div class="mbar-row"><span class="mbar-lbl">ДАЛЬНОСТЬ</span><div class="mbar-track"><div class="mbar-fill" data-val="100"></div></div><span class="mbar-val">100</span></div>
+                        </div>
+                        <div class="stat-line">🪙 Монета → <span class="sl-a">ближайшая цель</span> | 🔵 Прокалывание по линии</div>
+                    </div>
+                    <div class="variant-card">
+                        <div class="variant-image"><div class="variant-img-frame"><img src="RevolverSpecial.jpg" alt="Marksman" class="variant-img" onerror="this.style.display='none'"></div></div>
+                        <div class="variant-title"><code>Marksman</code><span class="color-badge badge-green">ЗЕЛЁНЫЙ</span></div>
+                        <div class="variant-desc">Закрученный импульс рикошетит через все монеты в поле зрения последовательно. Максимально эффективен при множественном размещении монет.</div>
                         <div class="mini-bars">
                             <div class="mbar-row"><span class="mbar-lbl">ВОЗДЕЙСТВИЕ</span><div class="mbar-track"><div class="mbar-fill" data-val="85"></div></div><span class="mbar-val">85</span></div>
-                            <div class="mbar-row"><span class="mbar-lbl">УТИЛИТА</span><div class="mbar-track"><div class="mbar-fill" data-val="80"></div></div><span class="mbar-val">80</span></div>
-                        </div>
-                        <div class="stat-line">🔩 Внедрение: <span class="sl-r">непрерывное воздействие</span> | 🔄 Парирование = мгновенный эффект | 🩸 Восстановление ресурса: 10%</div>
-                    </div>
-
-                    <div class="variant-card">
-                        <div class="variant-image">
-                            <div class="variant-img-frame">
-                                <!-- ▸ malicious_rail.png -->
-                                <img src="RelsaM.jpg" alt="Malicious" class="variant-img" onerror="this.style.display='none'">
-                            </div>
-                        </div>
-                        <div class="variant-title"><code>Malicious</code><span class="color-badge badge-red">КРАСНЫЙ</span></div>
-                        <div class="variant-desc">Деструктивный луч максимального воздействия. Нейтрализует практически любой объект мгновенно. Самая длительная перезарядка в арсенале. Комбо с тепловым ядром = ядерный взрыв.</div>
-                        <div class="mini-bars">
-                            <div class="mbar-row"><span class="mbar-lbl">ВОЗДЕЙСТВИЕ</span><div class="mbar-track"><div class="mbar-fill" data-val="100"></div></div><span class="mbar-val">100</span></div>
-                            <div class="mbar-row"><span class="mbar-lbl">ПЕРЕЗАРЯДКА</span><div class="mbar-track"><div class="mbar-fill" data-val="12"></div></div><span class="mbar-val">12</span></div>
-                        </div>
-                        <div class="stat-line">💥 Ядерная цепочка: <span class="sl-r">радиус 25м</span> | 🕒 Максимальная перезарядка | 🏆 Пик системы</div>
-                    </div>
-
-                </div>
-            </div>
-
-            <!-- ══════════════ ROCKET LAUNCHER / РАКЕТНЫЙ ══════════════ -->
-            <div class="weapon-category" data-weapon="rocket">
-                <div class="weapon-image-container">
-                    <div class="weapon-frame">
-                        <!-- ▸ rocket_main.gif -->
-                        <img src="RLc.jpg" alt="Ракетный" class="weapon-img"
-                             onerror="this.style.display='none'; this.parentElement.classList.add('empty')">
-                    </div>
-                </div>
-
-                <div class="weapon-name">
-                    <i class="fas fa-rocket"></i> РАКЕТНЫЙ
-                    <span class="weapon-slot-badge">СЛОТ 5</span>
-                </div>
-                <div class="redline"></div>
-
-                <div class="variants">
-
-                    <div class="variant-card">
-                        <div class="variant-image">
-                            <div class="variant-img-frame">
-                                <!-- ▸ freezeframe.png -->
-                                <img src="RLt.jpg" alt="Freezeframe" class="variant-img" onerror="this.style.display='none'">
-                            </div>
-                        </div>
-                        <div class="variant-title"><code>Freezeframe</code><span class="color-badge badge-blue">СИНИЙ</span></div>
-                        <div class="variant-desc">Базовый ракетный модуль. Вторичная активация фиксирует проекцию в пространстве (криогенная заморозка). Детонирует при любом воздействии. Ловушки, платформы, ядерная комбинация.</div>
-                        <div class="mini-bars">
-                            <div class="mbar-row"><span class="mbar-lbl">ВОЗДЕЙСТВИЕ</span><div class="mbar-track"><div class="mbar-fill" data-val="88"></div></div><span class="mbar-val">88</span></div>
                             <div class="mbar-row"><span class="mbar-lbl">УТИЛИТА</span><div class="mbar-track"><div class="mbar-fill" data-val="90"></div></div><span class="mbar-val">90</span></div>
                         </div>
-                        <div class="stat-line">❄️ Криофиксация: <span class="sl-b">∞ времени</span> | 🛸 Rocket Riding | 💥 + Рельсовый Malicious = Ядерный взрыв</div>
+                        <div class="stat-line">🪙 Монета: <span class="sl-r">все монеты разом</span> | 🌀 Многоцелевое воздействие</div>
                     </div>
-
                     <div class="variant-card">
-                        <div class="variant-image">
-                            <div class="variant-img-frame">
-                                <!-- ▸ srs_canon.png -->
-                                <img src="RLsrs.jpg" alt="S.R.S. Canon" class="variant-img" onerror="this.style.display='none'">
-                            </div>
-                        </div>
-                        <div class="variant-title"><code>S.R.S. Canon</code><span class="color-badge badge-green">ЗЕЛЁНЫЙ</span></div>
-                        <div class="variant-desc">Термическая проекция с широким зональным воздействием. Идеален при скоплении объектов в ограниченном пространстве. Синергия с тепловым ядром импульсного модуля.</div>
+                        <div class="variant-image"><div class="variant-img-frame"><img src="RevolverSharp.jpg" alt="Sharpshooter" class="variant-img" onerror="this.style.display='none'"></div></div>
+                        <div class="variant-title"><code>Sharpshooter</code><span class="color-badge badge-red">КРАСНЫЙ</span></div>
+                        <div class="variant-desc">Система накопления заряда. Удержание концентрирует энергию — полный заряд выдаёт критическое воздействие. Предназначен для приоритетных одиночных целей.</div>
                         <div class="mini-bars">
-                            <div class="mbar-row"><span class="mbar-lbl">ВОЗДЕЙСТВИЕ</span><div class="mbar-track"><div class="mbar-fill" data-val="95"></div></div><span class="mbar-val">95</span></div>
-                            <div class="mbar-row"><span class="mbar-lbl">ДАЛЬНОСТЬ</span><div class="mbar-track"><div class="mbar-fill" data-val="85"></div></div><span class="mbar-val">85</span></div>
+                            <div class="mbar-row"><span class="mbar-lbl">ВОЗДЕЙСТВИЕ</span><div class="mbar-track"><div class="mbar-fill" data-val="100"></div></div><span class="mbar-val">100</span></div>
+                            <div class="mbar-row"><span class="mbar-lbl">СКОРОСТЬ</span><div class="mbar-track"><div class="mbar-fill" data-val="60"></div></div><span class="mbar-val">60</span></div>
                         </div>
-                        <div class="stat-line">🔥 Термический залп: <span class="sl-r">зональное воздействие</span> | 💣 Синергия с тепловым ядром</div>
+                        <div class="stat-line">⚡ Накопитель: <span class="sl-a">3 уровня</span> | 💀 Полный заряд = <span class="sl-r">критическое воздействие</span></div>
                     </div>
-
                 </div>
             </div>
+            <div class="variants-container alternate-variants" style="display:none;">
+                <div class="variants">
+                    <div class="variant-card">
+                        <div class="variant-image"><div class="variant-img-frame"><img src="RevolverAltSingle.jpg" alt="Slab Piercer" class="variant-img" onerror="this.style.display='none'"></div></div>
+                        <div class="variant-title"><code>Slab Piercer</code><span class="color-badge badge-blue">АЛТ-СИНИЙ</span></div>
+                        <div class="variant-desc">Утяжелённая версия Piercer. Замедленная перезарядка, но кратно повышенное воздействие. Пробивает несколько объектов по линии без ограничений.</div>
+                        <div class="stat-line">💥 Воздействие: <span class="sl-r">×4</span> | 🕒 Замедленная перезарядка | 🔵 Линейное пробивание</div>
+                    </div>
+                    <div class="variant-card">
+                        <div class="variant-image"><div class="variant-img-frame"><img src="RevolverAltSpecial.jpg" alt="Slab Marksman" class="variant-img" onerror="this.style.display='none'"></div></div>
+                        <div class="variant-title"><code>Slab Marksman</code><span class="color-badge badge-green">АЛТ-ЗЕЛЁНЫЙ</span></div>
+                        <div class="variant-desc">Утяжелённый Marksman. Медленнее, но рикошет наносит значительно большее воздействие. Каждый рикошет от монеты дополнительно усиливается.</div>
+                        <div class="stat-line">🪙 Критическое воздействие: <span class="sl-r">×3</span> | 💀 Монета-усилитель</div>
+                    </div>
+                    <div class="variant-card">
+                        <div class="variant-image"><div class="variant-img-frame"><img src="RevolverAltSharp.jpg" alt="Slab Sharpshooter" class="variant-img" onerror="this.style.display='none'"></div></div>
+                        <div class="variant-title"><code>Slab Sharpshooter</code><span class="color-badge badge-red">АЛТ-КРАСНЫЙ</span></div>
+                        <div class="variant-desc">Утяжелённый накопительный вариант. Максимальный заряд наносит разрушительное воздействие. Совместим с монетным рикошетом.</div>
+                        <div class="stat-line">⚡ Максимум: <span class="sl-r">наивысшее воздействие</span> | 🪙 Совместим с монетой</div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-        </div><!-- /weapon-grid -->
+        <!-- ══ SHOTGUN / ИМПУЛЬСНЫЙ ══ -->
+        <div class="weapon-category" data-weapon="shotgun">
+            <div class="weapon-image-container">
+                <div class="weapon-frame">
+                    <img src="sg1.jpg" alt="Импульсный" class="weapon-img" onerror="this.style.display='none';this.parentElement.classList.add('empty')">
+                </div>
+            </div>
+            <div class="weapon-name"><i class="fas fa-fire"></i> ИМПУЛЬСНЫЙ <span class="weapon-slot-badge">СЛОТ 2</span></div>
+            <div class="redline"></div>
+            <div class="variant-toggle">
+                <button class="toggle-btn active" data-variant="standard">СТАНДАРТ</button>
+                <button class="toggle-btn" data-variant="alternate">АЛЬТЕРНАТИВА</button>
+            </div>
+            <div class="variants-container standard-variants">
+                <div class="variants">
+                    <div class="variant-card">
+                        <div class="variant-image"><div class="variant-img-frame"><img src="sg2.jpg" alt="Core Eject" class="variant-img" onerror="this.style.display='none'"></div></div>
+                        <div class="variant-title"><code>Core Eject</code><span class="color-badge badge-blue">СИНИЙ</span></div>
+                        <div class="variant-desc">Первичная активация — широкий конус. Вторичная — выброс теплового ядра, детонирующего при воздействии любого импульса. Основа большинства комбинаций арсенала.</div>
+                        <div class="mini-bars">
+                            <div class="mbar-row"><span class="mbar-lbl">ВОЗДЕЙСТВИЕ</span><div class="mbar-track"><div class="mbar-fill" data-val="85"></div></div><span class="mbar-val">85</span></div>
+                            <div class="mbar-row"><span class="mbar-lbl">УТИЛИТА</span><div class="mbar-track"><div class="mbar-fill" data-val="90"></div></div><span class="mbar-val">90</span></div>
+                        </div>
+                        <div class="stat-line">🔥 Тепловое ядро: <span class="sl-r">детонация от импульса</span> | 💣 Радиус: 8м | <span class="sl-b">Платформа для манёвра</span></div>
+                    </div>
+                    <div class="variant-card">
+                        <div class="variant-image"><div class="variant-img-frame"><img src="sg3.jpg" alt="Pump Charge" class="variant-img" onerror="this.style.display='none'"></div></div>
+                        <div class="variant-title"><code>Pump Charge</code><span class="color-badge badge-green">ЗЕЛЁНЫЙ</span></div>
+                        <div class="variant-desc">Система накачки мощности до 3 стадий. Накопление сохраняется при переключении модулей. Полная накачка — концентрированный критический залп.</div>
+                        <div class="mini-bars">
+                            <div class="mbar-row"><span class="mbar-lbl">ВОЗДЕЙСТВИЕ</span><div class="mbar-track"><div class="mbar-fill" data-val="95"></div></div><span class="mbar-val">95</span></div>
+                            <div class="mbar-row"><span class="mbar-lbl">КОНЦЕНТРАЦИЯ</span><div class="mbar-track"><div class="mbar-fill" data-val="88"></div></div><span class="mbar-val">88</span></div>
+                        </div>
+                        <div class="stat-line">⚡ Накачка: <span class="sl-a">3 стадии</span> | 💪 Макс. воздействие: <span class="sl-r">×10</span> | ⚠️ Перезаряд = урон оператору</div>
+                    </div>
+                </div>
+            </div>
+            <div class="variants-container alternate-variants" style="display:none;">
+                <div class="variants">
+                    <div class="variant-card">
+                        <div class="variant-image"><div class="variant-img-frame"><img src="sg4.jpg" alt="Jackhammer" class="variant-img" onerror="this.style.display='none'"></div></div>
+                        <div class="variant-title"><code>Jackhammer</code><span class="color-badge badge-blue">АЛТ-СИНИЙ</span></div>
+                        <div class="variant-desc">Полностью автоматический импульсный модуль с высокой частотой активации. Отдача используется как ускоритель перемещения — уникальная механика мобильного боя.</div>
+                        <div class="mini-bars">
+                            <div class="mbar-row"><span class="mbar-lbl">СКОРОСТЬ</span><div class="mbar-track"><div class="mbar-fill" data-val="92"></div></div><span class="mbar-val">92</span></div>
+                            <div class="mbar-row"><span class="mbar-lbl">МОБИЛЬНОСТЬ</span><div class="mbar-track"><div class="mbar-fill" data-val="95"></div></div><span class="mbar-val">95</span></div>
+                        </div>
+                        <div class="stat-line">🏃 Мобильность: <span class="sl-b">отдача = ускорение</span> | 🔄 Высокая частота активации</div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-       
-        <div class="ascii-art">
+        <!-- ══ NAILGUN / ГВОЗДЕВОЙ ══ -->
+        <div class="weapon-category" data-weapon="nailgun">
+            <div class="weapon-image-container">
+                <div class="weapon-frame">
+                    <img src="NailC.jpg" alt="Гвоздевой" class="weapon-img" onerror="this.style.display='none';this.parentElement.classList.add('empty')">
+                </div>
+            </div>
+            <div class="weapon-name"><i class="fas fa-grip-lines-vertical"></i> ГВОЗДЕВОЙ <span class="weapon-slot-badge">СЛОТ 3</span></div>
+            <div class="redline"></div>
+            <div class="variant-toggle">
+                <button class="toggle-btn active" data-variant="standard">СТАНДАРТ</button>
+                <button class="toggle-btn" data-variant="alternate">АЛЬТЕРНАТИВА</button>
+            </div>
+            <div class="variants-container standard-variants">
+                <div class="variants">
+                    <div class="variant-card">
+                        <div class="variant-image"><div class="variant-img-frame"><img src="NailB.jpg" alt="Attractor" class="variant-img" onerror="this.style.display='none'"></div></div>
+                        <div class="variant-title"><code>Attractor</code><span class="color-badge badge-blue">СИНИЙ</span></div>
+                        <div class="variant-desc">Базовый гвоздевой с магнитной системой. Магнитный гвоздь-ретранслятор концентрирует весь поток на маркированной цели. Высокая скорострельность.</div>
+                        <div class="mini-bars">
+                            <div class="mbar-row"><span class="mbar-lbl">СКОРОСТЬ</span><div class="mbar-track"><div class="mbar-fill" data-val="100"></div></div><span class="mbar-val">100</span></div>
+                            <div class="mbar-row"><span class="mbar-lbl">УТИЛИТА</span><div class="mbar-track"><div class="mbar-fill" data-val="95"></div></div><span class="mbar-val">95</span></div>
+                        </div>
+                        <div class="stat-line">🧲 Магнит: <span class="sl-b">радиус 6м</span> | 📍 Концентрация потока | <span class="sl-a">Два магнита = двойной поток</span></div>
+                    </div>
+                    <div class="variant-card">
+                        <div class="variant-image"><div class="variant-img-frame"><img src="NailE.jpg" alt="Overheat" class="variant-img" onerror="this.style.display='none'"></div></div>
+                        <div class="variant-title"><code>Overheat</code><span class="color-badge badge-red">КРАСНЫЙ</span></div>
+                        <div class="variant-desc">Термический гвоздевой. Перегрев системы автоматически запускает усиленные гвозди. Принудительный выброс диска — вторичная активация высокого воздействия.</div>
+                        <div class="mini-bars">
+                            <div class="mbar-row"><span class="mbar-lbl">ВОЗДЕЙСТВИЕ</span><div class="mbar-track"><div class="mbar-fill" data-val="88"></div></div><span class="mbar-val">88</span></div>
+                            <div class="mbar-row"><span class="mbar-lbl">СКОРОСТЬ</span><div class="mbar-track"><div class="mbar-fill" data-val="90"></div></div><span class="mbar-val">90</span></div>
+                        </div>
+                        <div class="stat-line">🔥 Перегрев → <span class="sl-r">взрывной диск</span> | 🔄 Диски отражаемы манипулятором</div>
+                    </div>
+                    <div class="variant-card">
+                        <div class="variant-image"><div class="variant-img-frame"><img src="NailG.jpg" alt="Jumpstart" class="variant-img" onerror="this.style.display='none'"></div></div>
+                        <div class="variant-title"><code>Jumpstart</code><span class="color-badge badge-green">ЗЕЛЁНЫЙ</span></div>
+                        <div class="variant-desc">Версия с ускоренным стартом. Первые секунды после начала активации дают пиковую скорострельность. Синергия с магнитным гвоздём Attractor.</div>
+                        <div class="mini-bars">
+                            <div class="mbar-row"><span class="mbar-lbl">ПИКОВАЯ СК.</span><div class="mbar-track"><div class="mbar-fill" data-val="100"></div></div><span class="mbar-val">100</span></div>
+                            <div class="mbar-row"><span class="mbar-lbl">УТИЛИТА</span><div class="mbar-track"><div class="mbar-fill" data-val="85"></div></div><span class="mbar-val">85</span></div>
+                        </div>
+                        <div class="stat-line">⚡ Начальный пик: <span class="sl-a">максимальная скорострельность</span> | 🧲 Синергия с Attractor</div>
+                    </div>
+                </div>
+            </div>
+            <div class="variants-container alternate-variants" style="display:none;">
+                <div class="variants">
+                    <div class="variant-card">
+                        <div class="variant-image"><div class="variant-img-frame"><img src="NailAlter.jpg" alt="Sawblade Launcher" class="variant-img" onerror="this.style.display='none'"></div></div>
+                        <div class="variant-title"><code>Sawblade Launcher</code><span class="color-badge badge-blue">АЛТ-СИНИЙ</span></div>
+                        <div class="variant-desc">Запускает циркулярные диски. Рикошетят от поверхностей до 5 раз, нанося многократное воздействие. Совместим с магнитным гвоздём для концентрации траектории.</div>
+                        <div class="stat-line">🔄 Рикошет: <span class="sl-b">до 5 раз</span> | ⚙️ Магнитное притяжение | <span class="sl-a">Многократное воздействие</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══ RAILCANNON / РЕЛЬСОВЫЙ ══ -->
+        <div class="weapon-category" data-weapon="railcannon">
+            <div class="weapon-image-container">
+                <div class="weapon-frame">
+                    <img src="RelsaC.jpg" alt="Рельсовый" class="weapon-img" onerror="this.style.display='none';this.parentElement.classList.add('empty')">
+                </div>
+            </div>
+            <div class="weapon-name"><i class="fas fa-bolt"></i> РЕЛЬСОВЫЙ <span class="weapon-slot-badge">СЛОТ 4</span></div>
+            <div class="redline"></div>
+            <div class="variants">
+                <div class="variant-card">
+                    <div class="variant-image"><div class="variant-img-frame"><img src="RelsaB.jpg" alt="Electric" class="variant-img" onerror="this.style.display='none'"></div></div>
+                    <div class="variant-title"><code>Electric</code><span class="color-badge badge-blue">СИНИЙ</span></div>
+                    <div class="variant-desc">Мгновенный электрический импульс нейтрализует большинство объектов с одной активации. Цепная реакция перескакивает между ближайшими целями.</div>
+                    <div class="mini-bars">
+                        <div class="mbar-row"><span class="mbar-lbl">ВОЗДЕЙСТВИЕ</span><div class="mbar-track"><div class="mbar-fill" data-val="100"></div></div><span class="mbar-val">100</span></div>
+                        <div class="mbar-row"><span class="mbar-lbl">ПЕРЕЗАРЯДКА</span><div class="mbar-track"><div class="mbar-fill" data-val="45"></div></div><span class="mbar-val">45</span></div>
+                    </div>
+                    <div class="stat-line">⚡ Перескок: <span class="sl-b">до 5 целей</span> | 🕒 Медленная перезарядка | 💀 Нейтрализует большинство объектов</div>
+                </div>
+                <div class="variant-card">
+                    <div class="variant-image"><div class="variant-img-frame"><img src="RelsaD.jpg" alt="Screwdriver" class="variant-img" onerror="this.style.display='none'"></div></div>
+                    <div class="variant-title"><code>Screwdriver</code><span class="color-badge badge-green">ЗЕЛЁНЫЙ</span></div>
+                    <div class="variant-desc">Вращающаяся проекция пронизывает несколько объектов по линии. Задерживается внутри цели, продолжая непрерывное воздействие. Парирование = мгновенный эффект.</div>
+                    <div class="mini-bars">
+                        <div class="mbar-row"><span class="mbar-lbl">ВОЗДЕЙСТВИЕ</span><div class="mbar-track"><div class="mbar-fill" data-val="85"></div></div><span class="mbar-val">85</span></div>
+                        <div class="mbar-row"><span class="mbar-lbl">УТИЛИТА</span><div class="mbar-track"><div class="mbar-fill" data-val="80"></div></div><span class="mbar-val">80</span></div>
+                    </div>
+                    <div class="stat-line">🔩 Внедрение: <span class="sl-r">непрерывное воздействие</span> | 🔄 Парирование = мгновенный эффект | 🩸 Восстановление: 10%</div>
+                </div>
+                <div class="variant-card">
+                    <div class="variant-image"><div class="variant-img-frame"><img src="RelsaM.jpg" alt="Malicious" class="variant-img" onerror="this.style.display='none'"></div></div>
+                    <div class="variant-title"><code>Malicious</code><span class="color-badge badge-red">КРАСНЫЙ</span></div>
+                    <div class="variant-desc">Деструктивный луч максимального воздействия. Нейтрализует практически любой объект мгновенно. Самая длительная перезарядка в арсенале. Комбо с тепловым ядром = ядерный взрыв.</div>
+                    <div class="mini-bars">
+                        <div class="mbar-row"><span class="mbar-lbl">ВОЗДЕЙСТВИЕ</span><div class="mbar-track"><div class="mbar-fill" data-val="100"></div></div><span class="mbar-val">100</span></div>
+                        <div class="mbar-row"><span class="mbar-lbl">ПЕРЕЗАРЯДКА</span><div class="mbar-track"><div class="mbar-fill" data-val="12"></div></div><span class="mbar-val">12</span></div>
+                    </div>
+                    <div class="stat-line">💥 Ядерная цепочка: <span class="sl-r">радиус 25м</span> | 🕒 Максимальная перезарядка | 🏆 Пик системы</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══ ROCKET LAUNCHER / РАКЕТНЫЙ ══ -->
+        <div class="weapon-category" data-weapon="rocket">
+            <div class="weapon-image-container">
+                <div class="weapon-frame">
+                    <img src="RLc.jpg" alt="Ракетный" class="weapon-img" onerror="this.style.display='none';this.parentElement.classList.add('empty')">
+                </div>
+            </div>
+            <div class="weapon-name"><i class="fas fa-rocket"></i> РАКЕТНЫЙ <span class="weapon-slot-badge">СЛОТ 5</span></div>
+            <div class="redline"></div>
+            <div class="variants">
+                <div class="variant-card">
+                    <div class="variant-image"><div class="variant-img-frame"><img src="RLt.jpg" alt="Freezeframe" class="variant-img" onerror="this.style.display='none'"></div></div>
+                    <div class="variant-title"><code>Freezeframe</code><span class="color-badge badge-blue">СИНИЙ</span></div>
+                    <div class="variant-desc">Базовый ракетный модуль. Вторичная активация фиксирует проекцию в пространстве (криогенная заморозка). Детонирует при любом воздействии. Ловушки, платформы, ядерная комбинация.</div>
+                    <div class="mini-bars">
+                        <div class="mbar-row"><span class="mbar-lbl">ВОЗДЕЙСТВИЕ</span><div class="mbar-track"><div class="mbar-fill" data-val="88"></div></div><span class="mbar-val">88</span></div>
+                        <div class="mbar-row"><span class="mbar-lbl">УТИЛИТА</span><div class="mbar-track"><div class="mbar-fill" data-val="90"></div></div><span class="mbar-val">90</span></div>
+                    </div>
+                    <div class="stat-line">❄️ Криофиксация: <span class="sl-b">∞ времени</span> | 🛸 Rocket Riding | 💥 + Рельсовый Malicious = Ядерный взрыв</div>
+                </div>
+                <div class="variant-card">
+                    <div class="variant-image"><div class="variant-img-frame"><img src="RLsrs.jpg" alt="S.R.S. Canon" class="variant-img" onerror="this.style.display='none'"></div></div>
+                    <div class="variant-title"><code>S.R.S. Canon</code><span class="color-badge badge-green">ЗЕЛЁНЫЙ</span></div>
+                    <div class="variant-desc">Термическая проекция с широким зональным воздействием. Идеален при скоплении объектов в ограниченном пространстве. Синергия с тепловым ядром импульсного модуля.</div>
+                    <div class="mini-bars">
+                        <div class="mbar-row"><span class="mbar-lbl">ВОЗДЕЙСТВИЕ</span><div class="mbar-track"><div class="mbar-fill" data-val="95"></div></div><span class="mbar-val">95</span></div>
+                        <div class="mbar-row"><span class="mbar-lbl">ДАЛЬНОСТЬ</span><div class="mbar-track"><div class="mbar-fill" data-val="85"></div></div><span class="mbar-val">85</span></div>
+                    </div>
+                    <div class="stat-line">🔥 Термический залп: <span class="sl-r">зональное воздействие</span> | 💣 Синергия с тепловым ядром</div>
+                </div>
+            </div>
+        </div>
+
+    </div><!-- /weapon-grid -->
+
+    <div class="ascii-art">
 ╔══════════════════════════════════════════════════════════════════╗
-║  [V1 АРСЕНАЛ]  > ТОПЛИВО = РЕСУРС // LOWER SECTOR ACTIVE        ║
+║  [V1 АРСЕНАЛ]  > ЭНЕРГИЯ = РЕСУРС // LOWER SECTOR ACTIVE        ║
 ║  > ALTERNATE VARIANTS: UNLOCKABLE // СТИЛЬ: SSS РАНГ             ║
 ╚══════════════════════════════════════════════════════════════════╝</div>
 
-        <!-- ═══ FOOTER ═══ -->
-        <div class="footer-term">
-            <div class="footer-logo">V1 // ARSENAL DATABASE</div>
-            <div>// ЭНЕРГИЯ — ТОПЛИВО // НИЖНИЙ УРОВЕНЬ ЗАПОЛНЕН //</div>
-            <div>// ИСТОЧНИК: ULTRAKILL // SLIME OS 2 TERMINAL //</div>
-        </div>
+    <!-- FOOTER -->
+    <div class="divider" style="margin-top:1.5rem;"></div>
+    <div class="site-footer">
+        <div class="footer-logo">V1 // ARSENAL DATABASE</div>
+        <div class="footer-text">// ЭНЕРГИЯ — РЕСУРС // НИЖНИЙ УРОВЕНЬ ЗАПОЛНЕН //</div>
+        <a href="index.html" class="back-link-footer">◄ ГЛАВНАЯ</a>
+    </div>
+    <div style="text-align:center;padding:.5rem 0;font-size:.45rem;color:#1a1a1a;letter-spacing:.2em;text-transform:uppercase;">
+        SYSTEM DATABASE // V1 // ULTRAKILL // ARSENAL MODULE CATALOGUE
+    </div>
 
-    </div><!-- /terminal-content -->
-</div><!-- /terminal -->
+</div><!-- /page -->
 
 <script>
-/* ════════════════════════════════════════════
-   BACKGROUND CANVAS — MULTI-COLOR PARTICLES
-════════════════════════════════════════════ */
-(function() {
-    const canvas = document.getElementById('bg-canvas');
-    const ctx    = canvas.getContext('2d');
-    let W, H;
-
-    const resize = () => { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; };
-    window.addEventListener('resize', resize);
-    resize();
-
-    // Palette: red, green, blue, gold, purple
-    const PALETTES = [
-        [255, 32, 32],
-        [0, 255, 136],
-        [74, 240, 255],
-        [255, 209, 102],
-        [187, 85, 255],
-    ];
-
-    class Spark {
-        constructor(init) {
-            this.init = init;
-            this.reset();
-            if (init) this.y = Math.random() * H;
-        }
-        reset() {
-            const c = PALETTES[Math.floor(Math.random() * PALETTES.length)];
-            this.r = c[0]; this.g = c[1]; this.b = c[2];
-            this.x = Math.random() * W;
-            this.y = H + 10;
-            this.size  = Math.random() * 1.6 + 0.2;
-            this.vy    = -(Math.random() * 0.55 + 0.15);
-            this.vx    = (Math.random() - 0.5) * 0.35;
-            this.alpha = Math.random() * 0.3 + 0.04;
-            this.life  = 1;
-            this.decay = Math.random() * 0.0018 + 0.0008;
-        }
-        update() {
-            this.y += this.vy; this.x += this.vx; this.life -= this.decay;
-            if (this.life <= 0 || this.y < -6) this.reset();
-        }
-        draw() {
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(${this.r},${this.g},${this.b},${this.alpha * this.life})`;
-            ctx.fill();
-        }
-    }
-
-    // Horizontal grid-lines drifting upward
-    class GridLine {
-        constructor() { this.reset(); this.y = Math.random() * H; }
-        reset() { this.y = H; this.alpha = Math.random() * 0.035 + 0.005; this.speed = Math.random() * 0.12 + 0.04; }
-        update() { this.y -= this.speed; if (this.y < 0) this.reset(); }
-        draw() {
-            ctx.beginPath(); ctx.moveTo(0, this.y); ctx.lineTo(W, this.y);
-            ctx.strokeStyle = `rgba(0,255,136,${this.alpha})`; ctx.lineWidth = 1; ctx.stroke();
-        }
-    }
-
-    // Vertical faint column lines (static)
-    const COL_LINES = Array.from({ length: 6 }, (_, i) => ({ x: (W / 6) * i + (W / 12) }));
-
-    const sparks = Array.from({ length: 90 }, () => new Spark(true));
-    const glines = Array.from({ length: 14 }, () => new GridLine());
-
-    let frame = 0;
-    function loop() {
-        ctx.clearRect(0, 0, W, H);
-
-        // Faint vertical guide lines
-        if (frame % 300 === 0) COL_LINES.forEach((cl, i) => { cl.x = (W / 6) * i + (W / 12); });
-        COL_LINES.forEach(cl => {
-            ctx.beginPath(); ctx.moveTo(cl.x, 0); ctx.lineTo(cl.x, H);
-            ctx.strokeStyle = 'rgba(255,32,32,0.012)'; ctx.lineWidth = 1; ctx.stroke();
-        });
-
-        glines.forEach(l => { l.update(); l.draw(); });
-        sparks.forEach(s => { s.update(); s.draw(); });
-        frame++;
-        requestAnimationFrame(loop);
-    }
-    loop();
-})();
-
-/* ════════════════════════════════════════════
-   VARIANT TOGGLE
-════════════════════════════════════════════ */
+/* Variant Toggle */
 document.querySelectorAll('.weapon-category').forEach(cat => {
     const btns = cat.querySelectorAll('.toggle-btn');
     if (!btns.length) return;
     const std = cat.querySelector('.standard-variants');
     const alt = cat.querySelector('.alternate-variants');
-
     btns.forEach(btn => {
         btn.addEventListener('click', () => {
             btns.forEach(b => b.classList.remove('active'));
@@ -1146,9 +638,6 @@ document.querySelectorAll('.weapon-category').forEach(cat => {
     });
 });
 
-/* ════════════════════════════════════════════
-   STAT BAR ANIMATION
-════════════════════════════════════════════ */
 function animateBars(container) {
     if (!container) return;
     container.querySelectorAll('.mbar-fill[data-val]').forEach(bar => {
@@ -1157,7 +646,6 @@ function animateBars(container) {
     });
 }
 
-// Intersection Observer — animate bars when category scrolls into view
 const io = new IntersectionObserver(entries => {
     entries.forEach(e => {
         if (!e.isIntersecting) return;
@@ -1171,9 +659,7 @@ const io = new IntersectionObserver(entries => {
 }, { threshold: 0.15 });
 document.querySelectorAll('.weapon-category').forEach(c => io.observe(c));
 
-/* ════════════════════════════════════════════
-   RANK GLITCH
-════════════════════════════════════════════ */
+/* Rank Glitch */
 const RANKS = ['D','C','B','A','S','SS','SSS'];
 const rankEl = document.getElementById('sc-rank');
 setInterval(() => {
@@ -1183,57 +669,27 @@ setInterval(() => {
     }
 }, 1800);
 
-/* ════════════════════════════════════════════
-   HEADER GLITCH
-════════════════════════════════════════════ */
+/* Header Glitch */
 const h1 = document.querySelector('.boot-header h1');
 if (h1) {
     setInterval(() => {
         if (Math.random() < 0.07) {
             const dx = (Math.random() - 0.5) * 5;
-            const dy = (Math.random() - 0.5) * 2;
-            h1.style.cssText += `transform:translate(${dx}px,${dy}px);filter:hue-rotate(12deg)`;
+            h1.style.cssText += `transform:translate(${dx}px,0);filter:hue-rotate(12deg)`;
             setTimeout(() => { h1.style.transform = ''; h1.style.filter = ''; }, 70);
         }
     }, 2800);
 }
 
-/* ════════════════════════════════════════════
-   WEAPON CATEGORY HOVER GLOW
-════════════════════════════════════════════ */
-const WCAT_GLOWS = {
-    arms:       'rgba(255,68,204,0.12)',
-    revolver:   'rgba(0,255,136,0.10)',
-    shotgun:    'rgba(255,32,32,0.12)',
-    nailgun:    'rgba(74,240,255,0.10)',
-    railcannon: 'rgba(187,85,255,0.12)',
-    rocket:     'rgba(255,209,102,0.10)',
-};
+/* Weapon Category Hover Glow */
+const WCAT_GLOWS = { arms:'rgba(255,68,204,0.12)', revolver:'rgba(0,255,136,0.10)', shotgun:'rgba(255,32,32,0.12)', nailgun:'rgba(74,240,255,0.10)', railcannon:'rgba(187,85,255,0.12)', rocket:'rgba(255,209,102,0.10)' };
 document.querySelectorAll('.weapon-category').forEach(cat => {
     const wt = cat.dataset.weapon;
-    cat.addEventListener('mouseenter', () => {
-        cat.style.boxShadow = `0 0 30px ${WCAT_GLOWS[wt] || 'rgba(255,32,32,0.1)'}, inset 0 0 50px rgba(0,0,0,0.3)`;
-    });
+    cat.addEventListener('mouseenter', () => { cat.style.boxShadow = `0 0 30px ${WCAT_GLOWS[wt] || 'rgba(255,32,32,0.1)'}, inset 0 0 50px rgba(0,0,0,0.3)`; });
     cat.addEventListener('mouseleave', () => { cat.style.boxShadow = ''; });
 });
 
-/* ════════════════════════════════════════════
-   CLICK FLASH
-════════════════════════════════════════════ */
-document.body.addEventListener('click', e => {
-    if (e.target.closest('.back-link') || e.target.closest('.toggle-btn')) return;
-    const f = document.createElement('div');
-    Object.assign(f.style, {
-        position: 'fixed', inset: '0', zIndex: '9999',
-        background: 'rgba(0,255,136,0.032)', pointerEvents: 'none'
-    });
-    document.body.appendChild(f);
-    setTimeout(() => f.remove(), 90);
-});
-
-/* ════════════════════════════════════════════
-   ANIMATED COUNTER — total cards
-════════════════════════════════════════════ */
+/* Animated Counter */
 const totalEl  = document.getElementById('sc-total');
 const totalTgt = document.querySelectorAll('.variant-card').length;
 let cnt = 0;
@@ -1242,16 +698,6 @@ const cAnim = setInterval(() => {
     if (totalEl) totalEl.textContent = cnt;
     if (cnt >= totalTgt) clearInterval(cAnim);
 }, 55);
-
-/* ════════════════════════════════════════════
-   NAVIGATION SLOT ACTIVE STATE
-════════════════════════════════════════════ */
-document.querySelectorAll('.ws-slot').forEach(s => {
-    s.addEventListener('click', function () {
-        document.querySelectorAll('.ws-slot').forEach(x => x.classList.remove('active'));
-        this.classList.add('active');
-    });
-});
 </script>
 </body>
 </html>
