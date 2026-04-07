@@ -51,7 +51,6 @@
             transition:background .35s, color .35s; position:relative;
         }
 
-        /* Circuit grid */
         body::before {
             content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
             background-image:
@@ -110,6 +109,9 @@
         @keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
         .cur { display:inline-block; width:7px; height:12px; background:var(--acc); vertical-align:middle; animation:blink 1s step-end infinite; margin-left:2px; }
 
+        /* ── HEADER RIGHT BLOCK ── */
+        .header-right { display:flex; flex-direction:row; gap:8px; align-items:flex-start; }
+
         /* ── THEME PANEL ── */
         .theme-panel { background:var(--bg); border:2px solid var(--border); padding:0; min-width:230px; transition:background .35s,border-color .35s; }
         .tp-header-bar { background:var(--border); padding:.45rem .8rem; font-family:'Bebas Neue','VT323',monospace; font-size:1.1rem; color:var(--bg); letter-spacing:.15em; text-transform:uppercase; transition:background .35s,color .35s; }
@@ -128,6 +130,66 @@
         .tp-name { font-size:.72rem; letter-spacing:.06em; text-transform:uppercase; }
         .tp-sub  { font-size:.46rem; letter-spacing:.1em; text-transform:uppercase; }
         .tp-current { font-size:.45rem; color:var(--text-ghost); letter-spacing:.18em; text-transform:uppercase; text-align:right; margin-top:.4rem; transition:color .35s; }
+
+        /* ── PROFILE OPEN BUTTON ── */
+        .profile-open-btn {
+            background: var(--bg);
+            border: 2px solid var(--border);
+            color: var(--text);
+            cursor: pointer;
+            font-family: 'VT323', 'Bebas Neue', monospace;
+            font-size: 1.35rem;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: .14s;
+            position: relative;
+            overflow: hidden;
+            align-self: stretch;
+            min-width: 58px;
+        }
+        .profile-open-btn:hover {
+            background: var(--border);
+            color: var(--bg);
+            box-shadow: 0 0 18px var(--acc-glow);
+        }
+        .profile-open-btn:hover .pob-icon { color: var(--bg); text-shadow: none; }
+        .profile-open-btn .pob-bar {
+            background: var(--border);
+            width: 100%;
+            padding: .3rem .5rem;
+            font-size: .65rem;
+            color: var(--bg);
+            letter-spacing: .15em;
+            text-align: center;
+            transition: background .35s, color .35s;
+        }
+        .profile-open-btn .pob-inner {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            padding: .5rem .6rem;
+        }
+        .profile-open-btn .pob-icon {
+            font-size: 2rem;
+            line-height: 1;
+            color: var(--acc);
+            text-shadow: 0 0 10px var(--acc-glow);
+            transition: .14s;
+        }
+        .profile-open-btn .pob-label {
+            font-size: .75rem;
+            letter-spacing: .1em;
+            color: var(--text-dim);
+            transition: .14s;
+        }
+        .profile-open-btn:hover .pob-label { color: var(--bg); }
 
         /* ── TICKER ── */
         .ticker-wrap { border-top:1px solid var(--border-faint); border-bottom:1px solid var(--border-faint); overflow:hidden; padding:.28rem 0; margin:.8rem 0 1rem; background:var(--bg2); transition:background .35s,border-color .35s; }
@@ -236,9 +298,399 @@
 
         #theme-bg-canvas { position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:2; }
 
+        /* ══════════════════════════════════════════
+           PROFILE MODAL
+        ══════════════════════════════════════════ */
+        .profile-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 2000;
+            background: rgba(0,0,0,.82);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(3px);
+            padding: 1rem;
+        }
+        .profile-overlay.open { display: flex; }
+
+        /* Outer "game terminal" frame — mimics the golden border of SmileOS */
+        .profile-frame {
+            border: 4px solid var(--border);
+            box-shadow:
+                0 0 0 2px var(--bg),
+                0 0 0 4px var(--border-dim),
+                0 0 60px var(--acc-glow),
+                0 0 120px rgba(0,0,0,.9);
+            width: min(820px, 100%);
+            max-height: 88vh;
+            display: flex;
+            flex-direction: column;
+            background: var(--bg2);
+            position: relative;
+            animation: profileIn .18s ease-out;
+        }
+        @keyframes profileIn {
+            from { transform: scale(.96) translateY(12px); opacity: 0; }
+            to   { transform: scale(1)   translateY(0);    opacity: 1; }
+        }
+
+        /* Title bar — red/accent, matches SmileOS header */
+        .pw-titlebar {
+            background: var(--acc);
+            padding: .42rem .8rem;
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+            flex-shrink: 0;
+            border-bottom: 2px solid rgba(0,0,0,.35);
+        }
+        .pw-titlebar-icon {
+            font-family: 'VT323', monospace;
+            font-size: 1.4rem;
+            color: var(--bg);
+            line-height: 1;
+            text-shadow: none;
+        }
+        .pw-titlebar-title {
+            font-family: 'VT323', 'Bebas Neue', monospace;
+            font-size: 1.3rem;
+            color: var(--bg);
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            flex: 1;
+            line-height: 1;
+        }
+        .pw-titlebar-sub {
+            font-size: .5rem;
+            font-family: 'Share Tech Mono', monospace;
+            color: rgba(0,0,0,.55);
+            letter-spacing: .2em;
+            text-transform: uppercase;
+            margin-right: .5rem;
+        }
+        /* Window control buttons — SmileOS style ■ + □ */
+        .pw-controls { display: flex; gap: 3px; }
+        .pw-ctrl {
+            width: 22px; height: 22px;
+            border: 2px solid rgba(0,0,0,.45);
+            background: rgba(0,0,0,.2);
+            color: var(--bg);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: .65rem;
+            font-family: 'Share Tech Mono', monospace;
+            transition: .1s;
+            text-shadow: none;
+        }
+        .pw-ctrl:hover { background: rgba(0,0,0,.45); }
+        .pw-ctrl.close:hover { background: rgba(180,0,0,.6); }
+
+        /* Body — sidebar + content */
+        .pw-body {
+            display: flex;
+            flex: 1;
+            min-height: 0;
+            overflow: hidden;
+        }
+
+        /* Sidebar */
+        .pw-sidebar {
+            width: 186px;
+            flex-shrink: 0;
+            background: var(--bg3);
+            border-right: 2px solid var(--border-faint);
+            display: flex;
+            flex-direction: column;
+            padding: .7rem .5rem;
+            gap: 4px;
+            overflow-y: auto;
+        }
+        .pw-sidebar-avatar {
+            text-align: center;
+            padding: .6rem .4rem .8rem;
+            border-bottom: 1px solid var(--border-faint);
+            margin-bottom: .3rem;
+        }
+        .pw-avatar-glyph {
+            font-family: 'VT323', 'Bebas Neue', monospace;
+            font-size: 4.5rem;
+            line-height: 1;
+            color: var(--acc);
+            text-shadow: 0 0 20px var(--acc-glow);
+            display: block;
+        }
+        .pw-avatar-name {
+            font-family: 'VT323', 'Bebas Neue', monospace;
+            font-size: 1.5rem;
+            color: var(--text);
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            margin-top: .2rem;
+        }
+        .pw-avatar-rank {
+            font-size: .5rem;
+            font-family: 'Share Tech Mono', monospace;
+            color: var(--c-gold);
+            letter-spacing: .2em;
+            text-transform: uppercase;
+            margin-top: .15rem;
+        }
+        .pw-nav-btn {
+            background: var(--bg2);
+            border: 2px solid var(--border-faint);
+            color: var(--text-dim);
+            padding: .62rem .75rem;
+            text-align: left;
+            cursor: pointer;
+            font-family: 'VT323', 'Bebas Neue', monospace;
+            font-size: 1.2rem;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            transition: .12s;
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+            line-height: 1;
+        }
+        .pw-nav-btn:hover {
+            border-color: var(--border-dim);
+            color: var(--text);
+            background: var(--bg);
+        }
+        .pw-nav-btn.active {
+            border-color: var(--border);
+            background: var(--border-faint);
+            color: var(--text);
+        }
+        .pw-nav-btn.active::before {
+            content: '▶';
+            color: var(--acc);
+            font-size: .9rem;
+        }
+        .pw-nav-btn:not(.active)::before { content: '  '; font-size: .9rem; }
+        .pw-nav-icon { font-size: 1rem; opacity: .7; }
+
+        /* Content area */
+        .pw-content {
+            flex: 1;
+            background: var(--bg);
+            overflow-y: auto;
+            padding: .9rem 1rem;
+            border: none;
+        }
+        /* Content inner border like SmileOS right panel */
+        .pw-content::-webkit-scrollbar { width: 4px; }
+        .pw-content::-webkit-scrollbar-track { background: var(--bg2); }
+        .pw-content::-webkit-scrollbar-thumb { background: var(--border-dim); }
+
+        .pw-tab { display: none; }
+        .pw-tab.active { display: block; }
+
+        /* Tab content styles */
+        .pw-section-title {
+            font-family: 'VT323', 'Bebas Neue', monospace;
+            font-size: 1.6rem;
+            color: var(--acc);
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--border-faint);
+            padding-bottom: .4rem;
+            margin-bottom: .8rem;
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+        }
+        .pw-section-title::before { content: '//'; font-size: 1rem; opacity: .6; }
+
+        .pw-status-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4px;
+            margin-bottom: .8rem;
+        }
+        .pw-stat-cell {
+            background: var(--bg2);
+            border: 1px solid var(--border-faint);
+            border-left: 3px solid var(--acc);
+            padding: .5rem .7rem;
+            transition: background .35s, border-color .35s;
+        }
+        .pw-stat-cell.gold { border-left-color: var(--c-gold); }
+        .pw-stat-cell.blue { border-left-color: var(--c-blue); }
+        .pw-stat-cell.green { border-left-color: var(--c-green); }
+        .pw-stat-cell.pink { border-left-color: var(--c-pink); }
+        .pw-stat-key {
+            font-size: .45rem;
+            font-family: 'Share Tech Mono', monospace;
+            color: var(--text-faint);
+            letter-spacing: .22em;
+            text-transform: uppercase;
+            margin-bottom: .25rem;
+        }
+        .pw-stat-val {
+            font-family: 'VT323', 'Bebas Neue', monospace;
+            font-size: 1.3rem;
+            color: var(--text);
+            line-height: 1;
+            letter-spacing: .06em;
+        }
+        .pw-stat-val.r { color: var(--acc); }
+        .pw-stat-val.g { color: var(--c-gold); }
+        .pw-stat-val.b { color: var(--c-blue); }
+        .pw-stat-val.n { color: var(--c-green); }
+
+        .pw-readout {
+            background: var(--bg2);
+            border: 1px solid var(--border-faint);
+            border-left: 2px solid var(--border-dim);
+            padding: .6rem .8rem;
+            font-family: 'Fira Code', monospace;
+            font-size: .6rem;
+            color: var(--text-faint);
+            line-height: 1.95;
+            margin-bottom: .7rem;
+            transition: background .35s, border-color .35s;
+        }
+        .pw-readout .hl { color: var(--acc); }
+        .pw-readout .vl { color: var(--text-dim); }
+        .pw-readout .gl { color: var(--c-gold); }
+        .pw-readout .bl { color: var(--c-blue); }
+        .pw-readout .nl { color: var(--c-green); }
+
+        /* Combat log entries */
+        .pw-log-entry {
+            border-bottom: 1px solid var(--border-faint);
+            padding: .45rem 0;
+            display: flex;
+            gap: .7rem;
+            align-items: flex-start;
+            transition: border-color .35s;
+        }
+        .pw-log-entry:last-child { border-bottom: none; }
+        .pw-log-time {
+            font-size: .5rem;
+            font-family: 'Share Tech Mono', monospace;
+            color: var(--text-faint);
+            letter-spacing: .1em;
+            white-space: nowrap;
+            padding-top: .1rem;
+            flex-shrink: 0;
+        }
+        .pw-log-text {
+            font-size: .65rem;
+            color: var(--text-dim);
+            line-height: 1.7;
+            font-family: 'Share Tech Mono', monospace;
+        }
+        .pw-log-text strong { color: var(--text); }
+        .pw-log-badge {
+            flex-shrink: 0;
+            font-family: 'VT323', monospace;
+            font-size: .85rem;
+            padding: .05rem .3rem;
+            border: 1px solid var(--border-faint);
+            color: var(--text-faint);
+            letter-spacing: .08em;
+            text-transform: uppercase;
+        }
+        .pw-log-badge.sss { border-color: var(--acc); color: var(--acc); }
+        .pw-log-badge.ss  { border-color: var(--c-gold); color: var(--c-gold); }
+        .pw-log-badge.s   { border-color: var(--c-blue); color: var(--c-blue); }
+
+        /* Achievement items */
+        .pw-achievement {
+            display: flex;
+            gap: .8rem;
+            align-items: flex-start;
+            padding: .55rem 0;
+            border-bottom: 1px solid var(--border-faint);
+            transition: border-color .35s;
+        }
+        .pw-achievement:last-child { border-bottom: none; }
+        .pw-ach-icon {
+            font-family: 'VT323', monospace;
+            font-size: 2.2rem;
+            line-height: 1;
+            width: 40px;
+            flex-shrink: 0;
+            text-align: center;
+        }
+        .pw-ach-icon.locked { filter: grayscale(1); opacity: .3; }
+        .pw-ach-name {
+            font-family: 'VT323', 'Bebas Neue', monospace;
+            font-size: 1.1rem;
+            color: var(--text);
+            letter-spacing: .08em;
+            text-transform: uppercase;
+        }
+        .pw-ach-desc {
+            font-size: .58rem;
+            color: var(--text-faint);
+            font-family: 'Share Tech Mono', monospace;
+            line-height: 1.6;
+            margin-top: .1rem;
+        }
+        .pw-ach-status {
+            margin-left: auto;
+            font-size: .5rem;
+            font-family: 'Share Tech Mono', monospace;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            padding: .1rem .35rem;
+            border: 1px solid;
+            flex-shrink: 0;
+            align-self: flex-start;
+        }
+        .pw-ach-status.done { color: var(--c-green); border-color: var(--c-green); }
+        .pw-ach-status.lock { color: var(--text-faint); border-color: var(--border-faint); }
+
+        /* Status bar at bottom of modal */
+        .pw-statusbar {
+            background: var(--bg3);
+            border-top: 1px solid var(--border-faint);
+            padding: .3rem .8rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-shrink: 0;
+        }
+        .pw-sb-item {
+            font-size: .45rem;
+            font-family: 'Share Tech Mono', monospace;
+            color: var(--text-faint);
+            letter-spacing: .18em;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: .3rem;
+        }
+        .pw-sb-dot {
+            width: 5px; height: 5px;
+            background: var(--c-green);
+            box-shadow: 0 0 4px var(--c-green);
+            flex-shrink: 0;
+        }
+        .pw-sb-item.acc .pw-sb-dot { background: var(--acc); box-shadow: 0 0 4px var(--acc); }
+        .pw-sb-item.gold .pw-sb-dot { background: var(--c-gold); box-shadow: 0 0 4px var(--c-gold); }
+        .pw-sb-spacer { flex: 1; }
+
         @media(max-width:900px){ .articles-grid{grid-template-columns:1fr;} .article-full{grid-column:auto;} }
-        @media(max-width:760px){ .logo-main{font-size:3.5rem;} .theme-panel{min-width:190px;} .nav-btn{min-width:calc(50% - 2px);} .fact-grid{grid-template-columns:1fr;} }
-        @media(max-width:520px){ .nav-btn{min-width:100%;} .nav-section{flex-direction:column;} .header-inner{flex-direction:column;} }
+        @media(max-width:760px){
+            .logo-main{font-size:3.5rem;} .theme-panel{min-width:190px;}
+            .nav-btn{min-width:calc(50% - 2px);} .fact-grid{grid-template-columns:1fr;}
+            .pw-sidebar { width: 150px; }
+            .pw-status-grid { grid-template-columns: 1fr; }
+        }
+        @media(max-width:580px){
+            .pw-body { flex-direction: column; }
+            .pw-sidebar { width: 100%; flex-direction: row; flex-wrap: wrap; padding: .4rem; border-right: none; border-bottom: 2px solid var(--border-faint); }
+            .pw-sidebar-avatar { display: none; }
+            .pw-nav-btn { flex: 1; min-width: 100px; justify-content: center; font-size: 1rem; }
+        }
+        @media(max-width:520px){ .nav-btn{min-width:100%;} .nav-section{flex-direction:column;} .header-inner{flex-direction:column;} .header-right{flex-direction:row;} }
     </style>
 </head>
 <body data-theme="dark">
@@ -261,30 +713,42 @@
                 </div>
             </div>
 
-            <!-- Theme Panel -->
-            <div class="theme-panel" id="themePanel">
-                <div class="tp-header-bar">// ТЕМА ИНТЕРФЕЙСА // CONFIG</div>
-                <div class="tp-body">
-                    <div class="tp-grid">
-                        <button class="tp-btn t-dark active" data-tv="dark" onclick="setTheme('dark')">
-                            <div class="tp-swatch"></div>
-                            <div class="tp-info"><div class="tp-name">DARK</div><div class="tp-sub">ORIGINAL</div></div>
-                        </button>
-                        <button class="tp-btn t-v1" data-tv="v1" onclick="setTheme('v1')">
-                            <div class="tp-swatch"></div>
-                            <div class="tp-info"><div class="tp-name">V1</div><div class="tp-sub">MACHINE // BLUE</div></div>
-                        </button>
-                        <button class="tp-btn t-v2" data-tv="v2" onclick="setTheme('v2')">
-                            <div class="tp-swatch"></div>
-                            <div class="tp-info"><div class="tp-name">V2</div><div class="tp-sub">MIRROR // RED</div></div>
-                        </button>
-                        <button class="tp-btn t-gabriel" data-tv="gabriel" onclick="setTheme('gabriel')">
-                            <div class="tp-swatch"></div>
-                            <div class="tp-info"><div class="tp-name">GABRIEL</div><div class="tp-sub">JUDGE // GOLD</div></div>
-                        </button>
+            <!-- Theme Panel + Profile Button -->
+            <div class="header-right">
+                <!-- Theme Panel -->
+                <div class="theme-panel" id="themePanel">
+                    <div class="tp-header-bar">// ТЕМА ИНТЕРФЕЙСА // CONFIG</div>
+                    <div class="tp-body">
+                        <div class="tp-grid">
+                            <button class="tp-btn t-dark active" data-tv="dark" onclick="setTheme('dark')">
+                                <div class="tp-swatch"></div>
+                                <div class="tp-info"><div class="tp-name">DARK</div><div class="tp-sub">ORIGINAL</div></div>
+                            </button>
+                            <button class="tp-btn t-v1" data-tv="v1" onclick="setTheme('v1')">
+                                <div class="tp-swatch"></div>
+                                <div class="tp-info"><div class="tp-name">V1</div><div class="tp-sub">MACHINE // BLUE</div></div>
+                            </button>
+                            <button class="tp-btn t-v2" data-tv="v2" onclick="setTheme('v2')">
+                                <div class="tp-swatch"></div>
+                                <div class="tp-info"><div class="tp-name">V2</div><div class="tp-sub">MIRROR // RED</div></div>
+                            </button>
+                            <button class="tp-btn t-gabriel" data-tv="gabriel" onclick="setTheme('gabriel')">
+                                <div class="tp-swatch"></div>
+                                <div class="tp-info"><div class="tp-name">GABRIEL</div><div class="tp-sub">JUDGE // GOLD</div></div>
+                            </button>
+                        </div>
+                        <div class="tp-current" id="tpCurrent">АКТИВНА: DARK // ORIGINAL</div>
                     </div>
-                    <div class="tp-current" id="tpCurrent">АКТИВНА: DARK // ORIGINAL</div>
                 </div>
+
+                <!-- Profile Button -->
+                <button class="profile-open-btn" onclick="openProfile()" title="Открыть профиль">
+                    <div class="pob-bar">USER.DAT</div>
+                    <div class="pob-inner">
+                        <div class="pob-icon">⬡</div>
+                        <div class="pob-label">ПРОФИЛЬ</div>
+                    </div>
+                </button>
             </div>
         </div>
     </div>
@@ -514,6 +978,271 @@
 
 </div><!-- /page -->
 
+
+<!-- ═══════════════════════════════════════
+     PROFILE MODAL
+════════════════════════════════════════ -->
+<div class="profile-overlay" id="profileOverlay" onclick="handleOverlayClick(event)">
+    <div class="profile-frame" id="profileFrame">
+
+        <!-- Title bar — SmileOS style -->
+        <div class="pw-titlebar">
+            <span class="pw-titlebar-icon">⬡</span>
+            <span class="pw-titlebar-title">USER.PROFILE // SYSTEM DATABASE</span>
+            <span class="pw-titlebar-sub">V1.DAT</span>
+            <div class="pw-controls">
+                <button class="pw-ctrl" title="Свернуть">─</button>
+                <button class="pw-ctrl" title="Развернуть">+</button>
+                <button class="pw-ctrl close" onclick="closeProfile()" title="Закрыть">■</button>
+            </div>
+        </div>
+
+        <!-- Body -->
+        <div class="pw-body">
+
+            <!-- Sidebar -->
+            <div class="pw-sidebar">
+                <!-- Avatar block -->
+                <div class="pw-sidebar-avatar">
+                    <span class="pw-avatar-glyph">V1</span>
+                    <div class="pw-avatar-name">UNIT V1</div>
+                    <div class="pw-avatar-rank">RANK // SSS // ACTIVE</div>
+                </div>
+
+                <!-- Nav buttons — like SmileOS menu items -->
+                <button class="pw-nav-btn active" data-tab="status" onclick="switchProfileTab('status')">
+                    <span class="pw-nav-icon">◉</span> СТАТУС
+                </button>
+                <button class="pw-nav-btn" data-tab="stats" onclick="switchProfileTab('stats')">
+                    <span class="pw-nav-icon">▦</span> СТАТИСТИКА
+                </button>
+                <button class="pw-nav-btn" data-tab="log" onclick="switchProfileTab('log')">
+                    <span class="pw-nav-icon">◈</span> БОЙ-ЛОГ
+                </button>
+                <button class="pw-nav-btn" data-tab="achievements" onclick="switchProfileTab('achievements')">
+                    <span class="pw-nav-icon">★</span> РЕКОРДЫ
+                </button>
+            </div>
+
+            <!-- Content area — dark panel like SmileOS right side -->
+            <div class="pw-content" id="pwContent">
+
+                <!-- TAB: STATUS -->
+                <div class="pw-tab active" id="pt-status">
+                    <div class="pw-section-title">СТАТУС ЮНИТА</div>
+
+                    <div class="pw-status-grid">
+                        <div class="pw-stat-cell">
+                            <div class="pw-stat-key">ОБОЗНАЧЕНИЕ</div>
+                            <div class="pw-stat-val r">UNIT V1</div>
+                        </div>
+                        <div class="pw-stat-cell gold">
+                            <div class="pw-stat-key">ТЕКУЩИЙ РАНГ</div>
+                            <div class="pw-stat-val g">SSS</div>
+                        </div>
+                        <div class="pw-stat-cell blue">
+                            <div class="pw-stat-key">ТИП ЮНИТА</div>
+                            <div class="pw-stat-val b">COMBAT AUTOMATON</div>
+                        </div>
+                        <div class="pw-stat-cell green">
+                            <div class="pw-stat-key">СОСТОЯНИЕ</div>
+                            <div class="pw-stat-val n">ACTIVE // ONLINE</div>
+                        </div>
+                        <div class="pw-stat-cell pink">
+                            <div class="pw-stat-key">ТЕКУЩИЙ СЕКТОР</div>
+                            <div class="pw-stat-val" style="color:var(--c-pink)">LOWER SECTOR</div>
+                        </div>
+                        <div class="pw-stat-cell">
+                            <div class="pw-stat-key">ЭНЕРГИЯ</div>
+                            <div class="pw-stat-val r">CRITICAL — HUNTING</div>
+                        </div>
+                    </div>
+
+                    <div class="pw-readout">
+                        <span class="hl">[SYSTEM]</span> <span class="vl">V1 INITIALIZED // ALL SYSTEMS NOMINAL</span><br>
+                        <span class="hl">[ENERGY]</span> <span class="vl">SOURCE: BIOLOGICAL // STATUS: ACTIVE COLLECTION</span><br>
+                        <span class="hl">[MISSION]</span> <span class="gl">DESCEND LOWER SECTOR // NEUTRALIZE ALL TARGETS</span><br>
+                        <span class="hl">[NOTE]</span> <span class="vl">MANKIND IS INACTIVE. ENERGY IS FUEL.</span><span style="display:inline-block;width:7px;height:11px;background:var(--acc);vertical-align:middle;animation:blink 1s step-end infinite;margin-left:2px;"></span>
+                    </div>
+
+                    <div class="pw-readout" style="margin-top:.5rem;">
+                        <span class="hl">[PRIMARY WEAPON]</span>  <span class="bl">FEEDBACKER // KNUCKLEBLASTER // WHIPLASH</span><br>
+                        <span class="hl">[SECONDARY]</span>        <span class="vl">PIERCER // MARKSMAN // SHARPSHOOTER</span><br>
+                        <span class="hl">[ALT-FIRE]</span>         <span class="nl">RAILCANNON // ROCKET LAUNCHER // NAILGUN</span>
+                    </div>
+                </div>
+
+                <!-- TAB: STATS -->
+                <div class="pw-tab" id="pt-stats">
+                    <div class="pw-section-title">БОЕВАЯ СТАТИСТИКА</div>
+
+                    <div class="pw-status-grid">
+                        <div class="pw-stat-cell">
+                            <div class="pw-stat-key">ЦЕЛЕЙ НЕЙТРАЛИЗОВАНО</div>
+                            <div class="pw-stat-val r">14 882</div>
+                        </div>
+                        <div class="pw-stat-cell gold">
+                            <div class="pw-stat-key">ЭНЕРГИИ СОБРАНО</div>
+                            <div class="pw-stat-val g">∞ UNITS</div>
+                        </div>
+                        <div class="pw-stat-cell blue">
+                            <div class="pw-stat-key">ПАРИРОВАНИЙ</div>
+                            <div class="pw-stat-val b">3 241</div>
+                        </div>
+                        <div class="pw-stat-cell green">
+                            <div class="pw-stat-key">SSS-РАНГОВ ПОЛУЧЕНО</div>
+                            <div class="pw-stat-val n">47</div>
+                        </div>
+                        <div class="pw-stat-cell">
+                            <div class="pw-stat-key">СЛОЁВ ПРОЙДЕНО</div>
+                            <div class="pw-stat-val">7 / 9</div>
+                        </div>
+                        <div class="pw-stat-cell pink">
+                            <div class="pw-stat-key">ПРИОРИТЕТНЫХ ЦЕЛЕЙ</div>
+                            <div class="pw-stat-val" style="color:var(--c-pink)">12 НЕЙТР.</div>
+                        </div>
+                        <div class="pw-stat-cell gold">
+                            <div class="pw-stat-key">РЕКОРДНОЕ ВРЕМЯ УРОВНЯ</div>
+                            <div class="pw-stat-val g">0:44.18</div>
+                        </div>
+                        <div class="pw-stat-cell blue">
+                            <div class="pw-stat-key">МАКС. МУЛЬТИПЛИКАТОР</div>
+                            <div class="pw-stat-val b">×9.4</div>
+                        </div>
+                    </div>
+
+                    <div class="pw-readout">
+                        <span class="hl">[EFFICIENCY]</span>   <span class="nl">COMBAT EFFICIENCY: 98.7%</span><br>
+                        <span class="hl">[BEST RANK]</span>     <span class="gl">P-RANK // ALL LAYERS</span><br>
+                        <span class="hl">[DEATHS]</span>        <span class="vl">0 — MACHINES DO NOT SUBMIT</span>
+                    </div>
+                </div>
+
+                <!-- TAB: COMBAT LOG -->
+                <div class="pw-tab" id="pt-log">
+                    <div class="pw-section-title">БОЙ-ЛОГ // ПОСЛЕДНИЕ ЗАПИСИ</div>
+
+                    <div class="pw-log-entry">
+                        <div class="pw-log-time">7-4 // 00:02:11</div>
+                        <div class="pw-log-text"><strong>GABRIEL, JUDGE OF HELL</strong> — нейтрализован. Повторная встреча. Результат аналогичен.</div>
+                        <div class="pw-log-badge sss">SSS</div>
+                    </div>
+                    <div class="pw-log-entry">
+                        <div class="pw-log-time">7-3 // 00:01:44</div>
+                        <div class="pw-log-text"><strong>СЕКЦИЯ DISCORD</strong> — зачищена полностью. Все сущности нейтрализованы за 104 секунды.</div>
+                        <div class="pw-log-badge sss">SSS</div>
+                    </div>
+                    <div class="pw-log-entry">
+                        <div class="pw-log-time">7-2 // 00:01:58</div>
+                        <div class="pw-log-text">Обнаружена <strong>V2</strong> — зеркальная угроза. Угроза устранена. Конечность изъята.</div>
+                        <div class="pw-log-badge ss">SS</div>
+                    </div>
+                    <div class="pw-log-entry">
+                        <div class="pw-log-time">6-2 // 00:03:22</div>
+                        <div class="pw-log-text"><strong>MINOS PRIME</strong> — активирован. Нейтрализован. Система стилей: максимум достигнут.</div>
+                        <div class="pw-log-badge sss">SSS</div>
+                    </div>
+                    <div class="pw-log-entry">
+                        <div class="pw-log-time">5-4 // 00:02:09</div>
+                        <div class="pw-log-text"><strong>SISYPHEAN INSURRECTIONIST</strong> — подавлен. Камень не докатился.</div>
+                        <div class="pw-log-badge ss">SS</div>
+                    </div>
+                    <div class="pw-log-entry">
+                        <div class="pw-log-time">4-4 // 00:01:33</div>
+                        <div class="pw-log-text">Слой <strong>GREED</strong> — полная зачистка. Энергия пополнена до критического уровня.</div>
+                        <div class="pw-log-badge s">S</div>
+                    </div>
+                    <div class="pw-log-entry">
+                        <div class="pw-log-time">P-2 // 00:04:17</div>
+                        <div class="pw-log-text"><strong>SOMETHING WICKED</strong> — идентифицировано. Характер угрозы: неизвестен.</div>
+                        <div class="pw-log-badge sss">???</div>
+                    </div>
+
+                    <div class="pw-readout" style="margin-top:.8rem;">
+                        <span class="hl">[LOG]</span> <span class="vl">ВСЕГО ЗАПИСЕЙ: 14 882 // ПОКАЗАНЫ ПОСЛЕДНИЕ 7</span><br>
+                        <span class="hl">[FILTER]</span> <span class="vl">BOSS ENCOUNTERS // P-RANK MISSIONS</span>
+                    </div>
+                </div>
+
+                <!-- TAB: ACHIEVEMENTS -->
+                <div class="pw-tab" id="pt-achievements">
+                    <div class="pw-section-title">РЕКОРДЫ // ДОСТИЖЕНИЯ</div>
+
+                    <div class="pw-achievement">
+                        <div class="pw-ach-icon" style="color:var(--acc);">★</div>
+                        <div>
+                            <div class="pw-ach-name">INFINITE HYPERDEATH</div>
+                            <div class="pw-ach-desc">Завершить Акт I с P-рангом на всех уровнях.</div>
+                        </div>
+                        <div class="pw-ach-status done">DONE</div>
+                    </div>
+                    <div class="pw-achievement">
+                        <div class="pw-ach-icon" style="color:var(--c-gold);">✦</div>
+                        <div>
+                            <div class="pw-ach-name">MACHINE SUPREMACY</div>
+                            <div class="pw-ach-desc">Нейтрализовать V2 не получив урона ни разу.</div>
+                        </div>
+                        <div class="pw-ach-status done">DONE</div>
+                    </div>
+                    <div class="pw-achievement">
+                        <div class="pw-ach-icon" style="color:var(--c-blue);">◆</div>
+                        <div>
+                            <div class="pw-ach-name">PARRY GOD</div>
+                            <div class="pw-ach-desc">Выполнить 1000 парирований в одном прохождении.</div>
+                        </div>
+                        <div class="pw-ach-status done">DONE</div>
+                    </div>
+                    <div class="pw-achievement">
+                        <div class="pw-ach-icon" style="color:var(--c-green);">◎</div>
+                        <div>
+                            <div class="pw-ach-name">SPEED OF LIGHT</div>
+                            <div class="pw-ach-desc">Завершить любой уровень быстрее 60 секунд с SSS-рангом.</div>
+                        </div>
+                        <div class="pw-ach-status done">DONE</div>
+                    </div>
+                    <div class="pw-achievement">
+                        <div class="pw-ach-icon locked" style="color:var(--text-faint);">⬡</div>
+                        <div>
+                            <div class="pw-ach-name">SOMETHING WICKED</div>
+                            <div class="pw-ach-desc">???????????????????????????????????</div>
+                        </div>
+                        <div class="pw-ach-status lock">LOCKED</div>
+                    </div>
+                    <div class="pw-achievement">
+                        <div class="pw-ach-icon locked" style="color:var(--text-faint);">▦</div>
+                        <div>
+                            <div class="pw-ach-name">ACT III COMPLETE</div>
+                            <div class="pw-ach-desc">В разработке. Данные засекречены.</div>
+                        </div>
+                        <div class="pw-ach-status lock">TBD</div>
+                    </div>
+                </div>
+
+            </div><!-- /pw-content -->
+        </div><!-- /pw-body -->
+
+        <!-- Status bar at bottom -->
+        <div class="pw-statusbar">
+            <div class="pw-sb-item">
+                <div class="pw-sb-dot"></div>
+                СИСТЕМА: ОНЛАЙН
+            </div>
+            <div class="pw-sb-item acc">
+                <div class="pw-sb-dot"></div>
+                ЭНЕРГИЯ: КРИТИЧЕСКИ НИЗКО
+            </div>
+            <div class="pw-sb-item gold">
+                <div class="pw-sb-dot"></div>
+                РАНГ: SSS
+            </div>
+            <div class="pw-sb-spacer"></div>
+            <div class="pw-sb-item">USER.DAT // V1 // ULTRAKILL DATABASE</div>
+        </div>
+
+    </div><!-- /profile-frame -->
+</div><!-- /profile-overlay -->
+
+
 <script>
 var THEME_LABELS = { dark:'DARK // ORIGINAL', v1:'V1 // MACHINE // BLUE', v2:'V2 // MIRROR // RED', gabriel:'GABRIEL // JUDGE // GOLD' };
 function setTheme(t) {
@@ -524,6 +1253,34 @@ function setTheme(t) {
     try { localStorage.setItem('uk_theme', t); } catch(e) {}
 }
 (function(){ try { var s = localStorage.getItem('uk_theme'); if (s && THEME_LABELS[s]) setTheme(s); } catch(e) {} })();
+
+/* ── Profile Modal ── */
+function openProfile() {
+    var ov = document.getElementById('profileOverlay');
+    ov.classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+function closeProfile() {
+    var ov = document.getElementById('profileOverlay');
+    ov.classList.remove('open');
+    document.body.style.overflow = '';
+}
+function handleOverlayClick(e) {
+    if (e.target === document.getElementById('profileOverlay')) closeProfile();
+}
+function switchProfileTab(tab) {
+    document.querySelectorAll('.pw-nav-btn').forEach(function(b){ b.classList.toggle('active', b.dataset.tab === tab); });
+    document.querySelectorAll('.pw-tab').forEach(function(t){ t.classList.remove('active'); });
+    var target = document.getElementById('pt-' + tab);
+    if (target) target.classList.add('active');
+    // scroll content to top on tab switch
+    var content = document.getElementById('pwContent');
+    if (content) content.scrollTop = 0;
+}
+// Close on Escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeProfile();
+});
 
 /* Canvas Background Effects */
 (function(){
