@@ -699,5 +699,541 @@ const cAnim = setInterval(() => {
     if (cnt >= totalTgt) clearInterval(cAnim);
 }, 55);
 </script>
+    <script>
+/* ============================================================
+   SMILEOS 2.0 — полная перестройка стиля под интерфейс игры
+   Основано на image.png: окно ОС с тайтлбаром, левой панелью
+   навигации и правой панелью контента
+   ============================================================ */
+(function () {
+
+  /* ── 1. ИНЖЕКТИРУЕМ CSS ── */
+  const css = document.createElement('style');
+  css.textContent = `
+    /* ----- глобальный сброс ----- */
+    body {
+      background: #111 !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      min-height: 100vh !important;
+      font-family: 'Segoe UI', Arial, sans-serif !important;
+      overflow: hidden !important;
+    }
+    body::before, body::after { display:none !important; }
+    .scanlines { display:none !important; }
+
+    .page {
+      max-width: none !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      width: 100vw !important;
+      height: 100vh !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      z-index: 10 !important;
+    }
+
+    /* ----- главное окно SmileOS ----- */
+    .sos-window {
+      width: min(1050px, 96vw);
+      height: min(680px, 92vh);
+      background: #2d2d2d;
+      border: 2px solid #555;
+      border-radius: 5px;
+      box-shadow:
+        0 0 0 1px #1a1a1a,
+        0 24px 80px rgba(0,0,0,.9),
+        inset 0 1px 0 rgba(255,255,255,.06);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      user-select: none;
+    }
+
+    /* ----- ТАЙТЛБАР ----- */
+    .sos-titlebar {
+      height: 36px;
+      background: linear-gradient(180deg, #8f1a1a 0%, #6b1010 100%);
+      border-bottom: 2px solid #3d0808;
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+      flex-shrink: 0;
+      gap: 8px;
+    }
+    .sos-titlebar-icon { font-size: 17px; }
+    .sos-titlebar-text {
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: .4px;
+      flex: 1;
+    }
+    .sos-winbtns { display:flex; gap:5px; }
+    .sos-winbtn {
+      width: 16px; height: 16px;
+      border: 1px solid rgba(0,0,0,.5);
+      border-radius: 3px;
+      cursor: pointer;
+      transition: .1s;
+    }
+    .sos-winbtn:hover { filter: brightness(1.3); }
+    .sos-winbtn.sos-close  { background: #cc1111; }
+    .sos-winbtn.sos-add    { background: #555; }
+    .sos-winbtn.sos-min    { background: #555; }
+
+    /* ----- ТЕЛО ОКНА ----- */
+    .sos-body {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    /* ----- ЛЕВАЯ ПАНЕЛЬ ----- */
+    .sos-left {
+      width: 200px;
+      flex-shrink: 0;
+      background: linear-gradient(180deg, #262626, #222);
+      border-right: 2px solid #444;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      padding: 20px 14px 14px;
+      gap: 6px;
+    }
+    .sos-logo {
+      text-align: center;
+      margin-bottom: 14px;
+    }
+    .sos-logo-title {
+      font-size: 42px;
+      font-weight: 900;
+      color: #fff;
+      line-height: 1;
+      text-shadow: 2px 3px 8px rgba(0,0,0,.6);
+    }
+    .sos-logo-sub {
+      display: inline-block;
+      font-size: 13px;
+      font-weight: 800;
+      background: linear-gradient(90deg,#ff4444,#ff9900,#ffe100,#44dd44,#44aaff,#cc44ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: 1px;
+    }
+    .sos-logo-rainbow {
+      height: 3px;
+      background: linear-gradient(90deg,#ff4444,#ff9900,#ffe100,#44dd44,#44aaff,#cc44ff);
+      border-radius: 2px;
+      margin-top: 5px;
+    }
+
+    /* ----- Кнопки навигации ----- */
+    .sos-navbtn {
+      display: block;
+      width: 100%;
+      padding: 10px 14px;
+      background: linear-gradient(180deg, #4a4a4a 0%, #383838 100%);
+      border: 1px solid #5a5a5a;
+      border-bottom: 2px solid #1e1e1e;
+      border-radius: 4px;
+      color: #eee;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      transition: .1s;
+      letter-spacing: .2px;
+    }
+    .sos-navbtn:hover {
+      background: linear-gradient(180deg, #5e5e5e 0%, #4a4a4a 100%);
+      color: #fff;
+    }
+    .sos-navbtn.sos-active {
+      background: linear-gradient(180deg, #3c3c3c 0%, #2a2a2a 100%);
+      border-left: 3px solid #cc1a1a;
+      color: #fff;
+    }
+
+    /* ----- Tip of the Day ----- */
+    .sos-tip-box {
+      margin-top: auto;
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .sos-tip-titlebar {
+      background: linear-gradient(180deg, #8f1a1a, #6b1010);
+      padding: 4px 8px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .sos-tip-body {
+      padding: 10px;
+      font-size: 11px;
+      color: #999;
+      line-height: 1.6;
+      min-height: 70px;
+      font-family: 'Segoe UI', Arial, sans-serif;
+    }
+    .sos-tip-hl { color: #44dd88; font-weight: 700; }
+
+    /* ----- ПРАВАЯ ПАНЕЛЬ ----- */
+    .sos-right {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: #1c1c1c;
+      overflow: hidden;
+    }
+    .sos-sub-titlebar {
+      height: 30px;
+      background: linear-gradient(180deg, #8f1a1a, #6b1010);
+      border-bottom: 1px solid #3d0808;
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+      flex-shrink: 0;
+      gap: 6px;
+    }
+    .sos-sub-titlebar span { color:#fff; font-size:12px; font-weight:600; flex:1; }
+    .sos-sub-winbtns { display:flex; gap:4px; }
+    .sos-sub-winbtn {
+      width: 13px; height: 13px;
+      border: 1px solid rgba(0,0,0,.5);
+      border-radius: 2px;
+    }
+    .sos-sub-winbtn.r { background:#cc1111; }
+    .sos-sub-winbtn.g { background:#22aa44; }
+    .sos-sub-winbtn.d { background:#555; }
+
+    /* ----- КОНТЕНТНАЯ ОБЛАСТЬ ----- */
+    .sos-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0;
+      background: #1a1a1a;
+    }
+    .sos-content::-webkit-scrollbar { width: 8px; }
+    .sos-content::-webkit-scrollbar-track { background: #111; }
+    .sos-content::-webkit-scrollbar-thumb { background: #3a3a3a; border-radius: 4px; }
+    .sos-content::-webkit-scrollbar-thumb:hover { background: #4a4a4a; }
+
+    /* ----- ПЕРЕОПРЕДЕЛЯЕМ стили элементов под SmileOS ----- */
+
+    /* boot header */
+    .boot-header {
+      background: #222 !important;
+      border-bottom: 1px solid #2a2a2a !important;
+      padding: 12px 16px !important;
+      margin: 0 !important;
+    }
+    .boot-header::before { display:none !important; }
+    .logo-eyebrow { color: #cc2222 !important; font-size:.5rem !important; }
+    .boot-header h1 {
+      font-family: 'Segoe UI', Arial, sans-serif !important;
+      font-size: 1.5rem !important;
+      letter-spacing: 3px !important;
+      text-shadow: none !important;
+    }
+    .boot-sub { color: #555 !important; font-size:.6rem !important; }
+
+    /* stats */
+    .stats-row {
+      margin: 8px !important;
+      background: #222 !important;
+      border: 1px solid #2d2d2d !important;
+      border-left: 3px solid #cc1a1a !important;
+      border-radius: 2px;
+    }
+    .stat-chip { font-size:.55rem !important; }
+
+    /* weapon grid */
+    .weapon-grid { padding: 8px !important; gap: 10px !important; }
+
+    .weapon-category {
+      background: #202020 !important;
+      border: 1px solid #2a2a2a !important;
+      border-left: 3px solid var(--wcat-c, #00ff88) !important;
+      border-radius: 3px !important;
+      padding: 14px !important;
+    }
+    .weapon-category::after { display:none !important; }
+    .weapon-category:hover {
+      background: #262626 !important;
+      box-shadow: 0 0 20px rgba(0,0,0,.5) !important;
+    }
+    .weapon-name {
+      font-family: 'Segoe UI', Arial, sans-serif !important;
+      font-size: 1.3rem !important;
+      letter-spacing: 3px !important;
+      text-shadow: none !important;
+    }
+
+    /* variant toggle buttons */
+    .variant-toggle {
+      background: #1a1a1a !important;
+      border: 1px solid #2a2a2a !important;
+      border-radius: 3px !important;
+    }
+    .toggle-btn {
+      font-family: 'Segoe UI', Arial, sans-serif !important;
+      border-radius: 2px !important;
+      color: #555 !important;
+      font-size: .58rem !important;
+    }
+    .toggle-btn.active {
+      background: rgba(0,255,136,.07) !important;
+      color: #00ff88 !important;
+    }
+    .toggle-btn:last-child.active {
+      background: rgba(255,209,102,.07) !important;
+      color: #ffd166 !important;
+    }
+
+    /* variant cards */
+    .variant-card {
+      background: #181818 !important;
+      border: 1px solid #232323 !important;
+      border-radius: 2px !important;
+    }
+    .variant-card:hover {
+      background: #1e1e1e !important;
+      border-color: var(--wcat-c, #00ff88) !important;
+    }
+    .variant-title {
+      font-family: 'Segoe UI', Arial, sans-serif !important;
+      font-size: 1rem !important;
+      letter-spacing: 1px !important;
+    }
+    .variant-desc { font-family: 'Segoe UI', Arial, sans-serif !important; }
+
+    /* weapon frame */
+    .weapon-frame {
+      background: #141414 !important;
+      border-radius: 2px !important;
+    }
+
+    /* hide things we don't need */
+    .site-header, .ticker-wrap, .divider,
+    .ascii-art, .site-footer,
+    body > div[style*="SYSTEM DATABASE"] { display:none !important; }
+
+    /* ----- СТАТУС-БАР ----- */
+    .sos-statusbar {
+      height: 22px;
+      background: #252525;
+      border-top: 1px solid #3a3a3a;
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+      font-size: 10px;
+      color: #555;
+      flex-shrink: 0;
+      gap: 16px;
+      font-family: 'Share Tech Mono', monospace;
+    }
+    .sos-statusbar .sos-online { color: #22cc55; margin-left: auto; }
+
+    /* ----- АНИМАЦИЯ появления окна ----- */
+    @keyframes sos-open {
+      from { opacity:0; transform:scale(.96) translateY(-10px); }
+      to   { opacity:1; transform:scale(1) translateY(0); }
+    }
+    .sos-window { animation: sos-open .25s ease forwards; }
+
+    /* ----- DRAGGABLE titlebar cursor ----- */
+    .sos-titlebar { cursor: move; }
+  `;
+  document.head.appendChild(css);
+
+
+  /* ── 2. СТРОИМ ДЕРЕВО SmileOS ── */
+
+  const page = document.querySelector('.page');
+
+  // Собираем элементы контента ДО того как очистим .page
+  const bootHeader = page.querySelector('.boot-header');
+  const statsRow   = page.querySelector('.stats-row');
+  const weaponGrid = page.querySelector('.weapon-grid');
+
+  // Создаём главное окно
+  const win = document.createElement('div');
+  win.className = 'sos-window';
+
+  // ── Тайтлбар ──
+  const titlebar = document.createElement('div');
+  titlebar.className = 'sos-titlebar';
+  titlebar.innerHTML = `
+    <span class="sos-titlebar-icon">💀</span>
+    <span class="sos-titlebar-text">SmileOS 2.0 — V1 АРСЕНАЛ</span>
+    <div class="sos-winbtns">
+      <div class="sos-winbtn sos-min"  title="Свернуть"></div>
+      <div class="sos-winbtn sos-add"  title="Развернуть"></div>
+      <div class="sos-winbtn sos-close" title="Закрыть"></div>
+    </div>
+  `;
+
+  // ── Тело окна ──
+  const body = document.createElement('div');
+  body.className = 'sos-body';
+
+  // ── Левая панель ──
+  const left = document.createElement('div');
+  left.className = 'sos-left';
+  left.innerHTML = `
+    <div class="sos-logo">
+      <div class="sos-logo-title">V1</div>
+      <div class="sos-logo-sub">ARSENAL&nbsp;2.0</div>
+      <div class="sos-logo-rainbow"></div>
+    </div>
+  `;
+
+  const navItems = [
+    { text: 'Weapons',           href: '#',           active: true  },
+    { text: 'Enemies',           href: 'bosses.html',  active: false },
+    { text: 'Return to Mission', href: 'index.html',   active: false },
+    { text: 'Lore',              href: 'lore.html',    active: false },
+  ];
+  navItems.forEach(item => {
+    const a = document.createElement('a');
+    a.href = item.href;
+    a.className = 'sos-navbtn' + (item.active ? ' sos-active' : '');
+    a.textContent = item.text;
+    left.appendChild(a);
+  });
+
+  // Tip of the Day
+  const tips = [
+    'If blown too far off the arena, <span class="sos-tip-hl">PUMP CHARGE</span>\'s overcharge is a good way to get back.',
+    'Parrying a <span class="sos-tip-hl">MALICIOUS FACE</span> beam deals heavy damage to nearby enemies.',
+    '<span class="sos-tip-hl">COINS</span> shot mid-air redirect all revolver bullets to the nearest target.',
+    'The <span class="sos-tip-hl">WHIPLASH</span> can slam enemies into walls for massive style bonuses.',
+  ];
+  let tipIndex = 0;
+  const tipBox = document.createElement('div');
+  tipBox.className = 'sos-tip-box';
+  tipBox.innerHTML = `
+    <div class="sos-tip-titlebar">💡 Tip of the Day</div>
+    <div class="sos-tip-body" id="sos-tip-body">${tips[0]}</div>
+  `;
+  left.appendChild(tipBox);
+
+  // ── Правая панель ──
+  const right = document.createElement('div');
+  right.className = 'sos-right';
+
+  const subTitlebar = document.createElement('div');
+  subTitlebar.className = 'sos-sub-titlebar';
+  subTitlebar.innerHTML = `
+    <span>🎯&nbsp;&nbsp;Каталог Арсенала — Полная База Данных</span>
+    <div class="sos-sub-winbtns">
+      <div class="sos-sub-winbtn d"></div>
+      <div class="sos-sub-winbtn g"></div>
+      <div class="sos-sub-winbtn r"></div>
+    </div>
+  `;
+
+  const content = document.createElement('div');
+  content.className = 'sos-content';
+
+  // Переносим оригинальный контент в правую панель
+  [bootHeader, statsRow, weaponGrid].forEach(el => {
+    if (el) content.appendChild(el);
+  });
+
+  right.appendChild(subTitlebar);
+  right.appendChild(content);
+
+  // Статус-бар
+  const statusbar = document.createElement('div');
+  statusbar.className = 'sos-statusbar';
+  statusbar.innerHTML = `
+    <span>SmileOS 2.0 // ARSENAL DATABASE // ENERGY IS FUEL // LOWER SECTOR ACTIVE</span>
+    <span class="sos-online">● ONLINE</span>
+  `;
+
+  // Сборка
+  body.appendChild(left);
+  body.appendChild(right);
+  win.appendChild(titlebar);
+  win.appendChild(body);
+  win.appendChild(statusbar);
+
+  page.innerHTML = '';
+  page.appendChild(win);
+
+
+  /* ── 3. TIP ROTATION ── */
+  setInterval(() => {
+    tipIndex = (tipIndex + 1) % tips.length;
+    const el = document.getElementById('sos-tip-body');
+    if (!el) return;
+    el.style.opacity = '0';
+    el.style.transition = 'opacity .3s';
+    setTimeout(() => {
+      el.innerHTML = tips[tipIndex];
+      el.style.opacity = '1';
+    }, 300);
+  }, 5000);
+
+
+  /* ── 4. DRAGGABLE ОКНО ── */
+  let isDragging = false, startX = 0, startY = 0, origL = 0, origT = 0;
+
+  titlebar.addEventListener('mousedown', e => {
+    isDragging = true;
+    startX = e.clientX; startY = e.clientY;
+    const r = win.getBoundingClientRect();
+    origL = r.left; origT = r.top;
+    win.style.position = 'fixed';
+    win.style.left = origL + 'px';
+    win.style.top  = origT + 'px';
+    win.style.margin = '0';
+    e.preventDefault();
+  });
+  document.addEventListener('mousemove', e => {
+    if (!isDragging) return;
+    win.style.left = (origL + e.clientX - startX) + 'px';
+    win.style.top  = (origT + e.clientY - startY) + 'px';
+  });
+  document.addEventListener('mouseup', () => { isDragging = false; });
+
+
+  /* ── 5. КНОПКИ УПРАВЛЕНИЯ ОКНОМ ── */
+  win.querySelector('.sos-close').addEventListener('click', () => {
+    win.style.transition = 'opacity .2s, transform .2s';
+    win.style.opacity = '0';
+    win.style.transform = 'scale(.95)';
+    setTimeout(() => win.remove(), 200);
+  });
+  win.querySelector('.sos-min').addEventListener('click', () => {
+    win.style.transition = 'height .2s';
+    win.style.height = win.style.height === '36px' ? '' : '36px';
+    body.style.display = win.style.height === '36px' ? 'none' : '';
+    statusbar.style.display = win.style.height === '36px' ? 'none' : '';
+  });
+  win.querySelector('.sos-add').addEventListener('click', () => {
+    win.style.position = 'fixed';
+    win.style.left = '2vw'; win.style.top = '2vh';
+    win.style.width = '96vw'; win.style.height = '96vh';
+    win.style.maxWidth = 'none'; win.style.maxHeight = 'none';
+    win.style.transition = 'all .2s';
+  });
+
+  console.log('%c SmileOS 2.0 // Initialized ', 'background:#8f1a1a;color:#fff;font-weight:bold;padding:4px 10px;border-radius:3px;');
+
+})();
+</script>
 </body>
 </html>
