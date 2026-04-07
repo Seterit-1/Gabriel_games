@@ -8,9 +8,6 @@
     <style>
         *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 
-        /* ═══════════════════════════════════════
-           TERMINAL BASE — CSS VARIABLES
-        ═══════════════════════════════════════ */
         :root {
             --bg:#000; --bg2:#080808; --bg3:#0f0f0f;
             --border:#fff; --border-dim:#555; --border-faint:#2a2a2a;
@@ -23,19 +20,13 @@
             --scanline:rgba(0,0,0,.16);
         }
 
-        /* ── PERSONAL MODE THEMES ── */
-        body[data-theme="dark"] {
-            /* same as :root, explicit for clarity */
-        }
         body[data-theme="v1"] {
             --bg:#000; --bg2:#020509; --bg3:#040a14;
             --border:#3a99ff; --border-dim:#1a4a88; --border-faint:#0a1e40;
             --text:#b8d0ff; --text-dim:#5588cc; --text-faint:#2a4466; --text-ghost:#0f1e38;
             --red:#3a99ff; --red-glow:rgba(58,153,255,.4);
-            --grid-line:rgba(58,153,255,.04);
-            --grid-dot:rgba(58,153,255,.07);
-            --grid-line2:rgba(58,153,255,.025);
-            --grid-line3:rgba(58,153,255,.018);
+            --grid-line:rgba(58,153,255,.04); --grid-dot:rgba(58,153,255,.07);
+            --grid-line2:rgba(58,153,255,.025); --grid-line3:rgba(58,153,255,.018);
             --scanline:rgba(0,0,0,.16);
         }
         body[data-theme="v2"] {
@@ -43,10 +34,8 @@
             --border:#ff1818; --border-dim:#881010; --border-faint:#3a0808;
             --text:#ffc8c8; --text-dim:#aa5555; --text-faint:#661818; --text-ghost:#280808;
             --red:#ff1818; --red-glow:rgba(255,24,24,.52);
-            --grid-line:rgba(255,24,24,.03);
-            --grid-dot:rgba(255,24,24,.06);
-            --grid-line2:rgba(255,24,24,.02);
-            --grid-line3:rgba(255,24,24,.015);
+            --grid-line:rgba(255,24,24,.03); --grid-dot:rgba(255,24,24,.06);
+            --grid-line2:rgba(255,24,24,.02); --grid-line3:rgba(255,24,24,.015);
             --scanline:rgba(0,0,0,.16);
         }
         body[data-theme="gabriel"] {
@@ -54,53 +43,39 @@
             --border:#c8981e; --border-dim:#8a6a10; --border-faint:#c8b878;
             --text:#1a1508; --text-dim:#7a6a40; --text-faint:#a09060; --text-ghost:#d0c898;
             --red:#c8981e; --red-glow:rgba(200,152,30,.32);
-            --grid-line:rgba(200,152,30,.06);
-            --grid-dot:rgba(200,152,30,.1);
-            --grid-line2:rgba(200,152,30,.04);
-            --grid-line3:rgba(200,152,30,.03);
+            --grid-line:rgba(200,152,30,.06); --grid-dot:rgba(200,152,30,.1);
+            --grid-line2:rgba(200,152,30,.04); --grid-line3:rgba(200,152,30,.03);
             --scanline:rgba(0,0,0,.04);
         }
 
         body {
-            background:var(--bg);
-            color:var(--text);
+            background:var(--bg); color:var(--text);
             font-family:'Share Tech Mono','Fira Code',monospace;
-            min-height:100vh;
-            overflow-x:hidden;
-            position:relative;
+            min-height:100vh; overflow-x:hidden; position:relative;
             transition:background .3s, color .3s;
         }
-
-        /* Blueprint circuit grid */
         body::before {
-            content:'';
-            position:fixed; inset:0; z-index:0;
+            content:''; position:fixed; inset:0; z-index:0;
             background-image:
                 linear-gradient(var(--grid-line) 1px,transparent 1px),
                 linear-gradient(90deg,var(--grid-line) 1px,transparent 1px),
                 radial-gradient(circle,var(--grid-dot) 1px,transparent 1px);
             background-size:60px 60px,60px 60px,60px 60px;
             background-position:0 0,0 0,30px 30px;
-            pointer-events:none;
-            transition:background-image .3s;
+            pointer-events:none; transition:background-image .3s;
         }
         body::after {
-            content:'';
-            position:fixed; inset:0; z-index:0;
+            content:''; position:fixed; inset:0; z-index:0;
             background-image:
                 repeating-linear-gradient(0deg,transparent,transparent 119px,var(--grid-line2) 119px,var(--grid-line2) 120px),
                 repeating-linear-gradient(90deg,transparent,transparent 179px,var(--grid-line3) 179px,var(--grid-line3) 180px);
             pointer-events:none;
         }
-
-        /* Scanlines overlay */
         .scanlines {
             position:fixed; inset:0; z-index:1;
             background:repeating-linear-gradient(0deg,transparent,transparent 3px,var(--scanline) 3px,var(--scanline) 4px);
-            pointer-events:none;
-            transition:background .3s;
+            pointer-events:none; transition:background .3s;
         }
-
         .page { max-width:1400px; margin:0 auto; padding:0 1.5rem 3rem; position:relative; z-index:10; }
 
         /* ═══════════════════════════════════════
@@ -108,71 +83,74 @@
         ═══════════════════════════════════════ */
         .modal-overlay {
             position:fixed; inset:0;
-            background:rgba(0,0,0,.93);
+            background:rgba(0,0,0,.95);
             z-index:99999;
             display:flex; align-items:center; justify-content:center;
         }
         .modal-overlay.hidden { display:none; }
         .modal-box {
-            background:#000;
-            border:2px solid var(--border);
-            max-width:500px; width:92%; padding:0;
+            background:#000; border:2px solid var(--border);
+            max-width:540px; width:92%; padding:0;
             transition:border-color .3s;
+            animation:modalIn .2s ease-out;
+        }
+        @keyframes modalIn {
+            from { opacity:0; transform:translateY(-12px) scale(.98); }
+            to   { opacity:1; transform:translateY(0)   scale(1);    }
         }
         .modal-header-bar {
-            background:var(--border);
-            padding:.55rem 1rem;
+            background:var(--border); padding:.55rem 1rem;
             font-family:'VT323',monospace; font-size:1.15rem;
-            color:#000;
-            letter-spacing:.15em; text-transform:uppercase;
+            color:#000; letter-spacing:.15em; text-transform:uppercase;
             transition:background .3s;
         }
         .modal-body { padding:1.6rem; }
         .modal-title {
             font-family:'VT323',monospace; font-size:2.8rem;
-            color:var(--text);
-            margin-bottom:.8rem; letter-spacing:3px; line-height:1.1;
+            color:var(--text); margin-bottom:.8rem; letter-spacing:3px; line-height:1.1;
         }
         .modal-warn {
-            border:1px solid var(--border);
-            padding:.65rem .9rem; margin-bottom:.8rem;
-            font-size:.62rem; color:var(--text-dim);
-            line-height:1.75; letter-spacing:.04em;
+            border:1px solid var(--border); padding:.65rem .9rem; margin-bottom:.8rem;
+            font-size:.62rem; color:var(--text-dim); line-height:1.75; letter-spacing:.04em;
+            transition:border-color .3s;
+        }
+        /* ── палитра слоёв в описании модалки ── */
+        .modal-layer-preview {
+            display:flex; gap:4px; margin:.6rem 0 .9rem; flex-wrap:wrap;
+        }
+        .mlp-chip {
+            height:6px; flex:1; min-width:18px; border-radius:1px; opacity:.8;
         }
         .modal-desc { font-size:.66rem; color:var(--text-faint); line-height:1.85; margin-bottom:1.2rem; }
+
         .modal-btns { display:grid; grid-template-columns:1fr 1fr; gap:.5rem; }
         .modal-btn {
             background:#000; border:2px solid var(--border); padding:1rem;
             cursor:pointer; font-family:'Share Tech Mono',monospace; font-size:.65rem;
             color:var(--text); letter-spacing:.08em; text-transform:uppercase;
-            transition:.12s; text-align:center;
+            transition:.12s; text-align:center; position:relative;
         }
         .modal-btn:hover { background:var(--border); color:#000; }
         .modal-btn-sub { font-size:.48rem; color:var(--text-faint); display:block; margin-top:.3rem; }
-        .modal-btn:hover .modal-btn-sub { color:rgba(0,0,0,.55); }
-
-        /* personal mode badge inside modal */
-        .modal-btn.personal-btn { position:relative; }
+        .modal-btn:hover .modal-btn-sub { color:rgba(0,0,0,.5); }
         .modal-btn.personal-btn::before {
             content:'★'; position:absolute; top:.35rem; right:.45rem;
             font-size:.5rem; color:var(--border); opacity:.7;
         }
+        /* AUTO btn accent */
+        .modal-btn.auto-btn { border-color:#ff6600; color:#ff8844; }
+        .modal-btn.auto-btn:hover { background:#ff6600; color:#000; }
 
         /* ═══════════════════════════════════════
-           HEADER — TERMINAL STYLE
+           HEADER
         ═══════════════════════════════════════ */
         .site-header {
-            border-bottom:2px solid var(--border);
-            padding:1.5rem 0 1rem;
+            border-bottom:2px solid var(--border); padding:1.5rem 0 1rem;
             transition:border-color .3s;
         }
         .header-inner { display:flex; justify-content:space-between; align-items:flex-start; gap:1.5rem; flex-wrap:wrap; }
         .logo-block { flex:1; }
-        .logo-sys-line {
-            font-size:.55rem; color:var(--text-faint);
-            letter-spacing:.25em; text-transform:uppercase; margin-bottom:.4rem;
-            transition:color .3s;
-        }
+        .logo-sys-line { font-size:.55rem; color:var(--text-faint); letter-spacing:.25em; text-transform:uppercase; margin-bottom:.4rem; transition:color .3s; }
         .logo-main {
             font-family:'VT323',monospace; font-size:5rem; line-height:.9;
             color:var(--text); letter-spacing:4px;
@@ -183,7 +161,6 @@
         .lsl { font-size:.6rem; color:var(--text-faint); letter-spacing:.12em; text-transform:uppercase; transition:color .3s; }
         .lsl .ok { color:var(--border); transition:color .3s; }
 
-        /* Vertical nav */
         .menu-nav { display:flex; flex-direction:column; gap:4px; min-width:210px; }
         .menu-nav-btn {
             background:var(--bg); border:2px solid var(--border); padding:.75rem 1.1rem;
@@ -199,8 +176,7 @@
            TICKER
         ═══════════════════════════════════════ */
         .ticker-wrap {
-            border-top:1px solid var(--border-faint);
-            border-bottom:1px solid var(--border-faint);
+            border-top:1px solid var(--border-faint); border-bottom:1px solid var(--border-faint);
             overflow:hidden; padding:.3rem 0; margin:.8rem 0 1rem;
             transition:border-color .3s;
         }
@@ -209,40 +185,29 @@
         .ti { font-size:.55rem; color:var(--text-ghost); letter-spacing:.2em; text-transform:uppercase; }
         .ti .r { color:var(--border); }
 
-        /* Divider */
         .divider {
             height:2px;
             background:linear-gradient(90deg,var(--border) 0%,var(--border-dim) 30%,transparent 100%);
-            margin:1rem 0;
-            transition:background .3s;
+            margin:1rem 0; transition:background .3s;
         }
 
         /* ═══════════════════════════════════════
            INTRO PANEL
         ═══════════════════════════════════════ */
         .intro-panel {
-            border:2px solid var(--border);
-            background:var(--bg); padding:1.2rem; margin-bottom:1.2rem;
+            border:2px solid var(--border); background:var(--bg); padding:1.2rem; margin-bottom:1.2rem;
             transition:border-color .3s, background .3s;
         }
-        .intro-panel h2 {
-            font-family:'VT323',monospace; font-size:1.8rem;
-            color:var(--text);
-            letter-spacing:.12em; margin-bottom:.5rem;
-        }
+        .intro-panel h2 { font-family:'VT323',monospace; font-size:1.8rem; color:var(--text); letter-spacing:.12em; margin-bottom:.5rem; }
         .intro-panel p { font-size:.72rem; color:var(--text-dim); line-height:1.85; margin-bottom:.4rem; }
         .intro-panel p:last-child { margin-bottom:0; }
         .intro-stats { display:grid; grid-template-columns:repeat(6,1fr); gap:3px; margin-top:.8rem; }
-        .istat {
-            border:1px solid var(--border-faint);
-            background:var(--bg2); padding:.4rem .6rem;
-            transition:border-color .3s, background .3s;
-        }
+        .istat { border:1px solid var(--border-faint); background:var(--bg2); padding:.4rem .6rem; transition:border-color .3s, background .3s; }
         .istat-k { font-size:.45rem; color:var(--text-faint); letter-spacing:.2em; text-transform:uppercase; margin-bottom:.2rem; }
         .istat-v { font-family:'VT323',monospace; font-size:1rem; color:var(--text); }
 
         /* ═══════════════════════════════════════
-           TAB BAR — TERMINAL + LAYER COLORS
+           TAB BAR
         ═══════════════════════════════════════ */
         .tab-bar {
             display:flex; gap:0;
@@ -254,86 +219,78 @@
             background:var(--bg); border:none; border-right:1px solid var(--border-faint);
             padding:.8rem 1rem; cursor:pointer;
             font-family:'VT323',monospace; font-size:1rem;
-            color:var(--text-faint); letter-spacing:.1em; text-transform:uppercase;
+            letter-spacing:.1em; text-transform:uppercase;
             white-space:nowrap; transition:.12s; min-width:80px; text-align:center;
             position:relative;
         }
         .tab-btn:last-child { border-right:none; }
-        .tab-btn .tb-num { font-size:1.3rem; display:block; line-height:1; margin-bottom:1px; }
+        .tab-btn .tb-num  { font-size:1.3rem; display:block; line-height:1; margin-bottom:1px; }
         .tab-btn .tb-name { font-size:.48rem; font-family:'Share Tech Mono',monospace; display:block; }
 
-        /* ── LAYER COLOR DEFINITIONS (tab buttons) ── */
-        .tab-btn[data-tab="prelude"]  { --lc:#ff6600; --lc-dim:rgba(255,102,0,.14); }
-        .tab-btn[data-tab="layer1"]   { --lc:#88aaff; --lc-dim:rgba(136,170,255,.14); }
-        .tab-btn[data-tab="layer2"]   { --lc:#ff44cc; --lc-dim:rgba(255,68,204,.14); }
-        .tab-btn[data-tab="layer3"]   { --lc:#ff2020; --lc-dim:rgba(255,32,32,.16); }
-        .tab-btn[data-tab="layer4"]   { --lc:#ffc800; --lc-dim:rgba(255,200,0,.14); }
-        .tab-btn[data-tab="layer5"]   { --lc:#ff8800; --lc-dim:rgba(255,136,0,.14); }
-        .tab-btn[data-tab="layer6"]   { --lc:#cc44ff; --lc-dim:rgba(204,68,255,.14); }
-        .tab-btn[data-tab="layer7"]   { --lc:#00ccbb; --lc-dim:rgba(0,204,187,.14); }
-        .tab-btn[data-tab="layer89"]  { --lc:#cc0000; --lc-dim:rgba(204,0,0,.14); }
+        /* ── LAYER COLOUR VARS per tab button ── */
+        .tab-btn[data-tab="prelude"] { --lc:#ff6600; --lc-dim:rgba(255,102,0,.16); }
+        .tab-btn[data-tab="layer1"]  { --lc:#88aaff; --lc-dim:rgba(136,170,255,.16); }
+        .tab-btn[data-tab="layer2"]  { --lc:#ff44cc; --lc-dim:rgba(255,68,204,.16); }
+        .tab-btn[data-tab="layer3"]  { --lc:#ff2020; --lc-dim:rgba(255,32,32,.18); }
+        .tab-btn[data-tab="layer4"]  { --lc:#ffc800; --lc-dim:rgba(255,200,0,.16); }
+        .tab-btn[data-tab="layer5"]  { --lc:#ff8800; --lc-dim:rgba(255,136,0,.16); }
+        .tab-btn[data-tab="layer6"]  { --lc:#cc44ff; --lc-dim:rgba(204,68,255,.16); }
+        .tab-btn[data-tab="layer7"]  { --lc:#00ccbb; --lc-dim:rgba(0,204,187,.16); }
+        .tab-btn[data-tab="layer89"] { --lc:#cc0000; --lc-dim:rgba(204,0,0,.16); }
 
-        .tab-btn:hover {
-            background:var(--lc-dim, rgba(255,255,255,.06));
-            color:var(--lc, var(--text));
-        }
-        .tab-btn.active {
-            background:var(--lc, var(--border));
-            color:#000;
-            border-bottom:none;
-        }
-        .tab-btn.active .tb-name { color:rgba(0,0,0,.55); }
+        /* Кнопки вкладок — цвет ВСЕГДА */
+        .tab-btn           { color:var(--lc); }
+        .tab-btn:hover     { background:var(--lc-dim); color:var(--lc); }
+        .tab-btn.active    { background:var(--lc); color:#000; }
+        .tab-btn.active .tb-name { color:rgba(0,0,0,.5); }
 
-        /* ── LAYER COLOR DEFINITIONS (tab contents) ── */
-        #tab-prelude { --lc:#ff6600; --lc-bg:rgba(255,102,0,.05); --lc-bd:#3a1800; --lc-dim:rgba(255,102,0,.08); }
-        #tab-layer1  { --lc:#88aaff; --lc-bg:rgba(136,170,255,.05); --lc-bd:#1a2e60; --lc-dim:rgba(136,170,255,.07); }
-        #tab-layer2  { --lc:#ff44cc; --lc-bg:rgba(255,68,204,.05); --lc-bd:#3c0a34; --lc-dim:rgba(255,68,204,.07); }
-        #tab-layer3  { --lc:#ff2020; --lc-bg:rgba(255,32,32,.06); --lc-bd:#3c0a0a; --lc-dim:rgba(255,32,32,.08); }
-        #tab-layer4  { --lc:#ffc800; --lc-bg:rgba(255,200,0,.05); --lc-bd:#3a2c00; --lc-dim:rgba(255,200,0,.07); }
-        #tab-layer5  { --lc:#ff8800; --lc-bg:rgba(255,136,0,.05); --lc-bd:#3a1c00; --lc-dim:rgba(255,136,0,.07); }
-        #tab-layer6  { --lc:#cc44ff; --lc-bg:rgba(204,68,255,.05); --lc-bd:#300048; --lc-dim:rgba(204,68,255,.07); }
-        #tab-layer7  { --lc:#00ccbb; --lc-bg:rgba(0,204,187,.05); --lc-bd:#0e302c; --lc-dim:rgba(0,204,187,.07); }
-        #tab-layer89 { --lc:#cc0000; --lc-bg:rgba(204,0,0,.05); --lc-bd:#2e0a0a; --lc-dim:rgba(204,0,0,.07); }
+        /* ── LAYER COLOUR VARS per tab content ── */
+        #tab-prelude { --lc:#ff6600; --lc-bg:rgba(255,102,0,.06); --lc-bd:#3a1800; --lc-dim:rgba(255,102,0,.09); }
+        #tab-layer1  { --lc:#88aaff; --lc-bg:rgba(136,170,255,.06); --lc-bd:#1a2e60; --lc-dim:rgba(136,170,255,.08); }
+        #tab-layer2  { --lc:#ff44cc; --lc-bg:rgba(255,68,204,.06); --lc-bd:#3c0a34; --lc-dim:rgba(255,68,204,.08); }
+        #tab-layer3  { --lc:#ff2020; --lc-bg:rgba(255,32,32,.07); --lc-bd:#3c0a0a; --lc-dim:rgba(255,32,32,.09); }
+        #tab-layer4  { --lc:#ffc800; --lc-bg:rgba(255,200,0,.06); --lc-bd:#3a2c00; --lc-dim:rgba(255,200,0,.08); }
+        #tab-layer5  { --lc:#ff8800; --lc-bg:rgba(255,136,0,.06); --lc-bd:#3a1c00; --lc-dim:rgba(255,136,0,.08); }
+        #tab-layer6  { --lc:#cc44ff; --lc-bg:rgba(204,68,255,.06); --lc-bd:#300048; --lc-dim:rgba(204,68,255,.08); }
+        #tab-layer7  { --lc:#00ccbb; --lc-bg:rgba(0,204,187,.06); --lc-bd:#0e302c; --lc-dim:rgba(0,204,187,.08); }
+        #tab-layer89 { --lc:#cc0000; --lc-bg:rgba(204,0,0,.06); --lc-bd:#2e0a0a; --lc-dim:rgba(204,0,0,.08); }
 
         /* ═══════════════════════════════════════
            TAB CONTENT
         ═══════════════════════════════════════ */
         .tab-content {
-            display:none;
-            border:2px solid var(--border); border-top:none;
+            display:none; border:2px solid var(--border); border-top:none;
             background:var(--bg); min-height:400px;
             transition:border-color .3s, background .3s;
         }
         .tab-content.active { display:block; }
 
         .layer-wrap { padding:1.5rem; }
-
-        .layer-title-row { border-bottom:1px solid var(--border-faint); padding-bottom:1rem; margin-bottom:1.2rem; }
+        .layer-title-row { border-bottom:1px solid var(--lc-bd,var(--border-faint)); padding-bottom:1rem; margin-bottom:1.2rem; }
         .layer-title-row h2 {
             font-family:'VT323',monospace; font-size:2.5rem; letter-spacing:.12em;
-            color:var(--lc, var(--text));
-            text-shadow:0 0 20px var(--lc-bg, transparent);
+            color:var(--lc,var(--text));
+            text-shadow:0 0 22px var(--lc-bg,transparent), 0 0 6px var(--lc-bg,transparent);
         }
         .layer-title-row .ltr-sub {
             font-size:.58rem; letter-spacing:.25em; text-transform:uppercase; margin-top:.3rem;
-            color:var(--lc, var(--text-faint));
-            opacity:.7;
+            color:var(--lc,var(--text-faint)); opacity:.7;
         }
 
         .layer-body { display:grid; grid-template-columns:1fr; gap:1rem; }
 
         .layer-section {
-            border:1px solid var(--lc-bd, var(--border-faint));
+            border:1px solid var(--lc-bd,var(--border-faint));
             background:var(--bg2); margin-bottom:.6rem;
-            transition:background .3s;
+            transition:background .3s, border-color .3s;
         }
         .layer-section:last-child { margin-bottom:0; }
         .layer-section-head {
-            background:var(--bg3); border-bottom:1px solid var(--lc-bd, var(--border-faint));
+            background:var(--bg3); border-bottom:1px solid var(--lc-bd,var(--border-faint));
             padding:.5rem .8rem; font-size:.55rem;
-            color:var(--lc, var(--text-faint));
+            color:var(--lc,var(--text-faint));
             letter-spacing:.28em; text-transform:uppercase;
-            transition:background .3s;
+            transition:background .3s, color .3s;
         }
         .layer-section-body { padding:.9rem; }
         .layer-desc { font-size:.73rem; color:var(--text-dim); line-height:1.9; }
@@ -341,17 +298,18 @@
         .layer-desc em { color:var(--text-faint); font-style:normal; border-bottom:1px solid var(--border-faint); }
 
         .dante-ref {
-            border-left:3px solid var(--lc, var(--border));
+            border-left:3px solid var(--lc,var(--border));
             padding:.5rem .8rem;
-            background:var(--lc-bg, rgba(255,255,255,.02));
+            background:var(--lc-bg,rgba(255,255,255,.02));
             margin-top:.8rem;
             font-size:.64rem; color:var(--text-faint); line-height:1.85;
+            transition:background .3s, border-color .3s;
         }
         .dante-ref strong { color:var(--text-dim); }
 
         .desc-photo-grid { display:grid; grid-template-columns:1fr 220px; gap:1.2rem; align-items:start; }
         .photo-frame {
-            border:2px dashed var(--lc-bd, var(--border-faint));
+            border:2px dashed var(--lc-bd,var(--border-faint));
             background:var(--bg2); min-height:160px;
             display:flex; flex-direction:column; align-items:center; justify-content:center;
             gap:.6rem; padding:1rem; position:relative;
@@ -360,9 +318,8 @@
             content:'// IMG //'; position:absolute; top:.4rem; left:.5rem;
             font-size:.4rem; color:var(--border-faint); letter-spacing:.2em;
         }
-        .photo-frame-icon { font-size:2rem; color:var(--lc-bd, var(--border-faint)); line-height:1; }
+        .photo-frame-icon  { font-size:2rem; color:var(--lc-bd,var(--border-faint)); line-height:1; }
         .photo-frame-label { font-size:.48rem; color:var(--border-faint); letter-spacing:.15em; text-transform:uppercase; text-align:center; line-height:1.7; }
-        .photo-frame img { width:100%; height:100%; object-fit:cover; display:block; }
         @media(max-width:700px){ .desc-photo-grid{grid-template-columns:1fr;} .photo-frame{min-height:110px;} }
 
         .level-row {
@@ -371,26 +328,34 @@
             font-size:.68rem; transition:.1s;
         }
         .level-row:last-child { border-bottom:none; }
-        .level-row:hover { background:var(--lc-dim, var(--bg3)); }
-        .lr-num { font-family:'VT323',monospace; font-size:1.2rem; color:var(--text-faint); min-width:40px; }
+        .level-row:hover { background:var(--lc-dim,var(--bg3)); }
+        .lr-num  { font-family:'VT323',monospace; font-size:1.2rem; color:var(--text-faint); min-width:40px; }
         .lr-name { flex:1; color:var(--text-dim); }
         .lr-type { font-size:.48rem; color:var(--text-faint); letter-spacing:.12em; text-transform:uppercase; }
-        .lr-type.secret { color:var(--lc, var(--text-dim)); border:1px solid var(--lc-bd, var(--border-faint)); padding:.1rem .3rem; opacity:.8; }
-        .lr-type.encounter { color:var(--lc, var(--text)); border:1px solid var(--lc, var(--border)); padding:.1rem .3rem; }
+        .lr-type.secret    { color:var(--lc,var(--text-dim));  border:1px solid var(--lc-bd,var(--border-faint)); padding:.1rem .3rem; opacity:.85; }
+        .lr-type.encounter { color:var(--lc,var(--text));      border:1px solid var(--lc,var(--border));          padding:.1rem .3rem; }
 
-        .param-row { display:flex; gap:.5rem; flex-wrap:wrap; margin-bottom:.3rem; }
-        .param-key { font-size:.6rem; color:var(--text-faint); letter-spacing:.12em; text-transform:uppercase; min-width:130px; }
-        .param-val { font-size:.6rem; color:var(--text-dim); }
-        .param-val.hi { color:var(--text); }
-        .param-val.colored { color:var(--lc, var(--text)); }
+        .param-row  { display:flex; gap:.5rem; flex-wrap:wrap; margin-bottom:.3rem; }
+        .param-key  { font-size:.6rem; color:var(--text-faint); letter-spacing:.12em; text-transform:uppercase; min-width:130px; }
+        .param-val  { font-size:.6rem; color:var(--text-dim); }
+        .param-val.hi      { color:var(--text); }
+        .param-val.colored { color:var(--lc,var(--text)); }
 
-        .wip-notice {
-            border:1px solid var(--border-faint);
-            background:var(--bg2); padding:2rem; text-align:center;
-        }
-        .wip-icon { font-family:'VT323',monospace; font-size:4rem; color:var(--border-faint); display:block; margin-bottom:.4rem; }
+        .wip-notice { border:1px solid var(--border-faint); background:var(--bg2); padding:2rem; text-align:center; }
+        .wip-icon  { font-family:'VT323',monospace; font-size:4rem; color:var(--border-faint); display:block; margin-bottom:.4rem; }
         .wip-title { font-family:'VT323',monospace; font-size:1.8rem; color:var(--text-faint); margin-bottom:.4rem; }
-        .wip-text { font-size:.7rem; color:var(--text-ghost); line-height:1.7; }
+        .wip-text  { font-size:.7rem; color:var(--text-ghost); line-height:1.7; }
+
+        /* ═══════════════════════════════════════
+           MODE BADGES
+        ═══════════════════════════════════════ */
+        .auto-badge, .personal-badge {
+            display:none; font-size:.42rem; font-family:'Share Tech Mono',monospace;
+            letter-spacing:.18em; text-transform:uppercase; padding:.1rem .35rem;
+            border:1px solid var(--border); color:var(--border);
+            margin-left:.6rem; vertical-align:middle;
+        }
+        .auto-badge.visible, .personal-badge.visible { display:inline; }
 
         /* ═══════════════════════════════════════
            FOOTER
@@ -398,8 +363,7 @@
         .site-footer {
             border-top:2px solid var(--border); padding:1rem 0; margin-top:1.5rem;
             display:flex; justify-content:space-between; align-items:center;
-            flex-wrap:wrap; gap:.5rem;
-            transition:border-color .3s;
+            flex-wrap:wrap; gap:.5rem; transition:border-color .3s;
         }
         .footer-logo { font-family:'VT323',monospace; font-size:1.5rem; color:var(--text); letter-spacing:.15em; }
         .footer-text { font-size:.52rem; color:var(--text-ghost); letter-spacing:.15em; text-transform:uppercase; }
@@ -409,22 +373,6 @@
             letter-spacing:.1em; transition:.1s;
         }
         .back-link:hover { background:var(--border); color:var(--bg); }
-
-        /* ═══════════════════════════════════════
-           MODE BADGES
-        ═══════════════════════════════════════ */
-        .auto-badge {
-            display:none; font-size:.42rem; font-family:'Share Tech Mono',monospace;
-            letter-spacing:.18em; text-transform:uppercase; padding:.1rem .35rem;
-            border:1px solid var(--border); color:var(--border); margin-left:.6rem; vertical-align:middle;
-        }
-        .auto-badge.visible { display:inline; }
-        .personal-badge {
-            display:none; font-size:.42rem; font-family:'Share Tech Mono',monospace;
-            letter-spacing:.18em; text-transform:uppercase; padding:.1rem .35rem;
-            border:1px solid var(--border); color:var(--border); margin-left:.6rem; vertical-align:middle;
-        }
-        .personal-badge.visible { display:inline; }
 
         /* ═══════════════════════════════════════
            RESPONSIVE
@@ -446,31 +394,48 @@
 <div class="scanlines"></div>
 
 <!-- ═══════════════════════════════════════
-     МОДАЛЬНОЕ ОКНО ВЫБОРА РЕЖИМА
+     МОДАЛЬНОЕ ОКНО — ВСЕГДА ПРИ ЗАГРУЗКЕ
 ═══════════════════════════════════════ -->
 <div class="modal-overlay" id="themeModal">
     <div class="modal-box">
-        <div class="modal-header-bar">// SYSTEM V1 — DISPLAY CONFIG // INIT</div>
+        <div class="modal-header-bar">// SYSTEM V1 — DISPLAY CONFIG // INIT //</div>
         <div class="modal-body">
             <div class="modal-title">COLOUR<br>MODE SELECT</div>
+
+            <!-- превью цветов слоёв -->
+            <div class="modal-layer-preview">
+                <div class="mlp-chip" style="background:#ff6600;"></div>
+                <div class="mlp-chip" style="background:#88aaff;"></div>
+                <div class="mlp-chip" style="background:#ff44cc;"></div>
+                <div class="mlp-chip" style="background:#ff2020;"></div>
+                <div class="mlp-chip" style="background:#ffc800;"></div>
+                <div class="mlp-chip" style="background:#ff8800;"></div>
+                <div class="mlp-chip" style="background:#cc44ff;"></div>
+                <div class="mlp-chip" style="background:#00ccbb;"></div>
+                <div class="mlp-chip" style="background:#cc0000;"></div>
+            </div>
+
             <div class="modal-warn">
-                ВНИМАНИЕ: Режим AUTO активирует цветовую палитру каждого сектора на соответствующих вкладках. PERSONAL MODE применяет тему, выбранную на главной странице. При чувствительности к насыщенным цветам рекомендуется стандартный режим.
+                ЦВЕТ КАЖДОГО СЕКТОРА ВСЕГДА АКТИВЕН — независимо от выбранного режима. Выбор режима влияет только на палитру глобального интерфейса: фон, рамки, текст заголовка. При светочувствительности рекомендуется DARK MODE.
             </div>
             <div class="modal-desc">
-                STANDARD — монохромный терминальный вид. AUTO — вкладки в назначенных цветах слоёв. PERSONAL MODE — интерфейс в цвете темы главной страницы (V1 / V2 / GABRIEL / DARK).
+                AUTO — тёмный терминал + цвета слоёв.&nbsp;
+                PERSONAL — тема из главной страницы (V1 / V2 / GABRIEL / DARK) + цвета слоёв.&nbsp;
+                STANDARD — монохромный интерфейс + цвета слоёв.
             </div>
             <div class="modal-btns">
+                <button class="modal-btn auto-btn" onclick="chooseMode('auto')">
+                    AUTO MODE
+                    <span class="modal-btn-sub">Тёмный терминал // цвета по сектору</span>
+                </button>
                 <button class="modal-btn personal-btn" onclick="chooseMode('personal')">
                     PERSONAL MODE
-                    <span class="modal-btn-sub">Тема из главной страницы // индивидуальная</span>
+                    <span class="modal-btn-sub">Тема из главной // индивидуальная</span>
                 </button>
-                <button class="modal-btn" onclick="chooseMode('auto')">
-                    AUTO MODE
-                    <span class="modal-btn-sub">Цвет по сектору // палитра слоёв</span>
-                </button>
-                <button class="modal-btn" onclick="chooseMode('original')" style="grid-column:1/-1;opacity:.6;font-size:.58rem;padding:.7rem;">
+                <button class="modal-btn" onclick="chooseMode('original')"
+                        style="grid-column:1/-1;opacity:.55;font-size:.58rem;padding:.75rem;">
                     STANDARD (МОНОХРОМ)
-                    <span class="modal-btn-sub">Все элементы белые // без цвета</span>
+                    <span class="modal-btn-sub">Белый монохром // цвета слоёв сохранены</span>
                 </button>
             </div>
         </div>
@@ -492,16 +457,16 @@
                     <div class="lsl">LAYER MAP — <span class="ok">LOADED</span> // SECTORS I–IX</div>
                     <div class="lsl">ACCESS STATUS — <span class="ok">GRANTED</span></div>
                     <div class="lsl">COLOUR MODE — <span class="ok" id="modeLabel">STANDARD</span>
-                        <span class="auto-badge" id="autoBadge">● AUTO</span>
+                        <span class="auto-badge"     id="autoBadge">● AUTO</span>
                         <span class="personal-badge" id="personalBadge">● PERSONAL</span>
                     </div>
                 </div>
             </div>
             <div class="menu-nav">
-                <a href="index.html" class="menu-nav-btn">◄ ГЛАВНАЯ</a>
+                <a href="index.html"   class="menu-nav-btn">◄ ГЛАВНАЯ</a>
                 <a href="weapons.html" class="menu-nav-btn">АРСЕНАЛ</a>
-                <a href="bosses.html" class="menu-nav-btn">СУЩНОСТИ</a>
-                <a href="lore.html" class="menu-nav-btn">ЛОР</a>
+                <a href="bosses.html"  class="menu-nav-btn">СУЩНОСТИ</a>
+                <a href="lore.html"    class="menu-nav-btn">ЛОР</a>
                 <button class="menu-nav-btn dim" onclick="resetMode()" style="font-size:.85rem;padding:.5rem;">⚙ СМЕНА РЕЖИМА</button>
             </div>
         </div>
@@ -708,7 +673,7 @@
     </div>
 
     <!-- ═══════════════════════════════════════
-         СЛОЙ III — ЧРЕВО (КРАСНЫЙ — ВСЕГДА)
+         СЛОЙ III — ЧРЕВО
     ═══════════════════════════════════════ -->
     <div class="tab-content" id="tab-layer3">
         <div class="layer-wrap">
@@ -749,7 +714,7 @@
                     <div class="layer-section-body">
                         <div class="param-row"><span class="param-key">АКТ</span><span class="param-val hi">I — Infinite Hyperdeath</span></div>
                         <div class="param-row"><span class="param-key">АРХИТЕКТУРА</span><span class="param-val">Биологическая, внутриорганическая, биомасса</span></div>
-                        <div class="param-row"><span class="param-key">ЦВЕТОВАЯ ПАЛИТРА</span><span class="param-val colored">КРАСНЫЙ // переопределён для этого сектора</span></div>
+                        <div class="param-row"><span class="param-key">ЦВЕТОВАЯ ПАЛИТРА</span><span class="param-val colored">Красный // переопределён для этого сектора</span></div>
                         <div class="param-row"><span class="param-key">ПРИОРИТЕТНАЯ ЦЕЛЬ</span><span class="param-val hi">Gabriel (первое столкновение)</span></div>
                         <div class="param-row"><span class="param-key">УРОВНЕЙ</span><span class="param-val">2 основных (переходный сектор)</span></div>
                         <div class="param-row"><span class="param-key">ДАНТЕ</span><span class="param-val">«Инферно», Песнь VI — третий круг, Gola</span></div>
@@ -1010,9 +975,7 @@
         </div>
     </div>
 
-    <!-- ═══════════════════════════════════════
-         FOOTER
-    ═══════════════════════════════════════ -->
+    <!-- FOOTER -->
     <div class="divider" style="margin-top:1.5rem;"></div>
     <div class="site-footer">
         <div class="footer-logo">ULTRAKILL // V1</div>
@@ -1026,23 +989,20 @@
 </div><!-- /page -->
 
 <script>
-    /* ═══════════════════════════════════════
+    /* ─────────────────────────────────────────
        ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК
-    ═══════════════════════════════════════ */
-    var currentTab = 'prelude';
-
+    ───────────────────────────────────────── */
     function switchTab(id, btn) {
-        currentTab = id;
         document.querySelectorAll('.tab-content').forEach(function(el){ el.classList.remove('active'); });
         document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
         var target = document.getElementById('tab-' + id);
         if (target) target.classList.add('active');
-        if (btn) btn.classList.add('active');
+        if (btn)    btn.classList.add('active');
     }
 
-    /* ═══════════════════════════════════════
-       НАЗВАНИЯ ТЕМ
-    ═══════════════════════════════════════ */
+    /* ─────────────────────────────────────────
+       ТАБЛИЦА ОТОБРАЖАЕМЫХ ИМЁН ТЕМ
+    ───────────────────────────────────────── */
     var THEME_DISPLAY = {
         dark:    'DARK',
         v1:      'V1 // BLUE',
@@ -1050,24 +1010,25 @@
         gabriel: 'GABRIEL // GOLD'
     };
 
-    /* ═══════════════════════════════════════
-       ВЫБОР РЕЖИМА ОТОБРАЖЕНИЯ
-    ═══════════════════════════════════════ */
+    /* ─────────────────────────────────────────
+       ПРИМЕНЕНИЕ РЕЖИМА
+    ───────────────────────────────────────── */
     function chooseMode(mode) {
+        /* Скрываем модалку */
         document.getElementById('themeModal').classList.add('hidden');
 
         var autoBadge     = document.getElementById('autoBadge');
         var personalBadge = document.getElementById('personalBadge');
         var label         = document.getElementById('modeLabel');
 
-        /* Сброс всего */
+        /* Сброс предыдущего состояния */
         document.body.classList.remove('auto-mode');
         document.body.removeAttribute('data-theme');
         if (autoBadge)     autoBadge.classList.remove('visible');
         if (personalBadge) personalBadge.classList.remove('visible');
 
         if (mode === 'personal') {
-            /* Читаем тему из index.html */
+            /* Читаем тему, сохранённую на главной странице */
             var savedTheme = 'dark';
             try { savedTheme = localStorage.getItem('uk_theme') || 'dark'; } catch(e) {}
             if (!THEME_DISPLAY[savedTheme]) savedTheme = 'dark';
@@ -1082,96 +1043,45 @@
             if (label) label.textContent = 'AUTO';
 
         } else {
-            /* original / standard — чисто монохром */
+            /* standard — монохромный глобальный интерфейс, цвета слоёв сохранены */
             if (label) label.textContent = 'STANDARD';
         }
 
         try { localStorage.setItem('uk_colourmode', mode); } catch(e) {}
     }
 
+    /* ─────────────────────────────────────────
+       КНОПКА «СМЕНА РЕЖИМА» — снова показать модалку
+    ───────────────────────────────────────── */
     function resetMode() {
+        /* Восстанавливаем анимацию входа */
+        var box = document.querySelector('.modal-box');
+        if (box) { box.style.animation='none'; void box.offsetWidth; box.style.animation=''; }
         document.getElementById('themeModal').classList.remove('hidden');
     }
 
-    /* Восстановление при загрузке страницы */
+    /* ─────────────────────────────────────────
+       INIT — модалка ВСЕГДА показывается при загрузке.
+       Если нужно предварительно применить тему
+       (чтобы фон не мигал), тихо применяем её
+       НЕ закрывая модалку.
+    ───────────────────────────────────────── */
     (function(){
         try {
             var saved = localStorage.getItem('uk_colourmode');
-            if (saved === 'auto' || saved === 'original' || saved === 'personal') {
-                chooseMode(saved);
+            if (saved === 'personal') {
+                /* Тихо применяем тему для фона, но модалку не скрываем */
+                var savedTheme = localStorage.getItem('uk_theme') || 'dark';
+                if (THEME_DISPLAY[savedTheme]) {
+                    document.body.setAttribute('data-theme', savedTheme);
+                }
             }
-            /* Нет сохранённого — модалка остаётся видимой */
+            /* Модалка остаётся видимой — пользователь делает выбор заново */
         } catch(e) {}
+        /* Гарантируем, что модалка точно видна */
+        document.getElementById('themeModal').classList.remove('hidden');
     })();
 </script>
-
-<!-- ═══════════════════════════════════════
-     AUTO-MODE STYLES
-═══════════════════════════════════════ -->
-<style>
-    /* Standard / Personal mode: tab buttons monochrome (via CSS vars) */
-    .tab-btn { color:var(--text-faint); }
-    .tab-btn:hover { background:rgba(255,255,255,.06); color:var(--text); }
-    .tab-btn.active { background:var(--border); color:var(--bg); }
-
-    /* AUTO mode override: вкладки получают цвет своего слоя */
-    body.auto-mode .tab-btn { color:var(--lc, var(--text-faint)); }
-    body.auto-mode .tab-btn:hover {
-        background:var(--lc-dim, rgba(255,255,255,.06));
-        color:var(--lc, var(--text));
-    }
-    body.auto-mode .tab-btn.active {
-        background:var(--lc, var(--border));
-        color:#000;
-    }
-    body.auto-mode .tab-btn.active .tb-name { color:rgba(0,0,0,.5); }
-
-    /* Standard / Personal: содержимое монохромно (цвет из --border / --text) */
-    .tab-content .layer-title-row h2 { color:var(--text); text-shadow:none; }
-    .tab-content .layer-title-row .ltr-sub { color:var(--text-faint); opacity:1; }
-    .tab-content .dante-ref { border-left-color:var(--border); background:rgba(128,128,128,.04); }
-    .tab-content .lr-type.secret { color:var(--text-dim); border-color:var(--border-faint); }
-    .tab-content .lr-type.encounter { color:var(--text); border-color:var(--border); }
-    .tab-content .param-val.colored { color:var(--text-dim); }
-
-    /* AUTO mode override: содержимое использует цвет слоя */
-    body.auto-mode #tab-prelude { --lc:#ff6600; --lc-bg:rgba(255,102,0,.06); --lc-bd:#3a1800; --lc-dim:rgba(255,102,0,.08); }
-    body.auto-mode #tab-layer1  { --lc:#88aaff; --lc-bg:rgba(136,170,255,.06); --lc-bd:#1a2e60; --lc-dim:rgba(136,170,255,.07); }
-    body.auto-mode #tab-layer2  { --lc:#ff44cc; --lc-bg:rgba(255,68,204,.06); --lc-bd:#3c0a34; --lc-dim:rgba(255,68,204,.07); }
-    body.auto-mode #tab-layer3  { --lc:#ff2020; --lc-bg:rgba(255,32,32,.07); --lc-bd:#3c0a0a; --lc-dim:rgba(255,32,32,.08); }
-    body.auto-mode #tab-layer4  { --lc:#ffc800; --lc-bg:rgba(255,200,0,.06); --lc-bd:#3a2c00; --lc-dim:rgba(255,200,0,.07); }
-    body.auto-mode #tab-layer5  { --lc:#ff8800; --lc-bg:rgba(255,136,0,.06); --lc-bd:#3a1c00; --lc-dim:rgba(255,136,0,.07); }
-    body.auto-mode #tab-layer6  { --lc:#cc44ff; --lc-bg:rgba(204,68,255,.06); --lc-bd:#300048; --lc-dim:rgba(204,68,255,.07); }
-    body.auto-mode #tab-layer7  { --lc:#00ccbb; --lc-bg:rgba(0,204,187,.06); --lc-bd:#0e302c; --lc-dim:rgba(0,204,187,.07); }
-    body.auto-mode #tab-layer89 { --lc:#cc0000; --lc-bg:rgba(204,0,0,.06); --lc-bd:#2e0a0a; --lc-dim:rgba(204,0,0,.07); }
-
-    body.auto-mode .tab-content .layer-title-row h2 {
-        color:var(--lc);
-        text-shadow:0 0 18px var(--lc-bg);
-    }
-    body.auto-mode .tab-content .layer-title-row .ltr-sub { color:var(--lc); opacity:.65; }
-    body.auto-mode .tab-content .layer-section { border-color:var(--lc-bd); }
-    body.auto-mode .tab-content .layer-section-head { color:var(--lc); border-bottom-color:var(--lc-bd); background:#080808; }
-    body.auto-mode .tab-content .dante-ref { border-left-color:var(--lc); background:var(--lc-bg); }
-    body.auto-mode .tab-content .lr-type.secret { color:var(--lc); border-color:var(--lc-bd); }
-    body.auto-mode .tab-content .lr-type.encounter { color:var(--lc); border-color:var(--lc); }
-    body.auto-mode .tab-content .level-row:hover { background:var(--lc-dim); }
-    body.auto-mode .tab-content .param-val.colored { color:var(--lc); }
-    body.auto-mode .tab-content .photo-frame { border-color:var(--lc-bd); }
-    body.auto-mode .tab-content .photo-frame-icon { color:var(--lc-bd); }
-
-    /* Слой III (ЧРЕВО) — красный ВСЕГДА в обоих режимах */
-    #tab-layer3 .layer-title-row h2 { color:#ff2020 !important; text-shadow:0 0 18px rgba(255,32,32,.3) !important; }
-    #tab-layer3 .layer-title-row .ltr-sub { color:#cc0000 !important; opacity:1 !important; }
-    #tab-layer3 .layer-section { border-color:#3c0a0a !important; }
-    #tab-layer3 .layer-section-head { color:#cc2222 !important; border-bottom-color:#3c0a0a !important; }
-    #tab-layer3 .dante-ref { border-left-color:#ff2020 !important; background:rgba(255,32,32,.05) !important; }
-    #tab-layer3 .lr-type.encounter { color:#ff2020 !important; border-color:#ff2020 !important; }
-    #tab-layer3 .param-val.colored { color:#ff2020 !important; }
-    .tab-btn[data-tab="layer3"] { color:#882222 !important; }
-    .tab-btn[data-tab="layer3"]:hover { background:rgba(255,32,32,.14) !important; color:#ff2020 !important; }
-    .tab-btn[data-tab="layer3"].active { background:#ff2020 !important; color:#fff !important; }
-</style>
 
 </body>
 </html>
