@@ -1068,14 +1068,14 @@ const cAnim = setInterval(() => {
     setTimeout(() => { el.innerHTML = tips[tipIndex]; el.style.opacity = '1'; }, 300);
   }, 5000);
 
-  /* ── 4. КНОПКИ (drag отключён — fullscreen) ── */
+    /* ── 4. КНОПКИ (drag отключён — fullscreen) ── */
+
+  // ── Titlebar: красная → index.html ──
   win.querySelector('.sos-close').addEventListener('click', () => {
-    win.style.transition = 'opacity .2s, transform .2s';
-    win.style.opacity = '0';
-    win.style.transform = 'scale(.98)';
-    setTimeout(() => win.remove(), 200);
+    window.location.href = 'index.html';
   });
 
+  // ── Titlebar: серая → свернуть/развернуть ──
   win.querySelector('.sos-min').addEventListener('click', () => {
     const collapsed = win.dataset.collapsed === '1';
     if (collapsed) {
@@ -1091,6 +1091,22 @@ const cAnim = setInterval(() => {
     }
     win.style.transition = 'height .2s';
   });
+
+  // ── Sub-titlebar: красная → index.html ──
+  subTitlebar.querySelector('.sos-sub-winbtn.r').addEventListener('click', () => {
+    window.location.href = 'index.html';
+  });
+
+  // ── Sub-titlebar: зелёная → обновить страницу ──
+  subTitlebar.querySelector('.sos-sub-winbtn.g').addEventListener('click', () => {
+    location.reload();
+  });
+
+  // ── Sub-titlebar: серая → прокрутить контент вниз ──
+  subTitlebar.querySelector('.sos-sub-winbtn.d').addEventListener('click', () => {
+    content.scrollTo({ top: content.scrollHeight, behavior: 'smooth' });
+  });
+
 
   console.log('%c SmileOS 2.0 // Fullscreen // Initialized ', 'background:#8f1a1a;color:#fff;font-weight:bold;padding:4px 10px;border-radius:3px;');
 
