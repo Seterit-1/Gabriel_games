@@ -1,0 +1,204 @@
+/* ═══════════════════════════════════════
+   ULTRAKILL SITE — ОБЩИЕ СТИЛИ
+   Подключается во всех страницах
+═══════════════════════════════════════ */
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+/* ── CSS-ПЕРЕМЕННЫЕ: ТЁМНАЯ / ДЕФОЛТ ── */
+:root {
+    --bg:#000; --bg2:#080808; --bg3:#0f0f0f;
+    --border:#fff; --border-dim:#555; --border-faint:#2a2a2a;
+    --text:#fff; --text-dim:#aaa; --text-faint:#555; --text-ghost:#2a2a2a;
+    --red:#ff2020; --red-glow:rgba(255,32,32,.4);
+    --acc:#ff2020; --acc-glow:rgba(255,32,32,.4);
+    --c-gold:#ffd166; --c-blue:#5599ff; --c-green:#22ff88;
+    --c-pink:#ff44aa; --c-orange:#ff8833;
+    --grid-line:rgba(255,255,255,.03);
+    --grid-dot:rgba(255,255,255,.055);
+    --grid-line2:rgba(255,255,255,.022);
+    --grid-line3:rgba(255,255,255,.018);
+    --scanline:rgba(0,0,0,.16);
+}
+
+/* ── ТЕМА V1 (СИНЯЯ) ── */
+body[data-theme="v1"] {
+    --bg:#000; --bg2:#020509; --bg3:#040a14;
+    --border:#3a99ff; --border-dim:#1a4a88; --border-faint:#0a1e40;
+    --text:#b8d0ff; --text-dim:#5588cc; --text-faint:#2a4466; --text-ghost:#0f1e38;
+    --red:#3a99ff; --red-glow:rgba(58,153,255,.4);
+    --acc:#3a99ff; --acc-glow:rgba(58,153,255,.42);
+    --c-gold:#44aaff; --c-blue:#77ccff; --c-green:#33bbff;
+    --c-pink:#6688ff; --c-orange:#4499ee;
+    --grid-line:rgba(58,153,255,.04); --grid-dot:rgba(58,153,255,.07);
+    --grid-line2:rgba(58,153,255,.025); --grid-line3:rgba(58,153,255,.018);
+    --scanline:rgba(0,0,0,.16);
+}
+
+/* ── ТЕМА V2 (КРАСНАЯ) ── */
+body[data-theme="v2"] {
+    --bg:#070202; --bg2:#0a0303; --bg3:#110505;
+    --border:#ff1818; --border-dim:#881010; --border-faint:#3a0808;
+    --text:#ffc8c8; --text-dim:#aa5555; --text-faint:#661818; --text-ghost:#280808;
+    --red:#ff1818; --red-glow:rgba(255,24,24,.52);
+    --acc:#ff1818; --acc-glow:rgba(255,24,24,.52);
+    --c-gold:#ff8855; --c-blue:#ff5544; --c-green:#ff4422;
+    --c-pink:#ff2266; --c-orange:#ff7722;
+    --grid-line:rgba(255,24,24,.03); --grid-dot:rgba(255,24,24,.06);
+    --grid-line2:rgba(255,24,24,.02); --grid-line3:rgba(255,24,24,.015);
+    --scanline:rgba(0,0,0,.16);
+}
+
+/* ── ТЕМА GABRIEL (ЗОЛОТАЯ) ── */
+body[data-theme="gabriel"] {
+    --bg:#f0ebe0; --bg2:#fafaf4; --bg3:#edead8;
+    --border:#c8981e; --border-dim:#8a6a10; --border-faint:#c8b060;
+    --text:#1a1508; --text-dim:#7a6a40; --text-faint:#a09060; --text-ghost:#d0c898;
+    --red:#c8981e; --red-glow:rgba(200,152,30,.32);
+    --acc:#c8981e; --acc-glow:rgba(200,152,30,.32);
+    --c-gold:#c8981e; --c-blue:#3366aa; --c-green:#227744;
+    --c-pink:#aa3366; --c-orange:#bb5522;
+    --grid-line:rgba(200,152,30,.06); --grid-dot:rgba(200,152,30,.1);
+    --grid-line2:rgba(200,152,30,.04); --grid-line3:rgba(200,152,30,.03);
+    --scanline:rgba(0,0,0,.04);
+}
+
+/* ── БАЗОВЫЕ СТИЛИ BODY ── */
+body {
+    background:var(--bg); color:var(--text);
+    font-family:'Share Tech Mono','Fira Code',monospace;
+    min-height:100vh; overflow-x:hidden; position:relative;
+    transition:background .35s, color .35s;
+}
+
+/* ── СЕТКА-ФОН (GRID) ── */
+body::before {
+    content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
+    background-image:
+        linear-gradient(var(--grid-line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px),
+        radial-gradient(circle, var(--grid-dot) 1px, transparent 1px);
+    background-size:60px 60px, 60px 60px, 60px 60px;
+    background-position:0 0, 0 0, 30px 30px;
+    transition:background-image .35s;
+}
+body::after {
+    content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
+    background-image:
+        repeating-linear-gradient(0deg,transparent,transparent 119px,var(--grid-line2) 119px,var(--grid-line2) 120px),
+        repeating-linear-gradient(90deg,transparent,transparent 179px,var(--grid-line3) 179px,var(--grid-line3) 180px);
+}
+
+/* ── СКАН-ЛИНИИ ── */
+.scanlines {
+    position:fixed; inset:0; z-index:1; pointer-events:none;
+    background:repeating-linear-gradient(0deg,
+        transparent,transparent 3px,
+        var(--scanline) 3px,var(--scanline) 4px);
+    transition:background .35s;
+}
+
+/* ── КОНТЕЙНЕР СТРАНИЦЫ ── */
+.page {
+    max-width:1400px; margin:0 auto;
+    padding:0 1.5rem 3rem; position:relative; z-index:10;
+}
+
+/* ── ШАПКА САЙТА ── */
+.site-header {
+    border-bottom:2px solid var(--border);
+    padding:1.5rem 0 1rem;
+    transition:border-color .35s;
+}
+.header-inner {
+    display:flex; justify-content:space-between;
+    align-items:flex-start; gap:1.5rem; flex-wrap:wrap;
+}
+.logo-block { flex:1; }
+.logo-sys-line {
+    font-size:.55rem; color:var(--text-faint);
+    letter-spacing:.25em; text-transform:uppercase; margin-bottom:.4rem;
+    transition:color .35s;
+}
+.logo-sys-line .ok { color:var(--acc); }
+.logo-main {
+    font-family:'VT323',monospace; font-size:5rem; line-height:.9;
+    color:var(--text); letter-spacing:4px;
+    text-shadow:3px 3px 0 var(--bg), 0 0 30px var(--red-glow);
+    transition:color .35s, text-shadow .35s;
+}
+.logo-status-lines { margin-top:.6rem; display:flex; flex-direction:column; gap:.15rem; }
+.lsl { font-size:.6rem; color:var(--text-faint); letter-spacing:.12em; text-transform:uppercase; transition:color .35s; }
+.lsl .ok { color:var(--border); transition:color .35s; }
+
+/* ── МЕРЦАЮЩИЙ КУРСОР ── */
+@keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0;} }
+.cur {
+    display:inline-block; width:7px; height:12px;
+    background:var(--acc); vertical-align:middle;
+    animation:blink 1s step-end infinite; margin-left:2px;
+}
+
+/* ── НАВИГАЦИОННОЕ МЕНЮ ── */
+.menu-nav { display:flex; flex-direction:column; gap:4px; min-width:210px; }
+.menu-nav-btn {
+    background:var(--bg); border:2px solid var(--border);
+    padding:.75rem 1.1rem; text-decoration:none;
+    font-family:'VT323',monospace; font-size:1.35rem;
+    color:var(--text); letter-spacing:.12em; text-transform:uppercase;
+    cursor:pointer; transition:.1s; display:block; text-align:center;
+}
+.menu-nav-btn:hover { background:var(--border); color:var(--bg); }
+.menu-nav-btn.dim { border-color:var(--border-faint); color:var(--text-faint); }
+.menu-nav-btn.dim:hover { background:var(--border-faint); color:var(--bg); }
+
+/* ── БЕГУЩАЯ СТРОКА (TICKER) ── */
+.ticker-wrap {
+    border-top:1px solid var(--border-faint);
+    border-bottom:1px solid var(--border-faint);
+    overflow:hidden; padding:.3rem 0; margin:.8rem 0 1rem;
+    transition:border-color .35s;
+}
+.ticker-inner {
+    display:flex; gap:3rem;
+    animation:tick 30s linear infinite; white-space:nowrap;
+}
+@keyframes tick { from{transform:translateX(0);} to{transform:translateX(-50%);} }
+.ti { font-size:.55rem; color:var(--text-ghost); letter-spacing:.2em; text-transform:uppercase; }
+.ti .r { color:var(--border); }
+
+/* ── РАЗДЕЛИТЕЛЬ ── */
+.divider {
+    height:2px;
+    background:linear-gradient(90deg,var(--border) 0%,var(--border-dim) 30%,transparent 100%);
+    margin:1rem 0; transition:background .35s;
+}
+
+/* ── ФУТЕР ── */
+.site-footer {
+    border-top:2px solid var(--border); padding:1rem 0; margin-top:1.5rem;
+    display:flex; justify-content:space-between; align-items:center;
+    flex-wrap:wrap; gap:.5rem; transition:border-color .35s;
+}
+.footer-logo {
+    font-family:'VT323',monospace; font-size:1.5rem;
+    color:var(--text); letter-spacing:.15em;
+}
+.footer-text {
+    font-size:.52rem; color:var(--text-ghost);
+    letter-spacing:.15em; text-transform:uppercase;
+}
+.back-link {
+    font-family:'VT323',monospace; font-size:1.1rem;
+    color:var(--text); text-decoration:none;
+    border:2px solid var(--border); padding:.4rem 1rem;
+    letter-spacing:.1em; transition:.1s;
+}
+.back-link:hover { background:var(--border); color:var(--bg); }
+
+/* ── АДАПТИВ ── */
+@media(max-width:600px){
+    .header-inner { flex-direction:column; }
+    .menu-nav { flex-direction:row; flex-wrap:wrap; }
+    .menu-nav-btn { flex:1; min-width:100px; font-size:1rem; padding:.6rem; }
+}
