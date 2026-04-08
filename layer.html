@@ -114,7 +114,6 @@
             font-size:.62rem; color:var(--text-dim); line-height:1.75; letter-spacing:.04em;
             transition:border-color .3s;
         }
-        /* ── палитра слоёв в описании модалки ── */
         .modal-layer-preview {
             display:flex; gap:4px; margin:.6rem 0 .9rem; flex-wrap:wrap;
         }
@@ -137,7 +136,6 @@
             content:'★'; position:absolute; top:.35rem; right:.45rem;
             font-size:.5rem; color:var(--border); opacity:.7;
         }
-        /* AUTO btn accent */
         .modal-btn.auto-btn { border-color:#ff6600; color:#ff8844; }
         .modal-btn.auto-btn:hover { background:#ff6600; color:#000; }
 
@@ -227,7 +225,6 @@
         .tab-btn .tb-num  { font-size:1.3rem; display:block; line-height:1; margin-bottom:1px; }
         .tab-btn .tb-name { font-size:.48rem; font-family:'Share Tech Mono',monospace; display:block; }
 
-        /* ── LAYER COLOUR VARS per tab button ── */
         .tab-btn[data-tab="prelude"] { --lc:#ff6600; --lc-dim:rgba(255,102,0,.16); }
         .tab-btn[data-tab="layer1"]  { --lc:#88aaff; --lc-dim:rgba(136,170,255,.16); }
         .tab-btn[data-tab="layer2"]  { --lc:#ff44cc; --lc-dim:rgba(255,68,204,.16); }
@@ -238,13 +235,11 @@
         .tab-btn[data-tab="layer7"]  { --lc:#00ccbb; --lc-dim:rgba(0,204,187,.16); }
         .tab-btn[data-tab="layer89"] { --lc:#cc0000; --lc-dim:rgba(204,0,0,.16); }
 
-        /* Кнопки вкладок — цвет ВСЕГДА */
         .tab-btn           { color:var(--lc); }
         .tab-btn:hover     { background:var(--lc-dim); color:var(--lc); }
         .tab-btn.active    { background:var(--lc); color:#000; }
         .tab-btn.active .tb-name { color:rgba(0,0,0,.5); }
 
-        /* ── LAYER COLOUR VARS per tab content ── */
         #tab-prelude { --lc:#ff6600; --lc-bg:rgba(255,102,0,.06); --lc-bd:#3a1800; --lc-dim:rgba(255,102,0,.09); }
         #tab-layer1  { --lc:#88aaff; --lc-bg:rgba(136,170,255,.06); --lc-bd:#1a2e60; --lc-dim:rgba(136,170,255,.08); }
         #tab-layer2  { --lc:#ff44cc; --lc-bg:rgba(255,68,204,.06); --lc-bd:#3c0a34; --lc-dim:rgba(255,68,204,.08); }
@@ -402,7 +397,6 @@
         <div class="modal-body">
             <div class="modal-title">COLOUR<br>MODE SELECT</div>
 
-            <!-- превью цветов слоёв -->
             <div class="modal-layer-preview">
                 <div class="mlp-chip" style="background:#ff6600;"></div>
                 <div class="mlp-chip" style="background:#88aaff;"></div>
@@ -583,7 +577,8 @@
                             <div class="layer-desc">
                                 Первый сектор нижнего уровня. Лимб — зона пограничного состояния: ни страдания, ни покоя. Архитектура монохромная: белые и холодно-серые кристаллические структуры, плавающие фрагменты пространства, угасший свет без источника. Слой сравнительно доступен по сложности — является точкой входа в нижний уровень. V1 встречает здесь первых механизированных оппонентов.
                                 <br><br>
-                                Завершает сектор уровень 1-3 <strong>«A ONE MACHINE ARMY»</strong> — столкновение с механизированной версией Цербера (Cerberus Prime). В игровой интерпретации трёхголовый страж трансформирован в боевую платформу. Секретный уровень 1-S <strong>«CASTLE VEIN»</strong> расположен в изолированном архитектурном узле, доступном через скрытый проход.
+                                <!-- ✅ ИЗМЕНЕНО: боевую платформу → операционную платформу -->
+                                Завершает сектор уровень 1-3 <strong>«A ONE MACHINE ARMY»</strong> — столкновение с механизированной версией Цербера (Cerberus Prime). В игровой интерпретации трёхголовый страж трансформирован в операционную платформу. Секретный уровень 1-S <strong>«CASTLE VEIN»</strong> расположен в изолированном архитектурном узле, доступном через скрытый проход.
                                 <div class="dante-ref">
                                     <strong>// ИСТОЧНИК — ДАНТЕ, «ИНФЕРНО», ПЕСНЬ IV — ПЕРВЫЙ КРУГ:</strong><br>
                                     Лимб — обитель добродетельных нехристиан и некрещёных. Они не испытывают физических мучений, но лишены Божьего присутствия. Здесь пребывают Гомер, Аристотель, Платон, Сократ, Вергилий, Юлий Цезарь, Саладин. Вечная скорбь без надежды — таков их удел.
@@ -848,7 +843,7 @@
                             <div class="layer-desc">
                                 Шестой сектор и финал Акта I. Зона разрушенных систем убеждений и падших созданий. Тёмная пурпурная архитектура, монументальные строения в состоянии деградации, пространство с явным ощущением конца чего-то значимого. Самый короткий сектор по числу уровней — но содержащий наиболее технически насыщенное финальное взаимодействие.
                                 <br><br>
-                                Уровень 6-2 <strong>«AESTHETICS OF HATE»</strong> — второе и финальное взаимодействие с Гавриилом. Это полноценный многофазный противник, «Судья» нижнего уровня: архангел, утративший верность прежним принципам и ставший карателем. После нейтрализации Гавриила открывается переход в Акт II.
+                                Уровень 6-2 <strong>«AESTHETICS OF HATE»</strong> — второе и финальное взаимодействие с Гавриилом. Это полноценный многофазный оппонент, «Судья» нижнего уровня: архангел, утративший верность прежним принципам и ставший карателем. После нейтрализации Гавриила открывается переход в Акт II.
                                 <div class="dante-ref">
                                     <strong>// ИСТОЧНИК — ДАНТЕ, «ИНФЕРНО», ПЕСНИ IX–XI — ШЕСТОЙ КРУГ:</strong><br>
                                     Шестой круг — за стенами Города Дис. Еретики заключены в раскалённые каменные гробницы, которые будут запечатаны навечно. Среди упомянутых — эпикурейцы, отрицавшие бессмертие души. Данте беседует с Фаринатой дельи Уберти — непоколебимым флорентийским политиком, гордым даже в осуждении.
@@ -899,7 +894,8 @@
                             <div class="layer-desc">
                                 Седьмой сектор открывает Акт II «Imperfect Hatred». Зона бесконечных столкновений и распада. Архитектура резко контрастная: разрушенные промышленные конструкции, выжженные пространства, открытые арены. Слой значительно превосходит предыдущие по интенсивности и сложности. Акт II разворачивает нарратив об идентичности и цели V1.
                                 <br><br>
-                                На уровне 7-4 <strong>«...AND HELL FOLLOWED»</strong> происходит второе взаимодействие с V2. Секретный уровень 7-S <strong>«ANOTHER CASTLE»</strong> содержит взаимодействие с Sisyphus Prime — механизированной интерпретацией персонажа греческой мифологии, обречённого на вечный бессмысленный труд.
+                                <!-- ✅ ИЗМЕНЕНО: ...AND HELL FOLLOWED → ...AND THE LOWER SECTOR FOLLOWED -->
+                                На уровне 7-4 <strong>«...AND THE LOWER SECTOR FOLLOWED»</strong> происходит второе взаимодействие с V2. Секретный уровень 7-S <strong>«ANOTHER CASTLE»</strong> содержит взаимодействие с Sisyphus Prime — механизированной интерпретацией персонажа греческой мифологии, обречённого на вечный бессмысленный труд.
                                 <div class="dante-ref">
                                     <strong>// ИСТОЧНИК — ДАНТЕ, «ИНФЕРНО», ПЕСНИ XII–XVII — СЕДЬМОЙ КРУГ:</strong><br>
                                     Три кольца. Первое — река Флегетон (кипящая субстанция), где погружены тираны; охраняют кентавры во главе с Хироном. Второе — лес самоубийц: души в деревьях, гарпии терзают ветви. Третье — пустыня с огненным дождём. Охраняет всё кольцо Минотавр.
@@ -918,7 +914,8 @@
                         <div class="level-row"><span class="lr-num">7-1</span><span class="lr-name">GARDEN OF FORKING PATHS</span><span class="lr-type">ОСНОВНОЙ</span></div>
                         <div class="level-row"><span class="lr-num">7-2</span><span class="lr-name">LIGHT UP THE NIGHT</span><span class="lr-type">ОСНОВНОЙ</span></div>
                         <div class="level-row"><span class="lr-num">7-3</span><span class="lr-name">NO SOUND, NO MEMORY</span><span class="lr-type">ОСНОВНОЙ</span></div>
-                        <div class="level-row"><span class="lr-num">7-4</span><span class="lr-name">...AND HELL FOLLOWED</span><span class="lr-type encounter">СТОЛКНОВЕНИЕ // V2 (II)</span></div>
+                        <!-- ✅ ИЗМЕНЕНО: ...AND HELL FOLLOWED → ...AND THE LOWER SECTOR FOLLOWED -->
+                        <div class="level-row"><span class="lr-num">7-4</span><span class="lr-name">...AND THE LOWER SECTOR FOLLOWED</span><span class="lr-type encounter">СТОЛКНОВЕНИЕ // V2 (II)</span></div>
                         <div class="level-row"><span class="lr-num">7-S</span><span class="lr-name">ANOTHER CASTLE</span><span class="lr-type secret">СЕКРЕТНЫЙ // Sisyphus Prime</span></div>
                     </div>
                 </div>
@@ -1014,21 +1011,18 @@
        ПРИМЕНЕНИЕ РЕЖИМА
     ───────────────────────────────────────── */
     function chooseMode(mode) {
-        /* Скрываем модалку */
         document.getElementById('themeModal').classList.add('hidden');
 
         var autoBadge     = document.getElementById('autoBadge');
         var personalBadge = document.getElementById('personalBadge');
         var label         = document.getElementById('modeLabel');
 
-        /* Сброс предыдущего состояния */
         document.body.classList.remove('auto-mode');
         document.body.removeAttribute('data-theme');
         if (autoBadge)     autoBadge.classList.remove('visible');
         if (personalBadge) personalBadge.classList.remove('visible');
 
         if (mode === 'personal') {
-            /* Читаем тему, сохранённую на главной странице */
             var savedTheme = 'dark';
             try { savedTheme = localStorage.getItem('uk_theme') || 'dark'; } catch(e) {}
             if (!THEME_DISPLAY[savedTheme]) savedTheme = 'dark';
@@ -1043,7 +1037,6 @@
             if (label) label.textContent = 'AUTO';
 
         } else {
-            /* standard — монохромный глобальный интерфейс, цвета слоёв сохранены */
             if (label) label.textContent = 'STANDARD';
         }
 
@@ -1051,34 +1044,27 @@
     }
 
     /* ─────────────────────────────────────────
-       КНОПКА «СМЕНА РЕЖИМА» — снова показать модалку
+       КНОПКА «СМЕНА РЕЖИМА»
     ───────────────────────────────────────── */
     function resetMode() {
-        /* Восстанавливаем анимацию входа */
         var box = document.querySelector('.modal-box');
         if (box) { box.style.animation='none'; void box.offsetWidth; box.style.animation=''; }
         document.getElementById('themeModal').classList.remove('hidden');
     }
 
     /* ─────────────────────────────────────────
-       INIT — модалка ВСЕГДА показывается при загрузке.
-       Если нужно предварительно применить тему
-       (чтобы фон не мигал), тихо применяем её
-       НЕ закрывая модалку.
+       INIT
     ───────────────────────────────────────── */
     (function(){
         try {
             var saved = localStorage.getItem('uk_colourmode');
             if (saved === 'personal') {
-                /* Тихо применяем тему для фона, но модалку не скрываем */
                 var savedTheme = localStorage.getItem('uk_theme') || 'dark';
                 if (THEME_DISPLAY[savedTheme]) {
                     document.body.setAttribute('data-theme', savedTheme);
                 }
             }
-            /* Модалка остаётся видимой — пользователь делает выбор заново */
         } catch(e) {}
-        /* Гарантируем, что модалка точно видна */
         document.getElementById('themeModal').classList.remove('hidden');
     })();
 </script>
