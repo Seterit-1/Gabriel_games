@@ -78,7 +78,6 @@
 
         .page { max-width:1380px; margin:0 auto; padding:0 1.5rem 3rem; position:relative; z-index:10; }
 
-        /* ── HEADER ── */
         .site-header { border-bottom:2px solid var(--border); padding:1.5rem 0 1rem; transition:border-color .35s; }
         .header-inner { display:flex; justify-content:space-between; align-items:flex-start; gap:1.5rem; flex-wrap:wrap; }
         .logo-block { flex:1; }
@@ -102,6 +101,17 @@
             30%{transform:translate(2px,-1px);}
             65%{transform:translate(-1px,2px);clip-path:inset(60% 0 5% 0);}
         }
+        @keyframes avatarGlitch {
+            0%,100%{transform:translate(0);filter:none;}
+            20%{transform:translate(-3px,0);filter:hue-rotate(90deg);}
+            40%{transform:translate(3px,1px);clip-path:inset(20% 0 60% 0);}
+            60%{transform:translate(-2px,-1px);filter:brightness(2);}
+            80%{transform:translate(1px,2px);clip-path:inset(55% 0 10% 0);}
+        }
+        @keyframes avatarPulse {
+            0%,100%{text-shadow:0 0 20px var(--acc-glow);}
+            50%{text-shadow:0 0 40px var(--acc), 0 0 80px var(--acc-glow);}
+        }
         .logo-main:hover { animation:glitch .25s steps(1) infinite; cursor:default; }
         .logo-status-lines { margin-top:.6rem; display:flex; flex-direction:column; gap:.15rem; }
         .lsl { font-size:.58rem; color:var(--text-faint); letter-spacing:.15em; text-transform:uppercase; transition:color .35s; }
@@ -109,10 +119,8 @@
         @keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
         .cur { display:inline-block; width:7px; height:12px; background:var(--acc); vertical-align:middle; animation:blink 1s step-end infinite; margin-left:2px; }
 
-        /* ── HEADER RIGHT BLOCK ── */
         .header-right { display:flex; flex-direction:row; gap:8px; align-items:flex-start; }
 
-        /* ── THEME PANEL ── */
         .theme-panel { background:var(--bg); border:2px solid var(--border); padding:0; min-width:230px; transition:background .35s,border-color .35s; }
         .tp-header-bar { background:var(--border); padding:.45rem .8rem; font-family:'Bebas Neue','VT323',monospace; font-size:1.1rem; color:var(--bg); letter-spacing:.15em; text-transform:uppercase; transition:background .35s,color .35s; }
         .tp-body { padding:.6rem; }
@@ -131,7 +139,6 @@
         .tp-sub  { font-size:.46rem; letter-spacing:.1em; text-transform:uppercase; }
         .tp-current { font-size:.45rem; color:var(--text-ghost); letter-spacing:.18em; text-transform:uppercase; text-align:right; margin-top:.4rem; transition:color .35s; }
 
-        /* ── PROFILE OPEN BUTTON ── */
         .profile-open-btn {
             background: var(--bg);
             border: 2px solid var(--border);
@@ -191,7 +198,6 @@
         }
         .profile-open-btn:hover .pob-label { color: var(--bg); }
 
-        /* ── TICKER ── */
         .ticker-wrap { border-top:1px solid var(--border-faint); border-bottom:1px solid var(--border-faint); overflow:hidden; padding:.28rem 0; margin:.8rem 0 1rem; background:var(--bg2); transition:background .35s,border-color .35s; }
         .ticker-inner { display:flex; gap:3rem; animation:tick 24s linear infinite; white-space:nowrap; }
         @keyframes tick{from{transform:translateX(0);}to{transform:translateX(-50%);}}
@@ -200,7 +206,6 @@
 
         .divider { height:2px; background:linear-gradient(90deg,var(--border) 0%,var(--border-dim) 30%,transparent 100%); box-shadow:0 0 8px var(--acc-glow); margin:.8rem 0 1.2rem; transition:box-shadow .35s; }
 
-        /* ── NAV ── */
         .nav-section { display:flex; align-items:stretch; gap:4px; margin-bottom:1.4rem; flex-wrap:wrap; }
         .nav-home-indicator { background:var(--bg); border:2px solid var(--border); padding:1rem 1.2rem; display:flex; flex-direction:column; justify-content:center; min-width:170px; transition:background .35s,border-color .35s; }
         .nhi-label { font-size:.48rem; color:var(--text-faint); letter-spacing:.28em; text-transform:uppercase; margin-bottom:.2rem; }
@@ -225,11 +230,9 @@
         .nb-name  { font-family:'Bebas Neue','VT323',monospace; font-size:1.1rem; text-transform:uppercase; letter-spacing:.1em; color:var(--text); }
         .nb-sub   { font-size:.5rem; color:var(--text-faint); letter-spacing:.1em; text-transform:uppercase; margin-top:.1rem; }
 
-        /* ── ARTICLES ── */
         .articles-grid { display:grid; grid-template-columns:1fr 1fr; gap:4px; }
         .article-full { grid-column:1 / -1; }
 
-        /* ── PANELS ── */
         .panel { background:var(--bg); border:2px solid var(--border-faint); transition:background .35s,border-color .35s; }
         .panel-head { background:var(--bg2); border-bottom:1px solid var(--border-faint); padding:.5rem .9rem; display:flex; align-items:center; gap:.7rem; transition:background .35s,border-color .35s; }
         .ph-bar { width:2px; height:18px; flex-shrink:0; background:var(--acc); box-shadow:0 0 6px var(--acc); }
@@ -244,7 +247,6 @@
         .ph-tag { margin-left:auto; font-size:.48rem; color:var(--text-ghost); letter-spacing:.15em; }
         .panel-body { padding:1rem 1.1rem; }
 
-        /* ── ARTICLE CONTENT ── */
         .art-lead { font-family:'Bebas Neue','VT323',monospace; font-size:1.15rem; color:var(--acc); letter-spacing:.04em; line-height:1.45; margin-bottom:.9rem; padding-bottom:.7rem; border-bottom:1px solid var(--border-faint); transition:color .35s,border-color .35s; }
         .art-para { font-size:.73rem; color:var(--text-dim); line-height:1.9; margin-bottom:.75rem; }
         .art-para:last-child { margin-bottom:0; }
@@ -289,7 +291,6 @@
         .tag.b { border-color:var(--c-blue); color:var(--c-blue); }
         .tag.n { border-color:var(--c-green);color:var(--c-green); }
 
-        /* ── FOOTER ── */
         .site-footer { border-top:2px solid var(--border); padding:1rem 0; margin-top:1.5rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:.5rem; transition:border-color .35s; }
         .footer-logo { font-family:'Bebas Neue','VT323',monospace; font-size:1.6rem; color:var(--acc); text-shadow:0 0 8px var(--acc); letter-spacing:.15em; }
         .footer-text { font-size:.52rem; color:var(--text-ghost); letter-spacing:.15em; text-transform:uppercase; }
@@ -298,35 +299,22 @@
 
         #theme-bg-canvas { position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:2; }
 
-        /* ══════════════════════════════════════════
-           PROFILE MODAL
-        ══════════════════════════════════════════ */
+        /* ══ PROFILE MODAL ══ */
         .profile-overlay {
-            position: fixed;
-            inset: 0;
-            z-index: 2000;
-            background: rgba(0,0,0,.82);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(3px);
-            padding: 1rem;
+            position: fixed; inset: 0; z-index: 2000;
+            background: rgba(0,0,0,.82); display: none;
+            align-items: center; justify-content: center;
+            backdrop-filter: blur(3px); padding: 1rem;
         }
         .profile-overlay.open { display: flex; }
 
         .profile-frame {
             border: 4px solid var(--border);
-            box-shadow:
-                0 0 0 2px var(--bg),
-                0 0 0 4px var(--border-dim),
-                0 0 60px var(--acc-glow),
-                0 0 120px rgba(0,0,0,.9);
-            width: min(820px, 100%);
-            max-height: 88vh;
-            display: flex;
-            flex-direction: column;
-            background: var(--bg2);
-            position: relative;
+            box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--border-dim),
+                        0 0 60px var(--acc-glow), 0 0 120px rgba(0,0,0,.9);
+            width: min(820px, 100%); max-height: 88vh;
+            display: flex; flex-direction: column;
+            background: var(--bg2); position: relative;
             animation: profileIn .18s ease-out;
         }
         @keyframes profileIn {
@@ -335,350 +323,138 @@
         }
 
         .pw-titlebar {
-            background: var(--acc);
-            padding: .42rem .8rem;
-            display: flex;
-            align-items: center;
-            gap: .6rem;
-            flex-shrink: 0;
-            border-bottom: 2px solid rgba(0,0,0,.35);
+            background: var(--acc); padding: .42rem .8rem;
+            display: flex; align-items: center; gap: .6rem;
+            flex-shrink: 0; border-bottom: 2px solid rgba(0,0,0,.35);
         }
-        .pw-titlebar-icon {
-            font-family: 'VT323', monospace;
-            font-size: 1.4rem;
-            color: var(--bg);
-            line-height: 1;
-            text-shadow: none;
-        }
-        .pw-titlebar-title {
-            font-family: 'VT323', 'Bebas Neue', monospace;
-            font-size: 1.3rem;
-            color: var(--bg);
-            letter-spacing: .14em;
-            text-transform: uppercase;
-            flex: 1;
-            line-height: 1;
-        }
-        .pw-titlebar-sub {
-            font-size: .5rem;
-            font-family: 'Share Tech Mono', monospace;
-            color: rgba(0,0,0,.55);
-            letter-spacing: .2em;
-            text-transform: uppercase;
-            margin-right: .5rem;
-        }
-        .pw-controls { display: flex; gap: 3px; }
-        .pw-ctrl {
-            width: 22px; height: 22px;
-            border: 2px solid rgba(0,0,0,.45);
-            background: rgba(0,0,0,.2);
-            color: var(--bg);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: .65rem;
-            font-family: 'Share Tech Mono', monospace;
-            transition: .1s;
-            text-shadow: none;
-        }
-        .pw-ctrl:hover { background: rgba(0,0,0,.45); }
-        .pw-ctrl.close:hover { background: rgba(180,0,0,.6); }
+        .pw-titlebar-icon { font-family:'VT323',monospace; font-size:1.4rem; color:var(--bg); line-height:1; text-shadow:none; }
+        .pw-titlebar-title { font-family:'VT323','Bebas Neue',monospace; font-size:1.3rem; color:var(--bg); letter-spacing:.14em; text-transform:uppercase; flex:1; line-height:1; }
+        .pw-titlebar-sub { font-size:.5rem; font-family:'Share Tech Mono',monospace; color:rgba(0,0,0,.55); letter-spacing:.2em; text-transform:uppercase; margin-right:.5rem; }
+        .pw-controls { display:flex; gap:3px; }
+        .pw-ctrl { width:22px; height:22px; border:2px solid rgba(0,0,0,.45); background:rgba(0,0,0,.2); color:var(--bg); cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:.65rem; font-family:'Share Tech Mono',monospace; transition:.1s; text-shadow:none; }
+        .pw-ctrl:hover { background:rgba(0,0,0,.45); }
+        .pw-ctrl.close:hover { background:rgba(180,0,0,.6); }
 
-        .pw-body {
-            display: flex;
-            flex: 1;
-            min-height: 0;
-            overflow: hidden;
-        }
+        .pw-body { display:flex; flex:1; min-height:0; overflow:hidden; }
 
-        .pw-sidebar {
-            width: 186px;
-            flex-shrink: 0;
-            background: var(--bg3);
-            border-right: 2px solid var(--border-faint);
-            display: flex;
-            flex-direction: column;
-            padding: .7rem .5rem;
-            gap: 4px;
-            overflow-y: auto;
-        }
-        .pw-sidebar-avatar {
-            text-align: center;
-            padding: .6rem .4rem .8rem;
-            border-bottom: 1px solid var(--border-faint);
-            margin-bottom: .3rem;
-        }
+        .pw-sidebar { width:186px; flex-shrink:0; background:var(--bg3); border-right:2px solid var(--border-faint); display:flex; flex-direction:column; padding:.7rem .5rem; gap:4px; overflow-y:auto; }
+        .pw-sidebar-avatar { text-align:center; padding:.6rem .4rem .8rem; border-bottom:1px solid var(--border-faint); margin-bottom:.3rem; }
+
+        /* ── УЛУЧШЕНИЕ 2: Аватар с анимацией пульса ── */
         .pw-avatar-glyph {
-            font-family: 'VT323', 'Bebas Neue', monospace;
-            font-size: 4.5rem;
-            line-height: 1;
-            color: var(--acc);
-            text-shadow: 0 0 20px var(--acc-glow);
-            display: block;
+            font-family:'VT323','Bebas Neue',monospace;
+            font-size:4.5rem; line-height:1;
+            color:var(--acc); text-shadow:0 0 20px var(--acc-glow);
+            display:block; cursor:default;
+            animation: avatarPulse 3s ease-in-out infinite;
+            transition: color .35s;
         }
-        .pw-avatar-name {
-            font-family: 'VT323', 'Bebas Neue', monospace;
-            font-size: 1.5rem;
-            color: var(--text);
-            letter-spacing: .1em;
-            text-transform: uppercase;
-            margin-top: .2rem;
-        }
-        .pw-avatar-rank {
-            font-size: .5rem;
-            font-family: 'Share Tech Mono', monospace;
-            color: var(--c-gold);
-            letter-spacing: .2em;
-            text-transform: uppercase;
-            margin-top: .15rem;
-        }
-        .pw-nav-btn {
-            background: var(--bg2);
-            border: 2px solid var(--border-faint);
-            color: var(--text-dim);
-            padding: .62rem .75rem;
-            text-align: left;
-            cursor: pointer;
-            font-family: 'VT323', 'Bebas Neue', monospace;
-            font-size: 1.2rem;
-            letter-spacing: .08em;
-            text-transform: uppercase;
-            transition: .12s;
-            display: flex;
-            align-items: center;
-            gap: .5rem;
-            line-height: 1;
-        }
-        .pw-nav-btn:hover {
-            border-color: var(--border-dim);
-            color: var(--text);
-            background: var(--bg);
-        }
-        .pw-nav-btn.active {
-            border-color: var(--border);
-            background: var(--border-faint);
-            color: var(--text);
-        }
-        .pw-nav-btn.active::before {
-            content: '▶';
-            color: var(--acc);
-            font-size: .9rem;
-        }
-        .pw-nav-btn:not(.active)::before { content: '  '; font-size: .9rem; }
-        .pw-nav-icon { font-size: 1rem; opacity: .7; }
+        .pw-avatar-glyph.glitching { animation: avatarGlitch .22s steps(1) infinite; }
 
-        .pw-content {
-            flex: 1;
-            background: var(--bg);
-            overflow-y: auto;
-            padding: .9rem 1rem;
-            border: none;
-        }
-        .pw-content::-webkit-scrollbar { width: 4px; }
-        .pw-content::-webkit-scrollbar-track { background: var(--bg2); }
-        .pw-content::-webkit-scrollbar-thumb { background: var(--border-dim); }
+        .pw-avatar-name { font-family:'VT323','Bebas Neue',monospace; font-size:1.5rem; color:var(--text); letter-spacing:.1em; text-transform:uppercase; margin-top:.2rem; }
+        .pw-avatar-rank { font-size:.5rem; font-family:'Share Tech Mono',monospace; color:var(--c-gold); letter-spacing:.2em; text-transform:uppercase; margin-top:.15rem; }
 
-        .pw-tab { display: none; }
-        .pw-tab.active { display: block; }
-
-        .pw-section-title {
-            font-family: 'VT323', 'Bebas Neue', monospace;
-            font-size: 1.6rem;
-            color: var(--acc);
-            letter-spacing: .1em;
-            text-transform: uppercase;
-            border-bottom: 2px solid var(--border-faint);
-            padding-bottom: .4rem;
-            margin-bottom: .8rem;
-            display: flex;
-            align-items: center;
-            gap: .5rem;
+        /* ── УЛУЧШЕНИЕ 2: Мини-индикатор онлайн под аватаром ── */
+        .pw-avatar-online {
+            display: inline-flex; align-items: center; gap: 4px;
+            font-size: .44rem; font-family: 'Share Tech Mono', monospace;
+            color: var(--c-green); letter-spacing: .18em;
+            text-transform: uppercase; margin-top: .3rem;
         }
-        .pw-section-title::before { content: '//'; font-size: 1rem; opacity: .6; }
-
-        .pw-status-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4px;
-            margin-bottom: .8rem;
-        }
-        .pw-stat-cell {
-            background: var(--bg2);
-            border: 1px solid var(--border-faint);
-            border-left: 3px solid var(--acc);
-            padding: .5rem .7rem;
-            transition: background .35s, border-color .35s;
-        }
-        .pw-stat-cell.gold { border-left-color: var(--c-gold); }
-        .pw-stat-cell.blue { border-left-color: var(--c-blue); }
-        .pw-stat-cell.green { border-left-color: var(--c-green); }
-        .pw-stat-cell.pink { border-left-color: var(--c-pink); }
-        .pw-stat-key {
-            font-size: .45rem;
-            font-family: 'Share Tech Mono', monospace;
-            color: var(--text-faint);
-            letter-spacing: .22em;
-            text-transform: uppercase;
-            margin-bottom: .25rem;
-        }
-        .pw-stat-val {
-            font-family: 'VT323', 'Bebas Neue', monospace;
-            font-size: 1.3rem;
-            color: var(--text);
-            line-height: 1;
-            letter-spacing: .06em;
-        }
-        .pw-stat-val.r { color: var(--acc); }
-        .pw-stat-val.g { color: var(--c-gold); }
-        .pw-stat-val.b { color: var(--c-blue); }
-        .pw-stat-val.n { color: var(--c-green); }
-
-        .pw-readout {
-            background: var(--bg2);
-            border: 1px solid var(--border-faint);
-            border-left: 2px solid var(--border-dim);
-            padding: .6rem .8rem;
-            font-family: 'Fira Code', monospace;
-            font-size: .6rem;
-            color: var(--text-faint);
-            line-height: 1.95;
-            margin-bottom: .7rem;
-            transition: background .35s, border-color .35s;
-        }
-        .pw-readout .hl { color: var(--acc); }
-        .pw-readout .vl { color: var(--text-dim); }
-        .pw-readout .gl { color: var(--c-gold); }
-        .pw-readout .bl { color: var(--c-blue); }
-        .pw-readout .nl { color: var(--c-green); }
-
-        .pw-log-entry {
-            border-bottom: 1px solid var(--border-faint);
-            padding: .45rem 0;
-            display: flex;
-            gap: .7rem;
-            align-items: flex-start;
-            transition: border-color .35s;
-        }
-        .pw-log-entry:last-child { border-bottom: none; }
-        .pw-log-time {
-            font-size: .5rem;
-            font-family: 'Share Tech Mono', monospace;
-            color: var(--text-faint);
-            letter-spacing: .1em;
-            white-space: nowrap;
-            padding-top: .1rem;
-            flex-shrink: 0;
-        }
-        .pw-log-text {
-            font-size: .65rem;
-            color: var(--text-dim);
-            line-height: 1.7;
-            font-family: 'Share Tech Mono', monospace;
-        }
-        .pw-log-text strong { color: var(--text); }
-        .pw-log-badge {
-            flex-shrink: 0;
-            font-family: 'VT323', monospace;
-            font-size: .85rem;
-            padding: .05rem .3rem;
-            border: 1px solid var(--border-faint);
-            color: var(--text-faint);
-            letter-spacing: .08em;
-            text-transform: uppercase;
-        }
-        .pw-log-badge.sss { border-color: var(--acc); color: var(--acc); }
-        .pw-log-badge.ss  { border-color: var(--c-gold); color: var(--c-gold); }
-        .pw-log-badge.s   { border-color: var(--c-blue); color: var(--c-blue); }
-
-        .pw-achievement {
-            display: flex;
-            gap: .8rem;
-            align-items: flex-start;
-            padding: .55rem 0;
-            border-bottom: 1px solid var(--border-faint);
-            transition: border-color .35s;
-        }
-        .pw-achievement:last-child { border-bottom: none; }
-        .pw-ach-icon {
-            font-family: 'VT323', monospace;
-            font-size: 2.2rem;
-            line-height: 1;
-            width: 40px;
-            flex-shrink: 0;
-            text-align: center;
-        }
-        .pw-ach-icon.locked { filter: grayscale(1); opacity: .3; }
-        .pw-ach-name {
-            font-family: 'VT323', 'Bebas Neue', monospace;
-            font-size: 1.1rem;
-            color: var(--text);
-            letter-spacing: .08em;
-            text-transform: uppercase;
-        }
-        .pw-ach-desc {
-            font-size: .58rem;
-            color: var(--text-faint);
-            font-family: 'Share Tech Mono', monospace;
-            line-height: 1.6;
-            margin-top: .1rem;
-        }
-        .pw-ach-status {
-            margin-left: auto;
-            font-size: .5rem;
-            font-family: 'Share Tech Mono', monospace;
-            letter-spacing: .12em;
-            text-transform: uppercase;
-            padding: .1rem .35rem;
-            border: 1px solid;
-            flex-shrink: 0;
-            align-self: flex-start;
-        }
-        .pw-ach-status.done { color: var(--c-green); border-color: var(--c-green); }
-        .pw-ach-status.lock { color: var(--text-faint); border-color: var(--border-faint); }
-
-        .pw-statusbar {
-            background: var(--bg3);
-            border-top: 1px solid var(--border-faint);
-            padding: .3rem .8rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            flex-shrink: 0;
-        }
-        .pw-sb-item {
-            font-size: .45rem;
-            font-family: 'Share Tech Mono', monospace;
-            color: var(--text-faint);
-            letter-spacing: .18em;
-            text-transform: uppercase;
-            display: flex;
-            align-items: center;
-            gap: .3rem;
-        }
-        .pw-sb-dot {
+        .pw-avatar-online-dot {
             width: 5px; height: 5px;
             background: var(--c-green);
-            box-shadow: 0 0 4px var(--c-green);
-            flex-shrink: 0;
+            box-shadow: 0 0 5px var(--c-green);
+            border-radius: 0;
+            animation: blink 1.4s step-end infinite;
         }
-        .pw-sb-item.acc .pw-sb-dot { background: var(--acc); box-shadow: 0 0 4px var(--acc); }
-        .pw-sb-item.gold .pw-sb-dot { background: var(--c-gold); box-shadow: 0 0 4px var(--c-gold); }
-        .pw-sb-spacer { flex: 1; }
+
+        .pw-nav-btn { background:var(--bg2); border:2px solid var(--border-faint); color:var(--text-dim); padding:.62rem .75rem; text-align:left; cursor:pointer; font-family:'VT323','Bebas Neue',monospace; font-size:1.2rem; letter-spacing:.08em; text-transform:uppercase; transition:.12s; display:flex; align-items:center; gap:.5rem; line-height:1; }
+        .pw-nav-btn:hover { border-color:var(--border-dim); color:var(--text); background:var(--bg); }
+        .pw-nav-btn.active { border-color:var(--border); background:var(--border-faint); color:var(--text); }
+        .pw-nav-btn.active::before { content:'▶'; color:var(--acc); font-size:.9rem; }
+        .pw-nav-btn:not(.active)::before { content:'  '; font-size:.9rem; }
+        .pw-nav-icon { font-size:1rem; opacity:.7; }
+
+        .pw-content { flex:1; background:var(--bg); overflow-y:auto; padding:.9rem 1rem; border:none; }
+        .pw-content::-webkit-scrollbar { width:4px; }
+        .pw-content::-webkit-scrollbar-track { background:var(--bg2); }
+        .pw-content::-webkit-scrollbar-thumb { background:var(--border-dim); }
+
+        .pw-tab { display:none; }
+        .pw-tab.active { display:block; }
+
+        .pw-section-title { font-family:'VT323','Bebas Neue',monospace; font-size:1.6rem; color:var(--acc); letter-spacing:.1em; text-transform:uppercase; border-bottom:2px solid var(--border-faint); padding-bottom:.4rem; margin-bottom:.8rem; display:flex; align-items:center; gap:.5rem; }
+        .pw-section-title::before { content:'//'; font-size:1rem; opacity:.6; }
+
+        .pw-status-grid { display:grid; grid-template-columns:1fr 1fr; gap:4px; margin-bottom:.8rem; }
+        .pw-stat-cell { background:var(--bg2); border:1px solid var(--border-faint); border-left:3px solid var(--acc); padding:.5rem .7rem; transition:background .35s,border-color .35s; }
+        .pw-stat-cell.gold { border-left-color:var(--c-gold); }
+        .pw-stat-cell.blue { border-left-color:var(--c-blue); }
+        .pw-stat-cell.green { border-left-color:var(--c-green); }
+        .pw-stat-cell.pink { border-left-color:var(--c-pink); }
+        .pw-stat-key { font-size:.45rem; font-family:'Share Tech Mono',monospace; color:var(--text-faint); letter-spacing:.22em; text-transform:uppercase; margin-bottom:.25rem; }
+        .pw-stat-val { font-family:'VT323','Bebas Neue',monospace; font-size:1.3rem; color:var(--text); line-height:1; letter-spacing:.06em; }
+        .pw-stat-val.r { color:var(--acc); }
+        .pw-stat-val.g { color:var(--c-gold); }
+        .pw-stat-val.b { color:var(--c-blue); }
+        .pw-stat-val.n { color:var(--c-green); }
+
+        /* ── УЛУЧШЕНИЕ 1: Кнопка рефреша статистики ── */
+        .stats-refresh-btn {
+            width: 100%; background: var(--bg2);
+            border: 2px solid var(--border-dim); border-left: 3px solid var(--acc);
+            color: var(--text-dim); cursor: pointer;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: .58rem; letter-spacing: .2em; text-transform: uppercase;
+            padding: .45rem .8rem; margin-bottom: .8rem;
+            transition: .14s; text-align: left; display: flex; align-items: center; gap: .5rem;
+        }
+        .stats-refresh-btn:hover { border-color: var(--border); color: var(--text); background: var(--bg); box-shadow: 0 0 8px var(--acc-glow); }
+        .stats-refresh-btn .rfr-icon { color: var(--acc); font-size: .9rem; }
+        /* Анимация значений при обновлении */
+        @keyframes statFlash { 0%{opacity:.2;transform:scale(.96);} 100%{opacity:1;transform:scale(1);} }
+        .stat-flash { animation: statFlash .35s ease-out; }
+
+        .pw-readout { background:var(--bg2); border:1px solid var(--border-faint); border-left:2px solid var(--border-dim); padding:.6rem .8rem; font-family:'Fira Code',monospace; font-size:.6rem; color:var(--text-faint); line-height:1.95; margin-bottom:.7rem; transition:background .35s,border-color .35s; }
+        .pw-readout .hl { color:var(--acc); }
+        .pw-readout .vl { color:var(--text-dim); }
+        .pw-readout .gl { color:var(--c-gold); }
+        .pw-readout .bl { color:var(--c-blue); }
+        .pw-readout .nl { color:var(--c-green); }
+
+        .pw-log-entry { border-bottom:1px solid var(--border-faint); padding:.45rem 0; display:flex; gap:.7rem; align-items:flex-start; transition:border-color .35s; }
+        .pw-log-entry:last-child { border-bottom:none; }
+        .pw-log-time { font-size:.5rem; font-family:'Share Tech Mono',monospace; color:var(--text-faint); letter-spacing:.1em; white-space:nowrap; padding-top:.1rem; flex-shrink:0; }
+        .pw-log-text { font-size:.65rem; color:var(--text-dim); line-height:1.7; font-family:'Share Tech Mono',monospace; }
+        .pw-log-text strong { color:var(--text); }
+        .pw-log-badge { flex-shrink:0; font-family:'VT323',monospace; font-size:.85rem; padding:.05rem .3rem; border:1px solid var(--border-faint); color:var(--text-faint); letter-spacing:.08em; text-transform:uppercase; }
+        .pw-log-badge.sss { border-color:var(--acc); color:var(--acc); }
+        .pw-log-badge.ss  { border-color:var(--c-gold); color:var(--c-gold); }
+        .pw-log-badge.s   { border-color:var(--c-blue); color:var(--c-blue); }
+
+        .pw-achievement { display:flex; gap:.8rem; align-items:flex-start; padding:.55rem 0; border-bottom:1px solid var(--border-faint); transition:border-color .35s; }
+        .pw-achievement:last-child { border-bottom:none; }
+        .pw-ach-icon { font-family:'VT323',monospace; font-size:2.2rem; line-height:1; width:40px; flex-shrink:0; text-align:center; }
+        .pw-ach-icon.locked { filter:grayscale(1); opacity:.3; }
+        .pw-ach-name { font-family:'VT323','Bebas Neue',monospace; font-size:1.1rem; color:var(--text); letter-spacing:.08em; text-transform:uppercase; }
+        .pw-ach-desc { font-size:.58rem; color:var(--text-faint); font-family:'Share Tech Mono',monospace; line-height:1.6; margin-top:.1rem; }
+        .pw-ach-status { margin-left:auto; font-size:.5rem; font-family:'Share Tech Mono',monospace; letter-spacing:.12em; text-transform:uppercase; padding:.1rem .35rem; border:1px solid; flex-shrink:0; align-self:flex-start; }
+        .pw-ach-status.done { color:var(--c-green); border-color:var(--c-green); }
+        .pw-ach-status.lock { color:var(--text-faint); border-color:var(--border-faint); }
+
+        /* ── УЛУЧШЕНИЕ 2: Статусбар с таймером ── */
+        .pw-statusbar { background:var(--bg3); border-top:1px solid var(--border-faint); padding:.3rem .8rem; display:flex; align-items:center; gap:1rem; flex-shrink:0; flex-wrap:wrap; }
+        .pw-sb-item { font-size:.45rem; font-family:'Share Tech Mono',monospace; color:var(--text-faint); letter-spacing:.18em; text-transform:uppercase; display:flex; align-items:center; gap:.3rem; }
+        .pw-sb-dot { width:5px; height:5px; background:var(--c-green); box-shadow:0 0 4px var(--c-green); flex-shrink:0; }
+        .pw-sb-item.acc .pw-sb-dot { background:var(--acc); box-shadow:0 0 4px var(--acc); }
+        .pw-sb-item.gold .pw-sb-dot { background:var(--c-gold); box-shadow:0 0 4px var(--c-gold); }
+        .pw-sb-item.timer .pw-sb-dot { background:var(--c-blue); box-shadow:0 0 4px var(--c-blue); animation: blink 1s step-end infinite; }
+        .pw-sb-spacer { flex:1; }
 
         @media(max-width:900px){ .articles-grid{grid-template-columns:1fr;} .article-full{grid-column:auto;} }
-        @media(max-width:760px){
-            .logo-main{font-size:3.5rem;} .theme-panel{min-width:190px;}
-            .nav-btn{min-width:calc(50% - 2px);} .fact-grid{grid-template-columns:1fr;}
-            .pw-sidebar { width: 150px; }
-            .pw-status-grid { grid-template-columns: 1fr; }
-        }
-        @media(max-width:580px){
-            .pw-body { flex-direction: column; }
-            .pw-sidebar { width: 100%; flex-direction: row; flex-wrap: wrap; padding: .4rem; border-right: none; border-bottom: 2px solid var(--border-faint); }
-            .pw-sidebar-avatar { display: none; }
-            .pw-nav-btn { flex: 1; min-width: 100px; justify-content: center; font-size: 1rem; }
-        }
+        @media(max-width:760px){ .logo-main{font-size:3.5rem;} .theme-panel{min-width:190px;} .nav-btn{min-width:calc(50% - 2px);} .fact-grid{grid-template-columns:1fr;} .pw-sidebar{width:150px;} .pw-status-grid{grid-template-columns:1fr;} }
+        @media(max-width:580px){ .pw-body{flex-direction:column;} .pw-sidebar{width:100%;flex-direction:row;flex-wrap:wrap;padding:.4rem;border-right:none;border-bottom:2px solid var(--border-faint);} .pw-sidebar-avatar{display:none;} .pw-nav-btn{flex:1;min-width:100px;justify-content:center;font-size:1rem;} }
         @media(max-width:520px){ .nav-btn{min-width:100%;} .nav-section{flex-direction:column;} .header-inner{flex-direction:column;} .header-right{flex-direction:row;} }
     </style>
 </head>
@@ -702,9 +478,7 @@
                 </div>
             </div>
 
-            <!-- Theme Panel + Profile Button -->
             <div class="header-right">
-                <!-- Theme Panel -->
                 <div class="theme-panel" id="themePanel">
                     <div class="tp-header-bar">// ТЕМА ИНТЕРФЕЙСА // CONFIG</div>
                     <div class="tp-body">
@@ -730,7 +504,6 @@
                     </div>
                 </div>
 
-                <!-- Profile Button -->
                 <button class="profile-open-btn" onclick="openProfile()" title="Открыть профиль">
                     <div class="pob-bar">USER.DAT</div>
                     <div class="pob-inner">
@@ -786,7 +559,6 @@
     <!-- ═══ ARTICLES ═══ -->
     <div class="articles-grid">
 
-        <!-- OVERVIEW FULL -->
         <div class="panel article-full">
             <div class="panel-head">
                 <div class="ph-bar"></div>
@@ -801,8 +573,7 @@
                     ULTRAKILL — высокоскоростной шутер от первого лица в раннем доступе Steam.
                     Разработан независимым автором <span class="art-hl2">Arsi «Hakita» Patala</span>,
                     издаётся компанией <span class="art-hl3">New Blood Interactive</span>.
-                    Первый выход в ранний доступ —
-                    <span class="art-hl2">3 сентября 2020 года</span>.
+                    Первый выход в ранний доступ — <span class="art-hl2">3 сентября 2020 года</span>.
                 </div>
 
                 <div class="fact-grid">
@@ -816,7 +587,7 @@
 
                 <div class="art-section-head">КОНЦЕПЦИЯ И СЕТТИНГ</div>
                 <div class="art-para">
-                    Действие разворачивается в <span class="art-hl">нижнем уровне</span> —
+                    Действие разворачивается в <span class="art-hl">нижнем секторе</span> —
                     многоуровневой структуре, населённой разнообразными сущностями.
                     Главный персонаж — операционный модуль <span class="art-hl">V1</span>,
                     пополняющий энергетический ресурс непосредственно от нейтрализованных целей.
@@ -824,13 +595,10 @@
                     иных источников энергии не осталось.
                 </div>
                 <div class="art-para">
-                    Нижний уровень разделён на слои:
-                    <span class="art-hl3">Лимб</span>,
-                    <span class="art-hl5">Страсть</span>,
-                    <span class="art-hl">Чревоугодие</span>,
-                    <span class="art-hl2">Жадность</span>,
-                    <span class="art-hl">Гнев</span>,
-                    <span class="art-hl5">Ересь</span>,
+                    Нижний сектор разделён на слои:
+                    <span class="art-hl3">Лимб</span>, <span class="art-hl5">Страсть</span>,
+                    <span class="art-hl">Чревоугодие</span>, <span class="art-hl2">Жадность</span>,
+                    <span class="art-hl">Гнев</span>, <span class="art-hl5">Ересь</span>,
                     <span class="art-hl4">Раздор</span> —
                     каждый обладает уникальной архитектурой и типами оппонентов.
                     Структура мира вдохновлена <span class="art-hl2">«Божественной Комедией» Данте Алигьери</span>.
@@ -890,7 +658,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="art-section-head">ИСТОРИЯ РАЗРАБОТКИ</div>
                 <div class="art-para">
                     Разработка началась как личный проект, вдохновлённый классическими шутерами 1990-х —
@@ -898,7 +665,6 @@
                     Демо вышло в <span class="art-hl">2019 году</span>, привлекло внимание
                     <span class="art-hl3">New Blood Interactive</span>, и в 2020 игра вышла в ранний доступ Steam.
                 </div>
-
                 <div class="readout">
                     <span class="hl">[HAKITA]</span> <span class="vl">«Я хотел сделать игру, которая ощущается быстрее, чем что-либо ещё.»</span><br>
                     <span class="hl">[STATUS]</span> <span class="vl">Разработка продолжается // Ранний доступ<span class="cur"></span></span>
@@ -935,7 +701,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="fact-grid">
                     <div class="fact-item" style="border-left-color:var(--c-blue);">
                         <div class="fact-key">ОСНОВАТЕЛЬ</div><div class="fact-val b">DAVE OSHRY</div>
@@ -953,7 +718,7 @@
             </div>
         </div>
 
-    </div><!-- /articles-grid -->
+    </div>
 
     <div class="divider" style="margin-top:1rem;"></div>
     <div class="site-footer">
@@ -968,13 +733,12 @@
 </div><!-- /page -->
 
 
-<!-- ═══════════════════════════════════════
+<!-- ═══════════════════════════════════
      PROFILE MODAL
-════════════════════════════════════════ -->
+════════════════════════════════════ -->
 <div class="profile-overlay" id="profileOverlay" onclick="handleOverlayClick(event)">
     <div class="profile-frame" id="profileFrame">
 
-        <!-- Title bar -->
         <div class="pw-titlebar">
             <span class="pw-titlebar-icon">⬡</span>
             <span class="pw-titlebar-title">USER.PROFILE // SYSTEM DATABASE</span>
@@ -986,26 +750,27 @@
             </div>
         </div>
 
-        <!-- Body -->
         <div class="pw-body">
 
             <!-- Sidebar -->
             <div class="pw-sidebar">
-                <!-- Avatar block -->
                 <div class="pw-sidebar-avatar">
-                    <span class="pw-avatar-glyph">V1</span>
+                    <!-- УЛУЧШЕНИЕ 2: аватар с анимацией + онлайн-индикатор -->
+                    <span class="pw-avatar-glyph" id="profileAvatar">V1</span>
                     <div class="pw-avatar-name">UNIT V1</div>
                     <div class="pw-avatar-rank">RANK // SSS // ACTIVE</div>
+                    <div class="pw-avatar-online">
+                        <div class="pw-avatar-online-dot"></div>
+                        ONLINE
+                    </div>
                 </div>
 
-                <!-- Nav buttons -->
                 <button class="pw-nav-btn active" data-tab="status" onclick="switchProfileTab('status')">
                     <span class="pw-nav-icon">◉</span> СТАТУС
                 </button>
                 <button class="pw-nav-btn" data-tab="stats" onclick="switchProfileTab('stats')">
                     <span class="pw-nav-icon">▦</span> СТАТИСТИКА
                 </button>
-                <!-- ✅ ИЗМЕНЕНО: БОЙ-ЛОГ → СЕССИЯ-ЛОГ -->
                 <button class="pw-nav-btn" data-tab="log" onclick="switchProfileTab('log')">
                     <span class="pw-nav-icon">◈</span> СЕССИЯ-ЛОГ
                 </button>
@@ -1014,13 +779,12 @@
                 </button>
             </div>
 
-            <!-- Content area -->
+            <!-- Content -->
             <div class="pw-content" id="pwContent">
 
                 <!-- TAB: STATUS -->
                 <div class="pw-tab active" id="pt-status">
                     <div class="pw-section-title">СТАТУС ЮНИТА</div>
-
                     <div class="pw-status-grid">
                         <div class="pw-stat-cell">
                             <div class="pw-stat-key">ОБОЗНАЧЕНИЕ</div>
@@ -1047,78 +811,76 @@
                             <div class="pw-stat-val r">CRITICAL — HUNTING</div>
                         </div>
                     </div>
-
                     <div class="pw-readout">
                         <span class="hl">[SYSTEM]</span> <span class="vl">V1 INITIALIZED // ALL SYSTEMS NOMINAL</span><br>
                         <span class="hl">[ENERGY]</span> <span class="vl">SOURCE: BIOLOGICAL // STATUS: ACTIVE COLLECTION</span><br>
                         <span class="hl">[MISSION]</span> <span class="gl">DESCEND LOWER SECTOR // NEUTRALIZE ALL TARGETS</span><br>
                         <span class="hl">[NOTE]</span> <span class="vl">MANKIND IS INACTIVE. ENERGY IS FUEL.</span><span style="display:inline-block;width:7px;height:11px;background:var(--acc);vertical-align:middle;animation:blink 1s step-end infinite;margin-left:2px;"></span>
                     </div>
-
                     <div class="pw-readout" style="margin-top:.5rem;">
-                        <span class="hl">[PRIMARY WEAPON]</span>  <span class="bl">FEEDBACKER // KNUCKLEBLASTER // WHIPLASH</span><br>
-                        <span class="hl">[SECONDARY]</span>        <span class="vl">PIERCER // MARKSMAN // SHARPSHOOTER</span><br>
-                        <span class="hl">[ALT-FIRE]</span>         <span class="nl">RAILCANNON // ROCKET LAUNCHER // NAILGUN</span>
+                        <span class="hl">[PRIMARY]</span>   <span class="bl">FEEDBACKER // KNUCKLEBLASTER // WHIPLASH</span><br>
+                        <span class="hl">[SECONDARY]</span> <span class="vl">PIERCER // MARKSMAN // SHARPSHOOTER</span><br>
+                        <span class="hl">[ALT-FIRE]</span>  <span class="nl">RAILCANNON // ROCKET LAUNCHER // NAILGUN</span>
                     </div>
                 </div>
 
-                <!-- TAB: STATS -->
-                <!-- ✅ ИЗМЕНЕНО: БОЕВАЯ СТАТИСТИКА → СТАТИСТИКА ОПЕРАЦИЙ -->
+                <!-- TAB: STATS — УЛУЧШЕНИЕ 1: рандомизация значений -->
                 <div class="pw-tab" id="pt-stats">
                     <div class="pw-section-title">СТАТИСТИКА ОПЕРАЦИЙ</div>
+
+                    <!-- Кнопка ручного обновления -->
+                    <button class="stats-refresh-btn" onclick="randomizeStats()">
+                        <span class="rfr-icon">⟳</span>
+                        ОБНОВИТЬ ДАННЫЕ // ПЕРЕСЧИТАТЬ ПОКАЗАТЕЛИ
+                    </button>
 
                     <div class="pw-status-grid">
                         <div class="pw-stat-cell">
                             <div class="pw-stat-key">ЦЕЛЕЙ НЕЙТРАЛИЗОВАНО</div>
-                            <div class="pw-stat-val r">14 882</div>
+                            <div class="pw-stat-val r" id="stat-neutralized">14 882</div>
                         </div>
                         <div class="pw-stat-cell gold">
                             <div class="pw-stat-key">ЭНЕРГИИ СОБРАНО</div>
-                            <div class="pw-stat-val g">∞ UNITS</div>
+                            <div class="pw-stat-val g" id="stat-energy">∞ UNITS</div>
                         </div>
                         <div class="pw-stat-cell blue">
                             <div class="pw-stat-key">ПАРИРОВАНИЙ</div>
-                            <div class="pw-stat-val b">3 241</div>
+                            <div class="pw-stat-val b" id="stat-parries">3 241</div>
                         </div>
                         <div class="pw-stat-cell green">
                             <div class="pw-stat-key">SSS-РАНГОВ ПОЛУЧЕНО</div>
-                            <div class="pw-stat-val n">47</div>
+                            <div class="pw-stat-val n" id="stat-sss">47</div>
                         </div>
                         <div class="pw-stat-cell">
                             <div class="pw-stat-key">СЛОЁВ ПРОЙДЕНО</div>
-                            <div class="pw-stat-val">7 / 9</div>
+                            <div class="pw-stat-val" id="stat-layers">7 / 9</div>
                         </div>
                         <div class="pw-stat-cell pink">
                             <div class="pw-stat-key">ПРИОРИТЕТНЫХ ЦЕЛЕЙ</div>
-                            <div class="pw-stat-val" style="color:var(--c-pink)">12 НЕЙТР.</div>
+                            <div class="pw-stat-val" style="color:var(--c-pink)" id="stat-priority">12 НЕЙТР.</div>
                         </div>
                         <div class="pw-stat-cell gold">
                             <div class="pw-stat-key">РЕКОРДНОЕ ВРЕМЯ УРОВНЯ</div>
-                            <div class="pw-stat-val g">0:44.18</div>
+                            <div class="pw-stat-val g" id="stat-time">0:44.18</div>
                         </div>
                         <div class="pw-stat-cell blue">
                             <div class="pw-stat-key">МАКС. МУЛЬТИПЛИКАТОР</div>
-                            <div class="pw-stat-val b">×9.4</div>
+                            <div class="pw-stat-val b" id="stat-mult">×9.4</div>
                         </div>
                     </div>
 
                     <div class="pw-readout">
-                        <!-- ✅ ИЗМЕНЕНО: COMBAT EFFICIENCY → OPERATION EFFICIENCY -->
-                        <span class="hl">[EFFICIENCY]</span>   <span class="nl">OPERATION EFFICIENCY: 98.7%</span><br>
-                        <span class="hl">[BEST RANK]</span>     <span class="gl">P-RANK // ALL LAYERS</span><br>
-                        <!-- ✅ ИЗМЕНЕНО: DEATHS → ПОТЕРИ -->
-                        <span class="hl">[ПОТЕРИ]</span>        <span class="vl">0 — MACHINES DO NOT YIELD</span>
+                        <span class="hl">[EFFICIENCY]</span> <span class="nl" id="stat-efficiency">OPERATION EFFICIENCY: 98.7%</span><br>
+                        <span class="hl">[BEST RANK]</span>  <span class="gl">P-RANK // ALL LAYERS</span><br>
+                        <span class="hl">[ПОТЕРИ]</span>      <span class="vl">0 — MACHINES DO NOT YIELD</span>
                     </div>
                 </div>
 
-                <!-- TAB: COMBAT LOG -->
-                <!-- ✅ ИЗМЕНЕНО: БОЙ-ЛОГ → СЕССИЯ-ЛОГ -->
+                <!-- TAB: SESSION LOG -->
                 <div class="pw-tab" id="pt-log">
                     <div class="pw-section-title">СЕССИЯ-ЛОГ // ПОСЛЕДНИЕ ЗАПИСИ</div>
-
                     <div class="pw-log-entry">
                         <div class="pw-log-time">7-4 // 00:02:11</div>
-                        <!-- ✅ ИЗМЕНЕНО: JUDGE OF HELL → JUDGE OF THE LOWER SECTOR -->
                         <div class="pw-log-text"><strong>GABRIEL, JUDGE OF THE LOWER SECTOR</strong> — нейтрализован. Повторная встреча. Результат аналогичен.</div>
                         <div class="pw-log-badge sss">SSS</div>
                     </div>
@@ -1152,17 +914,15 @@
                         <div class="pw-log-text"><strong>SOMETHING WICKED</strong> — идентифицировано. Характер угрозы: неизвестен.</div>
                         <div class="pw-log-badge sss">???</div>
                     </div>
-
                     <div class="pw-readout" style="margin-top:.8rem;">
                         <span class="hl">[LOG]</span> <span class="vl">ВСЕГО ЗАПИСЕЙ: 14 882 // ПОКАЗАНЫ ПОСЛЕДНИЕ 7</span><br>
                         <span class="hl">[FILTER]</span> <span class="vl">PRIORITY ENCOUNTERS // P-RANK MISSIONS</span>
                     </div>
                 </div>
 
-                <!-- TAB: ACHIEVEMENTS -->
+                <!-- TAB: ACHIEVEMENTS (не трогаем содержимое) -->
                 <div class="pw-tab" id="pt-achievements">
                     <div class="pw-section-title">РЕКОРДЫ // ДОСТИЖЕНИЯ</div>
-
                     <div class="pw-achievement">
                         <div class="pw-ach-icon" style="color:var(--acc);">★</div>
                         <div>
@@ -1216,7 +976,7 @@
             </div><!-- /pw-content -->
         </div><!-- /pw-body -->
 
-        <!-- Status bar at bottom -->
+        <!-- Status bar — УЛУЧШЕНИЕ 2: добавлен таймер сессии -->
         <div class="pw-statusbar">
             <div class="pw-sb-item">
                 <div class="pw-sb-dot"></div>
@@ -1230,6 +990,11 @@
                 <div class="pw-sb-dot"></div>
                 РАНГ: SSS
             </div>
+            <!-- НОВЫЙ ЭЛЕМЕНТ: живой таймер -->
+            <div class="pw-sb-item timer">
+                <div class="pw-sb-dot"></div>
+                <span id="pw-sb-timer">СЕССИЯ: 00:00</span>
+            </div>
             <div class="pw-sb-spacer"></div>
             <div class="pw-sb-item">USER.DAT // V1 // ULTRAKILL DATABASE</div>
         </div>
@@ -1239,107 +1004,321 @@
 
 
 <script>
-var THEME_LABELS = { dark:'DARK // ORIGINAL', v1:'V1 // MACHINE // BLUE', v2:'V2 // MIRROR // RED', gabriel:'GABRIEL // JUDGE // GOLD' };
+/* ═══════════════════════════════════════════════════════
+   БАЗОВЫЙ КОД: ТЕМЫ
+═══════════════════════════════════════════════════════ */
+var THEME_LABELS = {
+    dark:    'DARK // ORIGINAL',
+    v1:      'V1 // MACHINE // BLUE',
+    v2:      'V2 // MIRROR // RED',
+    gabriel: 'GABRIEL // JUDGE // GOLD'
+};
+
 function setTheme(t) {
     document.body.setAttribute('data-theme', t);
-    document.querySelectorAll('.tp-btn').forEach(function(btn){ btn.classList.toggle('active', btn.dataset.tv === t); });
+    document.querySelectorAll('.tp-btn').forEach(function(btn) {
+        btn.classList.toggle('active', btn.dataset.tv === t);
+    });
     var lbl = document.getElementById('tpCurrent');
     if (lbl) lbl.textContent = 'АКТИВНА: ' + THEME_LABELS[t];
     try { localStorage.setItem('uk_theme', t); } catch(e) {}
 }
-(function(){ try { var s = localStorage.getItem('uk_theme'); if (s && THEME_LABELS[s]) setTheme(s); } catch(e) {} })();
+(function() {
+    try { var s = localStorage.getItem('uk_theme'); if (s && THEME_LABELS[s]) setTheme(s); } catch(e) {}
+})();
 
-/* ── Profile Modal ── */
+
+/* ═══════════════════════════════════════════════════════
+   БАЗОВЫЙ КОД: ПРОФИЛЬ — ОТКРЫТИЕ / ЗАКРЫТИЕ / ТАБЫ
+═══════════════════════════════════════════════════════ */
 function openProfile() {
-    var ov = document.getElementById('profileOverlay');
-    ov.classList.add('open');
+    document.getElementById('profileOverlay').classList.add('open');
     document.body.style.overflow = 'hidden';
 }
 function closeProfile() {
-    var ov = document.getElementById('profileOverlay');
-    ov.classList.remove('open');
+    document.getElementById('profileOverlay').classList.remove('open');
     document.body.style.overflow = '';
 }
 function handleOverlayClick(e) {
     if (e.target === document.getElementById('profileOverlay')) closeProfile();
 }
-function switchProfileTab(tab) {
-    document.querySelectorAll('.pw-nav-btn').forEach(function(b){ b.classList.toggle('active', b.dataset.tab === tab); });
-    document.querySelectorAll('.pw-tab').forEach(function(t){ t.classList.remove('active'); });
-    var target = document.getElementById('pt-' + tab);
-    if (target) target.classList.add('active');
-    var content = document.getElementById('pwContent');
-    if (content) content.scrollTop = 0;
-}
 document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') closeProfile();
 });
 
-/* Canvas Background Effects */
-(function(){
-    var CV = document.getElementById('theme-bg-canvas');
+function switchProfileTab(tab) {
+    document.querySelectorAll('.pw-nav-btn').forEach(function(b) {
+        b.classList.toggle('active', b.dataset.tab === tab);
+    });
+    document.querySelectorAll('.pw-tab').forEach(function(t) {
+        t.classList.remove('active');
+    });
+    var target = document.getElementById('pt-' + tab);
+    if (target) target.classList.add('active');
+    var content = document.getElementById('pwContent');
+    if (content) content.scrollTop = 0;
+
+    /* ── УЛУЧШЕНИЕ 1: авто-рандом при открытии вкладки статистики ── */
+    if (tab === 'stats') {
+        setTimeout(randomizeStats, 60);
+    }
+}
+
+
+/* ═══════════════════════════════════════════════════════
+   УЛУЧШЕНИЕ 1: РАНДОМИЗАЦИЯ СТАТИСТИКИ С АНИМАЦИЕЙ
+   Каждое числовое значение генерируется случайно
+   и анимированно «отсчитывается» снизу вверх.
+═══════════════════════════════════════════════════════ */
+function _rndInt(mn, mx) {
+    return Math.floor(Math.random() * (mx - mn + 1)) + mn;
+}
+function _rndFloat(mn, mx, dec) {
+    return (Math.random() * (mx - mn) + mn).toFixed(dec);
+}
+
+/* Анимация count-up для числового элемента */
+function _countUp(el, target, durationMs, fmtFn) {
+    if (!el) return;
+    /* Вспышка при старте */
+    el.classList.remove('stat-flash');
+    void el.offsetWidth; /* reflow */
+    el.classList.add('stat-flash');
+
+    var startTime = null;
+    var startVal  = 0;
+
+    function step(ts) {
+        if (!startTime) startTime = ts;
+        var progress = Math.min((ts - startTime) / durationMs, 1);
+        /* Easing: ease-out cubic */
+        var eased = 1 - Math.pow(1 - progress, 3);
+        var cur = Math.round(startVal + (target - startVal) * eased);
+        el.textContent = fmtFn ? fmtFn(cur) : cur.toLocaleString('ru-RU');
+        if (progress < 1) {
+            requestAnimationFrame(step);
+        } else {
+            el.textContent = fmtFn ? fmtFn(target) : target.toLocaleString('ru-RU');
+        }
+    }
+    requestAnimationFrame(step);
+}
+
+/* Мгновенная подстановка с flash-эффектом */
+function _setFlash(el, text) {
+    if (!el) return;
+    el.classList.remove('stat-flash');
+    void el.offsetWidth;
+    el.classList.add('stat-flash');
+    el.textContent = text;
+}
+
+function randomizeStats() {
+    /* Генерируем случайные значения в правдоподобных диапазонах */
+    var vals = {
+        neutralized: _rndInt(7400,  25000),
+        parries:     _rndInt(1100,  8200),
+        sss:         _rndInt(18,    112),
+        layers:      _rndInt(4,     7),
+        priority:    _rndInt(6,     22),
+        timeS:       _rndInt(28,    58),
+        timeMl:      _rndInt(10,    99),
+        mult:        _rndFloat(5.8, 14.6, 1),
+        eff:         _rndFloat(89.2, 99.9, 1)
+    };
+
+    /* Анимированные числа */
+    _countUp(
+        document.getElementById('stat-neutralized'),
+        vals.neutralized, 950,
+        function(v) { return v.toLocaleString('ru-RU'); }
+    );
+    _countUp(
+        document.getElementById('stat-parries'),
+        vals.parries, 750,
+        function(v) { return v.toLocaleString('ru-RU'); }
+    );
+    _countUp(
+        document.getElementById('stat-sss'),
+        vals.sss, 550,
+        null
+    );
+    _countUp(
+        document.getElementById('stat-priority'),
+        vals.priority, 600,
+        function(v) { return v + ' НЕЙТР.'; }
+    );
+
+    /* Мгновенные значения с задержкой для визуального разброса */
+    setTimeout(function() {
+        _setFlash(document.getElementById('stat-energy'), '∞ UNITS');
+        _setFlash(document.getElementById('stat-layers'), vals.layers + ' / 9');
+    }, 120);
+
+    setTimeout(function() {
+        var s = vals.timeS;
+        var ml = vals.timeMl;
+        _setFlash(
+            document.getElementById('stat-time'),
+            '0:' + (s < 10 ? '0' : '') + s + '.' + ml
+        );
+    }, 280);
+
+    setTimeout(function() {
+        _setFlash(document.getElementById('stat-mult'), '×' + vals.mult);
+        _setFlash(
+            document.getElementById('stat-efficiency'),
+            'OPERATION EFFICIENCY: ' + vals.eff + '%'
+        );
+    }, 420);
+}
+
+
+/* ═══════════════════════════════════════════════════════
+   УЛУЧШЕНИЕ 2: ЖИВОЙ ТАЙМЕР СЕССИИ В СТАТУСБАРЕ
+   Отображает, сколько времени прошло с открытия страницы.
+═══════════════════════════════════════════════════════ */
+var _sessStart = Date.now();
+
+function _pad(n) { return n < 10 ? '0' + n : '' + n; }
+
+function _updateTimer() {
+    var el = document.getElementById('pw-sb-timer');
+    if (!el) return;
+    var elapsed = Math.floor((Date.now() - _sessStart) / 1000);
+    var h = Math.floor(elapsed / 3600);
+    var m = Math.floor((elapsed % 3600) / 60);
+    var s = elapsed % 60;
+    var str = (h > 0 ? _pad(h) + ':' : '') + _pad(m) + ':' + _pad(s);
+    el.textContent = 'СЕССИЯ: ' + str;
+}
+
+setInterval(_updateTimer, 1000);
+_updateTimer();
+
+
+/* ═══════════════════════════════════════════════════════
+   УЛУЧШЕНИЕ 2 (доп.): ПЕРИОДИЧЕСКИЙ ГЛИТЧ АВАТАРА V1
+   Каждые 4–9 секунд аватар случайно «глитчит»
+   на короткое время, имитируя помехи.
+═══════════════════════════════════════════════════════ */
+(function() {
+    function scheduleGlitch() {
+        var delay = _rndInt(4000, 9000);
+        setTimeout(function() {
+            var avatar = document.getElementById('profileAvatar');
+            if (avatar) {
+                avatar.classList.add('glitching');
+                setTimeout(function() {
+                    avatar.classList.remove('glitching');
+                    scheduleGlitch(); /* планируем следующий */
+                }, _rndInt(180, 380));
+            } else {
+                scheduleGlitch();
+            }
+        }, delay);
+    }
+    scheduleGlitch();
+})();
+
+
+/* ═══════════════════════════════════════════════════════
+   CANVAS: ФОНОВЫЕ ЭФФЕКТЫ (оригинальный код без изменений)
+═══════════════════════════════════════════════════════ */
+(function() {
+    var CV  = document.getElementById('theme-bg-canvas');
     var CTX = CV.getContext('2d');
-    var AT = 'dark', S = {};
-    function r(a,b){ return a + Math.random()*(b-a); }
-    function ri(a,b){ return Math.floor(r(a,b+1)); }
-    function cl(v,mn,mx){ return Math.max(mn,Math.min(mx,v)); }
-    function resize(){ CV.width = window.innerWidth; CV.height = window.innerHeight; }
-    window.addEventListener('resize', function(){ resize(); init(AT); });
+    var AT  = 'dark';
+    var S   = {};
+
+    function r(a, b) { return a + Math.random() * (b - a); }
+    function ri(a, b) { return Math.floor(r(a, b + 1)); }
+    function cl(v, mn, mx) { return Math.max(mn, Math.min(mx, v)); }
+
+    function resize() { CV.width = window.innerWidth; CV.height = window.innerHeight; }
+    window.addEventListener('resize', function() { resize(); init(AT); });
     resize();
 
-    function initV2(){
+    /* ── V2 ── */
+    function initV2() {
         S = { shards:[], glitchBars:[], glitchT:ri(10,40), staticPts:[], cracks:[], crackT:ri(80,200) };
-        for(var i=0;i<28;i++) S.shards.push(mkShard());
-        for(var j=0;j<220;j++) S.staticPts.push({x:r(0,CV.width),y:r(0,CV.height),rr:r(.4,1.8),al:r(.01,.055),bl:r(0,Math.PI*2),spd:r(.04,.15)});
-        for(var c=0;c<6;c++) S.cracks.push(mkCrack());
+        for (var i = 0; i < 28; i++) S.shards.push(mkShard());
+        for (var j = 0; j < 220; j++) S.staticPts.push({x:r(0,CV.width),y:r(0,CV.height),rr:r(.4,1.8),al:r(.01,.055),bl:r(0,Math.PI*2),spd:r(.04,.15)});
+        for (var c = 0; c < 6; c++) S.cracks.push(mkCrack());
     }
-    function mkShard(){ var cx=r(15,CV.width/2-10),cy=r(15,CV.height-15),sz=r(14,68),pts=[],n=ri(3,7); for(var i=0;i<n;i++){var ang=(i/n)*Math.PI*2+r(-.55,.55);pts.push({x:cx+Math.cos(ang)*sz*r(.4,1.1),y:cy+Math.sin(ang)*sz*r(.4,1.1)});} return{pts:pts,ph:r(0,Math.PI*2),spd:r(.012,.03),al:r(.04,.16),life:r(.7,1),decay:r(.0004,.0018)}; }
-    function mkCrack(){ var sx=CV.width/2+r(-100,100),sy=r(40,CV.height-40),pts=[{x:sx,y:sy}],cx=sx,cy=sy; for(var i=0;i<ri(4,11);i++){cx+=r(-100,100);cy+=r(-70,90);cx=cl(cx,8,CV.width-8);cy=cl(cy,8,CV.height-8);pts.push({x:cx,y:cy});} return{pts:pts,al:r(.02,.07),ph:r(0,Math.PI*2),phs:r(.007,.024),life:r(.7,1.5),decay:r(.0007,.0028)}; }
-    function drawV2(){
+    function mkShard() {
+        var cx=r(15,CV.width/2-10),cy=r(15,CV.height-15),sz=r(14,68),pts=[],n=ri(3,7);
+        for (var i = 0; i < n; i++) { var ang=(i/n)*Math.PI*2+r(-.55,.55); pts.push({x:cx+Math.cos(ang)*sz*r(.4,1.1),y:cy+Math.sin(ang)*sz*r(.4,1.1)}); }
+        return {pts:pts,ph:r(0,Math.PI*2),spd:r(.012,.03),al:r(.04,.16),life:r(.7,1),decay:r(.0004,.0018)};
+    }
+    function mkCrack() {
+        var sx=CV.width/2+r(-100,100),sy=r(40,CV.height-40),pts=[{x:sx,y:sy}],cx=sx,cy=sy;
+        for (var i = 0; i < ri(4,11); i++) { cx+=r(-100,100);cy+=r(-70,90);cx=cl(cx,8,CV.width-8);cy=cl(cy,8,CV.height-8);pts.push({x:cx,y:cy}); }
+        return {pts:pts,al:r(.02,.07),ph:r(0,Math.PI*2),phs:r(.007,.024),life:r(.7,1.5),decay:r(.0007,.0028)};
+    }
+    function drawV2() {
         CTX.clearRect(0,0,CV.width,CV.height);
         var W=CV.width,H=CV.height;
-        S.staticPts.forEach(function(pt){ pt.bl+=pt.spd; var a=pt.al*(.3+.7*Math.abs(Math.sin(pt.bl))); CTX.beginPath();CTX.arc(pt.x,pt.y,pt.rr,0,Math.PI*2); CTX.fillStyle='rgba(255,24,24,'+a+')';CTX.fill(); });
-        S.crackT--; if(S.crackT<=0){S.crackT=ri(100,240);if(S.cracks.length<12)S.cracks.push(mkCrack());}
-        S.cracks=S.cracks.filter(function(c){return c.life>0;}); S.cracks.forEach(function(cr){ cr.life-=cr.decay;cr.ph+=cr.phs; var a=cr.al*cr.life*(.55+.45*Math.sin(cr.ph)); CTX.strokeStyle='rgba(255,24,24,'+a+')';CTX.lineWidth=.88;CTX.beginPath(); cr.pts.forEach(function(pt,i){i?CTX.lineTo(pt.x,pt.y):CTX.moveTo(pt.x,pt.y);});CTX.stroke(); });
-        S.glitchT--; if(S.glitchT<=0){ S.glitchT=ri(6,44); for(var n=ri(1,4);n>0&&S.glitchBars.length<14;n--) S.glitchBars.push({y:r(0,H),h:r(1,12),life:r(.2,.9),al:r(.03,.1)}); }
-        S.glitchBars=S.glitchBars.filter(function(b){return b.life>0;}); S.glitchBars.forEach(function(b){b.life-=.05;CTX.fillStyle='rgba(255,24,24,'+(b.al*b.life)+')';CTX.fillRect(0,b.y,W,b.h);});
-        S.shards.forEach(function(sh,idx){ sh.ph+=sh.spd;sh.life-=sh.decay; if(sh.life<=0){S.shards[idx]=mkShard();return;} var a=sh.al*sh.life*(.46+.54*Math.sin(sh.ph)); CTX.beginPath();CTX.moveTo(sh.pts[0].x,sh.pts[0].y); for(var p=1;p<sh.pts.length;p++)CTX.lineTo(sh.pts[p].x,sh.pts[p].y); CTX.closePath();CTX.strokeStyle='rgba(255,24,24,'+a+')';CTX.lineWidth=.92;CTX.stroke(); });
+        S.staticPts.forEach(function(pt) { pt.bl+=pt.spd; var a=pt.al*(.3+.7*Math.abs(Math.sin(pt.bl))); CTX.beginPath();CTX.arc(pt.x,pt.y,pt.rr,0,Math.PI*2);CTX.fillStyle='rgba(255,24,24,'+a+')';CTX.fill(); });
+        S.crackT--; if (S.crackT<=0) { S.crackT=ri(100,240); if(S.cracks.length<12) S.cracks.push(mkCrack()); }
+        S.cracks = S.cracks.filter(function(c){return c.life>0;});
+        S.cracks.forEach(function(cr) { cr.life-=cr.decay;cr.ph+=cr.phs; var a=cr.al*cr.life*(.55+.45*Math.sin(cr.ph)); CTX.strokeStyle='rgba(255,24,24,'+a+')';CTX.lineWidth=.88;CTX.beginPath(); cr.pts.forEach(function(pt,i){i?CTX.lineTo(pt.x,pt.y):CTX.moveTo(pt.x,pt.y);}); CTX.stroke(); });
+        S.glitchT--; if (S.glitchT<=0) { S.glitchT=ri(6,44); for(var n=ri(1,4);n>0&&S.glitchBars.length<14;n--) S.glitchBars.push({y:r(0,H),h:r(1,12),life:r(.2,.9),al:r(.03,.1)}); }
+        S.glitchBars = S.glitchBars.filter(function(b){return b.life>0;});
+        S.glitchBars.forEach(function(b) { b.life-=.05;CTX.fillStyle='rgba(255,24,24,'+(b.al*b.life)+')';CTX.fillRect(0,b.y,W,b.h); });
+        S.shards.forEach(function(sh,idx) { sh.ph+=sh.spd;sh.life-=sh.decay; if(sh.life<=0){S.shards[idx]=mkShard();return;} var a=sh.al*sh.life*(.46+.54*Math.sin(sh.ph)); CTX.beginPath();CTX.moveTo(sh.pts[0].x,sh.pts[0].y); for(var p=1;p<sh.pts.length;p++) CTX.lineTo(sh.pts[p].x,sh.pts[p].y); CTX.closePath();CTX.strokeStyle='rgba(255,24,24,'+a+')';CTX.lineWidth=.92;CTX.stroke(); });
     }
 
-    function initGabriel(){
-        S = { feathers:[], halos:[], rays:[], motes:[], mandPh:0, ambPh:0, inscriptions:[], inscT:ri(80,200) };
-        for(var i=0;i<50;i++) S.feathers.push(newFeather(true));
-        for(var h=0;h<9;h++) S.halos.push({x:r(60,CV.width-60),y:r(60,CV.height-60),rr:r(25,100),al:r(.03,.08),ph:r(0,Math.PI*2),phs:r(.007,.022)});
-        for(var rr=0;rr<14;rr++) S.rays.push({angle:r(-.82,.82),hw:r(12,80),len:r(CV.height*.3,CV.height),al:r(.015,.055),ph:r(0,Math.PI*2),phs:r(.004,.015)});
-        for(var m=0;m<85;m++) S.motes.push(newMote(true));
-        for(var ins=0;ins<6;ins++) S.inscriptions.push(newInscription());
+    /* ── GABRIEL ── */
+    function initGabriel() {
+        S = { feathers:[], halos:[], rays:[], motes:[], ambPh:0, inscriptions:[], inscT:ri(80,200) };
+        for (var i = 0; i < 50; i++) S.feathers.push(newFeather(true));
+        for (var h = 0; h < 9; h++) S.halos.push({x:r(60,CV.width-60),y:r(60,CV.height-60),rr:r(25,100),al:r(.03,.08),ph:r(0,Math.PI*2),phs:r(.007,.022)});
+        for (var rr = 0; rr < 14; rr++) S.rays.push({angle:r(-.82,.82),hw:r(12,80),len:r(CV.height*.3,CV.height),al:r(.015,.055),ph:r(0,Math.PI*2),phs:r(.004,.015)});
+        for (var m = 0; m < 85; m++) S.motes.push(newMote(true));
+        for (var ins = 0; ins < 6; ins++) S.inscriptions.push(newInscription());
     }
-    function newFeather(rY){return{x:r(-90,CV.width+90),y:rY?r(-300,CV.height):r(-240,-10),vy:r(.15,.65),vx:r(-.12,.12),len:r(16,56),sw:r(0,Math.PI*2),sws:r(.009,.028),al:r(.052,.18)};}
-    function newMote(rY){return{x:r(0,CV.width),y:rY?r(0,CV.height):CV.height+20,rr:r(.7,3.2),vy:r(-.38,-.07),vx:r(-.07,.07),al:r(.05,.2),ph:r(0,Math.PI*2),phs:r(.02,.065)};}
-    function newInscription(){ var TX=['JUDICIUM','LUX AETERNA','CAELUM','SANCTUS','VIRTUS']; return{x:r(30,CV.width*.45),y:r(30,CV.height*.8),txt:TX[ri(0,TX.length-1)],al:r(.015,.055),ph:r(0,Math.PI*2),phs:r(.005,.016),life:r(.8,1.8),decay:r(.0004,.0015),size:ri(9,13)}; }
-    function drawGabriel(){
+    function newFeather(rY) { return {x:r(-90,CV.width+90),y:rY?r(-300,CV.height):r(-240,-10),vy:r(.15,.65),vx:r(-.12,.12),len:r(16,56),sw:r(0,Math.PI*2),sws:r(.009,.028),al:r(.052,.18)}; }
+    function newMote(rY) { return {x:r(0,CV.width),y:rY?r(0,CV.height):CV.height+20,rr:r(.7,3.2),vy:r(-.38,-.07),vx:r(-.07,.07),al:r(.05,.2),ph:r(0,Math.PI*2),phs:r(.02,.065)}; }
+    function newInscription() {
+        var TX = ['JUDICIUM','LUX AETERNA','CAELUM','SANCTUS','VIRTUS'];
+        return {x:r(30,CV.width*.45),y:r(30,CV.height*.8),txt:TX[ri(0,TX.length-1)],al:r(.015,.055),ph:r(0,Math.PI*2),phs:r(.005,.016),life:r(.8,1.8),decay:r(.0004,.0015),size:ri(9,13)};
+    }
+    function drawGabriel() {
         CTX.clearRect(0,0,CV.width,CV.height);
-        var W=CV.width,H=CV.height,cx=W/2,cy=H/2;
+        var W=CV.width,H=CV.height,cx=W/2;
         S.ambPh+=.008; var ambA=.022+.01*Math.sin(S.ambPh);
         var ag=CTX.createRadialGradient(cx,-H*.1,0,cx,-H*.1,H*1.3);
-        ag.addColorStop(0,'rgba(200,152,30,'+ambA+')');ag.addColorStop(1,'rgba(200,152,30,0)');
-        CTX.fillStyle=ag;CTX.fillRect(0,0,W,H);
-        S.rays.forEach(function(rr){ rr.ph+=rr.phs;var a=rr.al*(.4+.6*Math.sin(rr.ph)); CTX.save();CTX.translate(cx,-50);CTX.rotate(rr.angle); var g=CTX.createLinearGradient(0,0,0,rr.len); g.addColorStop(0,'rgba(200,152,30,'+a+')');g.addColorStop(1,'rgba(200,152,30,0)'); CTX.beginPath();CTX.moveTo(-rr.hw*.14,0);CTX.lineTo(rr.hw*.14,0);CTX.lineTo(rr.hw*1.88,rr.len);CTX.lineTo(-rr.hw*1.88,rr.len);CTX.closePath(); CTX.fillStyle=g;CTX.fill();CTX.restore(); });
-        S.halos.forEach(function(hh){ hh.ph+=hh.phs;var a=hh.al*(.44+.56*Math.sin(hh.ph)); CTX.beginPath();CTX.arc(hh.x,hh.y,hh.rr,0,Math.PI*2); CTX.strokeStyle='rgba(200,152,30,'+a+')';CTX.lineWidth=1.5;CTX.stroke(); });
-        S.motes.forEach(function(m,idx){ m.ph+=m.phs;m.y+=m.vy; if(m.y<-28){S.motes[idx]=newMote(false);return;} var a=m.al*(.36+.64*Math.abs(Math.sin(m.ph))); CTX.beginPath();CTX.arc(m.x,m.y,m.rr,0,Math.PI*2);CTX.fillStyle='rgba(225,182,62,'+a+')';CTX.fill(); });
+        ag.addColorStop(0,'rgba(200,152,30,'+ambA+')'); ag.addColorStop(1,'rgba(200,152,30,0)');
+        CTX.fillStyle=ag; CTX.fillRect(0,0,W,H);
+        S.rays.forEach(function(rr) { rr.ph+=rr.phs; var a=rr.al*(.4+.6*Math.sin(rr.ph)); CTX.save();CTX.translate(cx,-50);CTX.rotate(rr.angle); var g=CTX.createLinearGradient(0,0,0,rr.len); g.addColorStop(0,'rgba(200,152,30,'+a+')');g.addColorStop(1,'rgba(200,152,30,0)'); CTX.beginPath();CTX.moveTo(-rr.hw*.14,0);CTX.lineTo(rr.hw*.14,0);CTX.lineTo(rr.hw*1.88,rr.len);CTX.lineTo(-rr.hw*1.88,rr.len);CTX.closePath(); CTX.fillStyle=g;CTX.fill();CTX.restore(); });
+        S.halos.forEach(function(hh) { hh.ph+=hh.phs; var a=hh.al*(.44+.56*Math.sin(hh.ph)); CTX.beginPath();CTX.arc(hh.x,hh.y,hh.rr,0,Math.PI*2);CTX.strokeStyle='rgba(200,152,30,'+a+')';CTX.lineWidth=1.5;CTX.stroke(); });
+        S.motes.forEach(function(m,idx) { m.ph+=m.phs;m.y+=m.vy; if(m.y<-28){S.motes[idx]=newMote(false);return;} var a=m.al*(.36+.64*Math.abs(Math.sin(m.ph))); CTX.beginPath();CTX.arc(m.x,m.y,m.rr,0,Math.PI*2);CTX.fillStyle='rgba(225,182,62,'+a+')';CTX.fill(); });
         S.inscT--; if(S.inscT<=0){S.inscT=ri(70,180);if(S.inscriptions.length<10)S.inscriptions.push(newInscription());}
-        S.inscriptions=S.inscriptions.filter(function(ins){return ins.life>0;}); S.inscriptions.forEach(function(ins){ ins.life-=ins.decay;ins.ph+=ins.phs; var a=ins.al*ins.life*(.48+.52*Math.sin(ins.ph));if(a<.003)return; CTX.font=ins.size+'px "Share Tech Mono",monospace'; CTX.fillStyle='rgba(200,152,30,'+a+')';CTX.fillText(ins.txt,ins.x,ins.y); });
-        S.feathers.forEach(function(f,idx){ f.sw+=f.sws;f.y+=f.vy;f.x+=f.vx; if(f.y>CV.height+110){S.feathers[idx]=newFeather(false);return;} CTX.save();CTX.translate(f.x,f.y); CTX.beginPath();CTX.moveTo(0,-f.len*.5);CTX.lineTo(0,f.len*.5); CTX.strokeStyle='rgba(200,152,30,'+f.al+')';CTX.lineWidth=.9;CTX.stroke();CTX.restore(); });
+        S.inscriptions = S.inscriptions.filter(function(ins){return ins.life>0;});
+        S.inscriptions.forEach(function(ins) { ins.life-=ins.decay;ins.ph+=ins.phs; var a=ins.al*ins.life*(.48+.52*Math.sin(ins.ph)); if(a<.003)return; CTX.font=ins.size+'px "Share Tech Mono",monospace';CTX.fillStyle='rgba(200,152,30,'+a+')';CTX.fillText(ins.txt,ins.x,ins.y); });
+        S.feathers.forEach(function(f,idx) { f.sw+=f.sws;f.y+=f.vy;f.x+=f.vx; if(f.y>CV.height+110){S.feathers[idx]=newFeather(false);return;} CTX.save();CTX.translate(f.x,f.y); CTX.beginPath();CTX.moveTo(0,-f.len*.5);CTX.lineTo(0,f.len*.5);CTX.strokeStyle='rgba(200,152,30,'+f.al+')';CTX.lineWidth=.9;CTX.stroke();CTX.restore(); });
     }
 
-    function loop(){ switch(AT){ case 'v2': drawV2(); break; case 'gabriel': drawGabriel(); break; default: CTX.clearRect(0,0,CV.width,CV.height); break; } requestAnimationFrame(loop); }
-    function init(t){ AT=t; S={}; switch(t){ case 'v2': initV2(); break; case 'gabriel': initGabriel(); break; } }
+    function loop() {
+        switch(AT) {
+            case 'v2':      drawV2();      break;
+            case 'gabriel': drawGabriel(); break;
+            default:        CTX.clearRect(0,0,CV.width,CV.height); break;
+        }
+        requestAnimationFrame(loop);
+    }
 
-    var _orig = window.setTheme;
-    window.setTheme = function(t){ _orig(t); init(t); };
+    function init(t) { AT=t; S={}; switch(t){ case 'v2': initV2(); break; case 'gabriel': initGabriel(); break; } }
+
+    /* Перехватываем setTheme чтобы обновлять canvas */
+    var _origSetTheme = window.setTheme;
+    window.setTheme = function(t) { _origSetTheme(t); init(t); };
+
     var boot = 'dark';
     try { boot = localStorage.getItem('uk_theme') || 'dark'; } catch(e) {}
-    init(boot); loop();
+    init(boot);
+    loop();
 })();
 </script>
 </body>
