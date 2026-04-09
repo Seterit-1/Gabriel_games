@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>ULTRAKILL // СЕКТОРЫ — SYSTEM DATABASE</title>
+    <title>UL7RAK1LL // СЕКТОРЫ — SYSTEM DATABASE</title>
     <link href="https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
@@ -77,7 +77,6 @@
             pointer-events:none; transition:background .3s;
         }
 
-        /* ═══ CANVAS ═══ */
         #layer-bg-canvas {
             position:fixed; top:0; left:0; width:100%; height:100%;
             pointer-events:none; z-index:2;
@@ -85,7 +84,6 @@
 
         .page { max-width:1400px; margin:0 auto; padding:0 1.5rem 5rem; position:relative; z-index:10; }
 
-        /* ═══ MODAL ═══ */
         .modal-overlay {
             position:fixed; inset:0;
             background:rgba(0,0,0,.95);
@@ -139,7 +137,6 @@
         .modal-btn.auto-btn { border-color:#ff6600; color:#ff8844; }
         .modal-btn.auto-btn:hover { background:#ff6600; color:#000; }
 
-        /* ═══ HEADER ═══ */
         .site-header {
             border-bottom:2px solid var(--border); padding:1.5rem 0 1rem;
             transition:border-color .3s;
@@ -168,7 +165,6 @@
         .menu-nav-btn.dim { border-color:var(--border-faint); color:var(--text-faint); }
         .menu-nav-btn.dim:hover { background:var(--border-faint); color:var(--bg); }
 
-        /* ═══ TICKER ═══ */
         .ticker-wrap {
             border-top:1px solid var(--border-faint); border-bottom:1px solid var(--border-faint);
             overflow:hidden; padding:.3rem 0; margin:.8rem 0 1rem;
@@ -185,7 +181,6 @@
             margin:1rem 0; transition:background .3s;
         }
 
-        /* ═══ INTRO PANEL ═══ */
         .intro-panel {
             border:2px solid var(--border); background:var(--bg); padding:1.2rem; margin-bottom:1.2rem;
             transition:border-color .3s, background .3s;
@@ -198,9 +193,6 @@
         .istat-k { font-size:.45rem; color:var(--text-faint); letter-spacing:.2em; text-transform:uppercase; margin-bottom:.2rem; }
         .istat-v { font-family:'VT323',monospace; font-size:1rem; color:var(--text); }
 
-        /* ═══════════════════════════════════════
-           1. ИНТЕРАКТИВНАЯ СХЕМА СЕКТОРОВ
-        ═══════════════════════════════════════ */
         .sector-map-wrap {
             margin-bottom:1.2rem;
             border:2px solid var(--border);
@@ -229,7 +221,6 @@
             min-width:max-content; position:relative;
         }
 
-        /* Connector line */
         .sm-connector {
             width:28px; height:2px;
             background:linear-gradient(90deg, var(--sm-cc, #555), var(--sm-cc2, #555));
@@ -243,7 +234,6 @@
             border-bottom:4px solid transparent;
         }
 
-        /* Node */
         .sm-node {
             display:flex; flex-direction:column; align-items:center;
             cursor:pointer; position:relative;
@@ -303,7 +293,6 @@
             line-height:1.4; transition:.15s;
         }
 
-        /* Secret branch */
         .sm-secret-branch {
             display:flex; flex-direction:column; align-items:center;
             position:absolute; top:-78px; left:50%;
@@ -327,7 +316,6 @@
         .sm-secret-node:hover { background:color-mix(in srgb, var(--sm-c) 10%, var(--bg)); }
         .sm-secret-node span { font-family:'VT323',monospace; font-size:.95rem; display:block; }
 
-        /* Legend */
         .sm-legend {
             display:flex; gap:1rem; flex-wrap:wrap;
             padding:.5rem .9rem;
@@ -339,7 +327,6 @@
         .sm-legend-item { display:flex; align-items:center; gap:.35rem; }
         .sm-leg-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
 
-        /* ═══ TAB BAR ═══ */
         .tab-bar {
             display:flex; gap:0;
             border:2px solid var(--border); border-bottom:none;
@@ -383,7 +370,6 @@
         #tab-layer7  { --lc:#00ccbb; --lc-bg:rgba(0,204,187,.06); --lc-bd:#0e302c; --lc-dim:rgba(0,204,187,.08); }
         #tab-layer89 { --lc:#cc0000; --lc-bg:rgba(204,0,0,.06); --lc-bd:#2e0a0a; --lc-dim:rgba(204,0,0,.08); }
 
-        /* ═══ TAB CONTENT ═══ */
         .tab-content {
             display:none; border:2px solid var(--border); border-top:none;
             background:var(--bg); min-height:400px;
@@ -472,7 +458,6 @@
         .wip-title { font-family:'VT323',monospace; font-size:1.8rem; color:var(--text-faint); margin-bottom:.4rem; }
         .wip-text  { font-size:.7rem; color:var(--text-ghost); line-height:1.7; }
 
-        /* ═══ MODE BADGES ═══ */
         .auto-badge, .personal-badge {
             display:none; font-size:.42rem; font-family:'Share Tech Mono',monospace;
             letter-spacing:.18em; text-transform:uppercase; padding:.1rem .35rem;
@@ -481,7 +466,6 @@
         }
         .auto-badge.visible, .personal-badge.visible { display:inline; }
 
-        /* ═══ FOOTER ═══ */
         .site-footer {
             border-top:2px solid var(--border); padding:1rem 0; margin-top:1.5rem;
             display:flex; justify-content:space-between; align-items:center;
@@ -496,9 +480,6 @@
         }
         .back-link:hover { background:var(--border); color:var(--bg); }
 
-        /* ═══════════════════════════════════════
-           3. НИЖНЯЯ МОБИЛЬНАЯ НАВИГАЦИЯ
-        ═══════════════════════════════════════ */
         .mobile-bottom-nav {
             display:none;
             position:fixed; bottom:0; left:0; right:0;
@@ -653,7 +634,7 @@
         <div class="header-inner">
             <div class="logo-block">
                 <div class="logo-sys-line">// LOWER SECTOR DEPTH MAP // LAYER CATALOGUE // V1 SYSTEM //</div>
-                <div class="logo-main">ULTRAKILL</div>
+                <div class="logo-main">UL7RAK1LL</div>
                 <div class="logo-status-lines">
                     <div class="lsl">SYSTEM <span class="ok">V1</span> INITIALIZED</div>
                     <div class="lsl">LAYER MAP — <span class="ok">LOADED</span> // SECTORS I–IX</div>
@@ -666,7 +647,7 @@
             </div>
             <div class="menu-nav">
                 <a href="index.html"   class="menu-nav-btn">◄ ГЛАВНАЯ</a>
-                <a href="weapons.html" class="menu-nav-btn">АРСЕНАЛ</a>
+                <a href="weapons.html" class="menu-nav-btn">АРС3НАЛ</a>
                 <a href="bosses.html"  class="menu-nav-btn">СУЩНОСТИ</a>
                 <a href="lore.html"    class="menu-nav-btn">ЛОР</a>
                 <button class="menu-nav-btn dim" onclick="resetMode()" style="font-size:.85rem;padding:.5rem;">⚙ СМЕНА РЕЖИМА</button>
@@ -698,9 +679,7 @@
         </div>
     </div>
 
-    <!-- ═══════════════════════════════════════
-         1. ИНТЕРАКТИВНАЯ СХЕМА СЕКТОРОВ
-    ═══════════════════════════════════════ -->
+    <!-- SECTOR MAP -->
     <div class="sector-map-wrap">
         <div class="sector-map-header">
             <span class="smh-accent">▦</span>
@@ -727,7 +706,6 @@
                 <div class="sm-node" id="smn-layer1" data-goto="layer1"
                      style="--sm-c:#88aaff; --sm-glow:rgba(136,170,255,.35); position:relative;"
                      onclick="smGoto('layer1')">
-                    <!-- Secret branch: 1-S -->
                     <div class="sm-secret-branch">
                         <div class="sm-secret-node" style="--sm-c:#88aaff;" onclick="smGoto('layer1');event.stopPropagation();">
                             <span>1-S</span>CASTLE<br>VEIN
@@ -750,7 +728,7 @@
                      onclick="smGoto('layer2')">
                     <div class="sm-secret-branch">
                         <div class="sm-secret-node" style="--sm-c:#ff44cc;" onclick="smGoto('layer2');event.stopPropagation();">
-                            <span>2-S</span>MUST<br>DIE
+                            <span>2-S</span>MU5T<br>D1E
                         </div>
                         <div class="sm-secret-line" style="--sm-c:#ff44cc;"></div>
                     </div>
@@ -759,7 +737,7 @@
                         <div class="sm-sublabel">СТРАСТЬ</div>
                         <div class="sm-badge done" title="Завершён">✓</div>
                     </div>
-                    <div class="sm-label">LUST<br>АКТ I</div>
+                    <div class="sm-label">LU5T<br>АКТ I</div>
                 </div>
 
                 <div class="sm-connector" style="--sm-cc:#ff44cc;--sm-cc2:#ff2020;"></div>
@@ -807,7 +785,7 @@
                         <div class="sm-sublabel">ГНЕВ</div>
                         <div class="sm-badge done" title="Завершён">✓</div>
                     </div>
-                    <div class="sm-label">WRATH<br>АКТ I</div>
+                    <div class="sm-label">WR4TH<br>АКТ I</div>
                 </div>
 
                 <div class="sm-connector" style="--sm-cc:#ff8800;--sm-cc2:#cc44ff;"></div>
@@ -821,7 +799,7 @@
                         <div class="sm-sublabel">ЕРЕСЬ</div>
                         <div class="sm-badge done" title="Завершён">✓</div>
                     </div>
-                    <div class="sm-label">HERESY<br>АКТ I ★</div>
+                    <div class="sm-label">H3R3SY<br>АКТ I ★</div>
                 </div>
 
                 <div class="sm-connector" style="--sm-cc:#cc44ff;--sm-cc2:#00ccbb;"></div>
@@ -841,7 +819,7 @@
                         <div class="sm-sublabel">РАЗДОР</div>
                         <div class="sm-badge wip" title="В разработке">~</div>
                     </div>
-                    <div class="sm-label">VIOLENCE<br>АКТ II</div>
+                    <div class="sm-label">V10L3NC3<br>АКТ II</div>
                 </div>
 
                 <div class="sm-connector" style="--sm-cc:#00ccbb;--sm-cc2:#cc0000;"></div>
@@ -854,7 +832,7 @@
                         <div class="sm-num" style="font-size:1rem;">VIII<br>IX</div>
                         <div class="sm-badge lock" title="Закрыто">?</div>
                     </div>
-                    <div class="sm-label">FRAUD &amp;<br>TREACHERY</div>
+                    <div class="sm-label">FR4UD &amp;<br>TR34CH3RY</div>
                 </div>
 
             </div>
@@ -895,7 +873,7 @@
                             <div class="layer-desc">
                                 Прелюдия — вступительная зона нижнего уровня, не соответствующая ни одному конкретному кругу в классификации Данте, однако отражающая образ врат, описанных в «Инферно» (Песнь III): <em>«Оставь надежду всяк сюда входящий»</em>. V1, критически истощённая после коллапса человечества и израсходования наземных энергетических ресурсов, спускается в нижний уровень ради пополнения запасов.
                                 <br><br>
-                                Уровень 0-1 <strong>«INTO THE FIRE»</strong> вводит базовые механики перемещения: рывок, прыжок, взаимодействие с оппонентами. Архитектура смешанная — промышленные стальные конструкции переходят в органические структуры нижнего уровня, символизируя границу между мирами. Уровень 0-2 <strong>«THE MEATGRINDER»</strong> значительно насыщеннее: вводит первый масштабный каскад взаимодействий. Секретный уровень 0-S <strong>«SOMETHING WICKED»</strong> содержит отсылку к угрозе, превосходящей стандартную классификацию.
+                                Уровень 0-1 <strong>«INTO THE FIRE»</strong> вводит базовые механики перемещения: рывок, прыжок, взаимодействие с оппонентами. Архитектура смешанная — промышленные стальные конструкции переходят в органические структуры нижнего уровня, символизируя границу между мирами. Уровень 0-2 <strong>«THE M34TGR1ND3R»</strong> значительно насыщеннее: вводит первый масштабный каскад взаимодействий. Секретный уровень 0-S <strong>«SOMETHING WICKED»</strong> содержит отсылку к угрозе, превосходящей стандартную классификацию.
                                 <div class="dante-ref">
                                     <strong>// ИСТОЧНИК — ДАНТЕ, «ИНФЕРНО», ПЕСНЬ III:</strong><br>
                                     Вход в нижний уровень — тёмный лес (Selva oscura), встреча с тремя зверями, символизирующими грехи. Вергилий становится проводником поэта — V1 проходит путь в одиночку.
@@ -912,7 +890,7 @@
                     <div class="layer-section-head">// УРОВНИ</div>
                     <div class="layer-section-body" style="padding:.3rem 0;">
                         <div class="level-row"><span class="lr-num">0-1</span><span class="lr-name">INTO THE FIRE</span><span class="lr-type">ОСНОВНОЙ</span></div>
-                        <div class="level-row"><span class="lr-num">0-2</span><span class="lr-name">THE MEATGRINDER</span><span class="lr-type">ОСНОВНОЙ</span></div>
+                        <div class="level-row"><span class="lr-num">0-2</span><span class="lr-name">THE M34TGR1ND3R</span><span class="lr-type">ОСНОВНОЙ</span></div>
                         <div class="level-row"><span class="lr-num">0-S</span><span class="lr-name">SOMETHING WICKED</span><span class="lr-type secret">СЕКРЕТНЫЙ</span></div>
                     </div>
                 </div>
@@ -936,7 +914,7 @@
         <div class="layer-wrap">
             <div class="layer-title-row">
                 <h2>СЛОЙ I — LIMBO // ЛИМБ</h2>
-                <div class="ltr-sub">// АКТ I: INFINITE HYPERDEATH // ДАНТЕ: КРУГ I // СТАТУС: ЗАВЕРШЁН</div>
+                <div class="ltr-sub">// АКТ I: 1NF1N1T3 HYPERD34TH // ДАНТЕ: КРУГ I // СТАТУС: ЗАВЕРШЁН</div>
             </div>
             <div class="layer-body">
                 <div class="layer-section">
@@ -963,7 +941,7 @@
                     <div class="layer-section-head">// УРОВНИ</div>
                     <div class="layer-section-body" style="padding:.3rem 0;">
                         <div class="level-row"><span class="lr-num">1-1</span><span class="lr-name">HEART OF THE SUNRISE</span><span class="lr-type">ОСНОВНОЙ</span></div>
-                        <div class="level-row"><span class="lr-num">1-2</span><span class="lr-name">THE DEATH OF THE PARTY</span><span class="lr-type">ОСНОВНОЙ</span></div>
+                        <div class="level-row"><span class="lr-num">1-2</span><span class="lr-name">THE D34TH OF THE PARTY</span><span class="lr-type">ОСНОВНОЙ</span></div>
                         <div class="level-row"><span class="lr-num">1-3</span><span class="lr-name">A ONE MACHINE ARMY</span><span class="lr-type encounter">СТОЛКНОВЕНИЕ // Cerberus Prime</span></div>
                         <div class="level-row"><span class="lr-num">1-S</span><span class="lr-name">CASTLE VEIN</span><span class="lr-type secret">СЕКРЕТНЫЙ</span></div>
                     </div>
@@ -971,7 +949,7 @@
                 <div class="layer-section">
                     <div class="layer-section-head">// ПАРАМЕТРЫ</div>
                     <div class="layer-section-body">
-                        <div class="param-row"><span class="param-key">АКТ</span><span class="param-val hi">I — Infinite Hyperdeath</span></div>
+                        <div class="param-row"><span class="param-key">АКТ</span><span class="param-val hi">I — 1NF1N1T3 HYPERD34TH</span></div>
                         <div class="param-row"><span class="param-key">АРХИТЕКТУРА</span><span class="param-val">Монохромная, кристаллическая, плавающие платформы</span></div>
                         <div class="param-row"><span class="param-key">ЦВЕТОВАЯ ПАЛИТРА</span><span class="param-val colored">Синий / Белый / Холодный серый</span></div>
                         <div class="param-row"><span class="param-key">ПРИОРИТЕТНАЯ ЦЕЛЬ</span><span class="param-val hi">Cerberus Prime</span></div>
@@ -986,8 +964,8 @@
     <div class="tab-content" id="tab-layer2">
         <div class="layer-wrap">
             <div class="layer-title-row">
-                <h2>СЛОЙ II — LUST // СТРАСТЬ</h2>
-                <div class="ltr-sub">// АКТ I: INFINITE HYPERDEATH // ДАНТЕ: КРУГ II // СТАТУС: ЗАВЕРШЁН</div>
+                <h2>СЛОЙ II — LU5T // СТРАСТЬ</h2>
+                <div class="ltr-sub">// АКТ I: 1NF1N1T3 HYPERD34TH // ДАНТЕ: КРУГ II // СТАТУС: ЗАВЕРШЁН</div>
             </div>
             <div class="layer-body">
                 <div class="layer-section">
@@ -997,7 +975,7 @@
                             <div class="layer-desc">
                                 Второй сектор нижнего уровня. Зона неистовства и неудержимого порыва. Архитектура органическая, тёмно-розовая: пульсирующие стены, извивающиеся коридоры, напоминающие живую ткань. Пространство ощущается нестабильным, подвижным. Оппоненты значительно быстрее и непредсказуемее, чем в Лимбе — слой делает акцент на мобильности V1.
                                 <br><br>
-                                Завершающее взаимодействие на уровне 2-3 <strong>«SHEER HEART ATTACK»</strong> — с Hideous Mass, аномальным биологическим конгломератом из фрагментов различных организмов. Секретный уровень 2-S <strong>«MUST DIE»</strong> предназначен для опытных операторов — отличается значительно повышенным уровнем сложности.
+                                Завершающее взаимодействие на уровне 2-3 <strong>«SH33R H34RT 4TT4CK»</strong> — с Hideous Mass, аномальным биологическим конгломератом из фрагментов различных организмов. Секретный уровень 2-S <strong>«MU5T D1E»</strong> предназначен для опытных операторов — отличается значительно повышенным уровнем сложности.
                                 <div class="dante-ref">
                                     <strong>// ИСТОЧНИК — ДАНТЕ, «ИНФЕРНО», ПЕСНЬ V — ВТОРОЙ КРУГ:</strong><br>
                                     Судья Минос назначает наказания. Осуждённые несомы вечным ураганом — символ того, как страсть управляла ими при жизни. Среди упомянутых: Клеопатра, Елена Троянская, Ахилл, Парис, Тристан.
@@ -1014,15 +992,15 @@
                     <div class="layer-section-head">// УРОВНИ</div>
                     <div class="layer-section-body" style="padding:.3rem 0;">
                         <div class="level-row"><span class="lr-num">2-1</span><span class="lr-name">BRIDGEBURNER</span><span class="lr-type">ОСНОВНОЙ</span></div>
-                        <div class="level-row"><span class="lr-num">2-2</span><span class="lr-name">DEATH AT 20,000 VOLTS</span><span class="lr-type">ОСНОВНОЙ</span></div>
-                        <div class="level-row"><span class="lr-num">2-3</span><span class="lr-name">SHEER HEART ATTACK</span><span class="lr-type encounter">СТОЛКНОВЕНИЕ // Hideous Mass</span></div>
-                        <div class="level-row"><span class="lr-num">2-S</span><span class="lr-name">MUST DIE</span><span class="lr-type secret">СЕКРЕТНЫЙ // ПОВЫШЕННАЯ СЛОЖНОСТЬ</span></div>
+                        <div class="level-row"><span class="lr-num">2-2</span><span class="lr-name">D34TH AT 20,000 VOLTS</span><span class="lr-type">ОСНОВНОЙ</span></div>
+                        <div class="level-row"><span class="lr-num">2-3</span><span class="lr-name">SH33R H34RT 4TT4CK</span><span class="lr-type encounter">СТОЛКНОВЕНИЕ // Hideous Mass</span></div>
+                        <div class="level-row"><span class="lr-num">2-S</span><span class="lr-name">MU5T D1E</span><span class="lr-type secret">СЕКРЕТНЫЙ // ПОВЫШЕННАЯ СЛОЖНОСТЬ</span></div>
                     </div>
                 </div>
                 <div class="layer-section">
                     <div class="layer-section-head">// ПАРАМЕТРЫ</div>
                     <div class="layer-section-body">
-                        <div class="param-row"><span class="param-key">АКТ</span><span class="param-val hi">I — Infinite Hyperdeath</span></div>
+                        <div class="param-row"><span class="param-key">АКТ</span><span class="param-val hi">I — 1NF1N1T3 HYPERD34TH</span></div>
                         <div class="param-row"><span class="param-key">АРХИТЕКТУРА</span><span class="param-val">Органическая, биологическая, нестабильная</span></div>
                         <div class="param-row"><span class="param-key">ЦВЕТОВАЯ ПАЛИТРА</span><span class="param-val colored">Розовый / Тёмно-пурпурный</span></div>
                         <div class="param-row"><span class="param-key">ПРИОРИТЕТНАЯ ЦЕЛЬ</span><span class="param-val hi">Hideous Mass</span></div>
@@ -1038,7 +1016,7 @@
         <div class="layer-wrap">
             <div class="layer-title-row">
                 <h2>СЛОЙ III — GLUTTONY // ЧРЕВОУГОДИЕ</h2>
-                <div class="ltr-sub">// АКТ I: INFINITE HYPERDEATH // ДАНТЕ: КРУГ III // СТАТУС: ЗАВЕРШЁН</div>
+                <div class="ltr-sub">// АКТ I: 1NF1N1T3 HYPERD34TH // ДАНТЕ: КРУГ III // СТАТУС: ЗАВЕРШЁН</div>
             </div>
             <div class="layer-body">
                 <div class="layer-section">
@@ -1071,7 +1049,7 @@
                 <div class="layer-section">
                     <div class="layer-section-head">// ПАРАМЕТРЫ</div>
                     <div class="layer-section-body">
-                        <div class="param-row"><span class="param-key">АКТ</span><span class="param-val hi">I — Infinite Hyperdeath</span></div>
+                        <div class="param-row"><span class="param-key">АКТ</span><span class="param-val hi">I — 1NF1N1T3 HYPERD34TH</span></div>
                         <div class="param-row"><span class="param-key">АРХИТЕКТУРА</span><span class="param-val">Биологическая, внутриорганическая, биомасса</span></div>
                         <div class="param-row"><span class="param-key">ПРИОРИТЕТНАЯ ЦЕЛЬ</span><span class="param-val hi">Gabriel (первое столкновение)</span></div>
                         <div class="param-row"><span class="param-key">ДАНТЕ</span><span class="param-val">«Инферно», Песнь VI — третий круг, Gola</span></div>
@@ -1086,7 +1064,7 @@
         <div class="layer-wrap">
             <div class="layer-title-row">
                 <h2>СЛОЙ IV — GREED // ЖАДНОСТЬ</h2>
-                <div class="ltr-sub">// АКТ I: INFINITE HYPERDEATH // ДАНТЕ: КРУГ IV // СТАТУС: ЗАВЕРШЁН</div>
+                <div class="ltr-sub">// АКТ I: 1NF1N1T3 HYPERD34TH // ДАНТЕ: КРУГ IV // СТАТУС: ЗАВЕРШЁН</div>
             </div>
             <div class="layer-body">
                 <div class="layer-section">
@@ -1096,7 +1074,7 @@
                             <div class="layer-desc">
                                 Четвёртый сектор. Зона накопления и удержания. Архитектура вычурная, претенциозная, но в глубоком состоянии упадка: золото и мрамор, покрытые трещинами. Наиболее сложный и протяжённый сектор Акта I — содержит четыре основных уровня и один секретный.
                                 <br><br>
-                                На уровне 4-2 <strong>«VIOLENCE»</strong> происходит первое взаимодействие с V2 — зеркальным прототипом той же серии. Финал сектора — уровень 4-4 <strong>«CAIN»</strong> — содержит взаимодействие с Minos Prime.
+                                На уровне 4-2 <strong>«V10L3NC3»</strong> происходит первое взаимодействие с V2 — зеркальным прототипом той же серии. Финал сектора — уровень 4-4 <strong>«CAIN»</strong> — содержит взаимодействие с Minos Prime.
                                 <div class="dante-ref">
                                     <strong>// ИСТОЧНИК — ДАНТЕ, «ИНФЕРНО», ПЕСНЬ VII — ЧЕТВЁРТЫЙ КРУГ:</strong><br>
                                     Четвёртый круг охраняет Плутос — демон богатства. Скупцы и расточители толкают навстречу друг другу огромные тяжести в бесконечном цикле.
@@ -1113,7 +1091,7 @@
                     <div class="layer-section-head">// УРОВНИ</div>
                     <div class="layer-section-body" style="padding:.3rem 0;">
                         <div class="level-row"><span class="lr-num">4-1</span><span class="lr-name">CLAIR DE LUNE</span><span class="lr-type">ОСНОВНОЙ</span></div>
-                        <div class="level-row"><span class="lr-num">4-2</span><span class="lr-name">VIOLENCE</span><span class="lr-type encounter">СТОЛКНОВЕНИЕ // V2 (I)</span></div>
+                        <div class="level-row"><span class="lr-num">4-2</span><span class="lr-name">V10L3NC3</span><span class="lr-type encounter">СТОЛКНОВЕНИЕ // V2 (I)</span></div>
                         <div class="level-row"><span class="lr-num">4-3</span><span class="lr-name">A SHOT IN THE DARK</span><span class="lr-type">ОСНОВНОЙ</span></div>
                         <div class="level-row"><span class="lr-num">4-4</span><span class="lr-name">CAIN</span><span class="lr-type encounter">СТОЛКНОВЕНИЕ // Minos Prime</span></div>
                         <div class="level-row"><span class="lr-num">4-S</span><span class="lr-name">CLASH OF THE BRANDICOOT</span><span class="lr-type secret">СЕКРЕТНЫЙ</span></div>
@@ -1122,7 +1100,7 @@
                 <div class="layer-section">
                     <div class="layer-section-head">// ПАРАМЕТРЫ</div>
                     <div class="layer-section-body">
-                        <div class="param-row"><span class="param-key">АКТ</span><span class="param-val hi">I — Infinite Hyperdeath</span></div>
+                        <div class="param-row"><span class="param-key">АКТ</span><span class="param-val hi">I — 1NF1N1T3 HYPERD34TH</span></div>
                         <div class="param-row"><span class="param-key">АРХИТЕКТУРА</span><span class="param-val">Золото, мрамор, упадок роскоши</span></div>
                         <div class="param-row"><span class="param-key">ЦВЕТОВАЯ ПАЛИТРА</span><span class="param-val colored">Золотой / Мраморный / Охра</span></div>
                         <div class="param-row"><span class="param-key">ПРИОРИТЕТНЫЕ ЦЕЛИ</span><span class="param-val hi">V2 (первое), Minos Prime</span></div>
@@ -1137,8 +1115,8 @@
     <div class="tab-content" id="tab-layer5">
         <div class="layer-wrap">
             <div class="layer-title-row">
-                <h2>СЛОЙ V — WRATH // ГНЕВ</h2>
-                <div class="ltr-sub">// АКТ I: INFINITE HYPERDEATH // ДАНТЕ: КРУГ V // СТАТУС: ЗАВЕРШЁН</div>
+                <h2>СЛОЙ V — WR4TH // ГНЕВ</h2>
+                <div class="ltr-sub">// АКТ I: 1NF1N1T3 HYPERD34TH // ДАНТЕ: КРУГ V // СТАТУС: ЗАВЕРШЁН</div>
             </div>
             <div class="layer-body">
                 <div class="layer-section">
@@ -1173,7 +1151,7 @@
                 <div class="layer-section">
                     <div class="layer-section-head">// ПАРАМЕТРЫ</div>
                     <div class="layer-section-body">
-                        <div class="param-row"><span class="param-key">АКТ</span><span class="param-val hi">I — Infinite Hyperdeath</span></div>
+                        <div class="param-row"><span class="param-key">АКТ</span><span class="param-val hi">I — 1NF1N1T3 HYPERD34TH</span></div>
                         <div class="param-row"><span class="param-key">СРЕДА</span><span class="param-val">Водная, морская, штормовая</span></div>
                         <div class="param-row"><span class="param-key">ЦВЕТОВАЯ ПАЛИТРА</span><span class="param-val colored">Оранжевый / Тёмно-синий / Морской</span></div>
                         <div class="param-row"><span class="param-key">ПРИОРИТЕТНАЯ ЦЕЛЬ</span><span class="param-val hi">Leviathan</span></div>
@@ -1188,8 +1166,8 @@
     <div class="tab-content" id="tab-layer6">
         <div class="layer-wrap">
             <div class="layer-title-row">
-                <h2>СЛОЙ VI — HERESY // ЕРЕСЬ</h2>
-                <div class="ltr-sub">// АКТ I: INFINITE HYPERDEATH // ФИНАЛ // ДАНТЕ: КРУГ VI // СТАТУС: ЗАВЕРШЁН</div>
+                <h2>СЛОЙ VI — H3R3SY // ЕРЕСЬ</h2>
+                <div class="ltr-sub">// АКТ I: 1NF1N1T3 HYPERD34TH // ФИНАЛ // ДАНТЕ: КРУГ VI // СТАТУС: ЗАВЕРШЁН</div>
             </div>
             <div class="layer-body">
                 <div class="layer-section">
@@ -1199,7 +1177,7 @@
                             <div class="layer-desc">
                                 Шестой сектор и финал Акта I. Зона разрушенных систем убеждений и падших созданий. Тёмная пурпурная архитектура, монументальные строения в состоянии деградации. Самый короткий сектор по числу уровней — но содержащий наиболее технически насыщенное финальное взаимодействие.
                                 <br><br>
-                                Уровень 6-2 <strong>«AESTHETICS OF HATE»</strong> — второе и финальное взаимодействие с Гавриилом. Это полноценный многофазный оппонент, «Судья» нижнего уровня: архангел, утративший верность прежним принципам. После нейтрализации Гавриила открывается переход в Акт II.
+                                Уровень 6-2 <strong>«4ESTH3TICS OF H4T3»</strong> — второе и финальное взаимодействие с Гавриилом. Это полноценный многофазный оппонент, «Судья» нижнего уровня: архангел, утративший верность прежним принципам. После нейтрализации Гавриила открывается переход в Акт II.
                                 <div class="dante-ref">
                                     <strong>// ИСТОЧНИК — ДАНТЕ, «ИНФЕРНО», ПЕСНИ IX–XI — ШЕСТОЙ КРУГ:</strong><br>
                                     Шестой круг — за стенами Города Дис. Еретики заключены в раскалённые каменные гробницы. Данте беседует с Фаринатой дельи Уберти — непоколебимым флорентийским политиком.
@@ -1216,13 +1194,13 @@
                     <div class="layer-section-head">// УРОВНИ</div>
                     <div class="layer-section-body" style="padding:.3rem 0;">
                         <div class="level-row"><span class="lr-num">6-1</span><span class="lr-name">CRY FOR THE WEEPER</span><span class="lr-type">ОСНОВНОЙ</span></div>
-                        <div class="level-row"><span class="lr-num">6-2</span><span class="lr-name">AESTHETICS OF HATE</span><span class="lr-type encounter">ФИНАЛ АКТ I // Gabriel (II)</span></div>
+                        <div class="level-row"><span class="lr-num">6-2</span><span class="lr-name">4ESTH3TICS OF H4T3</span><span class="lr-type encounter">ФИНАЛ АКТ I // Gabriel (II)</span></div>
                     </div>
                 </div>
                 <div class="layer-section">
                     <div class="layer-section-head">// ПАРАМЕТРЫ</div>
                     <div class="layer-section-body">
-                        <div class="param-row"><span class="param-key">АКТ</span><span class="param-val hi">I — Infinite Hyperdeath (финал)</span></div>
+                        <div class="param-row"><span class="param-key">АКТ</span><span class="param-val hi">I — 1NF1N1T3 HYPERD34TH (финал)</span></div>
                         <div class="param-row"><span class="param-key">АРХИТЕКТУРА</span><span class="param-val">Пурпурная, монументальные руины</span></div>
                         <div class="param-row"><span class="param-key">ЦВЕТОВАЯ ПАЛИТРА</span><span class="param-val colored">Пурпурный + Золотой (Gabriel)</span></div>
                         <div class="param-row"><span class="param-key">ПРИОРИТЕТНАЯ ЦЕЛЬ</span><span class="param-val hi">Gabriel — финальное взаимодействие</span></div>
@@ -1237,8 +1215,8 @@
     <div class="tab-content" id="tab-layer7">
         <div class="layer-wrap">
             <div class="layer-title-row">
-                <h2>СЛОЙ VII — VIOLENCE // РАЗДОР</h2>
-                <div class="ltr-sub">// АКТ II: IMPERFECT HATRED // ДАНТЕ: КРУГ VII // СТАТУС: ЧАСТИЧНО ВЫПУЩЕН</div>
+                <h2>СЛОЙ VII — V10L3NC3 // РАЗДОР</h2>
+                <div class="ltr-sub">// АКТ II: IMP3RF3CT H4TR3D // ДАНТЕ: КРУГ VII // СТАТУС: ЧАСТИЧНО ВЫПУЩЕН</div>
             </div>
             <div class="layer-body">
                 <div class="layer-section">
@@ -1246,7 +1224,7 @@
                     <div class="layer-section-body">
                         <div class="desc-photo-grid">
                             <div class="layer-desc">
-                                Седьмой сектор открывает Акт II «Imperfect Hatred». Зона бесконечных столкновений и распада. Архитектура резко контрастная: разрушенные промышленные конструкции, выжженные пространства, открытые арены. Акт II разворачивает нарратив об идентичности и цели V1.
+                                Седьмой сектор открывает Акт II «IMP3RF3CT H4TR3D». Зона бесконечных столкновений и распада. Архитектура резко контрастная: разрушенные промышленные конструкции, выжженные пространства, открытые арены. Акт II разворачивает нарратив об идентичности и цели V1.
                                 <br><br>
                                 На уровне 7-4 <strong>«...AND THE LOWER SECTOR FOLLOWED»</strong> происходит второе взаимодействие с V2. Секретный уровень 7-S <strong>«ANOTHER CASTLE»</strong> содержит взаимодействие с Sisyphus Prime — механизированной интерпретацией персонажа греческой мифологии.
                                 <div class="dante-ref">
@@ -1274,7 +1252,7 @@
                 <div class="layer-section">
                     <div class="layer-section-head">// ПАРАМЕТРЫ</div>
                     <div class="layer-section-body">
-                        <div class="param-row"><span class="param-key">АКТ</span><span class="param-val hi">II — Imperfect Hatred</span></div>
+                        <div class="param-row"><span class="param-key">АКТ</span><span class="param-val hi">II — IMP3RF3CT H4TR3D</span></div>
                         <div class="param-row"><span class="param-key">АРХИТЕКТУРА</span><span class="param-val">Разрушенная, выжженная, контрастные пространства</span></div>
                         <div class="param-row"><span class="param-key">ЦВЕТОВАЯ ПАЛИТРА</span><span class="param-val colored">Бирюзовый / Тёмный</span></div>
                         <div class="param-row"><span class="param-key">ПРИОРИТЕТНЫЕ ЦЕЛИ</span><span class="param-val hi">V2 (второе), Sisyphus Prime</span></div>
@@ -1289,7 +1267,7 @@
     <div class="tab-content" id="tab-layer89">
         <div class="layer-wrap">
             <div class="layer-title-row">
-                <h2>СЛОИ VIII–IX — FRAUD &amp; TREACHERY</h2>
+                <h2>СЛОИ VIII–IX — FR4UD &amp; TR34CH3RY</h2>
                 <div class="ltr-sub">// АКТ II / АКТ III // ДАНТЕ: КРУГИ VIII–IX // СТАТУС: В РАЗРАБОТКЕ</div>
             </div>
             <div class="layer-body">
@@ -1316,7 +1294,7 @@
                 <div class="wip-notice">
                     <span class="wip-icon">VIII — IX</span>
                     <div class="wip-title">DATA UNAVAILABLE // IN DEVELOPMENT</div>
-                    <div class="wip-text">Секторы VIII (Malebolge) и IX (Cocytus / Treachery) не выпущены.<br>Информация будет обновлена по мере выхода контента.</div>
+                    <div class="wip-text">Секторы VIII (Malebolge) и IX (Cocytus / TR34CH3RY) не выпущены.<br>Информация будет обновлена по мере выхода контента.</div>
                 </div>
             </div>
         </div>
@@ -1325,21 +1303,17 @@
     <!-- FOOTER -->
     <div class="divider" style="margin-top:1.5rem;"></div>
     <div class="site-footer">
-        <div class="footer-logo">ULTRAKILL // V1</div>
+        <div class="footer-logo">UL7RAK1LL // V1</div>
         <div class="footer-text">// ЭНЕРГИЯ — РЕСУРС // НИЖНИЙ УРОВЕНЬ — ПОЛОН //</div>
         <a href="index.html" class="back-link">◄ ГЛАВНАЯ</a>
     </div>
     <div style="text-align:center;padding:.6rem 0;font-size:.48rem;color:var(--text-ghost);letter-spacing:.2em;text-transform:uppercase;">
-        ИСТОЧНИК: ULTRAKILL WIKI // ДАНТЕ АЛИГЬЕРИ «БОЖЕСТВЕННАЯ КОМЕДИЯ» // ВЕРСИЯ 2 // COMBINED
+        ИСТОЧНИК: UL7RAK1LL WIKI // ДАНТЕ АЛИГЬЕРИ «БОЖЕСТВЕННАЯ КОМЕДИЯ» // ВЕРСИЯ 2 // COMBINED
     </div>
 
 </div><!-- /page -->
 
-<!-- ═══════════════════════════════════════
-     3. НИЖНЯЯ МОБИЛЬНАЯ НАВИГАЦИЯ
-═══════════════════════════════════════ -->
-
-<!-- Мини-бар вкладок над основной навигацией -->
+<!-- НИЖНЯЯ МОБИЛЬНАЯ НАВИГАЦИЯ -->
 <div class="mbn-tab-bar" id="mbnTabBar">
     <div class="mbn-tab-scroll">
         <button class="mbn-tab-item active" data-tab="prelude" onclick="switchTabMobile('prelude',this)">
@@ -1381,7 +1355,6 @@
     </div>
 </div>
 
-<!-- Основная нижняя навигация -->
 <nav class="mobile-bottom-nav" id="mobileBottomNav">
     <a href="index.html" class="mbn-btn">
         <span class="mbn-icon">⌂</span>
@@ -1389,7 +1362,7 @@
     </a>
     <a href="weapons.html" class="mbn-btn">
         <span class="mbn-icon">⬡</span>
-        <span>АРСЕНАЛ</span>
+        <span>АРС3НАЛ</span>
     </a>
     <a href="layer.html" class="mbn-btn active">
         <span class="mbn-icon">▦</span>
@@ -1407,9 +1380,6 @@
 
 
 <script>
-    /* ─────────────────────────────────
-       ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК
-    ───────────────────────────────── */
     function switchTab(id, btn) {
         document.querySelectorAll('.tab-content').forEach(function(el){ el.classList.remove('active'); });
         document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
@@ -1430,7 +1400,6 @@
         var desktopBtn = document.querySelector('.tab-btn[data-tab="'+id+'"]');
         if (desktopBtn) desktopBtn.classList.add('active');
         updateSectorMapActive(id);
-        // Scroll to tab content
         if (target) setTimeout(function(){ target.scrollIntoView({ behavior:'smooth', block:'start' }); }, 80);
     }
 
@@ -1440,9 +1409,6 @@
         if (mb) mb.classList.add('active');
     }
 
-    /* ─────────────────────────────────
-       СХЕМА: обновление активного узла
-    ───────────────────────────────── */
     function updateSectorMapActive(id) {
         document.querySelectorAll('.sm-node').forEach(function(n){ n.classList.remove('sm-current'); });
         var node = document.getElementById('smn-' + id);
@@ -1456,9 +1422,6 @@
         if (tabArea) setTimeout(function(){ tabArea.scrollIntoView({ behavior:'smooth', block:'start' }); }, 60);
     }
 
-    /* ─────────────────────────────────
-       ТЕМЫ
-    ───────────────────────────────── */
     var THEME_DISPLAY = {
         dark:    'DARK',
         v1:      'V1 // BLUE',
@@ -1501,9 +1464,6 @@
         document.getElementById('themeModal').classList.remove('hidden');
     }
 
-    /* ─────────────────────────────────────────────────────────
-       2. CANVAS АНИМАЦИИ ДЛЯ ТЕМ V1 И DARK
-    ───────────────────────────────────────────────────────── */
     (function(){
         var CV  = document.getElementById('layer-bg-canvas');
         var CTX = CV.getContext('2d');
@@ -1522,7 +1482,6 @@
 
         function r(a, b){ return a + Math.random() * (b - a); }
 
-        /* ── DARK THEME: белые частицы + пульсирующая сетка ── */
         function initDark() {
             S = { pts:[], scanY:0, gridPh:0 };
             for(var i = 0; i < 55; i++) {
@@ -1538,8 +1497,6 @@
         function drawDark() {
             CTX.clearRect(0, 0, W, H);
             S.gridPh += .008;
-
-            // Пульс сетки
             var ga = .012 + .006 * Math.sin(S.gridPh);
             CTX.strokeStyle = 'rgba(255,255,255,' + ga + ')';
             CTX.lineWidth = .5;
@@ -1550,8 +1507,6 @@
             for(var y = 0; y < H; y += step) {
                 CTX.beginPath(); CTX.moveTo(0, y); CTX.lineTo(W, y); CTX.stroke();
             }
-
-            // Сканирующая линия
             S.scanY += .6;
             if(S.scanY > H + 30) S.scanY = -30;
             var sg = CTX.createLinearGradient(0, S.scanY - 18, 0, S.scanY + 18);
@@ -1560,24 +1515,17 @@
             sg.addColorStop(1, 'rgba(255,255,255,0)');
             CTX.fillStyle = sg;
             CTX.fillRect(0, S.scanY - 18, W, 36);
-
-            // Частицы
             S.pts.forEach(function(p) {
-                p.ph += p.phs;
-                p.y  += p.vy;
-                p.x  += p.vx;
+                p.ph += p.phs; p.y += p.vy; p.x += p.vx;
                 if(p.y < -10) p.y = H + 10;
                 if(p.x < -10) p.x = W + 10;
                 if(p.x > W + 10) p.x = -10;
                 var a = p.al * (.3 + .7 * Math.abs(Math.sin(p.ph)));
-                CTX.beginPath();
-                CTX.arc(p.x, p.y, p.rr, 0, Math.PI * 2);
-                CTX.fillStyle = 'rgba(255,255,255,' + a + ')';
-                CTX.fill();
+                CTX.beginPath(); CTX.arc(p.x, p.y, p.rr, 0, Math.PI * 2);
+                CTX.fillStyle = 'rgba(255,255,255,' + a + ')'; CTX.fill();
             });
         }
 
-        /* ── V1 THEME: синие лучи сканирования + сетка + частицы ── */
         function initV1() {
             S = { pts:[], scanY:0, scanY2:H*.6, beams:[], beamT:ri(30,80), gridPh:0, pulseRings:[] };
             for(var i = 0; i < 70; i++) {
@@ -1607,8 +1555,6 @@
         function drawV1() {
             CTX.clearRect(0, 0, W, H);
             S.gridPh += .006;
-
-            // Пульсирующая синяя сетка
             var ga = .018 + .01 * Math.sin(S.gridPh);
             CTX.strokeStyle = 'rgba(58,153,255,' + ga + ')';
             CTX.lineWidth = .6;
@@ -1619,8 +1565,6 @@
             for(var y = 0; y < H; y += step) {
                 CTX.beginPath(); CTX.moveTo(0, y); CTX.lineTo(W, y); CTX.stroke();
             }
-
-            // Угловые акценты
             var ca = .04 + .02 * Math.sin(S.gridPh * 1.5);
             CTX.strokeStyle = 'rgba(58,153,255,' + ca + ')';
             CTX.lineWidth = 1;
@@ -1633,63 +1577,44 @@
                 CTX.lineTo(pt[0] + sx * 30, pt[1]);
                 CTX.stroke();
             });
-
-            // Лучи
             S.beamT--;
             if(S.beamT <= 0) { S.beamT = ri(40, 120); if(S.beams.length < 6) newBeam(); }
             S.beams.forEach(function(bm) {
                 bm.ph += bm.phs;
                 var a = bm.al * (.4 + .6 * Math.sin(bm.ph));
-                CTX.save();
-                CTX.translate(bm.x, bm.y);
-                CTX.rotate(bm.angle);
+                CTX.save(); CTX.translate(bm.x, bm.y); CTX.rotate(bm.angle);
                 var lg = CTX.createLinearGradient(0, 0, 0, bm.len);
                 lg.addColorStop(0, 'rgba(58,153,255,' + a + ')');
                 lg.addColorStop(1, 'rgba(58,153,255,0)');
-                CTX.fillStyle = lg;
-                CTX.fillRect(-1.2, 0, 2.4, bm.len);
-                CTX.restore();
+                CTX.fillStyle = lg; CTX.fillRect(-1.2, 0, 2.4, bm.len); CTX.restore();
             });
-
-            // Двойные сканлинии
-            S.scanY  += .55;
-            S.scanY2 += .38;
+            S.scanY += .55; S.scanY2 += .38;
             if(S.scanY  > H + 30) S.scanY  = -30;
             if(S.scanY2 > H + 30) S.scanY2 = -30;
-
             [S.scanY, S.scanY2].forEach(function(sy, idx) {
                 var sg = CTX.createLinearGradient(0, sy - 20, 0, sy + 20);
                 var alpha = idx === 0 ? .04 : .025;
                 sg.addColorStop(0, 'rgba(58,153,255,0)');
                 sg.addColorStop(.5, 'rgba(58,153,255,' + alpha + ')');
                 sg.addColorStop(1, 'rgba(58,153,255,0)');
-                CTX.fillStyle = sg;
-                CTX.fillRect(0, sy - 20, W, 40);
+                CTX.fillStyle = sg; CTX.fillRect(0, sy - 20, W, 40);
             });
-
-            // Частицы
             S.pts.forEach(function(p) {
-                p.ph += p.phs;
-                p.y  += p.vy;
-                p.x  += p.vx;
+                p.ph += p.phs; p.y += p.vy; p.x += p.vx;
                 if(p.y < -10) p.y = H + 10;
                 if(p.x < -10) p.x = W + 10;
                 if(p.x > W + 10) p.x = -10;
                 var a = p.al * (.35 + .65 * Math.abs(Math.sin(p.ph)));
-                CTX.beginPath();
-                CTX.arc(p.x, p.y, p.rr, 0, Math.PI * 2);
-                CTX.fillStyle = 'rgba(58,153,255,' + a + ')';
-                CTX.fill();
+                CTX.beginPath(); CTX.arc(p.x, p.y, p.rr, 0, Math.PI * 2);
+                CTX.fillStyle = 'rgba(58,153,255,' + a + ')'; CTX.fill();
             });
         }
 
-        /* ── DETECT THEME ── */
         function detectTheme() {
             var t = document.body.getAttribute('data-theme') || 'dark';
             return t;
         }
 
-        /* ── INIT & LOOP ── */
         window.initCanvas = function() {
             CUR_THEME = detectTheme();
             S = {};
@@ -1700,11 +1625,9 @@
         function loop() {
             var t = detectTheme();
             if(t !== CUR_THEME) { CUR_THEME = t; S = {}; if(t === 'v1') initV1(); else initDark(); }
-
             if(CUR_THEME === 'v1') drawV1();
             else if(CUR_THEME === 'dark' || !document.body.getAttribute('data-theme')) drawDark();
             else CTX.clearRect(0, 0, W, H);
-
             requestAnimationFrame(loop);
         }
 
@@ -1712,9 +1635,6 @@
         loop();
     })();
 
-    /* ─────────────────────────────────
-       INIT
-    ───────────────────────────────── */
     (function(){
         try {
             var saved = localStorage.getItem('uk_colourmode');
